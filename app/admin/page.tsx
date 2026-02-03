@@ -3,10 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// Admin IDs - these student IDs have admin access
-const ADMIN_IDS = ['22028883']; // Add more admin IDs here
-
-// --- STUDENT DATABASE ---
+// STUDENT DATABASE (same as main page)
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro",
   "22123354": "Abena Dufie Opare-Baah",
@@ -145,368 +142,584 @@ const CLASS_LIST: { [id: string]: string } = {
   "22348338": "Yeboah Yaa Gyamfuaa"
 };
 
-const COURSE_CREDITS = [
-  { code: 'MATH 151', name: 'Algebra', credits: 4 },
-  { code: 'BME 161', name: 'Cell Biology', credits: 3 },
-  { code: 'EE 151', name: 'Applied Electricity', credits: 3 },
-  { code: 'ME 161', name: 'Basic Mechanics', credits: 3 },
-  { code: 'CHEM 151', name: 'General Chemistry', credits: 2 },
-  { code: 'COE 153', name: 'Engineering Tech', credits: 2 },
-  { code: 'ENGL 157', name: 'Comm. Skills I', credits: 2 },
-];
+const ADMIN_IDS = ['22028883'];
 
-const TIMETABLE: { [key: string]: any[] } = {
-  Monday: [
-    { id: 'm1', time: '08:00 - 09:55', course: 'COE 181', venue: 'VCR', lecturer: 'K.O.K. Sarkodie', type: 'Lecture' },
-    { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture' },
-    { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture' },
-  ],
-  Tuesday: [
-    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab' },
-  ],
-  Wednesday: [
-    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture' },
-    { id: 'w2', time: '13:00 - 13:55', course: 'COE 181', venue: '303', lecturer: 'K.O.K Sarkodie', type: 'Lecture' },
-  ],
-  Thursday: [
-    { id: 'th1', time: '08:00 - 09:55', course: 'ME 161', venue: 'A110', lecturer: 'K.O Amoabeng', type: 'Lecture' },
-    { id: 'th2', time: '13:00 - 14:55', course: 'MATH 151 B', venue: 'PB020', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture' },
-    { id: 'th3', time: '15:00 - 16:55', course: 'BME 161', venue: 'PB008', lecturer: 'P. Adjei', type: 'Lecture' },
-  ],
-  Friday: [
-    { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab' },
-    { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab' },
-  ],
-};
-
-export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [studentID, setStudentID] = useState('');
-  const [password, setPassword] = useState('');
-  const [isFirstLogin, setIsFirstLogin] = useState(false);
-  const [studentName, setStudentName] = useState('');
-  const [loginError, setLoginError] = useState('');
-  
+export default function AdminDashboard() {
   const [darkMode, setDarkMode] = useState(false);
-  const [showWeekView, setShowWeekView] = useState(false);
-  const [showCWAModal, setShowCWAModal] = useState(false);
-  const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
-  const [marks, setMarks] = useState<{ [key: string]: string }>({});
-  const [calculatedCWA, setCalculatedCWA] = useState<number | null>(null);
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [notes, setNotes] = useState('');
-  const [daysToMidSem, setDaysToMidSem] = useState(0);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [studentID, setStudentID] = useState('');
+  
+  // Announcement state
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [newAnnouncement, setNewAnnouncement] = useState({ text: '', type: 'general' });
+  
+  // File upload state
   const [files, setFiles] = useState<any[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [newFile, setNewFile] = useState({ course: '', week: '', type: 'notes', url: '' });
+  
+  // Attendance data
+  const [attendanceData, setAttendanceData] = useState<any>({});
+  
+  // Statistics
+  const [stats, setStats] = useState({
+    totalStudents: Object.keys(CLASS_LIST).length,
+    totalAnnouncements: 0,
+    totalFiles: 0,
+    averageAttendance: 0
+  });
 
-  const checkStoredPassword = (id: string) => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(`pw-${id}`);
+  const loadData = () => {
+    // Load announcements
+    const savedAnnouncements = localStorage.getItem('bme-admin-announcements');
+    if (savedAnnouncements) {
+      const parsed = JSON.parse(savedAnnouncements);
+      setAnnouncements(parsed);
+      setStats(prev => ({ ...prev, totalAnnouncements: parsed.length }));
     }
-    return null;
+
+    // Load files
+    const savedFiles = localStorage.getItem('bme-admin-files');
+    if (savedFiles) {
+      const parsed = JSON.parse(savedFiles);
+      setFiles(parsed);
+      setStats(prev => ({ ...prev, totalFiles: parsed.length }));
+    }
+
+    // Load attendance data
+    const savedAttendance = localStorage.getItem('bme-attendance');
+    if (savedAttendance) {
+      const parsed = JSON.parse(savedAttendance);
+      setAttendanceData(parsed);
+      
+      // Calculate average attendance
+      const values = Object.values(parsed) as number[];
+      const avg = values.length > 0 
+        ? Math.round(values.reduce((a: number, b: number) => a + b, 0) / values.length)
+        : 0;
+      setStats(prev => ({ ...prev, averageAttendance: avg }));
+    }
   };
 
   useEffect(() => {
-    const savedID = localStorage.getItem('bme-session-id');
-    if (savedID && CLASS_LIST[savedID]) {
-      setStudentID(savedID); // ADD THIS LINE - set the ID state
-      setStudentName(CLASS_LIST[savedID]);
-      setIsLoggedIn(true);
-      setIsAdmin(ADMIN_IDS.includes(savedID));
-      
-      // Also save to bme-student-id for admin page compatibility
-      localStorage.setItem('bme-student-id', savedID);
+    const id = localStorage.getItem('bme-student-id');
+    const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
+    
+    // Allow access if ID is 22028883 OR if admin access flag is set
+    if ((id === '22028883') || isAdminAccess) {
+      setStudentID(id || '22028883');
+      setIsAuthenticated(true);
+      loadData();
     }
 
-    const savedDark = localStorage.getItem('bme-dark');
-    if (savedDark !== null) setDarkMode(savedDark === 'true');
-    
-    const savedAtt = localStorage.getItem('bme-attendance');
-    if (savedAtt) setAttendance(JSON.parse(savedAtt));
-
-    const savedNotes = localStorage.getItem('bme-notes');
-    if (savedNotes) setNotes(savedNotes);
-
-    const savedAnnouncements = localStorage.getItem('bme-announcements');
-    if (savedAnnouncements) setAnnouncements(JSON.parse(savedAnnouncements));
-
-    const savedFiles = localStorage.getItem('bme-files');
-    if (savedFiles) setFiles(JSON.parse(savedFiles));
-
-    const midSemDate = new Date('2026-02-23T00:00:00');
-    const diff = Math.ceil((midSemDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-    setDaysToMidSem(diff);
-
-    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-    return () => clearInterval(timer);
+    const savedDarkMode = localStorage.getItem('bme-dark-mode') === 'true';
+    setDarkMode(savedDarkMode);
   }, []);
 
-  const handleLogin = (e: any) => {
-    e.preventDefault();
-    if (!CLASS_LIST[studentID]) {
-      setLoginError('Invalid Student ID.');
-      return;
-    }
+  const handleAddAnnouncement = () => {
+    if (!newAnnouncement.text.trim()) return;
 
-    const storedPassword = checkStoredPassword(studentID);
-
-    if (!storedPassword) {
-      if (!isFirstLogin) {
-        setIsFirstLogin(true);
-        setLoginError('');
-      } else {
-        if (password.length < 4) {
-          setLoginError('Password must be at least 4 characters.');
-        } else {
-          localStorage.setItem(`pw-${studentID}`, password);
-          proceedToLogin();
-        }
-      }
-    } else {
-      if (password === storedPassword) {
-        proceedToLogin();
-      } else {
-        setLoginError('Incorrect password.');
-      }
-    }
-  };
-
-  const proceedToLogin = () => {
-    setStudentName(CLASS_LIST[studentID]);
-    setIsLoggedIn(true);
-    setIsAdmin(ADMIN_IDS.includes(studentID)); // ADD THIS LINE
-    localStorage.setItem('bme-session-id', studentID);
-    localStorage.setItem('bme-student-id', studentID); // ADD THIS LINE - for admin page
-    
-    // Log the login for analytics
-    const loginLog = {
-      studentId: studentID,
-      studentName: CLASS_LIST[studentID],
-      timestamp: new Date().toLocaleString()
+    const announcement = {
+      id: Date.now().toString(),
+      text: newAnnouncement.text,
+      type: newAnnouncement.type,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      timestamp: Date.now()
     };
-    const existingLogs = JSON.parse(localStorage.getItem('bme-login-logs') || '[]');
-    existingLogs.push(loginLog);
-    localStorage.setItem('bme-login-logs', JSON.stringify(existingLogs));
+
+    const updated = [announcement, ...announcements];
+    setAnnouncements(updated);
+    localStorage.setItem('bme-admin-announcements', JSON.stringify(updated));
+    localStorage.setItem('bme-announcements', JSON.stringify(updated)); // For main page
+    setNewAnnouncement({ text: '', type: 'general' });
+    setStats(prev => ({ ...prev, totalAnnouncements: updated.length }));
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('bme-session-id');
-    localStorage.removeItem('bme-student-id'); // ADD THIS LINE
-    setIsLoggedIn(false);
-    setStudentID('');
-    setPassword('');
-    setIsFirstLogin(false);
+  const handleDeleteAnnouncement = (id: string) => {
+    const updated = announcements.filter(a => a.id !== id);
+    setAnnouncements(updated);
+    localStorage.setItem('bme-admin-announcements', JSON.stringify(updated));
+    localStorage.setItem('bme-announcements', JSON.stringify(updated));
+    setStats(prev => ({ ...prev, totalAnnouncements: updated.length }));
+  };
+
+  const handleAddFile = () => {
+    if (!newFile.course.trim() || !newFile.url.trim()) return;
+
+    const file = {
+      id: Date.now().toString(),
+      course: newFile.course,
+      week: newFile.week,
+      type: newFile.type,
+      url: newFile.url,
+      uploadedAt: Date.now()
+    };
+
+    const updated = [file, ...files];
+    setFiles(updated);
+    localStorage.setItem('bme-admin-files', JSON.stringify(updated));
+    localStorage.setItem('bme-files', JSON.stringify(updated)); // For main page
+    setNewFile({ course: '', week: '', type: 'notes', url: '' });
+    setStats(prev => ({ ...prev, totalFiles: updated.length }));
+  };
+
+  const handleDeleteFile = (id: string) => {
+    const updated = files.filter(f => f.id !== id);
+    setFiles(updated);
+    localStorage.setItem('bme-admin-files', JSON.stringify(updated));
+    localStorage.setItem('bme-files', JSON.stringify(updated));
+    setStats(prev => ({ ...prev, totalFiles: updated.length }));
   };
 
   const toggleDarkMode = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    localStorage.setItem('bme-dark', next.toString());
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('bme-dark-mode', newMode.toString());
   };
 
-  const markAttendance = (id: string) => {
-    const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
-    setAttendance(newAtt);
-    localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
-  };
-
-  const handleCalculateCWA = () => {
-    let weightedSum = 0, totalCredits = 0;
-    COURSE_CREDITS.forEach(c => {
-      const mark = parseFloat(marks[c.code] || '0');
-      if (mark > 0) { weightedSum += mark * c.credits; totalCredits += c.credits; }
-    });
-    setCalculatedCWA(totalCredits > 0 ? parseFloat((weightedSum / totalCredits).toFixed(2)) : null);
-  };
-
-  const getFirstName = (name: string) => name.split(' ')[0];
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  const todayName = days[new Date().getDay() - 1] || 'Weekend';
-
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return (
-      <div className={`min-h-screen flex items-center justify-center p-6 ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-950'}`}>
-        <form onSubmit={handleLogin} className={`w-full max-w-md p-8 rounded-[40px] shadow-2xl ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} border`}>
-          <div className="flex flex-col items-center mb-8">
-            <div className="h-16 w-16 bg-[#3b0764] rounded-full flex items-center justify-center text-amber-400 font-black mb-4">KNUST</div>
-            <h1 className="text-xl font-black uppercase">{isFirstLogin ? 'Set Password' : 'Portal Access'}</h1>
-            <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest mt-2">{isFirstLogin ? 'Secure your new account' : 'Enter your credentials'}</p>
-          </div>
-          
-          <div className="space-y-4">
-            <input 
-              type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin}
-              onChange={(e) => setStudentID(e.target.value)}
-              className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800' : 'bg-slate-100'} ${isFirstLogin ? 'opacity-50' : ''}`}
-            />
-            
-            {(isFirstLogin || checkStoredPassword(studentID)) && (
-              <input 
-                type="password" placeholder={isFirstLogin ? "Create Password" : "Password"} value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus
-                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-emerald-500/20' : 'bg-slate-100 ring-2 ring-purple-500/10'}`}
-              />
-            )}
-
-            {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
-            
-            <button type="submit" className="w-full py-4 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition-all">
-              {isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}
-            </button>
-            
-            {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
-          </div>
-        </form>
+      <div className="min-h-screen bg-gradient-to-br from-red-950 via-purple-950 to-slate-950 flex items-center justify-center p-4">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[40px] p-12 max-w-md w-full text-center">
+          <div className="text-6xl mb-6">🔒</div>
+          <h1 className="text-3xl font-black text-white mb-4 uppercase tracking-tight">Access Denied</h1>
+          <p className="text-white/60 mb-8 font-medium">This area is restricted to administrators only.</p>
+          <Link href="/" className="inline-block px-8 py-4 bg-emerald-500 text-white rounded-2xl font-bold uppercase tracking-wider hover:bg-emerald-600 transition">
+            Return Home
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-slate-950 text-slate-200' : 'bg-slate-50 text-slate-900'} transition-colors duration-300`}>
-      <header className="bg-[#3b0764] text-white p-6 shadow-xl sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-red-600 via-purple-600 to-indigo-600 text-white p-6 shadow-2xl sticky top-0 z-40 border-b-4 border-yellow-400">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-xl font-black uppercase">Welcome, {getFirstName(studentName)}</h1>
-            <p className="text-amber-400 text-[10px] font-bold tracking-widest uppercase">ID: {studentID}</p>
+            <h1 className="text-2xl font-black uppercase tracking-tighter">Admin Control Panel</h1>
+            <p className="text-yellow-300 text-[10px] font-bold tracking-widest uppercase">System Administrator</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={toggleDarkMode} className="p-3 bg-white/10 rounded-2xl"> {darkMode ? '☀️' : '🌙'} </button>
-            {isAdmin && (
-              <Link href="/admin" className="p-3 bg-yellow-500/20 text-yellow-500 rounded-2xl text-[10px] font-bold uppercase">
-                Admin
-              </Link>
-            )}
-            <button onClick={handleLogout} className="p-3 bg-red-500/20 text-red-500 rounded-2xl text-[10px] font-bold uppercase">Logout</button>
+            <button onClick={toggleDarkMode} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition">
+              {darkMode ? '☀️' : '🌙'}
+            </button>
+            <Link href="/" className="px-6 py-3 bg-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-wider hover:bg-white/20 transition">
+              Exit Admin
+            </Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-8 pb-32">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" rel="noopener noreferrer" className="p-4 bg-emerald-600 text-white rounded-2xl flex flex-col items-center gap-1 shadow-lg"><span className="text-2xl">💬</span><span className="font-bold text-xs">WhatsApp</span></a>
-          <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" rel="noopener noreferrer" className="p-4 bg-blue-600 text-white rounded-2xl flex flex-col items-center gap-1 shadow-lg"><span className="text-2xl">📚</span><span className="font-bold text-xs">Resources</span></a>
-          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-indigo-600 text-white rounded-2xl flex flex-col items-center gap-1 shadow-lg"><span className="text-2xl">📈</span><span className="font-bold text-xs">CWA Calc</span></button>
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} p-4 rounded-2xl flex flex-col items-center justify-center border border-slate-200 dark:border-slate-800`}>
-             <span className="text-lg font-black text-emerald-500">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-             <span className="text-[10px] opacity-40 font-bold uppercase tracking-tighter">System Live</span>
+      <div className="max-w-7xl mx-auto p-4 md:p-8">
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-6 shadow-xl border-4 border-emerald-500`}>
+            <div className="text-4xl mb-2">👥</div>
+            <div className="text-3xl font-black text-emerald-500">{stats.totalStudents}</div>
+            <div className="text-xs font-bold opacity-40 uppercase tracking-wider">Total Students</div>
+          </div>
+          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-6 shadow-xl border-4 border-blue-500`}>
+            <div className="text-4xl mb-2">📢</div>
+            <div className="text-3xl font-black text-blue-500">{stats.totalAnnouncements}</div>
+            <div className="text-xs font-bold opacity-40 uppercase tracking-wider">Announcements</div>
+          </div>
+          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-6 shadow-xl border-4 border-purple-500`}>
+            <div className="text-4xl mb-2">📁</div>
+            <div className="text-3xl font-black text-purple-500">{stats.totalFiles}</div>
+            <div className="text-xs font-bold opacity-40 uppercase tracking-wider">Files Uploaded</div>
+          </div>
+          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-6 shadow-xl border-4 border-orange-500`}>
+            <div className="text-4xl mb-2">📊</div>
+            <div className="text-3xl font-black text-orange-500">{stats.averageAttendance}</div>
+            <div className="text-xs font-bold opacity-40 uppercase tracking-wider">Avg Attendance</div>
           </div>
         </div>
 
-        <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-black">🧬 {showWeekView ? 'Weekly Schedule' : "Today's Agenda"}</h2>
-            <button onClick={() => setShowWeekView(!showWeekView)} className="px-5 py-2 bg-emerald-500 text-white rounded-full font-bold text-xs uppercase tracking-wider">{showWeekView ? 'Today' : 'Full Week'}</button>
-          </div>
-          <div className="space-y-6">
-            {(showWeekView ? days : [todayName]).map(day => (
-              <div key={day} className="space-y-4">
-                {showWeekView && <h3 className="text-emerald-500 font-black text-xs uppercase tracking-[0.2em]">{day}</h3>}
-                {TIMETABLE[day]?.length ? TIMETABLE[day].map((cls: any) => (
-                  <div key={cls.id} className={`flex flex-col md:flex-row md:items-center justify-between p-5 rounded-3xl ${darkMode ? 'bg-slate-800/40' : 'bg-slate-50'} gap-4 group`}>
-                    <div className="flex gap-4 items-center">
-                      <div className="w-16 font-black text-xs opacity-40">{cls.time.split(' - ')[0]}</div>
-                      <div>
-                        <h4 className="font-black text-lg">{cls.course}</h4>
-                        <p className="text-xs opacity-50 font-bold uppercase tracking-tighter">📍 {cls.venue} • {cls.lecturer}</p>
+        {/* Tab Navigation */}
+        <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-2 shadow-xl mb-8 flex gap-2 overflow-x-auto`}>
+          {[
+            { id: 'overview', label: '📊 Overview', icon: '📊' },
+            { id: 'announcements', label: '📢 Announcements', icon: '📢' },
+            { id: 'files', label: '📁 Files', icon: '📁' },
+            { id: 'attendance', label: '✅ Attendance', icon: '✅' },
+            { id: 'students', label: '👥 Students', icon: '👥' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wider whitespace-nowrap transition ${
+                activeTab === tab.id
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : darkMode ? 'text-slate-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div className="space-y-6">
+          {/* Overview Tab */}
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+                <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">System Overview</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-black text-sm uppercase tracking-wider text-emerald-500 mb-3">Recent Activity</h3>
+                    <div className="space-y-2">
+                      <div className={`p-4 rounded-2xl ${darkMode ? 'bg-slate-800' : 'bg-slate-50'}`}>
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">📢</span>
+                          <div>
+                            <p className="font-bold text-sm">Latest announcement posted</p>
+                            <p className="text-xs opacity-50">
+                              {announcements.length > 0 
+                                ? announcements[0].date 
+                                : 'No announcements yet'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={`p-4 rounded-2xl ${darkMode ? 'bg-slate-800' : 'bg-slate-50'}`}>
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">📁</span>
+                          <div>
+                            <p className="font-bold text-sm">Latest file uploaded</p>
+                            <p className="text-xs opacity-50">
+                              {files.length > 0 
+                                ? new Date(files[0].uploadedAt).toLocaleDateString()
+                                : 'No files yet'}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>{cls.type}</span>
-                       <button onClick={() => markAttendance(cls.id)} className={`px-4 py-2 rounded-xl text-[10px] font-black ${attendance[cls.id] ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 uppercase tracking-tighter'}`}>PRESENT ({attendance[cls.id] || 0})</button>
+                  </div>
+                  <div>
+                    <h3 className="font-black text-sm uppercase tracking-wider text-blue-500 mb-3">Quick Actions</h3>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => setActiveTab('announcements')}
+                        className="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold text-sm uppercase tracking-wider hover:bg-blue-700 transition"
+                      >
+                        Post New Announcement
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('files')}
+                        className="w-full p-4 bg-purple-600 text-white rounded-2xl font-bold text-sm uppercase tracking-wider hover:bg-purple-700 transition"
+                      >
+                        Upload New File
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('attendance')}
+                        className="w-full p-4 bg-emerald-600 text-white rounded-2xl font-bold text-sm uppercase tracking-wider hover:bg-emerald-700 transition"
+                      >
+                        View Attendance
+                      </button>
                     </div>
                   </div>
-                )) : <p className="text-xs opacity-30 italic py-4 text-center">No activities scheduled.</p>}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col h-64`}>
-            <h3 className="font-black text-lg mb-4">📝 Quick Notes</h3>
-            <textarea value={notes} onChange={(e) => {setNotes(e.target.value); localStorage.setItem('bme-notes', e.target.value)}} 
-              placeholder="Type anything..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none"/>
-          </div>
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col h-64 items-center justify-center text-center`}>
-            <span className="bg-red-500/20 text-red-500 p-2 rounded-lg text-lg mb-4">⏳</span>
-            <h3 className="font-black text-lg mb-2">Mid-Sem Countdown</h3>
-            <p className="text-6xl font-black text-emerald-500 leading-none mb-2">{daysToMidSem}</p>
-            <p className="text-xs font-bold opacity-40 uppercase tracking-widest">Days until Feb 23</p>
-          </div>
-        </div>
-
-        {/* Announcements */}
-        {announcements.length > 0 && (
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
-            <h3 className="font-black text-lg mb-4">📢 Announcements</h3>
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {announcements.slice(0, 5).map((ann: any) => (
-                <div
-                  key={ann.id}
-                  className={`p-4 rounded-2xl border-l-4 ${
-                    ann.type === 'urgent' ? 'border-red-500 bg-red-500/5' :
-                    ann.type === 'quiz' ? 'border-orange-500 bg-orange-500/5' :
-                    ann.type === 'deadline' ? 'border-yellow-500 bg-yellow-500/5' :
-                    'border-blue-500 bg-blue-500/5'
-                  }`}
-                >
-                  <p className="font-medium text-sm mb-1">{ann.text}</p>
-                  <p className="text-xs opacity-50 font-bold">{ann.date}</p>
-                </div>
-              ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Missed Classes */}
-        {files.length > 0 && (
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
-            <h3 className="font-black text-lg mb-4">📖 Missed a Class?</h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              {files.slice(0, 6).map((file: any) => (
-                <div key={file.id} className={`p-4 rounded-2xl border ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                  <p className="font-bold text-sm mb-2">{file.course} - {file.week}</p>
-                  <a
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full p-2 bg-blue-600 text-white rounded-lg text-xs font-bold text-center hover:bg-blue-700 transition"
+          {/* Announcements Tab */}
+          {activeTab === 'announcements' && (
+            <div className="space-y-6">
+              <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+                <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">Post New Announcement</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 opacity-60">
+                      Announcement Type
+                    </label>
+                    <select
+                      value={newAnnouncement.type}
+                      onChange={(e) => setNewAnnouncement({ ...newAnnouncement, type: e.target.value })}
+                      className={`w-full p-4 rounded-2xl font-bold ${
+                        darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                      }`}
+                    >
+                      <option value="general">📌 General</option>
+                      <option value="urgent">🚨 Urgent</option>
+                      <option value="quiz">📝 Quiz/Test</option>
+                      <option value="deadline">⏰ Deadline</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 opacity-60">
+                      Message
+                    </label>
+                    <textarea
+                      value={newAnnouncement.text}
+                      onChange={(e) => setNewAnnouncement({ ...newAnnouncement, text: e.target.value })}
+                      placeholder="Enter your announcement here..."
+                      rows={4}
+                      className={`w-full p-4 rounded-2xl font-medium resize-none ${
+                        darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                      }`}
+                    />
+                  </div>
+                  <button
+                    onClick={handleAddAnnouncement}
+                    className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:from-blue-700 hover:to-indigo-700 transition shadow-lg"
                   >
-                    {file.type === 'notes' ? '📄 Notes' :
-                     file.type === 'recording' ? '🎥 Recording' :
-                     file.type === 'slides' ? '📊 Slides' : '📖 Manual'}
-                  </a>
+                    📢 Post Announcement
+                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </main>
+              </div>
 
-      {showCWAModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} w-full max-w-md rounded-[40px] p-8 shadow-2xl relative`}>
-            <button onClick={() => setShowCWAModal(false)} className="absolute top-6 right-6 font-black opacity-50">✕</button>
-            <h2 className="text-2xl font-black mb-6 text-emerald-500 uppercase tracking-tighter">CWA Calculator 📈</h2>
-            <div className="space-y-3 max-h-[50vh] overflow-y-auto mb-6 pr-2">
-              {COURSE_CREDITS.map(c => (
-                <div key={c.code} className="flex justify-between items-center bg-slate-500/5 p-4 rounded-2xl border border-transparent">
-                  <div><p className="font-black text-xs uppercase">{c.code}</p><p className="text-[10px] opacity-40 uppercase">{c.credits} Credits</p></div>
-                  <input type="number" placeholder="0" className={`w-16 p-2 rounded-xl text-center font-bold ${darkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'}`} 
-                    onChange={(e) => setMarks({...marks, [c.code]: e.target.value})} />
+              <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+                <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">All Announcements</h2>
+                <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                  {announcements.length === 0 ? (
+                    <p className="text-center py-8 opacity-40 italic">No announcements yet</p>
+                  ) : (
+                    announcements.map((ann) => (
+                      <div
+                        key={ann.id}
+                        className={`p-5 rounded-2xl border-l-4 ${
+                          ann.type === 'urgent' ? 'border-red-500 bg-red-500/5' :
+                          ann.type === 'quiz' ? 'border-orange-500 bg-orange-500/5' :
+                          ann.type === 'deadline' ? 'border-yellow-500 bg-yellow-500/5' :
+                          'border-blue-500 bg-blue-500/5'
+                        } flex justify-between items-start gap-4`}
+                      >
+                        <div className="flex-1">
+                          <p className="font-bold text-sm mb-2">{ann.text}</p>
+                          <div className="flex gap-3 items-center">
+                            <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${
+                              ann.type === 'urgent' ? 'bg-red-500 text-white' :
+                              ann.type === 'quiz' ? 'bg-orange-500 text-white' :
+                              ann.type === 'deadline' ? 'bg-yellow-500 text-white' :
+                              'bg-blue-500 text-white'
+                            }`}>
+                              {ann.type}
+                            </span>
+                            <span className="text-xs opacity-50 font-bold">{ann.date}</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteAnnouncement(ann.id)}
+                          className="px-4 py-2 bg-red-500/10 text-red-500 rounded-xl font-bold text-xs uppercase hover:bg-red-500/20 transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
-              ))}
+              </div>
             </div>
-            <div className="flex justify-between items-center border-t border-slate-500/10 pt-4 mb-6">
-              <span className="font-bold text-sm opacity-50 uppercase tracking-tighter">Predicted CWA</span>
-              <span className="text-4xl font-black text-emerald-500">{calculatedCWA || '--'}</span>
+          )}
+
+          {/* Files Tab */}
+          {activeTab === 'files' && (
+            <div className="space-y-6">
+              <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+                <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">Upload New File</h2>
+                <div className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 opacity-60">
+                        Course Name
+                      </label>
+                      <input
+                        type="text"
+                        value={newFile.course}
+                        onChange={(e) => setNewFile({ ...newFile, course: e.target.value })}
+                        placeholder="e.g., MATH 151"
+                        className={`w-full p-4 rounded-2xl font-bold ${
+                          darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 opacity-60">
+                        Week/Topic
+                      </label>
+                      <input
+                        type="text"
+                        value={newFile.week}
+                        onChange={(e) => setNewFile({ ...newFile, week: e.target.value })}
+                        placeholder="e.g., Week 3"
+                        className={`w-full p-4 rounded-2xl font-bold ${
+                          darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 opacity-60">
+                      File Type
+                    </label>
+                    <select
+                      value={newFile.type}
+                      onChange={(e) => setNewFile({ ...newFile, type: e.target.value })}
+                      className={`w-full p-4 rounded-2xl font-bold ${
+                        darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                      }`}
+                    >
+                      <option value="notes">📄 Notes</option>
+                      <option value="recording">🎥 Recording</option>
+                      <option value="slides">📊 Slides</option>
+                      <option value="manual">📖 Lab Manual</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 opacity-60">
+                      File URL (Google Drive, etc.)
+                    </label>
+                    <input
+                      type="url"
+                      value={newFile.url}
+                      onChange={(e) => setNewFile({ ...newFile, url: e.target.value })}
+                      placeholder="https://drive.google.com/..."
+                      className={`w-full p-4 rounded-2xl font-medium ${
+                        darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                      }`}
+                    />
+                  </div>
+                  <button
+                    onClick={handleAddFile}
+                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:from-purple-700 hover:to-pink-700 transition shadow-lg"
+                  >
+                    📁 Upload File
+                  </button>
+                </div>
+              </div>
+
+              <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+                <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">All Uploaded Files</h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {files.length === 0 ? (
+                    <p className="col-span-full text-center py-8 opacity-40 italic">No files uploaded yet</p>
+                  ) : (
+                    files.map((file) => (
+                      <div
+                        key={file.id}
+                        className={`p-5 rounded-2xl border ${darkMode ? 'border-slate-800 bg-slate-800/40' : 'border-slate-200 bg-slate-50'}`}
+                      >
+                        <div className="mb-3">
+                          <p className="font-black text-sm mb-1">{file.course}</p>
+                          <p className="text-xs opacity-50 font-bold uppercase">{file.week}</p>
+                        </div>
+                        <div className="flex gap-2 mb-3">
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 p-2 bg-blue-600 text-white rounded-lg text-xs font-bold text-center hover:bg-blue-700 transition"
+                          >
+                            {file.type === 'notes' ? '📄 Notes' :
+                             file.type === 'recording' ? '🎥 Recording' :
+                             file.type === 'slides' ? '📊 Slides' : '📖 Manual'}
+                          </a>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteFile(file.id)}
+                          className="w-full p-2 bg-red-500/10 text-red-500 rounded-lg font-bold text-xs uppercase hover:bg-red-500/20 transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
             </div>
-            <button onClick={handleCalculateCWA} className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest">Calculate</button>
-          </div>
+          )}
+
+          {/* Attendance Tab */}
+          {activeTab === 'attendance' && (
+            <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+              <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">Attendance Overview</h2>
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                {Object.keys(attendanceData).length === 0 ? (
+                  <p className="text-center py-8 opacity-40 italic">No attendance data yet</p>
+                ) : (
+                  Object.entries(attendanceData)
+                    .sort(([, a], [, b]) => (b as number) - (a as number))
+                    .map(([classId, count]) => (
+                      <div
+                        key={classId}
+                        className={`p-5 rounded-2xl flex justify-between items-center ${
+                          darkMode ? 'bg-slate-800/40' : 'bg-slate-50'
+                        }`}
+                      >
+                        <div>
+                          <p className="font-black text-sm uppercase tracking-tight">Class ID: {classId}</p>
+                          <p className="text-xs opacity-50 font-bold">Students marked present</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-3xl font-black text-emerald-500">{count as number}</p>
+                          <p className="text-[10px] font-bold opacity-40 uppercase">Students</p>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Students Tab */}
+          {activeTab === 'students' && (
+            <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-3xl p-8 shadow-xl`}>
+              <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">All Students</h2>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Search by name or ID..."
+                  className={`w-full p-4 rounded-2xl font-medium ${
+                    darkMode ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900'
+                  }`}
+                  onChange={(e) => {
+                    // Simple search implementation
+                    const value = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('[data-student-row]');
+                    rows.forEach((row: any) => {
+                      const text = row.textContent.toLowerCase();
+                      row.style.display = text.includes(value) ? '' : 'none';
+                    });
+                  }}
+                />
+              </div>
+              <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                {Object.entries(CLASS_LIST).map(([id, name]) => (
+                  <div
+                    key={id}
+                    data-student-row
+                    className={`p-4 rounded-2xl flex justify-between items-center ${
+                      darkMode ? 'bg-slate-800/40' : 'bg-slate-50'
+                    }`}
+                  >
+                    <div>
+                      <p className="font-bold text-sm">{name}</p>
+                      <p className="text-xs opacity-50 font-mono">{id}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      {id === studentID && (
+                        <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-lg text-[10px] font-black uppercase">
+                          You
+                        </span>
+                      )}
+                      {ADMIN_IDS.includes(id) && (
+                        <span className="px-3 py-1 bg-red-500/20 text-red-500 rounded-lg text-[10px] font-black uppercase">
+                          Admin
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
