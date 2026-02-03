@@ -2,10 +2,22 @@
 
 import { useState, useEffect } from 'react';
 
+type ClassSession = {
+  time: string;
+  course: string;
+  name: string;
+  lecturer: string;
+  location: string;
+  type: string;
+};
+
+type TimetableData = {
+  [key: string]: ClassSession[];
+};
+
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState('today');
   const [showWeekView, setShowWeekView] = useState(false);
 
   // Update time every minute
@@ -21,7 +33,7 @@ export default function Home() {
   }, []);
 
   // Sample timetable data (will be replaced with parsed PDF data)
-  const timetable = {
+  const timetable: TimetableData = {
     Monday: [
       { time: '08:00 - 09:55', course: 'COE 181', name: 'Engineering Workshop Practice', lecturer: 'K.O.K. Sarkodie', location: 'VCR', type: 'Lecture' },
       { time: '10:00 - 11:55', course: 'MATH 171', name: 'Algebra and Trigonometry', lecturer: 'Dr. Mensah', location: 'PB212', type: 'Lecture' },
@@ -74,8 +86,8 @@ export default function Home() {
     { date: '2 days ago', text: 'MATH 171 Assignment due Monday', type: 'deadline' },
   ];
 
-  const openMap = (location) => {
-    const maps = {
+  const openMap = (location: string) => {
+    const maps: { [key: string]: string } = {
       'VCR': 'https://maps.google.com/?q=KNUST+VCR+Hall',
       'PB212': 'https://maps.google.com/?q=KNUST+Physical+Sciences+Building',
       'VSLA': 'https://maps.google.com/?q=KNUST+VSLA+Building',
@@ -270,21 +282,21 @@ export default function Home() {
           <h2 className="text-xl font-bold mb-4">📖 Missed a Class?</h2>
           <p className="text-gray-500 mb-4">Access lecture notes, recordings, and slides here.</p>
           <div className="grid md:grid-cols-3 gap-4">
-            <div className="border ${borderColor} rounded-lg p-4">
+            <div className={`border ${borderColor} rounded-lg p-4`}>
               <p className="font-medium mb-2">CHEM 151 - Week 3</p>
               <div className="space-y-2 text-sm">
                 <a href="#" className="block text-blue-600 hover:underline">📄 Lecture Notes</a>
                 <a href="#" className="block text-blue-600 hover:underline">🎥 Recording</a>
               </div>
             </div>
-            <div className="border ${borderColor} rounded-lg p-4">
+            <div className={`border ${borderColor} rounded-lg p-4`}>
               <p className="font-medium mb-2">MATH 171 - Week 3</p>
               <div className="space-y-2 text-sm">
                 <a href="#" className="block text-blue-600 hover:underline">📄 Slides</a>
                 <a href="#" className="block text-blue-600 hover:underline">📝 Problem Set</a>
               </div>
             </div>
-            <div className="border ${borderColor} rounded-lg p-4">
+            <div className={`border ${borderColor} rounded-lg p-4`}>
               <p className="font-medium mb-2">PHYS 151 - Week 2</p>
               <div className="space-y-2 text-sm">
                 <a href="#" className="block text-blue-600 hover:underline">📄 Lab Manual</a>
