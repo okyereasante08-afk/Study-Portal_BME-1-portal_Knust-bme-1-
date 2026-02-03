@@ -91,6 +91,8 @@ const TIMETABLE: { [key: string]: any[] } = {
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentID, setStudentID] = useState('');
+  const [password, setPassword] = useState('');
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [loginError, setLoginError] = useState('');
   
@@ -130,19 +132,46 @@ export default function Home() {
 
   const handleLogin = (e: any) => {
     e.preventDefault();
-    if (CLASS_LIST[studentID]) {
-      setStudentName(CLASS_LIST[studentID]);
-      setIsLoggedIn(true);
-      localStorage.setItem('bme-session-id', studentID);
-    } else {
-      setLoginError('Invalid ID. Access Denied.');
+    if (!CLASS_LIST[studentID]) {
+      setLoginError('Invalid Student ID.');
+      return;
     }
+
+    const storedPassword = localStorage.getItem(`pw-${studentID}`);
+
+    if (!storedPassword) {
+      if (!isFirstLogin) {
+        setIsFirstLogin(true);
+        setLoginError('');
+      } else {
+        if (password.length < 4) {
+          setLoginError('Password must be at least 4 characters.');
+        } else {
+          localStorage.setItem(`pw-${studentID}`, password);
+          proceedToLogin();
+        }
+      }
+    } else {
+      if (password === storedPassword) {
+        proceedToLogin();
+      } else {
+        setLoginError('Incorrect password.');
+      }
+    }
+  };
+
+  const proceedToLogin = () => {
+    setStudentName(CLASS_LIST[studentID]);
+    setIsLoggedIn(true);
+    localStorage.setItem('bme-session-id', studentID);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('bme-session-id');
     setIsLoggedIn(false);
     setStudentID('');
+    setPassword('');
+    setIsFirstLogin(false);
   };
 
   const toggleDarkMode = () => {
@@ -176,15 +205,34 @@ export default function Home() {
         <form onSubmit={handleLogin} className={`w-full max-w-md p-8 rounded-[40px] shadow-2xl ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} border`}>
           <div className="flex flex-col items-center mb-8">
             <div className="h-16 w-16 bg-[#3b0764] rounded-full flex items-center justify-center text-amber-400 font-black mb-4">KNUST</div>
-            <h1 className="text-xl font-black uppercase">Class Entry</h1>
+            <h1 className="text-xl font-black uppercase">{isFirstLogin ? 'Set Password' : 'Portal Access'}</h1>
+            <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest mt-2">{isFirstLogin ? 'Secure your new account' : 'Enter your credentials'}</p>
           </div>
-          <input 
-            type="text" placeholder="Student ID" value={studentID}
-            onChange={(e) => setStudentID(e.target.value)}
-            className={`w-full p-4 rounded-3xl mb-4 font-bold text-center outline-none ${darkMode ? 'bg-slate-800' : 'bg-slate-100'}`}
-          />
-          {loginError && <p className="text-red-500 text-[10px] text-center mb-4 font-bold uppercase">{loginError}</p>}
-          <button type="submit" className="w-full py-4 bg-emerald-600 text-white rounded-3xl font-black shadow-lg">ENTER PORTAL</button>
+          
+          <div className="space-y-4">
+            <input 
+              type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin}
+              onChange={(e) => setStudentID(e.target.value)}
+              className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800' : 'bg-slate-100'} ${isFirstLogin ? 'opacity-50' : ''}`}
+            />
+            
+            {(isFirstLogin || localStorage.getItem(`pw-${studentID}`)) && (
+              <input 
+                type="password" placeholder={isFirstLogin ? "Create Password" : "Password"} value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoFocus
+                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-emerald-500/20' : 'bg-slate-100 ring-2 ring-purple-500/10'}`}
+              />
+            )}
+
+            {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
+            
+            <button type="submit" className="w-full py-4 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition-all">
+              {isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}
+            </button>
+            
+            {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
+          </div>
         </form>
       </div>
     );
