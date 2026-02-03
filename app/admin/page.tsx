@@ -169,9 +169,10 @@ export default function AdminDashboard() {
     averageAttendance: 0
   });
 
-  useEffect(() => {
+ useEffect(() => {
     const id = localStorage.getItem('bme-student-id');
-    if (id && ADMIN_IDS.includes(id)) {
+    
+    if (id === '22028883') {
       setStudentID(id);
       setIsAuthenticated(true);
       loadData();
@@ -180,11 +181,6 @@ export default function AdminDashboard() {
     const savedDarkMode = localStorage.getItem('bme-dark-mode') === 'true';
     setDarkMode(savedDarkMode);
   }, []);
-
-  const loadData = () => {
-    // Load announcements
-    const savedAnnouncements = localStorage.getItem('bme-admin-announcements');
-    if (savedAnnouncements) {
       const parsed = JSON.parse(savedAnnouncements);
       setAnnouncements(parsed);
       setStats(prev => ({ ...prev, totalAnnouncements: parsed.length }));
