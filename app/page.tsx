@@ -199,6 +199,8 @@ export default function Home() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loginMode, setLoginMode] = useState<'student' | 'admin'>('student'); // NEW: track login mode
+  const [adminAccessCode, setAdminAccessCode] = useState(''); // NEW: for admin login
 
   const checkStoredPassword = (id: string) => {
     if (typeof window !== 'undefined') {
@@ -209,10 +211,16 @@ export default function Home() {
 
   useEffect(() => {
     const savedID = localStorage.getItem('bme-session-id');
+    const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
+    
     if (savedID && CLASS_LIST[savedID]) {
+      setStudentID(savedID);
       setStudentName(CLASS_LIST[savedID]);
       setIsLoggedIn(true);
-      setIsAdmin(ADMIN_IDS.includes(savedID));
+      setIsAdmin(ADMIN_IDS.includes(savedID) || isAdminAccess);
+      
+      // Also save to bme-student-id for admin page compatibility
+      localStorage.setItem('bme-student-id', savedID);
     }
 
     const savedDark = localStorage.getItem('bme-dark');
@@ -240,6 +248,26 @@ export default function Home() {
 
   const handleLogin = (e: any) => {
     e.preventDefault();
+    
+    // ADMIN LOGIN
+    if (loginMode === 'admin') {
+      if (adminAccessCode === 'ASANT3&GOD') {
+        // Admin login successful
+        setStudentID('22028883');
+        setStudentName('Asante Kwaku Okyere');
+        setIsLoggedIn(true);
+        setIsAdmin(true);
+        localStorage.setItem('bme-session-id', '22028883');
+        localStorage.setItem('bme-student-id', '22028883');
+        localStorage.setItem('bme-admin-access', 'true');
+        setLoginError('');
+      } else {
+        setLoginError('Invalid admin access code.');
+      }
+      return;
+    }
+    
+    // STUDENT LOGIN (existing logic)
     if (!CLASS_LIST[studentID]) {
       setLoginError('Invalid Student ID.');
       return;
@@ -271,7 +299,9 @@ export default function Home() {
   const proceedToLogin = () => {
     setStudentName(CLASS_LIST[studentID]);
     setIsLoggedIn(true);
+    setIsAdmin(ADMIN_IDS.includes(studentID)); // ADD THIS LINE
     localStorage.setItem('bme-session-id', studentID);
+    localStorage.setItem('bme-student-id', studentID); // ADD THIS LINE - for admin page
     
     // Log the login for analytics
     const loginLog = {
@@ -286,8 +316,14 @@ export default function Home() {
 
   const handleLogout = () => {
     localStorage.removeItem('bme-session-id');
+    localStorage.removeItem('bme-student-id'); // ADD THIS LINE
+    localStorage.removeItem('bme-admin-access'); // NEW: clear admin flag
     setIsLoggedIn(false);
+    setIsAdmin(false); // NEW: clear admin state
     setStudentID('');
+    setPassword('');
+    setAdminAccessCode(''); // NEW: clear admin code
+    setLoginMode('student'); // NEW: reset to student mode
     setPassword('');
     setIsFirstLogin(false);
   };
@@ -323,33 +359,103 @@ export default function Home() {
         <form onSubmit={handleLogin} className={`w-full max-w-md p-8 rounded-[40px] shadow-2xl ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} border`}>
           <div className="flex flex-col items-center mb-8">
             <div className="h-16 w-16 bg-[#3b0764] rounded-full flex items-center justify-center text-amber-400 font-black mb-4">KNUST</div>
-            <h1 className="text-xl font-black uppercase">{isFirstLogin ? 'Set Password' : 'Portal Access'}</h1>
-            <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest mt-2">{isFirstLogin ? 'Secure your new account' : 'Enter your credentials'}</p>
+            <h1 className="text-xl font-black uppercase">Portal Access</h1>
+            <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest mt-2">BME 2024 Cohort</p>
           </div>
           
-          <div className="space-y-4">
-            <input 
-              type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin}
-              onChange={(e) => setStudentID(e.target.value)}
-              className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800' : 'bg-slate-100'} ${isFirstLogin ? 'opacity-50' : ''}`}
-            />
-            
-            {(isFirstLogin || checkStoredPassword(studentID)) && (
-              <input 
-                type="password" placeholder={isFirstLogin ? "Create Password" : "Password"} value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus
-                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-emerald-500/20' : 'bg-slate-100 ring-2 ring-purple-500/10'}`}
-              />
-            )}
-
-            {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
-            
-            <button type="submit" className="w-full py-4 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition-all">
-              {isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}
+          {/* Login Mode Tabs */}
+          <div className="flex gap-2 mb-6 p-1 bg-slate-500/10 rounded-2xl">
+            <button
+              type="button"
+              onClick={() => {
+                setLoginMode('student');
+                setLoginError('');
+                setAdminAccessCode('');
+              }}
+              className={`flex-1 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition ${
+                loginMode === 'student'
+                  ? 'bg-emerald-600 text-white shadow-lg'
+                  : 'text-slate-500'
+              }`}
+            >
+              👨‍🎓 Student
             </button>
-            
-            {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
+            <button
+              type="button"
+              onClick={() => {
+                setLoginMode('admin');
+                setLoginError('');
+                setStudentID('');
+                setPassword('');
+                setIsFirstLogin(false);
+              }}
+              className={`flex-1 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition ${
+                loginMode === 'admin'
+                  ? 'bg-red-600 text-white shadow-lg'
+                  : 'text-slate-500'
+              }`}
+            >
+              🔐 Admin
+            </button>
+          </div>
+          
+          {/* Student Login Form */}
+          {loginMode === 'student' && (
+            <div className="space-y-4">
+              <input 
+                type="text" 
+                placeholder="Student ID" 
+                value={studentID} 
+                disabled={isFirstLogin}
+                onChange={(e) => setStudentID(e.target.value)}
+                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800' : 'bg-slate-100'} ${isFirstLogin ? 'opacity-50' : ''}`}
+              />
+              
+              {(isFirstLogin || checkStoredPassword(studentID)) && (
+                <input 
+                  type="password" 
+                  placeholder={isFirstLogin ? "Create Password" : "Password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoFocus
+                  className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-emerald-500/20' : 'bg-slate-100 ring-2 ring-purple-500/10'}`}
+                />
+              )}
+
+              {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
+              
+              <button type="submit" className="w-full py-4 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition-all">
+                {isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}
+              </button>
+              
+              {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
+            </div>
+          )}
+          
+          {/* Admin Login Form */}
+          {loginMode === 'admin' && (
+            <div className="space-y-4">
+              <div className="text-center mb-4 p-4 bg-red-500/10 rounded-2xl border border-red-500/20">
+                <p className="text-xs font-bold text-red-500 uppercase tracking-wider">⚠️ Restricted Area</p>
+                <p className="text-[10px] opacity-60 mt-1">Enter admin access code to proceed</p>
+              </div>
+              
+              <input 
+                type="password" 
+                placeholder="Admin Access Code" 
+                value={adminAccessCode}
+                onChange={(e) => setAdminAccessCode(e.target.value)}
+                autoFocus
+                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-red-500/20' : 'bg-slate-100 ring-2 ring-red-500/10'}`}
+              />
+
+              {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
+              
+              <button type="submit" className="w-full py-4 bg-red-600 text-white rounded-3xl font-black shadow-lg hover:bg-red-700 transition-all">
+                ACCESS ADMIN PANEL
+              </button>
+            </div>
+          )}
           </div>
         </form>
       </div>
