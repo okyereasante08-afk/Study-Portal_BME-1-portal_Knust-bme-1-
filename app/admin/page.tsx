@@ -138,6 +138,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "22185447": "Twumasi Nicolina Nana Akua",
   "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe",
+  "22339201": "Williams-Peniel Enoch",
   "22247637": "Yao-Kumah Davida Eyram",
   "22348338": "Yeboah Yaa Gyamfuaa"
 };
@@ -169,10 +170,11 @@ export default function AdminDashboard() {
     averageAttendance: 0
   });
 
-  const loadData = () => {
-    // Load announcements
-    const savedAnnouncements = localStorage.getItem('bme-admin-announcements');
-    if (savedAnnouncements) {
+ const loadData = () => {
+  if (typeof window === 'undefined') return; // Exit if not in browser
+  
+  const savedAnnouncements = localStorage.getItem('bme-admin-announcements');
+  //
       const parsed = JSON.parse(savedAnnouncements);
       setAnnouncements(parsed);
       setStats(prev => ({ ...prev, totalAnnouncements: parsed.length }));
@@ -201,10 +203,12 @@ export default function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    const id = localStorage.getItem('bme-student-id');
-    const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
-    
+ useEffect(() => {
+  if (typeof window === 'undefined') return;
+
+  const id = localStorage.getItem('bme-student-id');
+  const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
+  // ...
     // Allow access if ID is 22028883 OR if admin access flag is set
     if ((id === '22028883') || isAdminAccess) {
       setStudentID(id || '22028883');
