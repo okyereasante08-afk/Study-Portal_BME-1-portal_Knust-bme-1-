@@ -67,6 +67,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "22677767": "Taufiq Nassara Sadiq", "22336160": "Tetteh Daniel Nii Awuley", "21830521": "Tibu Seth",
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa"
+  "22339201": "Williams-Peniel Enoch"
 };
 
 const COURSE_CREDITS = [
