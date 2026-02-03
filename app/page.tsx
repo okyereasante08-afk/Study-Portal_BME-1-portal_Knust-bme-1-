@@ -1,148 +1,72 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from 'next/link';
+import { 
+  Calculator, 
+  MessageCircle, 
+  BookOpen, 
+  Calendar, 
+  Lock, 
+  LogOut, 
+  ChevronRight,
+  Activity,
+  Moon,
+  Sun,
+  Clock,
+  ExternalLink,
+  FileText
+} from "lucide-react";
 
-// Admin IDs - these student IDs have admin access
-const ADMIN_IDS = ['22028883']; // Add more admin IDs here
-
-// --- STUDENT DATABASE ---
+// --- YOUR ORIGINAL DATA ---
+const ADMIN_IDS = ['22028883']; 
 const CLASS_LIST: { [id: string]: string } = {
-  "21935355": "Aaron Oduro",
-  "22123354": "Abena Dufie Opare-Baah",
-  "22088436": "Abena Tabuaa Obeng-Mensah",
-  "21949701": "Adelaide Selorm Afi Dzimadzor",
-  "21948324": "Adjei Pomaa Cresta",
-  "21875208": "Adjoa Kwansema Eshun",
-  "22245585": "Adune Dasha Bagase",
-  "22337376": "Adwoa Abrafi Adjei",
-  "21931395": "Afia Serwaa Kwarteng Amaning",
-  "22416594": "Afriyie Jeanefel Owusu",
-  "22331047": "Agyarko-Nyamekye Max Abankwa",
-  "21787360": "Agyei Chrislla Birago",
-  "22208586": "Ahenkorah Emmanuella Kyei",
-  "21947631": "Albert Affum Opare",
-  "21938073": "Amankwaah Beatrice Sarpong Akosua",
-  "22312345": "Amoaba Keren-Happuch Winvel",
-  "22341588": "Amoah-Owusu Cecil Williams",
-  "21888854": "AMPOFO Abena Gyamfia",
-  "22048359": "Ampofo Nana Yaw Kwegya",
-  "22561241": "Ampomah Daniel",
-  "22547391": "Amuzu Richmond Kwame",
-  "22259193": "Ankomah Maxi-Priest",
-  "22277904": "Anlaagmen Pearl Nuonta",
-  "22341786": "Annan Nora Odokai",
-  "22166367": "Appiah Roberta Achiaa",
-  "22082053": "Asante Emmanuella Twumasiwaa",
-  "22028883": "Asante Kwaku Okyere",
-  "21716259": "Asare Godfred",
-  "22129935": "Awurakua Akomea-Dankyi",
-  "21893253": "Ayiku Richmond Lartey",
-  "22224514": "Baaba Nyarko Assabil",
-  "21760006": "Baffoe Renia Gyan",
-  "22077735": "Baiden Abdul Ghaffar Benyi",
-  "22315225": "Bezalel Addy Bamflo",
-  "21809851": "Blessing Dadzie",
-  "22178256": "Blessing Pokuaa",
-  "21795884": "Boadu Kelvin Kwabena",
-  "21854625": "Boakye Justice Ofori",
-  "21840594": "Boakye Nana Akosua Agyeiwaa",
-  "22504820": "Boatemaa-Ayim Nana Akua",
-  "21902739": "Boateng Yiedie Akyaa",
-  "21976026": "Caleb Adjei Mensah",
-  "22247538": "Carlis Appiah-Sarkodie",
-  "21822251": "Christabel Dadzie",
-  "22300069": "Christian Amoah",
-  "22541775": "Daniel Kwabena Affum",
-  "22200510": "Darko Lisa Ampem",
-  "22208865": "Darlington Mawuena Anyomi",
-  "22698331": "David Adjei",
-  "22313191": "Davies Mawuli Kamsey",
-  "22108018": "Deborah Adjei Acquah",
-  "21763979": "Dennis Gyebi",
-  "21837887": "Doma-Her Skylar Sungbawiere",
-  "22544637": "Dzansi Virginia Makafui",
-  "21974352": "Ekow Amoah Benyi-Acquah",
-  "22215957": "Elizabeth Tetebea Agyemang",
-  "22046739": "Ernest Nimako-Boateng",
-  "21797396": "Esi Asor Hemaa Aboagye",
-  "22048114": "Fieve Brain Delanyo",
-  "22430218": "Frimpong Precious Antwowaah",
-  "21983696": "Frimpong Wilhelmina",
-  "22514233": "Fudzie Kelvin Delali",
-  "22328187": "Fuseini Ibtihaaj Gaida",
-  "21841024": "Fynn Emmanuella Esi",
-  "21946146": "Gifty Asantewaa Adoma",
-  "22190892": "Grace Armoo",
-  "21969430": "Hammond Kevin Nii Obli",
-  "22010557": "Israelna Ama Yeboah",
-  "21995972": "James Adjei Mensah",
-  "21896223": "Jazlyn Yaa Asantewah Okae-Kyei",
-  "22184311": "Jenefails Akuffo-Gyan",
-  "22710811": "Josephine Nana Akosua Pinamang Gyebi",
-  "22429815": "Keren Naa Klorkor Quaye",
-  "21904638": "Keziah Deborah Wilson",
-  "22645870": "Koramah Mercy",
-  "22243432": "Kusi Constance Abrafi",
-  "21882887": "Lakeisha Lord-Mensah",
-  "22083170": "Laura Naa Tiokor Amartey",
-  "22127161": "Lawrencia Awuah Adobea",
-  "21949982": "Lisa Timbilla Azasumah",
-  "22331976": "Maame Ama Tiwaa Ofori-Agyeman",
-  "21859658": "Marfo Isaac",
-  "21795451": "Mary Achiaa Sarpong",
-  "22333045": "Mawaddatu Abdul Rashid",
-  "22565526": "Michael Fiifi Djan",
-  "22051165": "Naa Teley Ayorkor Quaye",
-  "21885234": "Nadia Stoner-Darku",
-  "21877955": "Nana Adwoa Gyamfua Hyeaman",
-  "22334053": "Nana Ekua Serwah Ampomah",
-  "22213391": "Nana Frimpong Desu",
-  "21974163": "Narh Otabil Mensah",
-  "21889745": "Nina Osman Mustapha",
-  "22408944": "Nyamador Kenneth Selorm",
-  "22429220": "NYANTAKYI Pascal",
-  "22052236": "Obeng Antoinette Maame Adjoa Antwiwaa",
-  "21913089": "Obiri-Yeboah Vanessa",
-  "22472240": "Odame Daniel",
-  "21694679": "Oduro John Luther Kweku",
-  "22364718": "Oduro Prince Peasah",
-  "22440821": "Ofori Ayimwaah Nana Akua",
-  "21989933": "Okai Eugene Kobina",
-  "22042804": "OKYNE Adjetey Godson",
-  "22086375": "OLIVIA Nhyira Dwomoh",
-  "21783110": "Opoku Gospel Kwame",
-  "22030735": "Oppong Badu Andrea",
-  "22332966": "Paula Sedinam Foriwa Apawu",
-  "22011457": "Pearl Maame Nyarko Ofori-Ameyaw",
-  "22003933": "Raudatu Deishini Mohammed Awal",
-  "22218511": "Roxann Ankobea-Kokroe",
-  "21919326": "Sarfo Vannessa Adams",
-  "22538085": "Sarkodie Raymond",
-  "21008757": "Sarpong Abena Adutwumwaa",
-  "22648542": "Segbefia Jake Etse",
-  "22435656": "Segbenya Edem",
-  "21914691": "Sekyi Kelvin Asiedu",
-  "22065297": "Serwaa Afia Opoku Agyemang",
-  "21756237": "Serwaa Nana Adoma",
-  "21873633": "Shanti Abena Thanki",
-  "22086004": "Somuah Herbert Koranteng",
-  "22551945": "Stacey Shenchu Kimbi",
-  "22462485": "Stephan Kofi Ewenam Zewuze",
-  "22399422": "Stephen Kofi Apemah-Baah",
-  "22646382": "Stephen Nana Boamah",
-  "22042354": "Sumani Anis Wonta",
-  "21910531": "TAHIRU Akor Munziru",
-  "22272601": "Takyi Timothy",
-  "22677767": "Taufiq Nassara Sadiq",
-  "22336160": "Tetteh Daniel Nii Awuley",
-  "21830521": "Tibu Seth",
-  "21721342": "Tieku Timah Princess",
-  "22185447": "Twumasi Nicolina Nana Akua",
-  "22263241": "Winnifred Monney",
-  "22345160": "Worlase Afua Kportufe",
-  "22247637": "Yao-Kumah Davida Eyram",
-  "22348338": "Yeboah Yaa Gyamfuaa"
+  "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
+  "21949701": "Adelaide Selorm Afi Dzimadzor", "21948324": "Adjei Pomaa Cresta", "21875208": "Adjoa Kwansema Eshun",
+  "22245585": "Adune Dasha Bagase", "22337376": "Adwoa Abrafi Adjei", "21931395": "Afia Serwaa Kwarteng Amaning",
+  "22416594": "Afriyie Jeanefel Owusu", "22331047": "Agyarko-Nyamekye Max Abankwa", "21787360": "Agyei Chrislla Birago",
+  "22208586": "Ahenkorah Emmanuella Kyei", "21947631": "Albert Affum Opare", "21938073": "Amankwaah Beatrice Sarpong Akosua",
+  "22312345": "Amoaba Keren-Happuch Winvel", "22341588": "Amoah-Owusu Cecil Williams", "21888854": "AMPOFO Abena Gyamfia",
+  "22048359": "Ampofo Nana Yaw Kwegya", "22561241": "Ampomah Daniel", "22547391": "Amuzu Richmond Kwame",
+  "22259193": "Ankomah Maxi-Priest", "22277904": "Anlaagmen Pearl Nuonta", "22341786": "Annan Nora Odokai",
+  "22166367": "Appiah Roberta Achiaa", "22082053": "Asante Emmanuella Twumasiwaa", "22028883": "Asante Kwaku Okyere",
+  "21716259": "Asare Godfred", "22129935": "Awurakua Akomea-Dankyi", "21893253": "Ayiku Richmond Lartey",
+  "22224514": "Baaba Nyarko Assabil", "21760006": "Baffoe Renia Gyan", "22077735": "Baiden Abdul Ghaffar Benyi",
+  "22315225": "Bezalel Addy Bamflo", "21809851": "Blessing Dadzie", "22178256": "Blessing Pokuaa",
+  "21795884": "Boadu Kelvin Kwabena", "21854625": "Boakye Justice Ofori", "21840594": "Boakye Nana Akosua Agyeiwaa",
+  "22504820": "Boatemaa-Ayim Nana Akua", "21902739": "Boateng Yiedie Akyaa", "21976026": "Caleb Adjei Mensah",
+  "22247538": "Carlis Appiah-Sarkodie", "21822251": "Christabel Dadzie", "22300069": "Christian Amoah",
+  "22541775": "Daniel Kwabena Affum", "22200510": "Darko Lisa Ampem", "22208865": "Darlington Mawuena Anyomi",
+  "22698331": "David Adjei", "22313191": "Davies Mawuli Kamsey", "22108018": "Deborah Adjei Acquah",
+  "21763979": "Dennis Gyebi", "21837887": "Doma-Her Skylar Sungbawiere", "22544637": "Dzansi Virginia Makafui",
+  "21974352": "Ekow Amoah Benyi-Acquah", "22215957": "Elizabeth Tetebea Agyemang", "22046739": "Ernest Nimako-Boateng",
+  "21797396": "Esi Asor Hemaa Aboagye", "22048114": "Fieve Brain Delanyo", "22430218": "Frimpong Precious Antwowaah",
+  "21983696": "Frimpong Wilhelmina", "22514233": "Fudzie Kelvin Delali", "22328187": "Fuseini Ibtihaaj Gaida",
+  "21841024": "Fynn Emmanuella Esi", "21946146": "Gifty Asantewaa Adoma", "22190892": "Grace Armoo",
+  "21969430": "Hammond Kevin Nii Obli", "22010557": "Israelna Ama Yeboah", "21995972": "James Adjei Mensah",
+  "21896223": "Jazlyn Yaa Asantewah Okae-Kyei", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
+  "22429815": "Keren Naa Klorkor Quaye", "21904638": "Keziah Deborah Wilson", "22645870": "Koramah Mercy",
+  "22243432": "Kusi Constance Abrafi", "21882887": "Lakeisha Lord-Mensah", "22083170": "Laura Naa Tiokor Amartey",
+  "22127161": "Lawrencia Awuah Adobea", "21949982": "Lisa Timbilla Azasumah", "22331976": "Maame Ama Tiwaa Ofori-Agyeman",
+  "21859658": "Marfo Isaac", "21795451": "Mary Achiaa Sarpong", "22333045": "Mawaddatu Abdul Rashid",
+  "22565526": "Michael Fiifi Djan", "22051165": "Naa Teley Ayorkor Quaye", "21885234": "Nadia Stoner-Darku",
+  "21877955": "Nana Adwoa Gyamfua Hyeaman", "22334053": "Nana Ekua Serwah Ampomah", "22213391": "Nana Frimpong Desu",
+  "21974163": "Narh Otabil Mensah", "21889745": "Nina Osman Mustapha", "22408944": "Nyamador Kenneth Selorm",
+  "22429220": "NYANTAKYI Pascal", "22052236": "Obeng Antoinette Maame Adjoa Antwiwaa", "21913089": "Obiri-Yeboah Vanessa",
+  "22472240": "Odame Daniel", "21694679": "Oduro John Luther Kweku", "22364718": "Oduro Prince Peasah",
+  "22440821": "Ofori Ayimwaah Nana Akua", "21989933": "Okai Eugene Kobina", "22042804": "OKYNE Adjetey Godson",
+  "22086375": "OLIVIA Nhyira Dwomoh", "21783110": "Opoku Gospel Kwame", "22030735": "Oppong Badu Andrea",
+  "22332966": "Paula Sedinam Foriwa Apawu", "22011457": "Pearl Maame Nyarko Ofori-Ameyaw", "22003933": "Raudatu Deishini Mohammed Awal",
+  "22218511": "Roxann Ankobea-Kokroe", "21919326": "Sarfo Vannessa Adams", "22538085": "Sarkodie Raymond",
+  "21008757": "Sarpong Abena Adutwumwaa", "22648542": "Segbefia Jake Etse", "22435656": "Segbenya Edem",
+  "21914691": "Sekyi Kelvin Asiedu", "22065297": "Serwaa Afia Opoku Agyemang", "21756237": "Serwaa Nana Adoma",
+  "21873633": "Shanti Abena Thanki", "22086004": "Somuah Herbert Koranteng", "22551945": "Stacey Shenchu Kimbi",
+  "22462485": "Stephan Kofi Ewenam Zewuze", "22399422": "Stephen Kofi Apemah-Baah", "22646382": "Stephen Nana Boamah",
+  "22042354": "Sumani Anis Wonta", "21910531": "TAHIRU Akor Munziru", "22272601": "Takyi Timothy",
+  "22677767": "Taufiq Nassara Sadiq", "22336160": "Tetteh Daniel Nii Awuley", "21830521": "Tibu Seth",
+  "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
+  "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa"
 };
 
 const COURSE_CREDITS = [
@@ -179,15 +103,45 @@ const TIMETABLE: { [key: string]: any[] } = {
   ],
 };
 
+// --- STYLED COMPONENTS ---
+
+const BioBackground = () => (
+  <div className="fixed inset-0 -z-10 overflow-hidden bg-[#0a0f1c]">
+    <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] via-[#0b1120] to-[#050914]" />
+    <motion.div 
+      animate={{ x: [0, 100, 0], y: [0, -50, 0], opacity: [0.2, 0.4, 0.2] }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#00d4ff] blur-[120px] opacity-20"
+    />
+    <motion.div 
+      animate={{ x: [0, -100, 0], y: [0, 50, 0], opacity: [0.1, 0.3, 0.1] }}
+      transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+      className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#3b0764] blur-[120px] opacity-20"
+    />
+    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay"></div>
+  </div>
+);
+
+const GlassCard = ({ children, className = "", delay = 0 }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay }}
+    className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[32px] shadow-2xl ${className}`}
+  >
+    {children}
+  </motion.div>
+);
+
 export default function Home() {
+  // --- STATE ---
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentID, setStudentID] = useState('');
   const [password, setPassword] = useState('');
   const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [loginError, setLoginError] = useState('');
-  
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [showWeekView, setShowWeekView] = useState(false);
   const [showCWAModal, setShowCWAModal] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
@@ -199,139 +153,77 @@ export default function Home() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [loginMode, setLoginMode] = useState<'student' | 'admin'>('student'); // NEW: track login mode
-  const [adminAccessCode, setAdminAccessCode] = useState(''); // NEW: for admin login
+  const [loginMode, setLoginMode] = useState<'student' | 'admin'>('student');
+  const [adminAccessCode, setAdminAccessCode] = useState('');
 
-  const checkStoredPassword = (id: string) => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(`pw-${id}`);
-    }
-    return null;
-  };
-
+  // --- LOGIC ---
   useEffect(() => {
     const savedID = localStorage.getItem('bme-session-id');
     const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
-    
     if (savedID && CLASS_LIST[savedID]) {
       setStudentID(savedID);
       setStudentName(CLASS_LIST[savedID]);
       setIsLoggedIn(true);
       setIsAdmin(ADMIN_IDS.includes(savedID) || isAdminAccess);
-      
-      // Also save to bme-student-id for admin page compatibility
-      localStorage.setItem('bme-student-id', savedID);
     }
-
-    const savedDark = localStorage.getItem('bme-dark');
-    if (savedDark !== null) setDarkMode(savedDark === 'true');
-    
     const savedAtt = localStorage.getItem('bme-attendance');
     if (savedAtt) setAttendance(JSON.parse(savedAtt));
-
     const savedNotes = localStorage.getItem('bme-notes');
     if (savedNotes) setNotes(savedNotes);
-
     const savedAnnouncements = localStorage.getItem('bme-announcements');
     if (savedAnnouncements) setAnnouncements(JSON.parse(savedAnnouncements));
-
     const savedFiles = localStorage.getItem('bme-files');
     if (savedFiles) setFiles(JSON.parse(savedFiles));
 
     const midSemDate = new Date('2026-02-23T00:00:00');
-    const diff = Math.ceil((midSemDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-    setDaysToMidSem(diff);
-
+    setDaysToMidSem(Math.ceil((midSemDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
   const handleLogin = (e: any) => {
     e.preventDefault();
-    
-    // ADMIN LOGIN
     if (loginMode === 'admin') {
       if (adminAccessCode === 'ASANT3&GOD') {
-        // Admin login successful
-        setStudentID('22028883');
-        setStudentName('Asante Kwaku Okyere');
-        setIsLoggedIn(true);
-        setIsAdmin(true);
-        localStorage.setItem('bme-session-id', '22028883');
-        localStorage.setItem('bme-student-id', '22028883');
-        localStorage.setItem('bme-admin-access', 'true');
-        setLoginError('');
+        proceedToLogin('22028883', true);
       } else {
         setLoginError('Invalid admin access code.');
       }
       return;
     }
-    
-    // STUDENT LOGIN (existing logic)
     if (!CLASS_LIST[studentID]) {
       setLoginError('Invalid Student ID.');
       return;
     }
-
-    const storedPassword = checkStoredPassword(studentID);
-
-    if (!storedPassword) {
-      if (!isFirstLogin) {
-        setIsFirstLogin(true);
-        setLoginError('');
-      } else {
-        if (password.length < 4) {
-          setLoginError('Password must be at least 4 characters.');
-        } else {
-          localStorage.setItem(`pw-${studentID}`, password);
-          proceedToLogin();
-        }
+    const stored = localStorage.getItem(`pw-${studentID}`);
+    if (!stored) {
+      if (!isFirstLogin) setIsFirstLogin(true);
+      else if (password.length < 4) setLoginError('Password too short.');
+      else {
+        localStorage.setItem(`pw-${studentID}`, password);
+        proceedToLogin(studentID);
       }
     } else {
-      if (password === storedPassword) {
-        proceedToLogin();
-      } else {
-        setLoginError('Incorrect password.');
-      }
+      if (password === stored) proceedToLogin(studentID);
+      else setLoginError('Incorrect password.');
     }
   };
 
-  const proceedToLogin = () => {
-    setStudentName(CLASS_LIST[studentID]);
+  const proceedToLogin = (id: string, adminOverride = false) => {
+    setStudentName(CLASS_LIST[id]);
     setIsLoggedIn(true);
-    setIsAdmin(ADMIN_IDS.includes(studentID)); // ADD THIS LINE
-    localStorage.setItem('bme-session-id', studentID);
-    localStorage.setItem('bme-student-id', studentID); // ADD THIS LINE - for admin page
-    
-    // Log the login for analytics
-    const loginLog = {
-      studentId: studentID,
-      studentName: CLASS_LIST[studentID],
-      timestamp: new Date().toLocaleString()
-    };
-    const existingLogs = JSON.parse(localStorage.getItem('bme-login-logs') || '[]');
-    existingLogs.push(loginLog);
-    localStorage.setItem('bme-login-logs', JSON.stringify(existingLogs));
+    const adminStatus = adminOverride || ADMIN_IDS.includes(id);
+    setIsAdmin(adminStatus);
+    localStorage.setItem('bme-session-id', id);
+    if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
   };
 
   const handleLogout = () => {
     localStorage.removeItem('bme-session-id');
-    localStorage.removeItem('bme-student-id'); // ADD THIS LINE
-    localStorage.removeItem('bme-admin-access'); // NEW: clear admin flag
+    localStorage.removeItem('bme-admin-access');
     setIsLoggedIn(false);
-    setIsAdmin(false); // NEW: clear admin state
     setStudentID('');
     setPassword('');
-    setAdminAccessCode(''); // NEW: clear admin code
-    setLoginMode('student'); // NEW: reset to student mode
-    setPassword('');
-    setIsFirstLogin(false);
-  };
-
-  const toggleDarkMode = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    localStorage.setItem('bme-dark', next.toString());
   };
 
   const markAttendance = (id: string) => {
@@ -353,258 +245,168 @@ export default function Home() {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const todayName = days[new Date().getDay() - 1] || 'Weekend';
 
+  // --- RENDER LOGIN ---
   if (!isLoggedIn) {
     return (
-      <div className={`min-h-screen flex items-center justify-center p-6 ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-950'}`}>
-        <form onSubmit={handleLogin} className={`w-full max-w-md p-8 rounded-[40px] shadow-2xl ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} border`}>
-          <div className="flex flex-col items-center mb-8">
-            <div className="h-16 w-16 bg-[#3b0764] rounded-full flex items-center justify-center text-amber-400 font-black mb-4">KNUST</div>
-            <h1 className="text-xl font-black uppercase">Portal Access</h1>
-            <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest mt-2">BME 2024 Cohort</p>
-          </div>
-          
-          {/* Login Mode Tabs */}
-          <div className="flex gap-2 mb-6 p-1 bg-slate-500/10 rounded-2xl">
-            <button
-              type="button"
-              onClick={() => {
-                setLoginMode('student');
-                setLoginError('');
-                setAdminAccessCode('');
-              }}
-              className={`flex-1 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition ${
-                loginMode === 'student'
-                  ? 'bg-emerald-600 text-white shadow-lg'
-                  : 'text-slate-500'
-              }`}
-            >
-              👨‍🎓 Student
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setLoginMode('admin');
-                setLoginError('');
-                setStudentID('');
-                setPassword('');
-                setIsFirstLogin(false);
-              }}
-              className={`flex-1 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition ${
-                loginMode === 'admin'
-                  ? 'bg-red-600 text-white shadow-lg'
-                  : 'text-slate-500'
-              }`}
-            >
-              🔐 Admin
-            </button>
-          </div>
-          
-          {/* Student Login Form */}
-          {loginMode === 'student' && (
-            <div className="space-y-4">
-              <input 
-                type="text" 
-                placeholder="Student ID" 
-                value={studentID} 
-                disabled={isFirstLogin}
-                onChange={(e) => setStudentID(e.target.value)}
-                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800' : 'bg-slate-100'} ${isFirstLogin ? 'opacity-50' : ''}`}
-              />
-              
-              {(isFirstLogin || checkStoredPassword(studentID)) && (
-                <input 
-                  type="password" 
-                  placeholder={isFirstLogin ? "Create Password" : "Password"} 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoFocus
-                  className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-emerald-500/20' : 'bg-slate-100 ring-2 ring-purple-500/10'}`}
-                />
+      <div className="min-h-screen flex items-center justify-center p-6 relative">
+        <BioBackground />
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-md">
+          <GlassCard className="p-8 border-white/20">
+            <div className="text-center mb-8">
+               <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-bold">BME</div>
+               <h1 className="text-2xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
+            </div>
+
+            <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-2xl">
+              <button onClick={() => setLoginMode('student')} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-400'}`}>Student</button>
+              <button onClick={() => setLoginMode('admin')} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'admin' ? 'bg-red-500 text-white' : 'text-slate-400'}`}>Admin</button>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              {loginMode === 'student' ? (
+                <>
+                  <input type="text" placeholder="Student ID" value={studentID} onChange={(e) => setStudentID(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" />
+                  {(isFirstLogin || localStorage.getItem(`pw-${studentID}`)) && (
+                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" autoFocus />
+                  )}
+                  <button className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black uppercase hover:scale-[1.02] transition-transform">Continue</button>
+                </>
+              ) : (
+                <>
+                  <input type="password" placeholder="Admin Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-red-500/30 text-center text-white outline-none focus:border-red-500" />
+                  <button className="w-full py-4 bg-red-600 text-white rounded-2xl font-black uppercase">Unlock Admin</button>
+                </>
               )}
-
-              {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
-              
-              <button type="submit" className="w-full py-4 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition-all">
-                {isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}
-              </button>
-              
-              {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
-            </div>
-          )}
-          
-          {/* Admin Login Form */}
-          {loginMode === 'admin' && (
-            <div className="space-y-4">
-              <div className="text-center mb-4 p-4 bg-red-500/10 rounded-2xl border border-red-500/20">
-                <p className="text-xs font-bold text-red-500 uppercase tracking-wider">⚠️ Restricted Area</p>
-                <p className="text-[10px] opacity-60 mt-1">Enter admin access code to proceed</p>
-              </div>
-              
-              <input 
-                type="password" 
-                placeholder="Admin Access Code" 
-                value={adminAccessCode}
-                onChange={(e) => setAdminAccessCode(e.target.value)}
-                autoFocus
-                className={`w-full p-4 rounded-3xl font-bold text-center outline-none ${darkMode ? 'bg-slate-800 ring-2 ring-red-500/20' : 'bg-slate-100 ring-2 ring-red-500/10'}`}
-              />
-
-              {loginError && <p className="text-red-500 text-[10px] text-center font-bold uppercase">{loginError}</p>}
-              
-              <button type="submit" className="w-full py-4 bg-red-600 text-white rounded-3xl font-black shadow-lg hover:bg-red-700 transition-all">
-                ACCESS ADMIN PANEL
-              </button>
-            </div>
-          )}
-        </form>
+              {loginError && <p className="text-red-400 text-[10px] text-center font-bold uppercase">{loginError}</p>}
+            </form>
+          </GlassCard>
+        </motion.div>
       </div>
     );
   }
 
+  // --- RENDER DASHBOARD ---
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-slate-950 text-slate-200' : 'bg-slate-50 text-slate-900'} transition-colors duration-300`}>
-      <header className="bg-[#3b0764] text-white p-6 shadow-xl sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
+    <div className="min-h-screen text-slate-100 pb-20">
+      <BioBackground />
+      
+      <header className="sticky top-0 z-40 p-4">
+        <GlassCard className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center rounded-full border-white/10">
           <div>
-            <h1 className="text-xl font-black uppercase">Welcome, {getFirstName(studentName)}</h1>
-            <p className="text-amber-400 text-[10px] font-bold tracking-widest uppercase">ID: {studentID}</p>
+            <h1 className="text-lg font-bold">Hello, {getFirstName(studentName)}</h1>
+            <p className="text-[10px] text-[#48cae4] font-bold uppercase tracking-widest flex items-center gap-1">
+              <Activity size={10} className="animate-pulse" /> ID: {studentID}
+            </p>
           </div>
           <div className="flex gap-2">
-            <button onClick={toggleDarkMode} className="p-3 bg-white/10 rounded-2xl"> {darkMode ? '☀️' : '🌙'} </button>
-            {isAdmin && (
-              <Link href="/admin" className="p-3 bg-yellow-500/20 text-yellow-500 rounded-2xl text-[10px] font-bold uppercase">
-                Admin
-              </Link>
-            )}
-            <button onClick={handleLogout} className="p-3 bg-red-500/20 text-red-500 rounded-2xl text-[10px] font-bold uppercase">Logout</button>
+            {isAdmin && <Link href="/admin" className="p-2 bg-yellow-500/20 text-yellow-500 rounded-xl text-[10px] font-bold flex items-center px-4 uppercase">Admin</Link>}
+            <button onClick={handleLogout} className="p-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all"><LogOut size={18} /></button>
           </div>
-        </div>
+        </GlassCard>
       </header>
 
-      <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-8 pb-32">
+      <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-6">
+        {/* Quick Actions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" rel="noopener noreferrer" className="p-4 bg-emerald-600 text-white rounded-2xl flex flex-col items-center gap-1 shadow-lg"><span className="text-2xl">💬</span><span className="font-bold text-xs">WhatsApp</span></a>
-          <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" rel="noopener noreferrer" className="p-4 bg-blue-600 text-white rounded-2xl flex flex-col items-center gap-1 shadow-lg"><span className="text-2xl">📚</span><span className="font-bold text-xs">Resources</span></a>
-          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-indigo-600 text-white rounded-2xl flex flex-col items-center gap-1 shadow-lg"><span className="text-2xl">📈</span><span className="font-bold text-xs">CWA Calc</span></button>
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} p-4 rounded-2xl flex flex-col items-center justify-center border border-slate-200 dark:border-slate-800`}>
-             <span className="text-lg font-black text-emerald-500">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-             <span className="text-[10px] opacity-40 font-bold uppercase tracking-tighter">System Live</span>
+          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/10 border border-green-500/20 rounded-3xl flex flex-col items-center gap-2 group hover:bg-green-500/20 transition-all">
+            <MessageCircle className="text-green-400" />
+            <span className="text-[10px] font-bold uppercase">WhatsApp</span>
+          </a>
+          <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-blue-500/20 transition-all">
+            <BookOpen className="text-blue-400" />
+            <span className="text-[10px] font-bold uppercase">Resources</span>
+          </a>
+          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-[#00d4ff]/20 transition-all">
+            <Calculator className="text-[#00d4ff]" />
+            <span className="text-[10px] font-bold uppercase">CWA Calc</span>
+          </button>
+          <div className="p-4 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center">
+            <Clock className="text-slate-400 mb-1" size={20} />
+            <span className="text-sm font-black">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         </div>
 
-        <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
+        {/* Timetable */}
+        <GlassCard className="p-6 md:p-8" delay={0.1}>
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-black">🧬 {showWeekView ? 'Weekly Schedule' : "Today's Agenda"}</h2>
-            <button onClick={() => setShowWeekView(!showWeekView)} className="px-5 py-2 bg-emerald-500 text-white rounded-full font-bold text-xs uppercase tracking-wider">{showWeekView ? 'Today' : 'Full Week'}</button>
+            <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2">
+              <Calendar className="text-[#00d4ff]" /> {showWeekView ? 'Weekly Schedule' : "Today's Agenda"}
+            </h2>
+            <button onClick={() => setShowWeekView(!showWeekView)} className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border border-white/10">
+              {showWeekView ? 'Close' : 'View Week'}
+            </button>
           </div>
+
           <div className="space-y-6">
             {(showWeekView ? days : [todayName]).map(day => (
               <div key={day} className="space-y-4">
-                {showWeekView && <h3 className="text-emerald-500 font-black text-xs uppercase tracking-[0.2em]">{day}</h3>}
+                {showWeekView && <h3 className="text-[#48cae4] font-black text-[10px] uppercase tracking-[0.2em] pl-2 border-l-2 border-[#48cae4] mb-4">{day}</h3>}
                 {TIMETABLE[day]?.length ? TIMETABLE[day].map((cls: any) => (
-                  <div key={cls.id} className={`flex flex-col md:flex-row md:items-center justify-between p-5 rounded-3xl ${darkMode ? 'bg-slate-800/40' : 'bg-slate-50'} gap-4 group`}>
+                  <div key={cls.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all gap-4">
                     <div className="flex gap-4 items-center">
-                      <div className="w-16 font-black text-xs opacity-40">{cls.time.split(' - ')[0]}</div>
+                      <div className="text-[10px] font-bold opacity-40 bg-white/5 p-2 rounded-lg">{cls.time.split(' - ')[0]}</div>
                       <div>
-                        <h4 className="font-black text-lg">{cls.course}</h4>
-                        <p className="text-xs opacity-50 font-bold uppercase tracking-tighter">📍 {cls.venue} • {cls.lecturer}</p>
+                        <h4 className="font-bold text-base text-white">{cls.course}</h4>
+                        <p className="text-[10px] opacity-50 font-bold uppercase">📍 {cls.venue} • {cls.lecturer}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>{cls.type}</span>
-                       <button onClick={() => markAttendance(cls.id)} className={`px-4 py-2 rounded-xl text-[10px] font-black ${attendance[cls.id] ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 uppercase tracking-tighter'}`}>PRESENT ({attendance[cls.id] || 0})</button>
+                    <div className="flex items-center gap-3 justify-between md:justify-end">
+                       <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/20 text-amber-500' : 'bg-[#00d4ff]/20 text-[#00d4ff]'}`}>{cls.type}</span>
+                       <button onClick={() => markAttendance(cls.id)} className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${attendance[cls.id] ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                         {attendance[cls.id] ? `PRESENT (${attendance[cls.id]})` : 'MARK PRESENT'}
+                       </button>
                     </div>
                   </div>
-                )) : <p className="text-xs opacity-30 italic py-4 text-center">No activities scheduled.</p>}
+                )) : <p className="text-[10px] opacity-30 italic py-4 text-center uppercase tracking-widest">Rest Day</p>}
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
+        {/* Secondary Info */}
         <div className="grid md:grid-cols-2 gap-6">
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col h-64`}>
-            <h3 className="font-black text-lg mb-4">📝 Quick Notes</h3>
+          <GlassCard className="p-6 flex flex-col h-64" delay={0.2}>
+            <h3 className="font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
+              <FileText size={16} className="text-[#00d4ff]" /> Quick Notes
+            </h3>
             <textarea value={notes} onChange={(e) => {setNotes(e.target.value); localStorage.setItem('bme-notes', e.target.value)}} 
-              placeholder="Type anything..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none"/>
-          </div>
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col h-64 items-center justify-center text-center`}>
-            <span className="bg-red-500/20 text-red-500 p-2 rounded-lg text-lg mb-4">⏳</span>
-            <h3 className="font-black text-lg mb-2">Mid-Sem Countdown</h3>
-            <p className="text-6xl font-black text-emerald-500 leading-none mb-2">{daysToMidSem}</p>
-            <p className="text-xs font-bold opacity-40 uppercase tracking-widest">Days until Feb 23</p>
-          </div>
+              placeholder="Jot down something..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600"/>
+          </GlassCard>
+
+          <GlassCard className="p-6 flex flex-col h-64 items-center justify-center text-center relative overflow-hidden group" delay={0.3}>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+            <h3 className="font-bold text-sm uppercase tracking-widest mb-2 opacity-60">Mid-Sem Countdown</h3>
+            <p className="text-7xl font-black text-white group-hover:scale-110 transition-transform">{daysToMidSem}</p>
+            <p className="text-[10px] font-bold text-red-400 uppercase tracking-[0.2em] mt-2">Days Remaining</p>
+          </GlassCard>
         </div>
-
-        {/* Announcements */}
-        {announcements.length > 0 && (
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
-            <h3 className="font-black text-lg mb-4">📢 Announcements</h3>
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {announcements.slice(0, 5).map((ann: any) => (
-                <div
-                  key={ann.id}
-                  className={`p-4 rounded-2xl border-l-4 ${
-                    ann.type === 'urgent' ? 'border-red-500 bg-red-500/5' :
-                    ann.type === 'quiz' ? 'border-orange-500 bg-orange-500/5' :
-                    ann.type === 'deadline' ? 'border-yellow-500 bg-yellow-500/5' :
-                    'border-blue-500 bg-blue-500/5'
-                  }`}
-                >
-                  <p className="font-medium text-sm mb-1">{ann.text}</p>
-                  <p className="text-xs opacity-50 font-bold">{ann.date}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Missed Classes */}
-        {files.length > 0 && (
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
-            <h3 className="font-black text-lg mb-4">📖 Missed a Class?</h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              {files.slice(0, 6).map((file: any) => (
-                <div key={file.id} className={`p-4 rounded-2xl border ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                  <p className="font-bold text-sm mb-2">{file.course} - {file.week}</p>
-                  <a
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full p-2 bg-blue-600 text-white rounded-lg text-xs font-bold text-center hover:bg-blue-700 transition"
-                  >
-                    {file.type === 'notes' ? '📄 Notes' :
-                     file.type === 'recording' ? '🎥 Recording' :
-                     file.type === 'slides' ? '📊 Slides' : '📖 Manual'}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </main>
 
-      {showCWAModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} w-full max-w-md rounded-[40px] p-8 shadow-2xl relative`}>
-            <button onClick={() => setShowCWAModal(false)} className="absolute top-6 right-6 font-black opacity-50">✕</button>
-            <h2 className="text-2xl font-black mb-6 text-emerald-500 uppercase tracking-tighter">CWA Calculator 📈</h2>
-            <div className="space-y-3 max-h-[50vh] overflow-y-auto mb-6 pr-2">
-              {COURSE_CREDITS.map(c => (
-                <div key={c.code} className="flex justify-between items-center bg-slate-500/5 p-4 rounded-2xl border border-transparent">
-                  <div><p className="font-black text-xs uppercase">{c.code}</p><p className="text-[10px] opacity-40 uppercase">{c.credits} Credits</p></div>
-                  <input type="number" placeholder="0" className={`w-16 p-2 rounded-xl text-center font-bold ${darkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'}`} 
-                    onChange={(e) => setMarks({...marks, [c.code]: e.target.value})} />
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between items-center border-t border-slate-500/10 pt-4 mb-6">
-              <span className="font-bold text-sm opacity-50 uppercase tracking-tighter">Predicted CWA</span>
-              <span className="text-4xl font-black text-emerald-500">{calculatedCWA || '--'}</span>
-            </div>
-            <button onClick={handleCalculateCWA} className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest">Calculate</button>
-          </div>
-        </div>
-      )}
+      {/* CWA MODAL */}
+      <AnimatePresence>
+        {showCWAModal && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+            <GlassCard className="w-full max-w-md p-8 relative">
+              <button onClick={() => setShowCWAModal(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white">✕</button>
+              <h2 className="text-xl font-black mb-6 text-white uppercase flex items-center gap-2"><Calculator className="text-[#00d4ff]" /> CWA Calculator</h2>
+              <div className="space-y-3 max-h-[40vh] overflow-y-auto mb-6 pr-2">
+                {COURSE_CREDITS.map(c => (
+                  <div key={c.code} className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <div><p className="font-bold text-xs uppercase text-white">{c.code}</p><p className="text-[10px] opacity-40 uppercase">{c.credits} Credits</p></div>
+                    <input type="number" placeholder="0" className="w-16 p-2 rounded-xl bg-black/20 text-center font-bold text-[#00d4ff] outline-none focus:border-[#00d4ff] border border-transparent" 
+                      onChange={(e) => setMarks({...marks, [c.code]: e.target.value})} />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between items-center border-t border-white/10 pt-4 mb-6">
+                <span className="font-bold text-xs opacity-50 uppercase">Predicted CWA</span>
+                <span className="text-4xl font-black text-[#00d4ff]">{calculatedCWA || '--'}</span>
+              </div>
+              <button onClick={handleCalculateCWA} className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(0,212,255,0.3)]">Calculate Score</button>
+            </GlassCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
