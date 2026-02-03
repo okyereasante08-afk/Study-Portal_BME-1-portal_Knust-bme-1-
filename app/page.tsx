@@ -156,25 +156,36 @@ export default function Home() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loginMode, setLoginMode] = useState<'student' | 'admin'>('student');
   const [adminAccessCode, setAdminAccessCode] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   // --- LOGIC ---
   useEffect(() => {
-    const savedID = localStorage.getItem('bme-session-id');
-    const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
-    if (savedID && CLASS_LIST[savedID]) {
-      setStudentID(savedID);
-      setStudentName(CLASS_LIST[savedID]);
-      setIsLoggedIn(true);
-      setIsAdmin(ADMIN_IDS.includes(savedID) || isAdminAccess);
+    setMounted(true);
+    
+    // Only access localStorage if we're in the browser
+    if (typeof window !== 'undefined') {
+      const savedID = localStorage.getItem('bme-session-id');
+      const isAdminAccess = localStorage.getItem('bme-admin-access') === 'true';
+      if (savedID && CLASS_LIST[savedID]) {
+        setStudentID(savedID);
+        setStudentName(CLASS_LIST[savedID]);
+        setIsLoggedIn(true);
+        setIsAdmin(ADMIN_IDS.includes(savedID) || isAdminAccess);
+        localStorage.setItem('bme-student-id', savedID);
+      }
+      
+      const savedAtt = localStorage.getItem('bme-attendance');
+      if (savedAtt) setAttendance(JSON.parse(savedAtt));
+      
+      const savedNotes = localStorage.getItem('bme-notes');
+      if (savedNotes) setNotes(savedNotes);
+      
+      const savedAnnouncements = localStorage.getItem('bme-announcements');
+      if (savedAnnouncements) setAnnouncements(JSON.parse(savedAnnouncements));
+      
+      const savedFiles = localStorage.getItem('bme-files');
+      if (savedFiles) setFiles(JSON.parse(savedFiles));
     }
-    const savedAtt = localStorage.getItem('bme-attendance');
-    if (savedAtt) setAttendance(JSON.parse(savedAtt));
-    const savedNotes = localStorage.getItem('bme-notes');
-    if (savedNotes) setNotes(savedNotes);
-    const savedAnnouncements = localStorage.getItem('bme-announcements');
-    if (savedAnnouncements) setAnnouncements(JSON.parse(savedAnnouncements));
-    const savedFiles = localStorage.getItem('bme-files');
-    if (savedFiles) setFiles(JSON.parse(savedFiles));
 
     const midSemDate = new Date('2026-02-23T00:00:00');
     setDaysToMidSem(Math.ceil((midSemDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
@@ -196,17 +207,20 @@ export default function Home() {
       setLoginError('Invalid Student ID.');
       return;
     }
-    const stored = localStorage.getItem(`pw-${studentID}`);
-    if (!stored) {
-      if (!isFirstLogin) setIsFirstLogin(true);
-      else if (password.length < 4) setLoginError('Password too short.');
-      else {
-        localStorage.setItem(`pw-${studentID}`, password);
-        proceedToLogin(studentID);
+    
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(`pw-${studentID}`);
+      if (!stored) {
+        if (!isFirstLogin) setIsFirstLogin(true);
+        else if (password.length < 4) setLoginError('Password too short.');
+        else {
+          localStorage.setItem(`pw-${studentID}`, password);
+          proceedToLogin(studentID);
+        }
+      } else {
+        if (password === stored) proceedToLogin(studentID);
+        else setLoginError('Incorrect password.');
       }
-    } else {
-      if (password === stored) proceedToLogin(studentID);
-      else setLoginError('Incorrect password.');
     }
   };
 
@@ -215,22 +229,44 @@ export default function Home() {
     setIsLoggedIn(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
-    localStorage.setItem('bme-session-id', id);
-    if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('bme-session-id', id);
+      localStorage.setItem('bme-student-id', id);
+      if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
+      
+      // Log the login
+      const loginLog = {
+        studentId: id,
+        studentName: CLASS_LIST[id],
+        timestamp: new Date().toLocaleString()
+      };
+      const existingLogs = JSON.parse(localStorage.getItem('bme-login-logs') || '[]');
+      existingLogs.push(loginLog);
+      localStorage.setItem('bme-login-logs', JSON.stringify(existingLogs));
+    }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('bme-session-id');
-    localStorage.removeItem('bme-admin-access');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('bme-session-id');
+      localStorage.removeItem('bme-student-id');
+      localStorage.removeItem('bme-admin-access');
+    }
     setIsLoggedIn(false);
+    setIsAdmin(false);
     setStudentID('');
     setPassword('');
+    setAdminAccessCode('');
+    setLoginMode('student');
   };
 
   const markAttendance = (id: string) => {
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
     setAttendance(newAtt);
-    localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
+    }
   };
 
   const handleCalculateCWA = () => {
@@ -246,6 +282,11 @@ export default function Home() {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const todayName = days[new Date().getDay() - 1] || 'Weekend';
 
+  // Don't render until mounted (prevents SSR issues)
+  if (!mounted) {
+    return null;
+  }
+
   // --- RENDER LOGIN ---
   if (!isLoggedIn) {
     return (
@@ -259,22 +300,47 @@ export default function Home() {
             </div>
 
             <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-2xl">
-              <button onClick={() => setLoginMode('student')} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-400'}`}>Student</button>
-              <button onClick={() => setLoginMode('admin')} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'admin' ? 'bg-red-500 text-white' : 'text-slate-400'}`}>Admin</button>
+              <button 
+                onClick={() => {
+                  setLoginMode('student');
+                  setLoginError('');
+                  setAdminAccessCode('');
+                }} 
+                className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-400'}`}
+              >
+                Student
+              </button>
+              <button 
+                onClick={() => {
+                  setLoginMode('admin');
+                  setLoginError('');
+                  setStudentID('');
+                  setPassword('');
+                  setIsFirstLogin(false);
+                }} 
+                className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'admin' ? 'bg-red-500 text-white' : 'text-slate-400'}`}
+              >
+                Admin
+              </button>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               {loginMode === 'student' ? (
                 <>
-                  <input type="text" placeholder="Student ID" value={studentID} onChange={(e) => setStudentID(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" />
-                  {(isFirstLogin || localStorage.getItem(`pw-${studentID}`)) && (
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" autoFocus />
+                  <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" />
+                  {(isFirstLogin || (typeof window !== 'undefined' && localStorage.getItem(`pw-${studentID}`))) && (
+                    <input type="password" placeholder={isFirstLogin ? "Create Password" : "Password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" autoFocus />
                   )}
-                  <button className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black uppercase hover:scale-[1.02] transition-transform">Continue</button>
+                  <button className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black uppercase hover:scale-[1.02] transition-transform">{isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}</button>
+                  {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
                 </>
               ) : (
                 <>
-                  <input type="password" placeholder="Admin Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-red-500/30 text-center text-white outline-none focus:border-red-500" />
+                  <div className="text-center mb-4 p-4 bg-red-500/10 rounded-2xl border border-red-500/20">
+                    <p className="text-xs font-bold text-red-500 uppercase tracking-wider">⚠️ Restricted Area</p>
+                    <p className="text-[10px] opacity-60 mt-1 text-white">Enter admin access code to proceed</p>
+                  </div>
+                  <input type="password" placeholder="Admin Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-red-500/30 text-center text-white outline-none focus:border-red-500" autoFocus />
                   <button className="w-full py-4 bg-red-600 text-white rounded-2xl font-black uppercase">Unlock Admin</button>
                 </>
               )}
@@ -370,8 +436,17 @@ export default function Home() {
             <h3 className="font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
               <FileText size={16} className="text-[#00d4ff]" /> Quick Notes
             </h3>
-            <textarea value={notes} onChange={(e) => {setNotes(e.target.value); localStorage.setItem('bme-notes', e.target.value)}} 
-              placeholder="Jot down something..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600"/>
+            <textarea 
+              value={notes} 
+              onChange={(e) => {
+                setNotes(e.target.value);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('bme-notes', e.target.value);
+                }
+              }} 
+              placeholder="Jot down something..." 
+              className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600"
+            />
           </GlassCard>
 
           <GlassCard className="p-6 flex flex-col h-64 items-center justify-center text-center relative overflow-hidden group" delay={0.3}>
