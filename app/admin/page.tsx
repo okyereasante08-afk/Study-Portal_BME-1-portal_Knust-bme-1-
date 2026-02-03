@@ -653,7 +653,7 @@ export default function AdminDashboard() {
                           <p className="text-xs opacity-50 font-bold">Students marked present</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-3xl font-black text-emerald-500">{count}</p>
+                          <p className="text-3xl font-black text-emerald-500">{count as number}</p>
                           <p className="text-[10px] font-bold opacity-40 uppercase">Students</p>
                         </div>
                       </div>
