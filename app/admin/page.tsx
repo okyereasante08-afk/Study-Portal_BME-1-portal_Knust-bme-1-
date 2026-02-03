@@ -140,7 +140,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "22345160": "Worlase Afua Kportufe",
   "22339201": "Williams-Peniel Enoch",
   "22247637": "Yao-Kumah Davida Eyram",
-  "22348338": "Yeboah Yaa Gyamfuaa"
+  "22348338": "Yeboah Yaa Gyamfuaa",
 };
 
 const ADMIN_IDS = ['22028883'];
