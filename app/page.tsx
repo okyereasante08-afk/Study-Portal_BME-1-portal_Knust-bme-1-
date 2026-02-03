@@ -15,7 +15,16 @@ type ClassSession = {
   type: 'Lecture' | 'Lab' | 'Practical';
 };
 
-// --- UPDATED DATA WITH UNIQUE IDs FOR ATTENDANCE ---
+const COURSE_CREDITS = [
+  { code: 'MATH 151', name: 'Algebra', credits: 4 },
+  { code: 'BME 161', name: 'Cell Biology', credits: 3 },
+  { code: 'EE 151', name: 'Applied Electricity', credits: 3 },
+  { code: 'ME 161', name: 'Basic Mechanics', credits: 3 },
+  { code: 'CHEM 151', name: 'General Chemistry', credits: 2 },
+  { code: 'COE 153', name: 'Engineering Tech', credits: 2 },
+  { code: 'ENGL 157', name: 'Comm. Skills I', credits: 2 },
+];
+
 const TIMETABLE: { [key: string]: ClassSession[] } = {
   Monday: [
     { id: 'm1', time: '08:00 - 09:55', course: 'COE 181', venue: 'VCR', lecturer: 'K.O.K. Sarkodie', type: 'Lecture' },
@@ -41,28 +50,26 @@ const TIMETABLE: { [key: string]: ClassSession[] } = {
 };
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [showWeekView, setShowWeekView] = useState(false);
+  const [showCWAModal, setShowCWAModal] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
+  const [marks, setMarks] = useState<{ [key: string]: string }>({});
+  const [calculatedCWA, setCalculatedCWA] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // 1. Persistence & Hydration
   useEffect(() => {
-    const savedDark = localStorage.getItem('bme-dark') === 'true';
-    const savedAttendance = JSON.parse(localStorage.getItem('bme-attendance') || '{}');
-    setDarkMode(savedDark);
-    setAttendance(savedAttendance);
-    
-    // Simulate loading for skeleton state
-    setTimeout(() => setIsLoading(false), 800);
-
+    setDarkMode(localStorage.getItem('bme-dark') === 'true');
+    setAttendance(JSON.parse(localStorage.getItem('bme-attendance') || '{}'));
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('bme-dark', darkMode.toString());
-  }, [darkMode]);
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    localStorage.setItem('bme-dark', next.toString());
+  };
 
   const markAttendance = (id: string) => {
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
@@ -70,37 +77,33 @@ export default function Home() {
     localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
   };
 
+  const handleCalculateCWA = () => {
+    let weightedSum = 0, totalCredits = 0;
+    COURSE_CREDITS.forEach(c => {
+      const mark = parseFloat(marks[c.code] || '0');
+      if (mark > 0) { weightedSum += mark * c.credits; totalCredits += c.credits; }
+    });
+    setCalculatedCWA(totalCredits > 0 ? parseFloat((weightedSum / totalCredits).toFixed(2)) : null);
+  };
+
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const todayName = days[new Date().getDay() - 1] || 'Weekend';
   const todayClasses = TIMETABLE[todayName] || [];
 
-  // Theme Logic
-  const theme = {
-    bg: darkMode ? 'bg-[#0f172a]' : 'bg-[#f0f9f6]',
-    card: darkMode ? 'bg-slate-800/50' : 'bg-white',
-    accent: 'text-emerald-500',
-    border: darkMode ? 'border-slate-700' : 'border-emerald-100',
-    knustPurple: 'bg-[#3b0764]',
-    knustGold: 'bg-[#fbbf24]'
-  };
-
   return (
-    <div className={`min-h-screen ${theme.bg} ${darkMode ? 'text-slate-200' : 'text-slate-900'} ${outfit.className} transition-colors duration-500`}>
+    <div className={`min-h-screen ${darkMode ? 'bg-slate-950 text-slate-200' : 'bg-slate-50 text-slate-900'} ${outfit.className} transition-colors`}>
       
-      {/* KNUST HEADER */}
-      <header className={`${theme.knustPurple} text-white relative overflow-hidden`}>
-        <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl rotate-12">🧬</div>
-        <div className="max-w-4xl mx-auto p-6 flex items-center justify-between">
+      {/* HEADER */}
+      <header className="bg-[#3b0764] text-white p-6 shadow-xl">
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <div className={`h-16 w-16 ${theme.knustGold} rounded-full flex items-center justify-center border-2 border-white shadow-xl`}>
-              <span className="text-purple-900 font-black text-[10px] text-center">KNUST<br/>BME</span>
-            </div>
+            <div className="h-12 w-12 bg-amber-400 rounded-full flex items-center justify-center font-black text-purple-950 text-[10px] text-center shadow-lg">KNUST<br/>BME</div>
             <div>
-              <h1 className="text-xl font-black tracking-tight leading-none uppercase">Biomedical Engineering</h1>
-              <p className="text-amber-400 text-[10px] font-bold tracking-widest mt-1">KWAME NKRUMAH UNIVERSITY OF SCIENCE & TECHNOLOGY</p>
+              <h1 className="text-xl font-black uppercase tracking-tight">Student Portal</h1>
+              <p className="text-amber-400 text-[10px] font-bold tracking-widest">BIOMEDICAL ENGINEERING • L100</p>
             </div>
           </div>
-          <button onClick={() => setDarkMode(!darkMode)} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all backdrop-blur-md">
+          <button onClick={toggleDarkMode} className="p-3 bg-white/10 rounded-2xl text-xl hover:bg-white/20 transition">
             {darkMode ? '☀️' : '🌙'}
           </button>
         </div>
@@ -108,106 +111,86 @@ export default function Home() {
 
       <main className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
         
-        {/* SKELETON / NEXT CLASS */}
-        {isLoading ? (
-          <div className={`w-full h-32 ${theme.card} rounded-[32px] animate-pulse flex items-center p-8 gap-4`}>
-             <div className="h-12 w-12 bg-slate-300 dark:bg-slate-700 rounded-full"></div>
-             <div className="space-y-2 flex-1">
-                <div className="h-4 w-1/4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-                <div className="h-6 w-3/4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-             </div>
-          </div>
-        ) : (
-          <div className={`${theme.card} rounded-[32px] p-8 shadow-xl border-b-8 border-emerald-500 relative overflow-hidden`}>
-            <div className="absolute -right-4 -bottom-4 opacity-5 text-9xl">🔬</div>
-            <div className="relative z-10">
-              <span className="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">Current Vital Signs</span>
-              <h2 className="text-4xl font-black mt-2 tracking-tight">System Ready.</h2>
-              <div className="flex gap-6 mt-4">
-                <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold opacity-50">Local Time</span>
-                  <span className="text-xl font-black text-emerald-500">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold opacity-50">Avg Attendance</span>
-                  <span className="text-xl font-black text-amber-500">74%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ATTENDANCE TRACKER SECTION */}
-        <section className="space-y-4">
-          <div className="flex justify-between items-end px-2">
-            <h3 className="font-black text-lg flex items-center gap-2">
-              <span className="text-emerald-500">🦠</span> Today's Sessions
-            </h3>
-            <span className="text-[10px] font-bold opacity-40 uppercase">{todayName}</span>
-          </div>
-
-          <div className="grid gap-4">
-            {todayClasses.map((cls) => (
-              <div key={cls.id} className={`${theme.card} p-5 rounded-[24px] border border-transparent hover:border-emerald-500/30 transition-all flex justify-between items-center group`}>
-                <div className="flex gap-4 items-center">
-                  <div className="text-center bg-slate-100 dark:bg-slate-900 w-16 py-2 rounded-xl">
-                    <p className="text-[10px] font-black opacity-40">{cls.time.split(' ')[0]}</p>
-                    <p className="text-[10px] font-black opacity-40">AM</p>
-                  </div>
-                  <div>
-                    <h4 className="font-black text-lg leading-tight">{cls.course}</h4>
-                    <p className="text-xs opacity-50 font-medium">📍 {cls.venue} • {cls.type}</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => markAttendance(cls.id)}
-                  className="px-4 py-2 bg-emerald-500 text-white rounded-full text-[10px] font-black hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95"
-                >
-                  I'M PRESENT ({attendance[cls.id] || 0})
-                </button>
-              </div>
-            ))}
-            {todayClasses.length === 0 && (
-              <div className="text-center py-12 opacity-30">
-                <p className="text-5xl mb-2">🧬</p>
-                <p className="font-bold">No biological activity scheduled today.</p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* QUICK ACCESS ACTION BAR */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          <button className={`${theme.card} p-4 rounded-3xl flex items-center gap-3 border ${theme.border} hover:scale-95 transition-all`}>
-            <span className="bg-emerald-500/20 p-2 rounded-lg">🧪</span>
-            <div className="text-left">
-              <p className="text-[10px] font-black opacity-50 uppercase">Lab Logs</p>
-              <p className="text-xs font-bold">COE 153 Data</p>
-            </div>
+        {/* QUICK ACTIONS */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-emerald-600 text-white rounded-2xl shadow-lg hover:scale-105 transition flex flex-col items-center gap-1">
+            <span className="text-2xl">💬</span><span className="font-bold text-xs">WhatsApp</span>
+          </a>
+          <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" className="p-4 bg-blue-600 text-white rounded-2xl shadow-lg hover:scale-105 transition flex flex-col items-center gap-1">
+            <span className="text-2xl">📚</span><span className="font-bold text-xs">Resources</span>
+          </a>
+          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-indigo-600 text-white rounded-2xl shadow-lg hover:scale-105 transition flex flex-col items-center gap-1">
+            <span className="text-2xl">📈</span><span className="font-bold text-xs">CWA Calc</span>
           </button>
-          <button className={`${theme.card} p-4 rounded-3xl flex items-center gap-3 border ${theme.border} hover:scale-95 transition-all`}>
-            <span className="bg-purple-500/20 p-2 rounded-lg">🩸</span>
-            <div className="text-left">
-              <p className="text-[10px] font-black opacity-50 uppercase">Coursework</p>
-              <p className="text-xs font-bold">BME 161 Slides</p>
-            </div>
-          </button>
-          <button className={`${theme.card} p-4 rounded-3xl flex items-center gap-3 border ${theme.border} hover:scale-95 transition-all md:col-span-1 col-span-2`}>
-            <span className="bg-amber-500/20 p-2 rounded-lg">🫀</span>
-            <div className="text-left">
-              <p className="text-[10px] font-black opacity-50 uppercase">Directory</p>
-              <p className="text-xs font-bold">Lecturer Contact</p>
-            </div>
-          </button>
+          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} p-4 rounded-2xl shadow-md flex flex-col items-center justify-center border border-slate-200 dark:border-slate-800`}>
+            <span className="text-lg font-black text-emerald-500">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">Live Node</span>
+          </div>
         </div>
 
+        {/* TIMETABLE CONTAINER */}
+        <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} rounded-[32px] p-6 shadow-xl border border-slate-200 dark:border-slate-800`}>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-black flex items-center gap-2">
+              🧬 {showWeekView ? 'Weekly Schedule' : "Today's Agenda"}
+            </h2>
+            <button onClick={() => setShowWeekView(!showWeekView)} className="px-5 py-2 bg-emerald-500 text-white rounded-full font-bold text-xs hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20">
+              {showWeekView ? 'Show Today' : 'Show Full Week'}
+            </button>
+          </div>
+
+          <div className="space-y-8">
+            {(showWeekView ? days : [todayName]).map(day => (
+              <div key={day} className="space-y-4">
+                {showWeekView && <h3 className="text-emerald-500 font-black text-xs uppercase tracking-[0.2em] border-b border-emerald-500/10 pb-2">{day}</h3>}
+                {TIMETABLE[day]?.length ? TIMETABLE[day].map((cls) => (
+                  <div key={cls.id} className={`flex flex-col md:flex-row md:items-center justify-between p-5 rounded-3xl ${darkMode ? 'bg-slate-800/40 hover:bg-slate-800' : 'bg-slate-50 hover:bg-white'} border border-transparent hover:border-emerald-500/20 transition-all gap-4`}>
+                    <div className="flex gap-4 items-center">
+                      <div className="w-16 text-center font-black text-xs opacity-40">{cls.time.split(' - ')[0]}</div>
+                      <div>
+                        <h4 className="font-black text-lg">{cls.course}</h4>
+                        <p className="text-xs opacity-50 font-bold uppercase">📍 {cls.venue} • {cls.lecturer}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>{cls.type}</span>
+                       <button 
+                        onClick={() => markAttendance(cls.id)}
+                        className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${attendance[cls.id] ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}
+                       >
+                         PRESENT: {attendance[cls.id] || 0}
+                       </button>
+                    </div>
+                  </div>
+                )) : <p className="text-sm opacity-30 italic py-4">No academic activities scheduled.</p>}
+              </div>
+            ))}
+          </div>
+        </div>
       </main>
 
-      {/* OFFLINE STATUS PILL */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-900/80 backdrop-blur-md border border-white/10 rounded-full flex items-center gap-2 z-50">
-        <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
-        <span className="text-white text-[10px] font-black tracking-widest uppercase">Local Node Active</span>
-      </div>
+      {/* CWA MODAL (RESTORED) */}
+      {showCWAModal && (
+        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className={`${darkMode ? 'bg-slate-900' : 'bg-white'} w-full max-w-md rounded-[40px] p-8 shadow-2xl relative`}>
+            <button onClick={() => setShowCWAModal(false)} className="absolute top-6 right-6 text-xl">✕</button>
+            <h2 className="text-2xl font-black mb-6">CWA Tracker</h2>
+            <div className="space-y-3 max-h-[50vh] overflow-y-auto mb-6 pr-2">
+              {COURSE_CREDITS.map(c => (
+                <div key={c.code} className="flex justify-between items-center bg-slate-500/5 p-4 rounded-2xl">
+                  <div><p className="font-black text-xs">{c.code}</p><p className="text-[10px] opacity-40">{c.credits} Credits</p></div>
+                  <input type="number" placeholder="0" className="w-16 p-2 rounded-xl bg-white dark:bg-slate-800 text-center font-bold border-none" onChange={(e) => setMarks({...marks, [c.code]: e.target.value})} />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between items-center border-t border-slate-500/10 pt-4 mb-6">
+              <span className="font-bold text-sm uppercase opacity-50">Predicted CWA</span>
+              <span className="text-4xl font-black text-emerald-500">{calculatedCWA || '--'}</span>
+            </div>
+            <button onClick={handleCalculateCWA} className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 shadow-xl shadow-emerald-500/20">CALCULATE</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
