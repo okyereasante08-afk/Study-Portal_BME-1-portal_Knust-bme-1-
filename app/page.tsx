@@ -16,7 +16,10 @@ import {
   Sun,
   Clock,
   ExternalLink,
-  FileText
+  FileText,
+  Bell,
+  Folder,
+  CheckCircle
 } from "lucide-react";
 
 // --- YOUR ORIGINAL DATA ---
@@ -145,7 +148,9 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
   const [showWeekView, setShowWeekView] = useState(false);
   const [showCWAModal, setShowCWAModal] = useState(false);
+  const [showUpdatesHub, setShowUpdatesHub] = useState(false); // NEW: Updates Hub modal
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
+  const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({}); // NEW: Track if already marked
   const [marks, setMarks] = useState<{ [key: string]: string }>({});
   const [calculatedCWA, setCalculatedCWA] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -176,6 +181,10 @@ export default function Home() {
       
       const savedAtt = localStorage.getItem('bme-attendance');
       if (savedAtt) setAttendance(JSON.parse(savedAtt));
+      
+      // NEW: Load attendance marked status
+      const savedMarked = localStorage.getItem(`bme-marked-${savedID}`);
+      if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       
       const savedNotes = localStorage.getItem('bme-notes');
       if (savedNotes) setNotes(savedNotes);
@@ -226,6 +235,7 @@ export default function Home() {
 
   const proceedToLogin = (id: string, adminOverride = false) => {
     setStudentName(CLASS_LIST[id]);
+    setStudentID(id);
     setIsLoggedIn(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
@@ -234,6 +244,10 @@ export default function Home() {
       localStorage.setItem('bme-session-id', id);
       localStorage.setItem('bme-student-id', id);
       if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
+      
+      // Load this user's marked attendance
+      const savedMarked = localStorage.getItem(`bme-marked-${id}`);
+      if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       
       // Log the login
       const loginLog = {
@@ -262,10 +276,20 @@ export default function Home() {
   };
 
   const markAttendance = (id: string) => {
+    // NEW: Check if already marked
+    if (attendanceMarked[id]) {
+      return; // Already marked, do nothing
+    }
+    
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
+    const newMarked = { ...attendanceMarked, [id]: true };
+    
     setAttendance(newAtt);
+    setAttendanceMarked(newMarked);
+    
     if (typeof window !== 'undefined') {
       localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
+      localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
     }
   };
 
@@ -373,7 +397,7 @@ export default function Home() {
       </header>
 
       <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-6">
-        {/* Quick Actions */}
+        {/* Quick Actions - REPLACED CLOCK WITH UPDATES HUB */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/10 border border-green-500/20 rounded-3xl flex flex-col items-center gap-2 group hover:bg-green-500/20 transition-all">
             <MessageCircle className="text-green-400" />
@@ -387,10 +411,16 @@ export default function Home() {
             <Calculator className="text-[#00d4ff]" />
             <span className="text-[10px] font-bold uppercase">CWA Calc</span>
           </button>
-          <div className="p-4 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center">
-            <Clock className="text-slate-400 mb-1" size={20} />
-            <span className="text-sm font-black">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-          </div>
+          {/* NEW: Updates Hub Button */}
+          <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-purple-500/20 transition-all relative">
+            <Bell className="text-purple-400" />
+            <span className="text-[10px] font-bold uppercase">Updates Hub</span>
+            {announcements.length > 0 && (
+              <div className="absolute top-2 right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black">
+                {announcements.length}
+              </div>
+            )}
+          </button>
         </div>
 
         {/* Timetable */}
@@ -419,8 +449,20 @@ export default function Home() {
                     </div>
                     <div className="flex items-center gap-3 justify-between md:justify-end">
                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/20 text-amber-500' : 'bg-[#00d4ff]/20 text-[#00d4ff]'}`}>{cls.type}</span>
-                       <button onClick={() => markAttendance(cls.id)} className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${attendance[cls.id] ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
-                         {attendance[cls.id] ? `PRESENT (${attendance[cls.id]})` : 'MARK PRESENT'}
+                       <button 
+                         onClick={() => markAttendance(cls.id)} 
+                         disabled={attendanceMarked[cls.id]}
+                         className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${
+                           attendanceMarked[cls.id] 
+                             ? 'bg-emerald-500 text-white cursor-not-allowed' 
+                             : 'bg-white/5 text-slate-400 hover:bg-white/10 cursor-pointer'
+                         }`}
+                       >
+                         {attendanceMarked[cls.id] ? (
+                           <span className="flex items-center gap-1">
+                             <CheckCircle size={12} /> MARKED
+                           </span>
+                         ) : 'MARK PRESENT'}
                        </button>
                     </div>
                   </div>
@@ -479,6 +521,91 @@ export default function Home() {
                 <span className="text-4xl font-black text-[#00d4ff]">{calculatedCWA || '--'}</span>
               </div>
               <button onClick={handleCalculateCWA} className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(0,212,255,0.3)]">Calculate Score</button>
+            </GlassCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* NEW: UPDATES HUB MODAL */}
+      <AnimatePresence>
+        {showUpdatesHub && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+            <GlassCard className="w-full max-w-3xl p-8 relative max-h-[90vh] overflow-y-auto">
+              <button onClick={() => setShowUpdatesHub(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white text-2xl">✕</button>
+              <h2 className="text-2xl font-black mb-6 text-white uppercase flex items-center gap-2">
+                <Bell className="text-purple-400" /> Updates Hub
+              </h2>
+
+              {/* Announcements Section */}
+              <div className="mb-8">
+                <h3 className="text-lg font-black mb-4 text-white flex items-center gap-2">
+                  📢 Announcements ({announcements.length})
+                </h3>
+                {announcements.length === 0 ? (
+                  <p className="text-center py-8 opacity-50 text-sm">No announcements yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {announcements.map((ann: any) => (
+                      <div
+                        key={ann.id}
+                        className={`p-4 rounded-2xl border-l-4 ${
+                          ann.type === 'urgent' ? 'border-red-500 bg-red-500/10' :
+                          ann.type === 'quiz' ? 'border-orange-500 bg-orange-500/10' :
+                          ann.type === 'deadline' ? 'border-yellow-500 bg-yellow-500/10' :
+                          'border-blue-500 bg-blue-500/10'
+                        }`}
+                      >
+                        <p className="font-medium text-sm mb-1 text-white">{ann.text}</p>
+                        <p className="text-xs opacity-50 font-bold">{ann.date}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Files Section */}
+              <div className="mb-8">
+                <h3 className="text-lg font-black mb-4 text-white flex items-center gap-2">
+                  📁 Shared Files ({files.length})
+                </h3>
+                {files.length === 0 ? (
+                  <p className="text-center py-8 opacity-50 text-sm">No files available yet</p>
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {files.map((file: any) => (
+                      <div key={file.id} className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                        <div className="mb-3">
+                          <p className="font-black text-sm text-white">{file.course}</p>
+                          <p className="text-xs opacity-50 font-bold uppercase">{file.week}</p>
+                        </div>
+                        <a
+                          href={file.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full p-2 bg-blue-600 text-white rounded-lg text-xs font-bold text-center hover:bg-blue-700 transition"
+                        >
+                          {file.type === 'notes' ? '📄 Notes' :
+                           file.type === 'recording' ? '🎥 Recording' :
+                           file.type === 'slides' ? '📊 Slides' : '📖 Manual'}
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Course Updates Section */}
+              <div>
+                <h3 className="text-lg font-black mb-4 text-white flex items-center gap-2">
+                  📚 Course Updates
+                </h3>
+                <div className="space-y-2">
+                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                    <p className="text-sm font-bold text-emerald-400">All courses are on schedule</p>
+                    <p className="text-xs opacity-60 mt-1">Check announcements for any changes</p>
+                  </div>
+                </div>
+              </div>
             </GlassCard>
           </motion.div>
         )}
