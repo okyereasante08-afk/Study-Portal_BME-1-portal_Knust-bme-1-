@@ -90,3 +90,19 @@ export interface TriviaItem {
   subject: string;
   content: string;
 }
+export interface Theme {
+  id: string;
+  name: string;
+  primary: string;
+  bgGradient: string;
+  orb1: string;
+  orb2: string;
+}
+
+export interface FeedbackItem {
+  id: string;
+  text: string;
+  type: 'suggestion' | 'issue' | 'feature';
+  votes: number;
+  date: string;
+}
