@@ -1,14 +1,17 @@
 "use client";
 
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Calculator, MessageCircle, BookOpen, Calendar, LogOut, Activity,
-  Download, Upload, Bell, CheckCircle, FileText, Settings, User, Palette, Plus, X, Star, Medal, Award, ThumbsUp, MessageSquare
+  Download, Upload, Bell, CheckCircle, FileText, Settings, User, Palette, Plus, X, Star, Medal, Award, ThumbsUp, MessageSquare,
+  Folder, List, Layout, Users
 } from "lucide-react";
-import { THEMES, CLASS_LIST, TIMETABLE, COURSE_CREDITS, ADMIN_IDS, ACHIEVEMENTS } from "./constants";
-import { Theme, FeedbackItem } from "./types";
-import { GlassCard, StreakWidget, SmartReminder, Leaderboard, AnalyticsDashboard } from "./components/DashboardWidgets";
+import { THEMES, CLASS_LIST, TIMETABLE, COURSE_CREDITS, ADMIN_IDS, ACHIEVEMENTS, RESOURCES } from "@/lib/constants";
+import { Theme, FeedbackItem } from "@/lib/types";
+import { GlassCard, StreakWidget, SmartReminder, Leaderboard, AnalyticsDashboard, ResourcesList, DailyInspiration, FeedbackBoard } from "@/components/UltraWidgets";
 
 // --- Background Component ---
 const BioBackground = ({ theme }: { theme: Theme }) => (
@@ -30,7 +33,7 @@ const BioBackground = ({ theme }: { theme: Theme }) => (
   </div>
 );
 
-export default function App() {
+export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentID, setStudentID] = useState('');
   const [password, setPassword] = useState('');
@@ -38,25 +41,28 @@ export default function App() {
   const [studentName, setStudentName] = useState('');
   const [loginError, setLoginError] = useState('');
   const [currentTheme, setCurrentTheme] = useState<Theme>(THEMES.ocean);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'analytics' | 'leaderboard'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'analytics' | 'leaderboard' | 'community'>('dashboard');
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
 
   // Data States
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
-  const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
+  // Changed to store date string instead of boolean for daily reset logic
+  const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: string }>({}); 
   const [notes, setNotes] = useState('');
   const [daysToMidSem, setDaysToMidSem] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
+  const [streak, setStreak] = useState(0);
   
   // Modals
   const [showCWAModal, setShowCWAModal] = useState(false);
   const [showUpdatesHub, setShowUpdatesHub] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [fabOpen, setFabOpen] = useState(false);
+  const [showWeeklyTimetable, setShowWeeklyTimetable] = useState(false);
   
   // Feedback Form State
   const [feedbackText, setFeedbackText] = useState('');
@@ -145,7 +151,19 @@ export default function App() {
     if (savedAtt) setAttendance(JSON.parse(savedAtt));
     
     const savedMarked = localStorage.getItem(`bme-marked-${id}`);
-    if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+    if (savedMarked) {
+        // Handle potential backward compatibility if it was boolean
+        try {
+            const parsed = JSON.parse(savedMarked);
+            if (typeof Object.values(parsed)[0] === 'boolean') {
+                 setAttendanceMarked({}); // Reset if old format
+            } else {
+                 setAttendanceMarked(parsed);
+            }
+        } catch {
+            setAttendanceMarked({});
+        }
+    }
     
     const savedNotes = localStorage.getItem('bme-notes');
     if (savedNotes) setNotes(savedNotes);
@@ -159,11 +177,36 @@ export default function App() {
     const savedAchievements = JSON.parse(localStorage.getItem(`bme-achievements-${id}`) || '[]');
     setUnlockedAchievements(savedAchievements);
 
+    // Initial Streak Check
+    const storedStreak = parseInt(localStorage.getItem('bme-streak') || '0');
+    const lastAttDate = localStorage.getItem('bme-last-attendance');
+    
+    // Check if streak is broken (more than 1 day gap from TODAY, ignoring if today is not marked yet)
+    if (lastAttDate) {
+         const today = new Date();
+         today.setHours(0,0,0,0);
+         const last = new Date(lastAttDate);
+         last.setHours(0,0,0,0);
+         const diffTime = Math.abs(today.getTime() - last.getTime());
+         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+         
+         // If last marked was yesterday (1 day diff) or today (0 day diff), streak survives.
+         // If diff > 1, streak resets to 0 (or 1 if we count previous valid block, but let's reset to 0 to force consistency).
+         if (diffDays > 1) {
+             setStreak(0);
+             localStorage.setItem('bme-streak', '0');
+         } else {
+             setStreak(storedStreak);
+         }
+    } else {
+        setStreak(0);
+    }
+
     checkAchievements(id, { 
-      streak: parseInt(localStorage.getItem('bme-streak') || '0'),
+      streak: storedStreak,
       cwaUsage: savedCwaUsage,
       attendanceCount: Object.values(JSON.parse(savedAtt || '{}')).reduce((a: any, b: any) => a + b, 0),
-      hasEarlyCheckIn: false // Would be true if marking attendance now
+      hasEarlyCheckIn: false 
     }, savedAchievements);
   };
 
@@ -229,10 +272,6 @@ export default function App() {
     localStorage.setItem('bme-session-id', id);
     if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
     
-    // Update Streak Data
-    const today = new Date().toDateString();
-    localStorage.setItem('bme-last-login', today);
-    
     restoreSession(id);
     
     if (notificationsEnabled === false && "Notification" in window && Notification.permission === "default") {
@@ -249,18 +288,53 @@ export default function App() {
   };
 
   const markAttendance = (id: string) => {
-    if (attendanceMarked[id]) return;
+    const today = new Date().toDateString();
+    // Only allow marking if not already marked for TODAY
+    if (attendanceMarked[id] === today) return;
+
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
-    const newMarked = { ...attendanceMarked, [id]: true };
+    const newMarked = { ...attendanceMarked, [id]: today }; 
+    
     setAttendance(newAtt);
     setAttendanceMarked(newMarked);
     localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
     localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
 
+    // --- Update Streak Logic ---
+    const lastAttDate = localStorage.getItem('bme-last-attendance');
+    let newStreak = streak;
+
+    if (!lastAttDate) {
+        newStreak = 1;
+    } else {
+        const last = new Date(lastAttDate);
+        const now = new Date();
+        // Reset hours for day comparison
+        last.setHours(0,0,0,0);
+        now.setHours(0,0,0,0);
+        
+        const diffTime = Math.abs(now.getTime() - last.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+            newStreak = streak + 1;
+        } else if (diffDays > 1) {
+            newStreak = 1; // Reset if broken
+        } 
+        // if diffDays === 0, already marked once today, streak stays same
+    }
+    
+    if (newStreak !== streak) {
+        setStreak(newStreak);
+        localStorage.setItem('bme-streak', newStreak.toString());
+    }
+    localStorage.setItem('bme-last-attendance', new Date().toISOString());
+    // ---------------------------
+
     // Check Achievements
     const isEarly = new Date().getHours() < 8;
     checkAchievements(studentID, {
-      streak: parseInt(localStorage.getItem('bme-streak') || '0'),
+      streak: newStreak,
       cwaUsage: cwaUsageCount,
       attendanceCount: Object.values(newAtt).reduce((a: any, b: any) => a + b, 0),
       hasEarlyCheckIn: isEarly
@@ -314,7 +388,7 @@ export default function App() {
       setFeedbackList(newList);
       localStorage.setItem('bme-feedback', JSON.stringify(newList));
       setFeedbackText('');
-      // Show success feedback logic here if needed
+      setShowFeedbackModal(false);
   };
 
   const handleUpvote = (id: string) => {
@@ -328,6 +402,35 @@ export default function App() {
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const todayName = days[new Date().getDay() - 1] || 'Weekend';
+
+  const renderClassRow = (cls: any, canMark: boolean) => (
+    <div key={cls.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all gap-4 mb-3">
+        <div className="flex gap-4 items-center">
+            <div className="text-[10px] font-bold opacity-40 bg-white/5 p-2 rounded-lg min-w-[60px] text-center">
+                <div>ENDS</div>
+                <div style={{color: currentTheme.primary}}>{cls.time.split(' - ')[1]}</div>
+            </div>
+            <div>
+                <h4 className="font-bold text-base text-white">{cls.course}</h4>
+                <p className="text-[10px] opacity-50 font-bold uppercase">📍 {cls.venue} • {cls.lecturer}</p>
+            </div>
+        </div>
+        <div className="flex items-center gap-3 justify-between md:justify-end">
+            <button 
+                onClick={() => markAttendance(cls.id)} 
+                disabled={!canMark || attendanceMarked[cls.id] === new Date().toDateString()}
+                className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${
+                !canMark ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500' :
+                attendanceMarked[cls.id] === new Date().toDateString()
+                    ? 'bg-emerald-500 text-white cursor-not-allowed' 
+                    : 'bg-white/5 text-slate-400 hover:bg-white/10 cursor-pointer'
+                }`}
+            >
+                {attendanceMarked[cls.id] === new Date().toDateString() ? <span className="flex items-center gap-1"><CheckCircle size={12} /> MARKED</span> : 'MARK PRESENT'}
+            </button>
+        </div>
+    </div>
+  );
 
   if (!mounted) return null;
 
@@ -408,23 +511,24 @@ export default function App() {
         {/* Top Widgets (Streak & Reminder) */}
         {activeTab === 'dashboard' && (
            <div className="grid md:grid-cols-2 gap-4">
-              <StreakWidget currentTheme={currentTheme} />
+              <StreakWidget currentTheme={currentTheme} streak={streak} />
               <SmartReminder currentTheme={currentTheme} />
            </div>
         )}
 
         {/* Navigation Tabs */}
         <div className="flex justify-center mb-6">
-           <div className="bg-white/5 p-1 rounded-2xl flex gap-1">
+           <div className="bg-white/5 p-1 rounded-2xl flex gap-1 overflow-x-auto max-w-full">
               {[
                 {id: 'dashboard', label: 'Dashboard'},
                 {id: 'analytics', label: 'Analytics'},
-                {id: 'leaderboard', label: 'Leaderboard'}
+                {id: 'leaderboard', label: 'Leaderboard'},
+                {id: 'community', label: 'Community'}
               ].map(tab => (
                  <button 
                    key={tab.id}
                    onClick={() => setActiveTab(tab.id as any)}
-                   className={`px-6 py-2 rounded-xl text-xs font-bold uppercase transition-all ${activeTab === tab.id ? 'bg-white text-black shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                   className={`px-6 py-2 rounded-xl text-xs font-bold uppercase transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-black shadow-lg' : 'text-slate-400 hover:text-white'}`}
                  >
                    {tab.label}
                  </button>
@@ -444,52 +548,45 @@ export default function App() {
                     <Calculator style={{color: currentTheme.primary}} />
                     <span className="text-[10px] font-bold uppercase">CWA Calc</span>
                   </button>
-                   <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-purple-500/20 transition-all relative">
+                  <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" className="p-4 rounded-3xl flex flex-col items-center gap-2 hover:bg-white/10 transition-all bg-blue-500/10 border border-blue-500/20">
+                     <Folder className="text-blue-400" />
+                     <span className="text-[10px] font-bold uppercase">Resources</span>
+                  </a>
+                  <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-purple-500/20 transition-all relative">
                     <Bell className="text-purple-400" />
                     <span className="text-[10px] font-bold uppercase">Updates</span>
                   </button>
-                   <GlassCard className="p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                     <p className="text-2xl font-black text-white">{daysToMidSem}</p>
-                     <p className="text-[8px] font-bold text-red-400 uppercase tracking-[0.1em]">Days to Midsem</p>
-                  </GlassCard>
                 </div>
 
                 {/* Timetable */}
                 <GlassCard className="p-6 md:p-8">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2">
-                      <Calendar style={{color: currentTheme.primary}} /> Today's Agenda
+                      <Calendar style={{color: currentTheme.primary}} /> {showWeeklyTimetable ? 'Weekly Schedule' : "Today's Agenda"}
                     </h2>
-                    <span className="text-xs font-bold opacity-50 uppercase">{todayName}</span>
+                    <div className="flex items-center gap-3">
+                         {!showWeeklyTimetable && <span className="text-xs font-bold opacity-50 uppercase">{todayName}</span>}
+                         <button 
+                            onClick={() => setShowWeeklyTimetable(!showWeeklyTimetable)}
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                         >
+                            {showWeeklyTimetable ? <Layout size={16} /> : <List size={16} />}
+                         </button>
+                    </div>
                   </div>
                   <div className="space-y-4">
-                    {TIMETABLE[todayName]?.length ? TIMETABLE[todayName].map((cls: any) => (
-                      <div key={cls.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all gap-4">
-                        <div className="flex gap-4 items-center">
-                          <div className="text-[10px] font-bold opacity-40 bg-white/5 p-2 rounded-lg">
-                            <div>ENDS</div>
-                            <div style={{color: currentTheme.primary}}>{cls.time.split(' - ')[1]}</div>
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-base text-white">{cls.course}</h4>
-                            <p className="text-[10px] opacity-50 font-bold uppercase">📍 {cls.venue} • {cls.lecturer}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 justify-between md:justify-end">
-                           <button 
-                             onClick={() => markAttendance(cls.id)} 
-                             disabled={attendanceMarked[cls.id]}
-                             className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${
-                               attendanceMarked[cls.id] 
-                                 ? 'bg-emerald-500 text-white cursor-not-allowed' 
-                                 : 'bg-white/5 text-slate-400 hover:bg-white/10 cursor-pointer'
-                             }`}
-                           >
-                             {attendanceMarked[cls.id] ? <span className="flex items-center gap-1"><CheckCircle size={12} /> MARKED</span> : 'MARK PRESENT'}
-                           </button>
-                        </div>
-                      </div>
-                    )) : <p className="text-[10px] opacity-30 italic py-4 text-center uppercase tracking-widest">No Classes Today</p>}
+                    {showWeeklyTimetable ? (
+                        Object.entries(TIMETABLE).map(([day, classes]) => (
+                            <div key={day} className="mb-6 last:mb-0">
+                                <h3 className="font-bold text-xs uppercase opacity-40 mb-3 ml-1">{day}</h3>
+                                {classes.map((cls: any) => renderClassRow(cls, day === todayName))}
+                            </div>
+                        ))
+                    ) : (
+                        TIMETABLE[todayName]?.length ? 
+                        TIMETABLE[todayName].map((cls: any) => renderClassRow(cls, true)) : 
+                        <p className="text-[10px] opacity-30 italic py-4 text-center uppercase tracking-widest">No Classes Today</p>
+                    )}
                   </div>
                 </GlassCard>
 
@@ -508,11 +605,21 @@ export default function App() {
                      className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600"
                    />
                 </GlassCard>
+
+                <DailyInspiration currentTheme={currentTheme} />
             </>
         )}
 
-        {activeTab === 'analytics' && <AnalyticsDashboard currentTheme={currentTheme} />}
+        {activeTab === 'analytics' && <AnalyticsDashboard currentTheme={currentTheme} attendance={attendance} />}
         {activeTab === 'leaderboard' && <Leaderboard currentTheme={currentTheme} myId={studentID} />}
+        {activeTab === 'community' && (
+          <FeedbackBoard 
+             currentTheme={currentTheme} 
+             feedbackList={feedbackList} 
+             onUpvote={handleUpvote} 
+             onRequestPost={() => setShowFeedbackModal(true)}
+          />
+        )}
 
       </main>
 
