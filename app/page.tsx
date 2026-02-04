@@ -1,11 +1,13 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Calculator, MessageCircle, BookOpen, Calendar, LogOut, Activity,
-  Download, Upload, Bell, CheckCircle, FileText, Settings, User, Palette
+  Download, Upload, Bell, CheckCircle, FileText, Settings, User, Palette, Plus, X, Star, Medal, Award, ThumbsUp, MessageSquare
 } from "lucide-react";
-import { THEMES, CLASS_LIST, TIMETABLE, COURSE_CREDITS, ADMIN_IDS } from "./constants";
-import { Theme } from "./types";
+import { THEMES, CLASS_LIST, TIMETABLE, COURSE_CREDITS, ADMIN_IDS, ACHIEVEMENTS } from "./constants";
+import { Theme, FeedbackItem } from "./types";
 import { GlassCard, StreakWidget, SmartReminder, Leaderboard, AnalyticsDashboard } from "./components/DashboardWidgets";
 
 // --- Background Component ---
@@ -38,6 +40,7 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = useState<Theme>(THEMES.ocean);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'analytics' | 'leaderboard'>('dashboard');
   const [showThemeModal, setShowThemeModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
 
   // Data States
@@ -47,19 +50,29 @@ export default function App() {
   const [daysToMidSem, setDaysToMidSem] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
+  const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
   
   // Modals
   const [showCWAModal, setShowCWAModal] = useState(false);
   const [showUpdatesHub, setShowUpdatesHub] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [fabOpen, setFabOpen] = useState(false);
   
+  // Feedback Form State
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackType, setFeedbackType] = useState<'suggestion' | 'issue' | 'feature'>('suggestion');
+
   // CWA Logic
   const [marks, setMarks] = useState<{ [key: string]: string }>({});
   const [calculatedCWA, setCalculatedCWA] = useState<number | null>(null);
+  const [cwaUsageCount, setCwaUsageCount] = useState(0);
 
   const [loginMode, setLoginMode] = useState<'student' | 'admin'>('student');
   const [adminAccessCode, setAdminAccessCode] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -72,10 +85,55 @@ export default function App() {
       if (savedThemeId && THEMES[savedThemeId]) {
         setCurrentTheme(THEMES[savedThemeId]);
       }
+      if ("Notification" in window && Notification.permission === "granted") {
+        setNotificationsEnabled(true);
+      }
+      // Load Feedback
+      const savedFeedback = localStorage.getItem('bme-feedback');
+      if (savedFeedback) setFeedbackList(JSON.parse(savedFeedback));
     }
     const midSemDate = new Date('2026-02-23T00:00:00');
     setDaysToMidSem(Math.ceil((midSemDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
   }, []);
+
+  // Smart Notifications Interval
+  useEffect(() => {
+    if (!notificationsEnabled) return;
+
+    const checkUpcoming = () => {
+      const now = new Date();
+      const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][now.getDay()];
+      const courses = TIMETABLE[dayName] || [];
+      const notifiedKey = `notified-${now.toDateString()}`;
+      
+      courses.forEach(c => {
+        const [startStr] = c.time.split(' - ');
+        const [h, m] = startStr.split(':').map(Number);
+        const startTime = new Date(now);
+        startTime.setHours(h, m, 0);
+
+        const diff = (startTime.getTime() - now.getTime()) / 60000;
+        const eventId = `${notifiedKey}-${c.id}`;
+
+        if (diff > 0 && diff <= 30 && !sessionStorage.getItem(eventId)) {
+           new Notification("Class Starting Soon!", {
+             body: `${c.course} starts in ${Math.floor(diff)} minutes at ${c.venue}`,
+             icon: "/favicon.ico" // assuming default favicon
+           });
+           sessionStorage.setItem(eventId, 'true');
+        }
+      });
+    };
+
+    const interval = setInterval(checkUpcoming, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, [notificationsEnabled]);
+
+  const requestNotificationPermission = async () => {
+    if (!("Notification" in window)) return;
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") setNotificationsEnabled(true);
+  };
 
   const restoreSession = (id: string) => {
     setStudentID(id);
@@ -85,12 +143,51 @@ export default function App() {
     
     const savedAtt = localStorage.getItem('bme-attendance');
     if (savedAtt) setAttendance(JSON.parse(savedAtt));
+    
     const savedMarked = localStorage.getItem(`bme-marked-${id}`);
     if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+    
     const savedNotes = localStorage.getItem('bme-notes');
     if (savedNotes) setNotes(savedNotes);
+    
     const savedAvatar = localStorage.getItem(`bme-avatar-${id}`);
     if (savedAvatar) setAvatar(savedAvatar);
+
+    const savedCwaUsage = parseInt(localStorage.getItem(`bme-cwa-usage-${id}`) || '0');
+    setCwaUsageCount(savedCwaUsage);
+
+    const savedAchievements = JSON.parse(localStorage.getItem(`bme-achievements-${id}`) || '[]');
+    setUnlockedAchievements(savedAchievements);
+
+    checkAchievements(id, { 
+      streak: parseInt(localStorage.getItem('bme-streak') || '0'),
+      cwaUsage: savedCwaUsage,
+      attendanceCount: Object.values(JSON.parse(savedAtt || '{}')).reduce((a: any, b: any) => a + b, 0),
+      hasEarlyCheckIn: false // Would be true if marking attendance now
+    }, savedAchievements);
+  };
+
+  const checkAchievements = (id: string, data: any, currentUnlocked: string[]) => {
+    const newUnlocked = [...currentUnlocked];
+    let changed = false;
+
+    ACHIEVEMENTS.forEach(ach => {
+      if (!newUnlocked.includes(ach.id) && ach.condition(data)) {
+         newUnlocked.push(ach.id);
+         changed = true;
+         // Show notification for achievement
+         if (notificationsEnabled) {
+            new Notification("Achievement Unlocked! 🏆", { body: ach.title });
+         } else {
+            alert(`Achievement Unlocked: ${ach.title}`);
+         }
+      }
+    });
+
+    if (changed) {
+      setUnlockedAchievements(newUnlocked);
+      localStorage.setItem(`bme-achievements-${id}`, JSON.stringify(newUnlocked));
+    }
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -137,6 +234,10 @@ export default function App() {
     localStorage.setItem('bme-last-login', today);
     
     restoreSession(id);
+    
+    if (notificationsEnabled === false && "Notification" in window && Notification.permission === "default") {
+        setTimeout(requestNotificationPermission, 2000);
+    }
   };
 
   const handleLogout = () => {
@@ -155,6 +256,15 @@ export default function App() {
     setAttendanceMarked(newMarked);
     localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
     localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
+
+    // Check Achievements
+    const isEarly = new Date().getHours() < 8;
+    checkAchievements(studentID, {
+      streak: parseInt(localStorage.getItem('bme-streak') || '0'),
+      cwaUsage: cwaUsageCount,
+      attendanceCount: Object.values(newAtt).reduce((a: any, b: any) => a + b, 0),
+      hasEarlyCheckIn: isEarly
+    }, unlockedAchievements);
   };
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,6 +287,43 @@ export default function App() {
         if (mark > 0) { weightedSum += mark * c.credits; totalCredits += c.credits; }
       });
       setCalculatedCWA(totalCredits > 0 ? parseFloat((weightedSum / totalCredits).toFixed(2)) : null);
+      
+      const newCount = cwaUsageCount + 1;
+      setCwaUsageCount(newCount);
+      localStorage.setItem(`bme-cwa-usage-${studentID}`, newCount.toString());
+
+      checkAchievements(studentID, {
+        streak: parseInt(localStorage.getItem('bme-streak') || '0'),
+        cwaUsage: newCount,
+        attendanceCount: Object.values(attendance).reduce((a: any, b: any) => a + b, 0),
+        hasEarlyCheckIn: false
+      }, unlockedAchievements);
+  };
+
+  const handleFeedbackSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if(!feedbackText.trim()) return;
+      const newItem: FeedbackItem = {
+          id: Date.now().toString(),
+          text: feedbackText,
+          type: feedbackType,
+          votes: 0,
+          date: new Date().toLocaleDateString()
+      };
+      const newList = [newItem, ...feedbackList];
+      setFeedbackList(newList);
+      localStorage.setItem('bme-feedback', JSON.stringify(newList));
+      setFeedbackText('');
+      // Show success feedback logic here if needed
+  };
+
+  const handleUpvote = (id: string) => {
+      const newList = feedbackList.map(item => {
+          if(item.id === id) return {...item, votes: item.votes + 1};
+          return item;
+      }).sort((a,b) => b.votes - a.votes);
+      setFeedbackList(newList);
+      localStorage.setItem('bme-feedback', JSON.stringify(newList));
   };
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -240,7 +387,7 @@ export default function App() {
       {/* Header */}
       <header className="sticky top-0 z-40 p-4">
         <GlassCard className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center rounded-full border-white/10">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setShowProfileModal(true)}>
              <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden border-2" style={{borderColor: currentTheme.primary}}>
                 {avatar ? <img src={avatar} alt="Profile" className="w-full h-full object-cover" /> : <User className="w-full h-full p-2 opacity-50" />}
              </div>
@@ -369,6 +516,140 @@ export default function App() {
 
       </main>
 
+      {/* Floating Action Button (Widget) */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <AnimatePresence>
+          {fabOpen && (
+            <motion.div initial={{opacity:0, scale:0.8}} animate={{opacity:1, scale:1}} exit={{opacity:0, scale:0.8}} className="flex flex-col gap-3 mb-4 items-end">
+               <button onClick={() => {setShowFeedbackModal(true); setFabOpen(false);}} className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-full shadow-xl font-bold text-xs uppercase hover:bg-gray-100">
+                <span>Feedback</span> <MessageSquare size={16} />
+              </button>
+              <button onClick={() => {setShowCWAModal(true); setFabOpen(false);}} className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-full shadow-xl font-bold text-xs uppercase hover:bg-gray-100">
+                <span>Check CWA</span> <Calculator size={16} />
+              </button>
+              <button onClick={() => {setFabOpen(false); document.querySelector('textarea')?.focus()}} className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-full shadow-xl font-bold text-xs uppercase hover:bg-gray-100">
+                <span>Add Note</span> <FileText size={16} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <button 
+           onClick={() => setFabOpen(!fabOpen)}
+           className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-105 active:scale-95"
+           style={{backgroundColor: currentTheme.primary, color: '#0a0f1c'}}
+        >
+          {fabOpen ? <X size={24} strokeWidth={3} /> : <Plus size={24} strokeWidth={3} />}
+        </button>
+      </div>
+
+      {/* Profile/Achievements Modal */}
+      <AnimatePresence>
+        {showProfileModal && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+            <GlassCard className="w-full max-w-sm p-8 relative">
+                <button onClick={() => setShowProfileModal(false)} className="absolute top-4 right-4 text-slate-500 hover:text-white">✕</button>
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-16 h-16 rounded-full border-2 overflow-hidden" style={{borderColor: currentTheme.primary}}>
+                     {avatar ? <img src={avatar} alt="Profile" className="w-full h-full object-cover" /> : <User className="w-full h-full p-4 opacity-50" />}
+                  </div>
+                  <div>
+                     <h2 className="text-lg font-black leading-tight text-white">{studentName}</h2>
+                     <p className="text-xs font-bold opacity-50 uppercase">{studentID}</p>
+                     <div className="flex gap-2 mt-2">
+                       <span className="px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-500 text-[10px] font-bold border border-yellow-500/30 flex items-center gap-1">
+                         <Star size={10} /> {unlockedAchievements.length} Badges
+                       </span>
+                     </div>
+                  </div>
+                </div>
+
+                <h3 className="text-xs font-black uppercase opacity-60 mb-4 flex items-center gap-2">
+                   <Award size={14} /> Achievements
+                </h3>
+                <div className="space-y-3 max-h-[40vh] overflow-y-auto pr-2">
+                   {ACHIEVEMENTS.map(ach => {
+                      const isUnlocked = unlockedAchievements.includes(ach.id);
+                      return (
+                        <div key={ach.id} className={`p-3 rounded-2xl border flex items-center gap-3 ${isUnlocked ? `bg-[${currentTheme.primary}]/10 border-[${currentTheme.primary}]/30` : 'bg-white/5 border-white/5 opacity-50 grayscale'}`}>
+                           <div className="text-2xl">{ach.icon}</div>
+                           <div>
+                              <p className={`text-xs font-bold ${isUnlocked ? 'text-white' : 'text-slate-400'}`}>{ach.title}</p>
+                              <p className="text-[10px] opacity-50">{ach.description}</p>
+                           </div>
+                           {isUnlocked && <CheckCircle size={14} className="ml-auto text-emerald-400" />}
+                        </div>
+                      )
+                   })}
+                </div>
+            </GlassCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Feedback Modal */}
+      <AnimatePresence>
+        {showFeedbackModal && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+             <GlassCard className="w-full max-w-md p-8 relative flex flex-col max-h-[85vh]">
+                <button onClick={() => setShowFeedbackModal(false)} className="absolute top-4 right-4 text-slate-500 hover:text-white">✕</button>
+                <h2 className="text-xl font-black mb-6 text-white uppercase flex items-center gap-2">
+                    <MessageSquare className="text-blue-400" /> Anonymous Box
+                </h2>
+                
+                <form onSubmit={handleFeedbackSubmit} className="mb-6">
+                    <div className="flex gap-2 mb-4 bg-white/5 p-1 rounded-xl">
+                        {(['suggestion', 'issue', 'feature'] as const).map(t => (
+                            <button 
+                              key={t}
+                              type="button"
+                              onClick={() => setFeedbackType(t)}
+                              className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${feedbackType === t ? `bg-[${currentTheme.primary}] text-black` : 'text-slate-400 hover:text-white'}`}
+                              style={{backgroundColor: feedbackType === t ? currentTheme.primary : 'transparent'}}
+                            >
+                                {t}
+                            </button>
+                        ))}
+                    </div>
+                    <textarea 
+                       value={feedbackText}
+                       onChange={e => setFeedbackText(e.target.value)}
+                       placeholder="Type your feedback anonymously..."
+                       className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-white/30 resize-none h-24 mb-4"
+                    />
+                    <button className="w-full py-3 rounded-xl font-black uppercase text-xs" style={{backgroundColor: currentTheme.primary, color: '#0a0f1c'}}>
+                        Submit Feedback
+                    </button>
+                </form>
+
+                <div className="overflow-y-auto flex-1 pr-2 space-y-3">
+                   <h3 className="text-xs font-bold opacity-50 uppercase mb-2">Recent Submissions</h3>
+                   {feedbackList.length === 0 ? (
+                       <p className="text-center text-xs opacity-30 italic py-4">No feedback yet. Be the first!</p>
+                   ) : (
+                       feedbackList.map(item => (
+                           <div key={item.id} className="p-4 rounded-xl bg-white/5 border border-white/5">
+                               <div className="flex justify-between items-start mb-2">
+                                   <span className={`text-[9px] font-bold uppercase px-2 py-1 rounded bg-white/5 ${item.type === 'issue' ? 'text-red-400' : item.type === 'feature' ? 'text-purple-400' : 'text-blue-400'}`}>
+                                       {item.type}
+                                   </span>
+                                   <span className="text-[9px] opacity-30">{item.date}</span>
+                               </div>
+                               <p className="text-sm text-slate-200 mb-3">{item.text}</p>
+                               <button 
+                                 onClick={() => handleUpvote(item.id)}
+                                 className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors"
+                               >
+                                   <ThumbsUp size={14} /> {item.votes}
+                               </button>
+                           </div>
+                       ))
+                   )}
+                </div>
+             </GlassCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Theme Modal */}
       <AnimatePresence>
         {showThemeModal && (
@@ -403,6 +684,15 @@ export default function App() {
                                <span className="text-[10px] font-bold uppercase opacity-50">Click to upload</span>
                                <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
                            </label>
+                       </div>
+                       <div>
+                           <p className="text-xs font-bold opacity-50 uppercase mb-3">Notifications</p>
+                           <button 
+                             onClick={requestNotificationPermission}
+                             className={`w-full py-3 rounded-xl text-xs font-bold uppercase transition-all ${notificationsEnabled ? 'bg-emerald-500 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
+                           >
+                              {notificationsEnabled ? 'Notifications Active' : 'Enable Notifications'}
+                           </button>
                        </div>
                    </div>
                </GlassCard>
