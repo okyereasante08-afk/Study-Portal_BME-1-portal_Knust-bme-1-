@@ -13,9 +13,10 @@
     "lucide-react": "^0.400.0",
     "next": "16.1.6",
     "react": "19.2.3",
+    "recharts": "^2.5.0",
     "react-dom": "19.2.3"
   },
-  "devDependencies": {
+  "devDependencies": {"recharts": "^2.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
