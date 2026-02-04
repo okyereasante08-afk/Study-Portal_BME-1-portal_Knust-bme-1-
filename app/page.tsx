@@ -19,7 +19,9 @@ import {
   FileText,
   Bell,
   Folder,
-  CheckCircle
+  CheckCircle,
+  Download,
+  Upload
 } from "lucide-react";
 
 // --- YOUR ORIGINAL DATA ---
@@ -306,6 +308,69 @@ export default function Home() {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const todayName = days[new Date().getDay() - 1] || 'Weekend';
 
+  // Export profile data
+  const handleExportProfile = () => {
+    if (typeof window === 'undefined') return;
+    
+    const profileData = {
+      studentID,
+      studentName,
+      attendance,
+      attendanceMarked,
+      notes,
+      timestamp: new Date().toISOString(),
+      version: '1.0'
+    };
+    
+    const dataStr = JSON.stringify(profileData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `bme-profile-${studentID}-${Date.now()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Import profile data
+  const handleImportProfile = (event: any) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const profileData = JSON.parse(e.target?.result as string);
+        
+        // Validate data
+        if (profileData.studentID !== studentID) {
+          alert('Error: This profile belongs to a different student ID!');
+          return;
+        }
+        
+        // Import data
+        setAttendance(profileData.attendance || {});
+        setAttendanceMarked(profileData.attendanceMarked || {});
+        setNotes(profileData.notes || '');
+        
+        // Save to localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('bme-attendance', JSON.stringify(profileData.attendance || {}));
+          localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(profileData.attendanceMarked || {}));
+          localStorage.setItem('bme-notes', profileData.notes || '');
+        }
+        
+        alert('✅ Profile imported successfully!');
+      } catch (error) {
+        alert('❌ Error: Invalid profile file!');
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+  };
+
   // Don't render until mounted (prevents SSR issues)
   if (!mounted) {
     return null;
@@ -391,6 +456,30 @@ export default function Home() {
           </div>
           <div className="flex gap-2">
             {isAdmin && <Link href="/admin" className="p-2 bg-yellow-500/20 text-yellow-500 rounded-xl text-[10px] font-bold flex items-center px-4 uppercase">Admin</Link>}
+            
+            {/* Export Profile Button */}
+            <button 
+              onClick={handleExportProfile} 
+              className="p-2 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500/20 transition-all flex items-center gap-1 px-3"
+              title="Export Profile"
+            >
+              <Download size={16} />
+              <span className="text-[10px] font-bold uppercase hidden md:inline">Export</span>
+            </button>
+            
+            {/* Import Profile Button */}
+            <label className="p-2 bg-green-500/10 text-green-400 rounded-xl hover:bg-green-500/20 transition-all flex items-center gap-1 px-3 cursor-pointer"
+              title="Import Profile">
+              <Upload size={16} />
+              <span className="text-[10px] font-bold uppercase hidden md:inline">Import</span>
+              <input 
+                type="file" 
+                accept="application/json,.json"
+                onChange={handleImportProfile}
+                className="hidden"
+              />
+            </label>
+            
             <button onClick={handleLogout} className="p-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all"><LogOut size={18} /></button>
           </div>
         </GlassCard>
@@ -441,10 +530,14 @@ export default function Home() {
                 {TIMETABLE[day]?.length ? TIMETABLE[day].map((cls: any) => (
                   <div key={cls.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all gap-4">
                     <div className="flex gap-4 items-center">
-                      <div className="text-[10px] font-bold opacity-40 bg-white/5 p-2 rounded-lg">{cls.time.split(' - ')[0]}</div>
+                      <div className="text-[10px] font-bold opacity-40 bg-white/5 p-2 rounded-lg">
+                        <div>ENDS</div>
+                        <div className="text-[#00d4ff]">{cls.time.split(' - ')[1]}</div>
+                      </div>
                       <div>
                         <h4 className="font-bold text-base text-white">{cls.course}</h4>
                         <p className="text-[10px] opacity-50 font-bold uppercase">📍 {cls.venue} • {cls.lecturer}</p>
+                        <p className="text-[9px] opacity-30 font-bold mt-1">{cls.time}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 justify-between md:justify-end">
@@ -511,8 +604,18 @@ export default function Home() {
                 {COURSE_CREDITS.map(c => (
                   <div key={c.code} className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5">
                     <div><p className="font-bold text-xs uppercase text-white">{c.code}</p><p className="text-[10px] opacity-40 uppercase">{c.credits} Credits</p></div>
-                    <input type="number" placeholder="0" className="w-16 p-2 rounded-xl bg-black/20 text-center font-bold text-[#00d4ff] outline-none focus:border-[#00d4ff] border border-transparent" 
-                      onChange={(e) => setMarks({...marks, [c.code]: e.target.value})} />
+                    <input 
+                      type="number" 
+                      placeholder="0" 
+                      min="0" 
+                      max="100"
+                      className="w-16 p-2 rounded-xl bg-black/20 text-center font-bold text-[#00d4ff] outline-none focus:border-[#00d4ff] border border-transparent" 
+                      onChange={(e) => {
+                        const value = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+                        setMarks({...marks, [c.code]: value.toString()});
+                        e.target.value = value.toString();
+                      }} 
+                    />
                   </div>
                 ))}
               </div>
