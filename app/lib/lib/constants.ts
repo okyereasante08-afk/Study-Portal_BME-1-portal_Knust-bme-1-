@@ -1,3 +1,4 @@
+// lib/constants.ts
 import { Timetable, Theme, Achievement, SharedFile } from './types';
 
 export const ADMIN_IDS = ['22028883'];
@@ -188,44 +189,4 @@ export const TIMETABLE: Timetable = {
     { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab' },
     { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab' },
   ],
-  import { Theme } from "./types";
-
-export const THEMES: Record<string, Theme> = {
-  ocean: {
-    id: "ocean",
-    name: "Ocean Blue",
-    primary: "#3b82f6",
-    bgGradient: "from-blue-900/20 to-black",
-    orb1: "#1e40af",
-    orb2: "#3b82f6",
-  },
-  // Add more themes here if needed
-};
-
-export const CLASS_LIST: Record<string, string> = {
-  "22028883": "Admin User",
-  // Format: "StudentID": "Student Name"
-};
-
-export const TIMETABLE: Record<string, any[]> = {
-  Monday: [],
-  Tuesday: [],
-  Wednesday: [],
-  Thursday: [],
-  Friday: [],
-};
-
-export const COURSE_CREDITS = [
-  { code: "BME101", credits: 3 },
-];
-
-export const ADMIN_IDS = ["22028883"];
-
-export const ACHIEVEMENTS = [
-  { id: "streak_3", title: "3 Day Streak", icon: "🔥", description: "Login for 3 days straight", condition: (data: any) => data.streak >= 3 },
-];
-
-export const RESOURCES = [
-  { title: "Syllabus", link: "#" },
-];
 };
