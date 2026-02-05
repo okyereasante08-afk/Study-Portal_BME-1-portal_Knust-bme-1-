@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -19,8 +17,8 @@ import {
   ThumbsUp,
   Plus
 } from 'lucide-react';
-import { TIMETABLE, CLASS_LIST, QUOTES, TRIVIA } from '../constants';
-import { Theme, LeaderboardEntry, SharedFile, FeedbackItem } from '../types';
+import { TIMETABLE, CLASS_LIST, QUOTES, TRIVIA } from '@/lib/constants';
+import { Theme, LeaderboardEntry, SharedFile, FeedbackItem } from '@/lib/types';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 // --- Shared Components ---
