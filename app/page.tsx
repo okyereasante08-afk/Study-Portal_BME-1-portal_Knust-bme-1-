@@ -71,12 +71,12 @@ const COURSE_CREDITS = [
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: 'm1', time: '08:00 - 09:55', course: 'COE 181', venue: 'VCR', lecturer: 'K.O.K. Sarkodie', type: 'Lecture' },
     { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture' },
     { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture' },
   ],
   Tuesday: [
     { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab' },
+    { id: 'm1', time: '17:00 - 19:00', course: 'COE 181', venue: 'VSLA', lecturer: 'K.O.K. Sarkodie', type: 'Lecture' },
   ],
   Wednesday: [
     { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture' },
