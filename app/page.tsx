@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 // --- IMPORT UPDATES (Check these filenames in your folder!) ---
-import { THEMES, CLASS_LIST, TIMETABLE, COURSE_CREDITS, ADMIN_IDS, ACHIEVEMENTS, RESOURCES } from "@/lib/constants";
+import { THEMES, CLASS_LIST, TIMETABLE, COURSE_CREDITS, ADMIN_IDS, ACHIEVEMENTS, RESOURCES } from "@/lib/lib/lib/constants";
 import { Theme, FeedbackItem } from "@/lib/types";
 import { 
   GlassCard, 
