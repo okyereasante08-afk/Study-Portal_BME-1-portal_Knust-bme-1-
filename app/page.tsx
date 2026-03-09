@@ -1,15 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from 'next/link';
-import {
+import { 
   Calculator, MessageCircle, BookOpen, Calendar, LogOut, Activity,
   Download, Upload, Bell, CheckCircle, FileText, Send, AlertTriangle,
-  Zap, Coffee, Brain, Laugh
+  Zap, Coffee, Brain, Laugh, Play, ChevronRight, X, ExternalLink
 } from "lucide-react";
 
-const ADMIN_IDS = ['22028883'];
+// ============================================================
+// DATA
+// ============================================================
+
+const ADMIN_IDS = ['22028883']; 
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
   "21949701": "Adelaide Selorm Afi Dzimadzor", "21948324": "Adjei Pomaa Cresta", "21875208": "Adjoa Kwansema Eshun",
@@ -71,52 +75,119 @@ const COURSE_CREDITS = [
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture' },
-    { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture' },
+    { id: 'm1', time: '08:00 - 09:55', course: 'COE 181', venue: 'VCR', lecturer: 'K.O.K. Sarkodie', type: 'Lecture', totalClasses: 20 },
+    { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture', totalClasses: 20 },
+    { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture', totalClasses: 15 },
   ],
   Tuesday: [
-    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab' },
-    { id: 'm1', time: '17:00 - 19:00', course: 'COE 181', venue: 'VSLA', lecturer: 'K.O.K. Sarkodie', type: 'Lecture' },
+    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab', totalClasses: 12 },
   ],
   Wednesday: [
-    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture' },
-    { id: 'w2', time: '13:00 - 13:55', course: 'COE 181', venue: '303', lecturer: 'K.O.K Sarkodie', type: 'Lecture' },
+    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 20 },
+    { id: 'w2', time: '13:00 - 13:55', course: 'COE 181', venue: '303', lecturer: 'K.O.K Sarkodie', type: 'Lecture', totalClasses: 20 },
   ],
   Thursday: [
-    { id: 'th1', time: '08:00 - 09:55', course: 'ME 161', venue: 'A110', lecturer: 'K.O Amoabeng', type: 'Lecture' },
-    { id: 'th2', time: '13:00 - 14:55', course: 'MATH 151 B', venue: 'PB020', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture' },
-    { id: 'th3', time: '15:00 - 16:55', course: 'BME 161', venue: 'PB008', lecturer: 'P. Adjei', type: 'Lecture' },
+    { id: 'th1', time: '08:00 - 09:55', course: 'ME 161', venue: 'A110', lecturer: 'K.O Amoabeng', type: 'Lecture', totalClasses: 20 },
+    { id: 'th2', time: '13:00 - 14:55', course: 'MATH 151 B', venue: 'PB020', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 20 },
+    { id: 'th3', time: '15:00 - 16:55', course: 'BME 161', venue: 'PB008', lecturer: 'P. Adjei', type: 'Lecture', totalClasses: 20 },
   ],
   Friday: [
-    { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab' },
-    { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab' },
+    { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab', totalClasses: 12 },
+    { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab', totalClasses: 12 },
   ],
 };
 
+// ============================================================
+// BME SURVIVAL KIT — Your actual playlists
+// ============================================================
+const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: { label: string; url: string }[] }[] = [
+  {
+    course: 'MATH 151 — Linear Algebra',
+    color: 'blue',
+    emoji: '📐',
+    resources: [
+      { label: 'Linear Algebra Full Playlist', url: 'https://www.youtube.com/watch?v=VIhUX-8ZooM&list=PLInywrvFyvq4IE-nW-ikwkZ2v81n31HQX&t=214s' },
+    ]
+  },
+  {
+    course: 'ME 161 — Basic Mechanics',
+    color: 'orange',
+    emoji: '⚙️',
+    resources: [
+      { label: 'Basic Mechanics Playlist', url: 'https://www.youtube.com/watch?v=FnudcA72olU&list=PLInywrvFyvq6FUfAigJ3157kg-nZ020fd&t=35s' },
+    ]
+  },
+  {
+    course: 'EE 151 — Applied Electricity',
+    color: 'yellow',
+    emoji: '⚡',
+    resources: [
+      { label: 'Applied Electricity Playlist 1', url: 'https://www.youtube.com/watch?v=7VEbQWOQzA4&list=PLZX9WOQeh5xV_Aiubcy9S6kc1lpNnz2Nc' },
+      { label: 'Applied Electricity Playlist 2', url: 'https://www.youtube.com/watch?v=rE_0ejMU6yM&list=PLXePpKFSUW2abKgvj_hClQS1NK86SCHfy' },
+    ]
+  },
+  {
+    course: 'BME 161 — Cell Biology',
+    color: 'green',
+    emoji: '🧬',
+    resources: [
+      { label: 'Cell Structure & Function', url: 'https://www.youtube.com/watch?v=XRwc89cGsy4&list=PPSV' },
+      { label: 'Michaelis-Menten Equation (1)', url: 'https://www.youtube.com/watch?v=4eLjRcHnMCk&list=PPSV' },
+      { label: 'Michaelis-Menten Equation (2)', url: 'https://www.youtube.com/watch?v=CotD9m8Wm78&list=PPSV' },
+      { label: 'Bioenergetics Playlist', url: 'https://www.youtube.com/watch?v=luh2zg-dzBM&list=PL6-1ifYymxJYitIhsa4IrkHWncOicKpOy' },
+      { label: 'Cell Signaling (1)', url: 'https://www.youtube.com/watch?v=-dbRterutHY&list=PPSV' },
+      { label: 'Cell Signaling (2)', url: 'https://www.youtube.com/watch?v=FQFBygnIONU&list=PPSV' },
+      { label: 'Cell Junctions', url: 'https://www.youtube.com/watch?v=gmlA8V2zMv4&list=PPSV&t=992s' },
+      { label: 'Cell Adhesion Molecules (1)', url: 'https://www.youtube.com/watch?v=UM8i1Lfoc6U' },
+      { label: 'Cell Adhesion Molecules (2)', url: 'https://www.youtube.com/watch?v=CccR-3c3Jck' },
+      { label: 'DNA, Mitosis, Meiosis', url: 'https://www.youtube.com/watch?v=LUDws4JrIiI&t=2506s' },
+    ]
+  },
+  {
+    course: 'COE 153 — Engineering Tech',
+    color: 'purple',
+    emoji: '🖥️',
+    resources: [
+      { label: 'SolidWorks Tutorial', url: 'https://www.youtube.com/watch?v=Ulttc_2p4DY&list=PLrOFa8sDv6jcp8E3ayUFZ4iNI8uuPjXHe' },
+      { label: 'KiCad Tutorial (1)', url: 'https://www.youtube.com/watch?v=vLnu21fS22s&list=PLUOaI24LpvQPls1Ru_qECJrENwzD7XImd' },
+      { label: 'KiCad Tutorial (2)', url: 'https://www.youtube.com/watch?v=szu8dJoyikA&list=PLn6004q9oeqGl91KifK6xHGuqvXGb374G' },
+      { label: 'Arduino IDE', url: 'https://www.youtube.com/watch?v=zJ-LqeX_fLU&t=1706s' },
+      { label: 'HTML for Beginners', url: 'https://www.youtube.com/watch?v=HD13eq_Pmp8' },
+      { label: 'VS Code Tutorial', url: 'https://www.youtube.com/watch?v=VqCgcpAypFQ' },
+      { label: 'Computer Hardware Assembly (1)', url: 'https://www.youtube.com/watch?v=EJemXALSE6U&t=195s' },
+      { label: 'Computer Hardware Assembly (2)', url: 'https://www.youtube.com/watch?v=mozlEPyeVAY' },
+      { label: 'Computer Hardware Assembly (3)', url: 'https://www.youtube.com/watch?v=hptoIi7X_Tk' },
+      { label: 'Network Cable RJ45 (1)', url: 'https://www.youtube.com/watch?v=NWhoJp8UQpo' },
+      { label: 'Network Cable RJ45 (2)', url: 'https://www.youtube.com/watch?v=QMpWkkqX1eM&t=192s' },
+      { label: 'Network Cable RJ45 (3)', url: 'https://www.youtube.com/watch?v=T1Cp9F8qto8&t=78s' },
+      { label: 'Peer to Peer Networking (1)', url: 'https://www.youtube.com/watch?v=ie-qRQIQT4I' },
+      { label: 'Peer to Peer Networking (2)', url: 'https://www.youtube.com/watch?v=EYt8ZXsLb54' },
+    ]
+  },
+];
+
+// ============================================================
+// KNUST/GHANA-SPECIFIC PUNS (every 15 seconds)
+// ============================================================
 const BME_PUNS = [
-  "I have a lot of potential... but only at the right height in a gravity field. 🌍",
-  "My social life is like a BME project — always in the design phase, never delivered. 📐",
-  "I told a Cell Biology joke. No one got it. It went over their heads. 🦾",
-  "Why did the BME student fail Applied Electricity? Couldn't find the resistance. ⚡",
-  "I'm not lazy, I'm in a low-energy state. Thermodynamics said it's fine. 🧪",
-  "BME: Because Med School rejection letters needed an engineering solution. 🏥",
-  "My code works perfectly. I don't know why. I'm scared to touch it. 💻",
-  "Roses are red, violets are blue, I have a lab report due, and so do you. 📝",
-  "I'm 70% water and 30% caffeine. The other 30% is denial about finals. ☕",
-  "Applied Electricity exam tomorrow: May the voltage be ever in your favor. ⚡",
+  "Ei, the trotro of knowledge has left. Were you on board? 🚌",
+  "KNUST: Knowledge Never Stops Unless Tired. Very tired. 😴",
+  "PB212 lecture at 8am? My body is here but my soul is at the hostel. 🛏️",
+  "The way Ghanaians say 'I'll be there in 5 minutes'... that's my attendance rate. ⏰",
+  "CHEM 151 assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
+  "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*. 📝",
+  "My data finished during the online lecture. God's plan. 📡",
+  "Eating from Nkrumah Hall kitchen and still showing up to lab. We move. 🍛",
+  "The photocopier at Balme Library knows me by face at this point. 📚",
+  "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk. 💻",
+  "If stress was creditworthy, I'd have a First Class by now. 🎓",
+  "Passed Applied Electricity. My ancestors had to intervene personally. ⚡",
 ];
 
-const DANGER_TIPS = [
-  "Sit front row. Eye contact = attendance in lecturer's memory. 👁️",
-  "Befriend someone who ACTUALLY attends. Borrow their notes + soul. 📓",
-  "The library opens at 6am. You should know this by now. 📚",
-  "Email the lecturer. Be humble. Use 'Dear Esteemed Sir/Ma'. It works. 📧",
-  "Group chat emergency: 'Abeg who has the notes for the class I missed?' 🙏",
-];
-
-const STRESS_LABELS = [
-  "Chilling 😎", "It's Fine 🙂", "Kinda Stressed 😅", "Send Help 😰", "Applied Electricity Exam Tomorrow 💀"
-];
+// ============================================================
+// STRESS LABELS & FINALS MSG
+// ============================================================
+const STRESS_LABELS = ["Chilling 😎", "It's Fine 🙂", "Kinda Stressed 😅", "Send Help 😰", "Applied Electricity Exam Tomorrow 💀"];
 
 const getFinalsMessage = (days: number) => {
   if (days > 60) return { msg: "Finals? What finals? You're basically on holiday. 🏖️", color: "text-emerald-400" };
@@ -132,31 +203,183 @@ const getFinalsMessage = (days: number) => {
   return { msg: "Finals are OVER! Go outside. Touch grass. 🌿", color: "text-emerald-400" };
 };
 
+// ============================================================
+// ONBOARDING SLIDES
+// ============================================================
+const ONBOARDING_SLIDES = [
+  {
+    emoji: "🎓",
+    title: "Welcome to BME Portal",
+    body: "Your one-stop app for KNUST BME1. Timetable, attendance, CWA calculator — all in one dark glassmorphic masterpiece.",
+  },
+  {
+    emoji: "📅",
+    title: "Track Your Attendance",
+    body: "Hit 'Mark Present' after every class. The 70% bar turns green when you're exam-eligible. Don't let it go red — the danger zone is real.",
+  },
+  {
+    emoji: "🔔",
+    title: "Enable Notifications",
+    body: "Allow push notifications and we'll remind you 30 minutes before every lecture. No more running to PB212 with your shoes on the wrong feet.",
+  },
+  {
+    emoji: "📚",
+    title: "BME Survival Kit",
+    body: "Curated YouTube playlists for every course — Linear Algebra, Cell Biology, Applied Electricity and more. Your lecturers went too fast? We've got you.",
+  },
+  {
+    emoji: "🚀",
+    title: "You're Set!",
+    body: "KNUST BME1, Class of 2026. The grind is real but so is the glory. Let's go. 💪",
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+const timeToMinutes = (timeStr: string) => {
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+};
+
+// ============================================================
+// UI COMPONENTS
+// ============================================================
 const BioBackground = () => (
   <div className="fixed inset-0 -z-10 overflow-hidden bg-[#0a0f1c]">
     <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] via-[#0b1120] to-[#050914]" />
     <motion.div animate={{ x: [0, 100, 0], y: [0, -50, 0], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#00d4ff] blur-[120px] opacity-20" />
     <motion.div animate={{ x: [0, -100, 0], y: [0, 50, 0], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#3b0764] blur-[120px] opacity-20" />
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay"></div>
+    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay" />
   </div>
 );
 
 const GlassCard = ({ children, className = "", delay = 0 }: any) => (
-  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }} className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[32px] shadow-2xl ${className}`}>
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}
+    className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[32px] shadow-2xl ${className}`}>
     {children}
   </motion.div>
 );
 
 const DontPanic = ({ onClose }: { onClose: () => void }) => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center cursor-pointer">
-    <motion.div animate={{ scale: [1, 1.04, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-      <p className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">DON'T<br />PANIC</p>
-    </motion.div>
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
+    className="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center cursor-pointer">
+    <motion.p animate={{ scale: [1, 1.04, 1] }} transition={{ repeat: Infinity, duration: 2 }}
+      className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">
+      DON'T<br />PANIC
+    </motion.p>
     <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">— The BME Student's Guide to the Galaxy</p>
     <p className="text-white/20 text-xs mt-4">tap anywhere to return to your problems</p>
   </motion.div>
 );
 
+// ============================================================
+// ONBOARDING MODAL
+// ============================================================
+const OnboardingModal = ({ onComplete }: { onComplete: () => void }) => {
+  const [step, setStep] = useState(0);
+  const isLast = step === ONBOARDING_SLIDES.length - 1;
+  const slide = ONBOARDING_SLIDES[step];
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[90] flex items-center justify-center p-6">
+      <GlassCard className="w-full max-w-md p-8 text-center relative">
+        {/* Progress dots */}
+        <div className="flex justify-center gap-2 mb-8">
+          {ONBOARDING_SLIDES.map((_, i) => (
+            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[#00d4ff]' : 'w-2 bg-white/20'}`} />
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div key={step} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
+            <p className="text-6xl mb-6">{slide.emoji}</p>
+            <h2 className="text-2xl font-black text-white mb-4">{slide.title}</h2>
+            <p className="text-white/60 text-sm leading-relaxed">{slide.body}</p>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="flex gap-3 mt-10">
+          {step > 0 && (
+            <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 bg-white/5 border border-white/10 text-white/60 rounded-2xl text-xs font-bold uppercase">Back</button>
+          )}
+          <button onClick={() => isLast ? onComplete() : setStep(s => s + 1)}
+            className="flex-1 py-3 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl text-xs font-black uppercase hover:scale-[1.02] transition-transform">
+            {isLast ? "Let's Go! 🚀" : "Next →"}
+          </button>
+        </div>
+        <button onClick={onComplete} className="mt-4 text-[10px] opacity-20 hover:opacity-40 uppercase font-bold">Skip</button>
+      </GlassCard>
+    </motion.div>
+  );
+};
+
+// ============================================================
+// SURVIVAL KIT MODAL
+// ============================================================
+const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const colorMap: any = {
+    blue: 'border-blue-500/40 bg-blue-500/10 text-blue-400',
+    orange: 'border-orange-500/40 bg-orange-500/10 text-orange-400',
+    yellow: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400',
+    green: 'border-green-500/40 bg-green-500/10 text-green-400',
+    purple: 'border-purple-500/40 bg-purple-500/10 text-purple-400',
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+      <GlassCard className="w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto">
+        <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white"><X size={20} /></button>
+        <h2 className="text-2xl font-black text-white uppercase mb-2 flex items-center gap-2">
+          <BookOpen className="text-[#00d4ff]" /> BME Survival Kit
+        </h2>
+        <p className="text-white/30 text-xs mb-8">Your lecturer went too fast? These playlists have you covered. 🎯</p>
+
+        <div className="space-y-3">
+          {SURVIVAL_KIT.map((kit) => (
+            <div key={kit.course} className={`rounded-2xl border ${colorMap[kit.color]} overflow-hidden`}>
+              <button onClick={() => setExpanded(expanded === kit.course ? null : kit.course)}
+                className="w-full p-4 flex items-center justify-between text-left">
+                <span className="font-black text-sm flex items-center gap-2">
+                  {kit.emoji} {kit.course}
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] opacity-50">{kit.resources.length} resources</span>
+                  <ChevronRight size={14} className={`transition-transform ${expanded === kit.course ? 'rotate-90' : ''}`} />
+                </div>
+              </button>
+
+              <AnimatePresence>
+                {expanded === kit.course && (
+                  <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+                    <div className="px-4 pb-4 space-y-2">
+                      {kit.resources.map((r, i) => (
+                        <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center justify-between p-3 rounded-xl bg-black/20 hover:bg-black/40 transition-all group">
+                          <span className="text-xs text-white/70 flex items-center gap-2">
+                            <Play size={10} className="text-red-400" /> {r.label}
+                          </span>
+                          <ExternalLink size={10} className="opacity-30 group-hover:opacity-70 transition-opacity shrink-0" />
+                        </a>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </GlassCard>
+    </motion.div>
+  );
+};
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentID, setStudentID] = useState('');
@@ -167,6 +390,7 @@ export default function Home() {
   const [showWeekView, setShowWeekView] = useState(false);
   const [showCWAModal, setShowCWAModal] = useState(false);
   const [showUpdatesHub, setShowUpdatesHub] = useState(false);
+  const [showSurvivalKit, setShowSurvivalKit] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
   const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
   const [marks, setMarks] = useState<{ [key: string]: string }>({});
@@ -185,7 +409,46 @@ export default function Home() {
   const [stressLevel, setStressLevel] = useState(0);
   const [showDontPanic, setShowDontPanic] = useState(false);
   const [currentPun, setCurrentPun] = useState(0);
-  const [dangerTip] = useState(() => DANGER_TIPS[Math.floor(Math.random() * DANGER_TIPS.length)]);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const notifScheduled = useRef(false);
+
+  // ---- PUSH NOTIFICATIONS LOGIC ----
+  const requestNotifications = async () => {
+    if (!('Notification' in window)) return false;
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      setNotificationsEnabled(true);
+      if (typeof window !== 'undefined') localStorage.setItem('bme-notif-enabled', 'true');
+      new Notification('BME Portal 🎓', { body: 'Notifications enabled! We\'ll remind you 30 mins before every class. 🔔' });
+      return true;
+    }
+    return false;
+  };
+
+  const scheduleClassNotifications = () => {
+    if (notifScheduled.current || typeof window === 'undefined') return;
+    notifScheduled.current = true;
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const todayClasses = TIMETABLE[days[new Date().getDay()]] || [];
+    const now = new Date();
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+
+    todayClasses.forEach((cls: any) => {
+      const startMins = timeToMinutes(cls.time.split(' - ')[0]);
+      const notifyAt = startMins - 30; // 30 mins before
+      const msUntil = (notifyAt - nowMins) * 60 * 1000;
+      if (msUntil > 0) {
+        setTimeout(() => {
+          if (Notification.permission === 'granted') {
+            new Notification(`⏰ ${cls.course} in 30 minutes!`, {
+              body: `📍 ${cls.venue} • ${cls.time.split(' - ')[0]} start\nDon't forget your things! 🎒`,
+            });
+          }
+        }, msUntil);
+      }
+    });
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -208,12 +471,28 @@ export default function Home() {
       if (savedFiles) setFiles(JSON.parse(savedFiles));
       const savedVents = localStorage.getItem('bme-vents');
       if (savedVents) setVents(JSON.parse(savedVents));
+
+      // Check if onboarding needed
+      const onboarded = localStorage.getItem('bme-onboarded');
+      if (!onboarded && savedID && CLASS_LIST[savedID]) setShowOnboarding(true);
+
+      // Notifications
+      const notifEnabled = localStorage.getItem('bme-notif-enabled') === 'true';
+      if (notifEnabled) { setNotificationsEnabled(true); scheduleClassNotifications(); }
     }
+
     const finalsDate = new Date('2026-04-07T00:00:00');
     setDaysToFinals(Math.ceil((finalsDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-    const punTimer = setInterval(() => setCurrentPun(p => (p + 1) % BME_PUNS.length), 5000);
+    const punTimer = setInterval(() => setCurrentPun(p => (p + 1) % BME_PUNS.length), 15000);
     return () => clearInterval(punTimer);
   }, []);
+
+  const completeOnboarding = async () => {
+    if (typeof window !== 'undefined') localStorage.setItem('bme-onboarded', 'true');
+    setShowOnboarding(false);
+    await requestNotifications();
+    scheduleClassNotifications();
+  };
 
   const handleLogin = (e: any) => {
     e.preventDefault();
@@ -245,6 +524,9 @@ export default function Home() {
       if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
       const savedMarked = localStorage.getItem(`bme-marked-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+      // Show onboarding for first-timers
+      const onboarded = localStorage.getItem('bme-onboarded');
+      if (!onboarded) setShowOnboarding(true);
     }
   };
 
@@ -304,12 +586,15 @@ export default function Home() {
 
   const getAttendancePct = (classId: string, total: number) => total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
   const getFirstName = (name: string) => name.split(' ')[0];
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  const todayName = days[new Date().getDay() - 1] || 'Weekend';
+  const daysList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const todayName = daysList[new Date().getDay() - 1] || 'Weekend';
   const finalsInfo = getFinalsMessage(daysToFinals);
 
   if (!mounted) return null;
 
+  // ============================================================
+  // LOGIN SCREEN
+  // ============================================================
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 relative">
@@ -348,7 +633,8 @@ export default function Home() {
             </form>
             <div className="mt-6 p-3 bg-white/5 rounded-2xl">
               <AnimatePresence mode="wait">
-                <motion.p key={currentPun} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="text-white/30 text-[10px] text-center italic">{BME_PUNS[currentPun]}</motion.p>
+                <motion.p key={currentPun} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.4 }}
+                  className="text-white/30 text-[10px] text-center italic">{BME_PUNS[currentPun]}</motion.p>
               </AnimatePresence>
             </div>
           </GlassCard>
@@ -357,20 +643,37 @@ export default function Home() {
     );
   }
 
+  // ============================================================
+  // DASHBOARD
+  // ============================================================
   return (
     <div className="min-h-screen text-slate-100 pb-20">
       <BioBackground />
-      <AnimatePresence>{showDontPanic && <DontPanic onClose={() => setShowDontPanic(false)} />}</AnimatePresence>
 
+      <AnimatePresence>
+        {showDontPanic && <DontPanic onClose={() => setShowDontPanic(false)} />}
+        {showOnboarding && <OnboardingModal onComplete={completeOnboarding} />}
+        {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
+      </AnimatePresence>
+
+      {/* HEADER */}
       <header className="sticky top-0 z-40 p-4">
         <GlassCard className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center rounded-full border-white/10">
           <div>
             <h1 className="text-lg font-bold">Hello, {getFirstName(studentName)} 👋</h1>
-            <p className="text-[10px] text-[#48cae4] font-bold uppercase tracking-widest flex items-center gap-1"><Activity size={10} className="animate-pulse" /> ID: {studentID}</p>
+            <p className="text-[10px] text-[#48cae4] font-bold uppercase tracking-widest flex items-center gap-1">
+              <Activity size={10} className="animate-pulse" /> ID: {studentID}
+              {notificationsEnabled && <span className="ml-2 text-emerald-400">• 🔔 Active</span>}
+            </p>
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
             {isAdmin && <Link href="/admin" className="p-2 bg-yellow-500/20 text-yellow-500 rounded-xl text-[10px] font-bold flex items-center px-4 uppercase">Admin</Link>}
-            <button onClick={() => setShowDontPanic(true)} className="p-2 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all flex items-center gap-1 px-3" title="DON'T PANIC">
+            {!notificationsEnabled && (
+              <button onClick={requestNotifications} className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-1 px-3">
+                <Bell size={14} /><span className="text-[10px] font-bold uppercase hidden md:inline">Enable Alerts</span>
+              </button>
+            )}
+            <button onClick={() => setShowDontPanic(true)} className="p-2 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all flex items-center gap-1 px-3">
               <Zap size={16} /><span className="text-[10px] font-bold uppercase hidden md:inline">Panic</span>
             </button>
             <button onClick={handleExportProfile} className="p-2 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500/20 transition-all flex items-center gap-1 px-3">
@@ -392,9 +695,9 @@ export default function Home() {
           <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/10 border border-green-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-green-500/20 transition-all">
             <MessageCircle className="text-green-400" /><span className="text-[10px] font-bold uppercase">WhatsApp</span>
           </a>
-          <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-blue-500/20 transition-all">
-            <BookOpen className="text-blue-400" /><span className="text-[10px] font-bold uppercase">Resources</span>
-          </a>
+          <button onClick={() => setShowSurvivalKit(true)} className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-blue-500/20 transition-all">
+            <BookOpen className="text-blue-400" /><span className="text-[10px] font-bold uppercase">Survival Kit</span>
+          </button>
           <button onClick={() => setShowCWAModal(true)} className="p-4 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-[#00d4ff]/20 transition-all">
             <Calculator className="text-[#00d4ff]" /><span className="text-[10px] font-bold uppercase">CWA Calc</span>
           </button>
@@ -417,7 +720,7 @@ export default function Home() {
           <p className={`text-sm font-bold mt-1 ${finalsInfo.color}`}>{finalsInfo.msg}</p>
         </GlassCard>
 
-        {/* TIMETABLE WITH 70% TRACKER */}
+        {/* TIMETABLE + 70% TRACKER */}
         <GlassCard className="p-6 md:p-8" delay={0.1}>
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2">
@@ -428,7 +731,7 @@ export default function Home() {
             </button>
           </div>
           <div className="space-y-6">
-            {(showWeekView ? days : [todayName]).map(day => (
+            {(showWeekView ? daysList : [todayName]).map(day => (
               <div key={day} className="space-y-4">
                 {showWeekView && <h3 className="text-[#48cae4] font-black text-[10px] uppercase tracking-[0.2em] pl-2 border-l-2 border-[#48cae4] mb-4">{day}</h3>}
                 {TIMETABLE[day]?.length ? TIMETABLE[day].map((cls: any) => {
@@ -449,25 +752,24 @@ export default function Home() {
                         </div>
                         <div className="flex items-center gap-3 justify-between md:justify-end">
                           <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/20 text-amber-500' : 'bg-[#00d4ff]/20 text-[#00d4ff]'}`}>{cls.type}</span>
-                          <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]} className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${attendanceMarked[cls.id] ? 'bg-emerald-500 text-white cursor-not-allowed' : 'bg-white/5 text-slate-400 hover:bg-white/10 cursor-pointer'}`}>
+                          <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
+                            className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${attendanceMarked[cls.id] ? 'bg-emerald-500 text-white cursor-not-allowed' : 'bg-white/5 text-slate-400 hover:bg-white/10 cursor-pointer'}`}>
                             {attendanceMarked[cls.id] ? <span className="flex items-center gap-1"><CheckCircle size={12} /> MARKED</span> : 'MARK PRESENT'}
                           </button>
                         </div>
                       </div>
-                      {/* 70% PROGRESS BAR */}
+                      {/* 70% BAR */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between items-center">
                           <span className="text-[9px] font-bold uppercase opacity-40">Attendance {attendance[cls.id] || 0}/{cls.totalClasses} ({pct}%)</span>
                           {isSafe
                             ? <span className="text-[9px] font-black text-emerald-400 flex items-center gap-1"><CheckCircle size={10} /> Exam Eligible! 🚀</span>
-                            : <span className="text-[9px] font-black text-red-400 flex items-center gap-1"><AlertTriangle size={10} /> Danger Zone ⚠️</span>
-                          }
+                            : <span className="text-[9px] font-black text-red-400 flex items-center gap-1"><AlertTriangle size={10} /> Danger Zone ⚠️</span>}
                         </div>
                         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                           <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
                             className={`h-full rounded-full ${isSafe ? 'bg-emerald-400' : pct >= 50 ? 'bg-yellow-400' : 'bg-red-500'}`} />
                         </div>
-                        {!isSafe && <p className="text-[9px] italic opacity-30">💡 {dangerTip}</p>}
                       </div>
                     </div>
                   );
@@ -483,12 +785,12 @@ export default function Home() {
             <h3 className="font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2"><FileText size={16} className="text-[#00d4ff]" /> Quick Notes</h3>
             <textarea value={notes} onChange={(e) => { setNotes(e.target.value); if (typeof window !== 'undefined') localStorage.setItem('bme-notes', e.target.value); }} placeholder="Jot down something..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600" />
           </GlassCard>
-
           <GlassCard className="p-6 flex flex-col h-64 justify-between" delay={0.3}>
             <h3 className="font-bold text-sm uppercase tracking-widest flex items-center gap-2"><Brain size={16} className="text-purple-400" /> Stress Level</h3>
             <div className="flex-1 flex flex-col items-center justify-center space-y-4">
               <AnimatePresence mode="wait">
-                <motion.p key={stressLevel} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-xl font-black text-white text-center">{STRESS_LABELS[stressLevel]}</motion.p>
+                <motion.p key={stressLevel} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+                  className="text-xl font-black text-white text-center">{STRESS_LABELS[stressLevel]}</motion.p>
               </AnimatePresence>
               <div className="w-full px-2">
                 <input type="range" min={0} max={4} value={stressLevel} onChange={(e) => setStressLevel(Number(e.target.value))} className="w-full accent-purple-400 cursor-pointer" />
@@ -528,17 +830,18 @@ export default function Home() {
           )}
         </GlassCard>
 
-        {/* BME PUN TICKER */}
+        {/* KNUST PUN TICKER */}
         <GlassCard className="p-5" delay={0.5}>
           <div className="flex items-center gap-3">
             <Coffee className="text-amber-400 shrink-0" size={20} />
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] font-bold uppercase opacity-30 mb-1">BME Pun of the Moment</p>
+              <p className="text-[9px] font-bold uppercase opacity-30 mb-1">KNUST BME Energy ☕</p>
               <AnimatePresence mode="wait">
-                <motion.p key={currentPun} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="text-sm text-white/70 italic truncate">{BME_PUNS[currentPun]}</motion.p>
+                <motion.p key={currentPun} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.4 }}
+                  className="text-sm text-white/70 italic">{BME_PUNS[currentPun]}</motion.p>
               </AnimatePresence>
             </div>
-            <button onClick={() => setCurrentPun(p => (p + 1) % BME_PUNS.length)} className="p-2 bg-white/5 rounded-xl text-white/40 hover:text-white/70 transition-all shrink-0">→</button>
+            <button onClick={() => setCurrentPun(p => (p + 1) % BME_PUNS.length)} className="p-2 bg-white/5 rounded-xl text-white/40 hover:text-white/70 transition-all shrink-0 text-xs">→</button>
           </div>
         </GlassCard>
 
@@ -571,7 +874,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* UPDATES HUB MODAL */}
+      {/* UPDATES HUB */}
       <AnimatePresence>
         {showUpdatesHub && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
@@ -580,7 +883,7 @@ export default function Home() {
               <h2 className="text-2xl font-black mb-6 text-white uppercase flex items-center gap-2"><Bell className="text-purple-400" /> Updates Hub</h2>
               <div className="mb-8">
                 <h3 className="text-lg font-black mb-4 text-white">📢 Announcements ({announcements.length})</h3>
-                {announcements.length === 0 ? <p className="text-center py-8 opacity-50 text-sm">No announcements. Enjoy the peace. 🤫</p> : (
+                {announcements.length === 0 ? <p className="text-center py-8 opacity-50 text-sm">No announcements yet. Enjoy the silence. 🤫</p> : (
                   <div className="space-y-3">{announcements.map((ann: any) => (
                     <div key={ann.id} className={`p-4 rounded-2xl border-l-4 ${ann.type === 'urgent' ? 'border-red-500 bg-red-500/10' : 'border-blue-500 bg-blue-500/10'}`}>
                       <p className="text-sm text-white">{ann.text}</p><p className="text-xs opacity-50 mt-1">{ann.date}</p>
@@ -590,7 +893,7 @@ export default function Home() {
               </div>
               <div className="mb-8">
                 <h3 className="text-lg font-black mb-4 text-white">📁 Shared Files ({files.length})</h3>
-                {files.length === 0 ? <p className="text-center py-8 opacity-50 text-sm">No files yet. The notes are being written. 😅</p> : (
+                {files.length === 0 ? <p className="text-center py-8 opacity-50 text-sm">No files yet. 😅</p> : (
                   <div className="grid md:grid-cols-2 gap-4">{files.map((file: any) => (
                     <div key={file.id} className="p-4 rounded-2xl bg-white/5 border border-white/10">
                       <p className="font-black text-sm text-white">{file.course}</p>
