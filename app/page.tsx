@@ -174,11 +174,11 @@ const BME_PUNS = [
   "KNUST: Knowledge Never Stops Unless Tired. Very tired. 😴",
   "PB212 lecture at 8am? My body is here but my soul is at the hostel. 🛏️",
   "The way Ghanaians say 'I'll be there in 5 minutes'... that's my attendance rate. ⏰",
-  "CHEM 151 assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
-  "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*. 📝",
+  "TME LAB assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
+  "Me to Dr. KIDI: Please sir, can you slow down?' Him: *writes faster*. 📝",
   "My data finished during the online lecture. God's plan. 📡",
   "Asante is the GOAT. No debate. 🐐",
-  "Dr. Sarkodie once said: \"You since you came to my class you've never solved a question before, let this be your first.\" 💀",
+  "Dr. Sarkodie once said: \"You ever since you came to my class you've never solved a question before, let this be your first.\" 💀",
   "Dr. Sarkodie once said: \"Just dey play.\" 😭",
   "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk. 💻",
   "If stress was creditworthy, I'd have a First Class by now. 🎓",
@@ -230,7 +230,7 @@ const ONBOARDING_SLIDES = [
   {
     emoji: "🚀",
     title: "You're Set!",
-    body: "KNUST BME1, Class of 2026. The grind is real but so is the glory. Let's go. 💪",
+    body: "KNUST BME1, Class of 2029. The grind is real but so is the glory. Let's go. 💪",
   },
 ];
 
