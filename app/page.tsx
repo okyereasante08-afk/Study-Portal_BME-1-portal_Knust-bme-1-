@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { 
   Calculator, MessageCircle, BookOpen, Calendar, LogOut, Activity,
   Download, Upload, Bell, CheckCircle, FileText, Send, AlertTriangle,
-  Zap, Coffee, Brain, Laugh, Play, ChevronRight, X, ExternalLink
+  Zap, Coffee, Laugh, Play, ChevronRight, X, ExternalLink
 } from "lucide-react";
 
 // ============================================================
@@ -38,7 +38,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21983696": "Frimpong Wilhelmina", "22514233": "Fudzie Kelvin Delali", "22328187": "Fuseini Ibtihaaj Gaida",
   "21841024": "Fynn Emmanuella Esi", "21946146": "Gifty Asantewaa Adoma", "22190892": "Grace Armoo",
   "21969430": "Hammond Kevin Nii Obli", "22010557": "Israelna Ama Yeboah", "21995972": "James Adjei Mensah",
-  "21896223": "Jazlyn Yaa Asantewah Okae-Kyei", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
+  "21896223": "𝓙𝓪𝔃𝓵𝔂𝓷 𝓨𝓪𝓪 𝓐𝓼𝓪𝓷𝓽𝓮𝔀𝓪𝓱 𝓞𝓴𝓪𝓮-𝓚𝔂𝓮𝓲 💕", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
   "22429815": "Keren Naa Klorkor Quaye", "21904638": "Keziah Deborah Wilson", "22645870": "Koramah Mercy",
   "22243432": "Kusi Constance Abrafi", "21882887": "Lakeisha Lord-Mensah", "22083170": "Laura Naa Tiokor Amartey",
   "22127161": "Lawrencia Awuah Adobea", "21949982": "Lisa Timbilla Azasumah", "22331976": "Maame Ama Tiwaa Ofori-Agyeman",
@@ -75,12 +75,12 @@ const COURSE_CREDITS = [
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: 'm1', time: '08:00 - 09:55', course: 'COE 181', venue: 'VCR', lecturer: 'K.O.K. Sarkodie', type: 'Lecture', totalClasses: 20 },
     { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture', totalClasses: 20 },
     { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture', totalClasses: 15 },
   ],
   Tuesday: [
-    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab', totalClasses: 12 },
+    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab', totalClasses: 12 }
+    { id: 'm1', time: '17:00 - 19:00', course: 'COE 181', venue: 'VSLA', lecturer: 'K.O.K. Sarkodie', type: 'Lecture', totalClasses: 20 },,
   ],
   Wednesday: [
     { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 20 },
@@ -177,17 +177,17 @@ const BME_PUNS = [
   "CHEM 151 assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
   "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*. 📝",
   "My data finished during the online lecture. God's plan. 📡",
-  "Eating from Nkrumah Hall kitchen and still showing up to lab. We move. 🍛",
-  "The photocopier at Balme Library knows me by face at this point. 📚",
+  "Asante is the GOAT. No debate. 🐐",
+  "Dr. Sarkodie once said: \"You since you came to my class you've never solved a question before, let this be your first.\" 💀",
+  "Dr. Sarkodie once said: \"Just dey play.\" 😭",
   "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk. 💻",
   "If stress was creditworthy, I'd have a First Class by now. 🎓",
   "Passed Applied Electricity. My ancestors had to intervene personally. ⚡",
 ];
 
 // ============================================================
-// STRESS LABELS & FINALS MSG
+// FINALS MSG
 // ============================================================
-const STRESS_LABELS = ["Chilling 😎", "It's Fine 🙂", "Kinda Stressed 😅", "Send Help 😰", "Applied Electricity Exam Tomorrow 💀"];
 
 const getFinalsMessage = (days: number) => {
   if (days > 60) return { msg: "Finals? What finals? You're basically on holiday. 🏖️", color: "text-emerald-400" };
@@ -406,7 +406,6 @@ export default function Home() {
   const [ventText, setVentText] = useState('');
   const [ventSubmitted, setVentSubmitted] = useState(false);
   const [vents, setVents] = useState<{ id: string; text: string; author: string; time: string }[]>([]);
-  const [stressLevel, setStressLevel] = useState(0);
   const [showDontPanic, setShowDontPanic] = useState(false);
   const [currentPun, setCurrentPun] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -786,20 +785,27 @@ export default function Home() {
             <textarea value={notes} onChange={(e) => { setNotes(e.target.value); if (typeof window !== 'undefined') localStorage.setItem('bme-notes', e.target.value); }} placeholder="Jot down something..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600" />
           </GlassCard>
           <GlassCard className="p-6 flex flex-col h-64 justify-between" delay={0.3}>
-            <h3 className="font-bold text-sm uppercase tracking-widest flex items-center gap-2"><Brain size={16} className="text-purple-400" /> Stress Level</h3>
-            <div className="flex-1 flex flex-col items-center justify-center space-y-4">
-              <AnimatePresence mode="wait">
-                <motion.p key={stressLevel} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-                  className="text-xl font-black text-white text-center">{STRESS_LABELS[stressLevel]}</motion.p>
-              </AnimatePresence>
-              <div className="w-full px-2">
-                <input type="range" min={0} max={4} value={stressLevel} onChange={(e) => setStressLevel(Number(e.target.value))} className="w-full accent-purple-400 cursor-pointer" />
-                <div className="flex justify-between mt-1"><span className="text-[8px] opacity-30">😎 Chilling</span><span className="text-[8px] opacity-30">💀 RIP</span></div>
+            <h3 className="font-bold text-sm uppercase tracking-widest flex items-center gap-2"><FileText size={16} className="text-emerald-400" /> Class Resources</h3>
+            <div className="flex-1 flex flex-col items-center justify-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <svg viewBox="0 0 87.3 78" className="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+                  <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+                  <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
+                  <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+                  <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+                  <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 27h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-white/60 text-xs mb-1">Shared lecture notes, past papers & more</p>
+                <p className="text-white/30 text-[10px]">BME1 Class Drive Folder</p>
               </div>
             </div>
-            {stressLevel === 4 && (
-              <button onClick={() => setShowDontPanic(true)} className="w-full py-2 bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl text-[10px] font-black uppercase animate-pulse">⚡ Activate Lecture Mode</button>
-            )}
+            <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" rel="noopener noreferrer"
+              className="w-full py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-2xl text-[10px] font-black uppercase text-center flex items-center justify-center gap-2 hover:bg-emerald-500/30 transition-all">
+              <ExternalLink size={12} /> Open Class Drive
+            </a>
           </GlassCard>
         </div>
 
