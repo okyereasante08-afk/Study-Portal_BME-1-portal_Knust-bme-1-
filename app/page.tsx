@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from 'next/link';
 import { 
   Calculator, MessageCircle, BookOpen, Calendar, LogOut, Activity,
-  Download, Upload, Bell, CheckCircle, FileText, Send, AlertTriangle,
+  Download, Upload, Bell, CheckCircle, FileText, Send,
   Zap, Coffee, Laugh, Play, ChevronRight, X, ExternalLink
 } from "lucide-react";
 
@@ -38,7 +38,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21983696": "Frimpong Wilhelmina", "22514233": "Fudzie Kelvin Delali", "22328187": "Fuseini Ibtihaaj Gaida",
   "21841024": "Fynn Emmanuella Esi", "21946146": "Gifty Asantewaa Adoma", "22190892": "Grace Armoo",
   "21969430": "Hammond Kevin Nii Obli", "22010557": "Israelna Ama Yeboah", "21995972": "James Adjei Mensah",
-  "21896223": "Maya 💕", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
+  "21896223": "Maya", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
   "22429815": "Keren Naa Klorkor Quaye", "21904638": "Keziah Deborah Wilson", "22645870": "Koramah Mercy",
   "22243432": "Kusi Constance Abrafi", "21882887": "Lakeisha Lord-Mensah", "22083170": "Laura Naa Tiokor Amartey",
   "22127161": "Lawrencia Awuah Adobea", "21949982": "Lisa Timbilla Azasumah", "22331976": "Maame Ama Tiwaa Ofori-Agyeman",
@@ -97,9 +97,6 @@ const TIMETABLE: { [key: string]: any[] } = {
   ],
 };
 
-// ============================================================
-// BME SURVIVAL KIT — Your actual playlists
-// ============================================================
 const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: { label: string; url: string }[] }[] = [
   {
     course: 'MATH 151 — Linear Algebra',
@@ -166,177 +163,251 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
   },
 ];
 
-// ============================================================
-// KNUST/GHANA-SPECIFIC PUNS (every 15 seconds)
-// ============================================================
 const BME_PUNS = [
-  "Ei, the trotro of knowledge has left. Were you on board? 🚌",
-  "KNUST: Knowledge Never Stops Unless Tired. Very tired. 😴",
-  "PB212 lecture at 8am? My body is here but my soul is at the hostel. 🛏️",
-  "The way Ghanaians say 'I'll be there in 5 minutes'... that's my attendance rate. ⏰",
-  "CHEM 151 assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
-  "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*. 📝",
-  "My data finished during the online lecture. God's plan. 📡",
-  "Asante is the GOAT. No debate. 🐐",
-  "Dr. Sarkodie once said: \"You since you came to my class you've never solved a question before, let this be your first.\" 💀",
-  "Dr. Sarkodie once said: \"Just dey play.\" 😭",
-  "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk. 💻",
-  "If stress was creditworthy, I'd have a First Class by now. 🎓",
-  "Passed Applied Electricity. My ancestors had to intervene personally. ⚡",
+  "Ei, the trotro of knowledge has left. Were you on board?",
+  "KNUST: Knowledge Never Stops Unless Tired. Very tired.",
+  "PB212 lecture at 8am? My body is here but my soul is at the hostel.",
+  "The way Ghanaians say 'I'll be there in 5 minutes'... that's my attendance rate.",
+  "CHEM 151 assignment due tomorrow. I just found out. It's 11pm. God is faithful.",
+  "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*.",
+  "My data finished during the online lecture. God's plan.",
+  "Asante is the GOAT. No debate.",
+  "Dr. Sarkodie once said: \"You since you came to my class you've never solved a question before, let this be your first.\"",
+  "Dr. Sarkodie once said: \"Just dey play.\"",
+  "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk.",
+  "If stress was creditworthy, I'd have a First Class by now.",
+  "Passed Applied Electricity. My ancestors had to intervene personally.",
 ];
 
-// ============================================================
-// FINALS MSG
-// ============================================================
+const END_OF_SEM_DATE = new Date('2026-04-07T00:00:00');
 
 const getFinalsMessage = (days: number) => {
-  if (days > 60) return { msg: "Finals? What finals? You're basically on holiday. 🏖️", color: "text-emerald-400" };
-  if (days > 45) return { msg: "Plenty of time. (This is a lie. Start now.) 🐢", color: "text-green-400" };
-  if (days > 30) return { msg: "30+ days: Time to at least know your course codes. 📖", color: "text-cyan-400" };
-  if (days > 21) return { msg: "3 weeks out: Your notes won't read themselves. 📚", color: "text-blue-400" };
-  if (days > 14) return { msg: "14 days left: Time to start liking coffee. ☕", color: "text-yellow-400" };
-  if (days > 7) return { msg: "One week: The library is your new bedroom. 😰", color: "text-orange-400" };
-  if (days > 3) return { msg: "3 days left: Past questions only. Sleep is optional. 😭", color: "text-red-400" };
-  if (days > 1) return { msg: "2 days left: May the Bio-Electricity be with you. ⚡", color: "text-red-500" };
-  if (days === 1) return { msg: "TOMORROW. You either prepared or you didn't. Breathe. 🙏", color: "text-red-600" };
-  if (days === 0) return { msg: "TODAY IS THE DAY. You got this, Engineer. 🚀", color: "text-purple-400" };
-  return { msg: "Finals are OVER! Go outside. Touch grass. 🌿", color: "text-emerald-400" };
+  if (days > 60) return { msg: "End of semester exams are far. But far doesn't mean forever.", color: "text-emerald-400" };
+  if (days > 45) return { msg: "Plenty of time. Use it well.", color: "text-green-400" };
+  if (days > 30) return { msg: "30+ days. A good time to start being consistent.", color: "text-cyan-400" };
+  if (days > 21) return { msg: "3 weeks out. Your notes won't read themselves.", color: "text-blue-400" };
+  if (days > 14) return { msg: "14 days. Past questions and consistency from here.", color: "text-yellow-400" };
+  if (days > 7)  return { msg: "One week. Everything you do now compounds.", color: "text-orange-400" };
+  if (days > 3)  return { msg: "3 days. Past questions only. Rest well.", color: "text-red-400" };
+  if (days > 1)  return { msg: "2 days. You either prepared or you didn't. Either way — rest.", color: "text-red-500" };
+  if (days === 1) return { msg: "Tomorrow. Breathe. You've put in the work.", color: "text-red-600" };
+  if (days === 0) return { msg: "Today is the day. You are ready.", color: "text-purple-400" };
+  return { msg: "Exams done. Go rest. You earned it.", color: "text-emerald-400" };
 };
 
-// ============================================================
-// ONBOARDING SLIDES
-// ============================================================
 const ONBOARDING_SLIDES = [
   {
     emoji: "🎓",
     title: "Welcome to BME Portal",
-    body: "Your one-stop app for KNUST BME1. Timetable, attendance, CWA calculator — all in one dark glassmorphic masterpiece.",
+    body: "Your hub for KNUST BME1 — timetable, attendance, CWA calculator, and more.",
   },
   {
     emoji: "📅",
     title: "Track Your Attendance",
-    body: "Hit 'Mark Present' after every class. The 70% bar turns green when you're exam-eligible. Don't let it go red — the danger zone is real.",
+    body: "Mark yourself present after every class. The bar shows your percentage. Stay above 70% to remain exam eligible.",
   },
   {
     emoji: "🔔",
     title: "Enable Notifications",
-    body: "Allow push notifications and we'll remind you 30 minutes before every lecture. No more running to PB212 with your shoes on the wrong feet.",
+    body: "Allow notifications and you'll get a reminder 30 minutes before every lecture.",
   },
   {
     emoji: "📚",
     title: "BME Survival Kit",
-    body: "Curated YouTube playlists for every course — Linear Algebra, Cell Biology, Applied Electricity and more. Your lecturers went too fast? We've got you.",
+    body: "Curated YouTube playlists for every course. Linear Algebra, Cell Biology, Applied Electricity — all there when you need them.",
   },
   {
     emoji: "🚀",
-    title: "You're Set!",
-    body: "KNUST BME1, Class of 2026. The grind is real but so is the glory. Let's go. 💪",
+    title: "You're Set",
+    body: "KNUST BME1, Class of 2026. Let's get to work.",
   },
 ];
 
-// ============================================================
-// HELPERS
-// ============================================================
 const timeToMinutes = (timeStr: string) => {
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
 };
 
 // ============================================================
-// UI COMPONENTS
+// INTERACTIVE NEURAL NETWORK BACKGROUND
 // ============================================================
-const BioBackground = () => (
-  <div className="fixed inset-0 -z-10 overflow-hidden bg-[#0a0f1c]">
-    <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] via-[#0b1120] to-[#050914]" />
-    <motion.div animate={{ x: [0, 100, 0], y: [0, -50, 0], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#00d4ff] blur-[120px] opacity-20" />
-    <motion.div animate={{ x: [0, -100, 0], y: [0, 50, 0], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#3b0764] blur-[120px] opacity-20" />
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay" />
-  </div>
-);
+const BioBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -9999, y: -9999 });
+  const animRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let W = window.innerWidth, H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+
+    const onResize = () => { W = window.innerWidth; H = window.innerHeight; canvas.width = W; canvas.height = H; };
+    window.addEventListener('resize', onResize);
+    const onMove = (e: MouseEvent) => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
+    const onTouch = (e: TouchEvent) => { if (e.touches[0]) mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onTouch, { passive: true });
+
+    const COUNT = Math.min(80, Math.floor((W * H) / 14000));
+    type Node = { x: number; y: number; vx: number; vy: number; r: number; pulse: number };
+    const nodes: Node[] = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 2 + 1, pulse: Math.random() * Math.PI * 2,
+    }));
+
+    const CONNECT_DIST = 130, CURSOR_ATTRACT = 160;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, '#0a0f1c'); grad.addColorStop(0.5, '#0b1120'); grad.addColorStop(1, '#050914');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+      const mx = mouseRef.current.x, my = mouseRef.current.y;
+
+      nodes.forEach(n => {
+        n.pulse += 0.02;
+        const dx = mx - n.x, dy = my - n.y, dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < CURSOR_ATTRACT && dist > 0) { const f = (CURSOR_ATTRACT - dist) / CURSOR_ATTRACT * 0.015; n.vx += dx/dist*f; n.vy += dy/dist*f; }
+        n.vx *= 0.98; n.vy *= 0.98;
+        const speed = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+        if (speed > 1.5) { n.vx = n.vx/speed*1.5; n.vy = n.vy/speed*1.5; }
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0) { n.x = 0; n.vx *= -1; } if (n.x > W) { n.x = W; n.vx *= -1; }
+        if (n.y < 0) { n.y = 0; n.vy *= -1; } if (n.y > H) { n.y = H; n.vy *= -1; }
+      });
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y, d = Math.sqrt(dx*dx+dy*dy);
+          if (d < CONNECT_DIST) { ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.strokeStyle = `rgba(0,212,255,${(1-d/CONNECT_DIST)*0.25})`; ctx.lineWidth = 0.8; ctx.stroke(); }
+        }
+        const cdx = nodes[i].x - mx, cdy = nodes[i].y - my, cd = Math.sqrt(cdx*cdx+cdy*cdy);
+        if (cd < CURSOR_ATTRACT) { ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(mx, my); ctx.strokeStyle = `rgba(168,85,247,${(1-cd/CURSOR_ATTRACT)*0.5})`; ctx.lineWidth = 1; ctx.stroke(); }
+      }
+
+      nodes.forEach(n => {
+        const cdx = n.x-mx, cdy = n.y-my, cd = Math.sqrt(cdx*cdx+cdy*cdy), near = cd < CURSOR_ATTRACT;
+        const glow = near ? 0.9 : 0.4 + Math.sin(n.pulse)*0.15, radius = near ? n.r*1.8 : n.r;
+        const halo = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius*4);
+        halo.addColorStop(0, near ? `rgba(168,85,247,${glow*0.4})` : `rgba(0,212,255,${glow*0.2})`); halo.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(n.x, n.y, radius*4, 0, Math.PI*2); ctx.fillStyle = halo; ctx.fill();
+        ctx.beginPath(); ctx.arc(n.x, n.y, radius, 0, Math.PI*2); ctx.fillStyle = near ? `rgba(168,85,247,${glow})` : `rgba(0,212,255,${glow})`; ctx.fill();
+      });
+
+      if (mx > 0 && mx < W) {
+        ctx.beginPath(); ctx.arc(mx, my, 18, 0, Math.PI*2); ctx.strokeStyle = 'rgba(168,85,247,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI*2); ctx.fillStyle = 'rgba(168,85,247,0.6)'; ctx.fill();
+      }
+      animRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => { cancelAnimationFrame(animRef.current); window.removeEventListener('resize', onResize); window.removeEventListener('mousemove', onMove); window.removeEventListener('touchmove', onTouch); };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 w-full h-full" style={{ touchAction: 'none' }} />;
+};
 
 const GlassCard = ({ children, className = "", delay = 0 }: any) => (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}
-    className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[32px] shadow-2xl ${className}`}>
+    className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[28px] shadow-2xl ${className}`}>
     {children}
   </motion.div>
 );
 
 // ============================================================
-// LOFI MODE OVERLAY
+// LOFI MODE — true fullscreen (Fullscreen API)
 // ============================================================
-const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToMidsem }: any) => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-    className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
-    style={{ background: 'linear-gradient(135deg, #0a0014 0%, #050820 50%, #00100a 100%)' }}>
-    {/* Lofi YouTube embed — audio only vibes */}
-    <iframe
-      src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&controls=0&loop=1&playlist=jfKfPfyJRdk"
-      allow="autoplay"
-      className="w-0 h-0 opacity-0 absolute"
-      title="lofi"
-    />
-    {/* Ambient blobs */}
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity }}
-        className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-purple-700 blur-[120px]" />
-      <motion.div animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity }}
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-800 blur-[120px]" />
-    </div>
+const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd }: any) => {
+  const overlayRef = useRef<HTMLDivElement>(null);
 
-    {/* Course label */}
-    <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.3em] mb-6 z-10">
-      📚 Studying — {timerCourse}
-    </p>
+  useEffect(() => {
+    // Request true fullscreen when overlay mounts
+    const el = overlayRef.current;
+    if (!el) return;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else if ((el as any).webkitRequestFullscreen) (el as any).webkitRequestFullscreen();
 
-    {/* Big timer */}
-    <motion.div key={timerMode} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-      className="text-center z-10 mb-10">
-      <p className={`text-[100px] md:text-[140px] font-black leading-none tabular-nums ${timerMode === 'focus' ? 'text-white' : 'text-emerald-400'}`}>
-        {fmtTime(timerSeconds)}
+    // F key exits
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit(); };
+    document.addEventListener('keydown', onKey);
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    };
+  }, []);
+
+  return (
+    <motion.div ref={overlayRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
+      style={{ background: 'linear-gradient(135deg, #0a0014 0%, #050820 50%, #00100a 100%)' }}>
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity }}
+          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-purple-700 blur-[120px]" />
+        <motion.div animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity }}
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-800 blur-[120px]" />
+      </div>
+
+      <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em] mb-6 z-10">
+        Studying — {timerCourse}
       </p>
-      <p className={`text-sm font-black uppercase tracking-[0.3em] mt-2 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
-        {timerMode === 'focus' ? '🔴 Focus' : '🟢 Break'}
+
+      <motion.div key={timerMode} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center z-10 mb-10">
+        <p className={`text-[100px] md:text-[140px] font-black leading-none tabular-nums ${timerMode === 'focus' ? 'text-white' : 'text-emerald-400'}`}>
+          {fmtTime(timerSeconds)}
+        </p>
+        <p className={`text-xs font-bold uppercase tracking-[0.3em] mt-2 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
+          {timerMode === 'focus' ? 'Focus' : 'Break'}
+        </p>
+      </motion.div>
+
+      <div className="flex gap-2 mb-10 z-10">
+        {Array.from({ length: Math.min(timerSessions, 8) }).map((_, i) => (
+          <div key={i} className="w-2.5 h-2.5 rounded-full bg-purple-400 opacity-80" />
+        ))}
+        {timerSessions === 0 && <p className="text-white/20 text-xs tracking-widest uppercase">No sessions yet</p>}
+      </div>
+
+      <div className="flex gap-4 z-10">
+        <button onClick={onToggle}
+          className={`px-10 py-4 rounded-2xl font-bold text-sm uppercase tracking-wider transition-all ${timerActive ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
+          {timerActive ? 'Pause' : 'Resume'}
+        </button>
+        <button onClick={onExit}
+          className="px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wider bg-white/5 text-white/30 border border-white/10 hover:bg-white/10 transition-all">
+          Exit
+        </button>
+      </div>
+
+      <p className="text-white/15 text-[10px] mt-8 z-10 uppercase tracking-widest">
+        Press F or back to exit
       </p>
+
+      <AnimatePresence>
+        {showExitWarn && (
+          <motion.div initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] bg-[#0f0f1a] border border-white/10 rounded-2xl p-6 max-w-sm w-[90vw] text-center">
+            <p className="text-white font-bold text-sm mb-1">Leave the session?</p>
+            <p className="text-white/40 text-xs mb-5">
+              End of semester in <span className="font-bold text-white">{daysToEnd} days</span>. Every session matters.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={onConfirmExit} className="flex-1 py-2.5 bg-white/10 rounded-xl text-xs font-bold text-white/60 hover:bg-white/20 transition-all">Exit anyway</button>
+              <button onClick={() => {}} className="flex-1 py-2.5 bg-purple-600 rounded-xl text-xs font-bold text-white hover:bg-purple-500 transition-all">Keep going</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
-
-    {/* Sessions */}
-    <div className="flex gap-2 mb-10 z-10">
-      {Array.from({ length: Math.min(timerSessions, 8) }).map((_, i) => (
-        <div key={i} className="w-3 h-3 rounded-full bg-purple-400 opacity-80" />
-      ))}
-      {timerSessions === 0 && <p className="text-white/20 text-xs">No sessions yet — start focusing!</p>}
-    </div>
-
-    {/* Controls */}
-    <div className="flex gap-4 z-10">
-      <button onClick={onToggle}
-        className={`px-10 py-4 rounded-2xl font-black text-sm uppercase transition-all ${timerActive ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
-        {timerActive ? '⏸ Pause' : '▶ Resume'}
-      </button>
-      <button onClick={onExit}
-        className="px-6 py-4 rounded-2xl font-black text-sm uppercase bg-white/5 text-white/30 border border-white/10 hover:bg-white/10 transition-all">
-        Exit
-      </button>
-    </div>
-
-    <p className="text-white/15 text-[10px] mt-8 z-10 uppercase tracking-widest">lofi hip hop • study beats</p>
-
-    {/* Exit warning */}
-    <AnimatePresence>
-      {showExitWarn && (
-        <motion.div initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] bg-red-900/90 border border-red-500/50 rounded-2xl p-5 max-w-sm w-[90vw] text-center backdrop-blur">
-          <p className="text-white font-black text-sm mb-1">You sure you want to leave? 👀</p>
-          <p className="text-red-300 text-xs mb-4">Midsem is in <span className="font-black text-white">{daysToMidsem} days</span>. Every session counts.</p>
-          <div className="flex gap-3">
-            <button onClick={onConfirmExit} className="flex-1 py-2 bg-red-600 rounded-xl text-xs font-black text-white">Yeah, exit</button>
-            <button onClick={() => {}} className="flex-1 py-2 bg-white/10 rounded-xl text-xs font-black text-white/60">Stay focused 💪</button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </motion.div>
-);
+  );
+};
 
 const DontPanic = ({ onClose }: { onClose: () => void }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
@@ -345,101 +416,84 @@ const DontPanic = ({ onClose }: { onClose: () => void }) => (
       className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">
       DON'T<br />PANIC
     </motion.p>
-    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">— The BME Student's Guide to the Galaxy</p>
-    <p className="text-white/20 text-xs mt-4">tap anywhere to return to your problems</p>
+    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">The BME Student's Guide to the Galaxy</p>
+    <p className="text-white/20 text-xs mt-4">tap anywhere to dismiss</p>
   </motion.div>
 );
 
-// ============================================================
-// ONBOARDING MODAL
-// ============================================================
 const OnboardingModal = ({ onComplete }: { onComplete: () => void }) => {
   const [step, setStep] = useState(0);
   const isLast = step === ONBOARDING_SLIDES.length - 1;
   const slide = ONBOARDING_SLIDES[step];
-
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[90] flex items-center justify-center p-6">
       <GlassCard className="w-full max-w-md p-8 text-center relative">
-        {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">
           {ONBOARDING_SLIDES.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[#00d4ff]' : 'w-2 bg-white/20'}`} />
+            <div key={i} className={`h-1 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[#00d4ff]' : 'w-2 bg-white/20'}`} />
           ))}
         </div>
-
         <AnimatePresence mode="wait">
           <motion.div key={step} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-            <p className="text-6xl mb-6">{slide.emoji}</p>
-            <h2 className="text-2xl font-black text-white mb-4">{slide.title}</h2>
-            <p className="text-white/60 text-sm leading-relaxed">{slide.body}</p>
+            <p className="text-5xl mb-6">{slide.emoji}</p>
+            <h2 className="text-xl font-black text-white mb-3">{slide.title}</h2>
+            <p className="text-white/50 text-sm leading-relaxed">{slide.body}</p>
           </motion.div>
         </AnimatePresence>
-
         <div className="flex gap-3 mt-10">
-          {step > 0 && (
-            <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 bg-white/5 border border-white/10 text-white/60 rounded-2xl text-xs font-bold uppercase">Back</button>
-          )}
+          {step > 0 && <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 bg-white/5 border border-white/10 text-white/50 rounded-2xl text-xs font-bold uppercase tracking-wider">Back</button>}
           <button onClick={() => isLast ? onComplete() : setStep(s => s + 1)}
-            className="flex-1 py-3 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl text-xs font-black uppercase hover:scale-[1.02] transition-transform">
-            {isLast ? "Let's Go! 🚀" : "Next →"}
+            className="flex-1 py-3 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl text-xs font-black uppercase tracking-wider hover:scale-[1.02] transition-transform">
+            {isLast ? "Let's go" : "Next"}
           </button>
         </div>
-        <button onClick={onComplete} className="mt-4 text-[10px] opacity-20 hover:opacity-40 uppercase font-bold">Skip</button>
+        <button onClick={onComplete} className="mt-4 text-[10px] opacity-20 hover:opacity-40 uppercase font-bold tracking-wider">Skip</button>
       </GlassCard>
     </motion.div>
   );
 };
 
-// ============================================================
-// SURVIVAL KIT MODAL
-// ============================================================
 const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
   const [expanded, setExpanded] = useState<string | null>(null);
   const colorMap: any = {
-    blue: 'border-blue-500/40 bg-blue-500/10 text-blue-400',
-    orange: 'border-orange-500/40 bg-orange-500/10 text-orange-400',
-    yellow: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400',
-    green: 'border-green-500/40 bg-green-500/10 text-green-400',
-    purple: 'border-purple-500/40 bg-purple-500/10 text-purple-400',
+    blue: 'border-blue-500/30 bg-blue-500/5 text-blue-400',
+    orange: 'border-orange-500/30 bg-orange-500/5 text-orange-400',
+    yellow: 'border-yellow-500/30 bg-yellow-500/5 text-yellow-400',
+    green: 'border-green-500/30 bg-green-500/5 text-green-400',
+    purple: 'border-purple-500/30 bg-purple-500/5 text-purple-400',
   };
-
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
       <GlassCard className="w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto">
-        <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white"><X size={20} /></button>
-        <h2 className="text-2xl font-black text-white uppercase mb-2 flex items-center gap-2">
-          <BookOpen className="text-[#00d4ff]" /> BME Survival Kit
+        <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white"><X size={18} /></button>
+        <h2 className="text-xl font-black text-white uppercase tracking-wider mb-1 flex items-center gap-2">
+          <BookOpen size={18} className="text-[#00d4ff]" /> BME Survival Kit
         </h2>
-        <p className="text-white/30 text-xs mb-8">Your lecturer went too fast? These playlists have you covered. 🎯</p>
-
-        <div className="space-y-3">
+        <p className="text-white/30 text-xs mb-8 tracking-wide">Curated playlists for every course. Open any to get started.</p>
+        <div className="space-y-2">
           {SURVIVAL_KIT.map((kit) => (
             <div key={kit.course} className={`rounded-2xl border ${colorMap[kit.color]} overflow-hidden`}>
               <button onClick={() => setExpanded(expanded === kit.course ? null : kit.course)}
                 className="w-full p-4 flex items-center justify-between text-left">
-                <span className="font-black text-sm flex items-center gap-2">
-                  {kit.emoji} {kit.course}
-                </span>
+                <span className="font-bold text-sm flex items-center gap-2">{kit.emoji} {kit.course}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[9px] opacity-50">{kit.resources.length} resources</span>
-                  <ChevronRight size={14} className={`transition-transform ${expanded === kit.course ? 'rotate-90' : ''}`} />
+                  <span className="text-[9px] opacity-40 uppercase tracking-wider">{kit.resources.length} resources</span>
+                  <ChevronRight size={13} className={`transition-transform opacity-40 ${expanded === kit.course ? 'rotate-90' : ''}`} />
                 </div>
               </button>
-
               <AnimatePresence>
                 {expanded === kit.course && (
                   <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
-                    <div className="px-4 pb-4 space-y-2">
+                    <div className="px-4 pb-4 space-y-1.5">
                       {kit.resources.map((r, i) => (
                         <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
                           className="flex items-center justify-between p-3 rounded-xl bg-black/20 hover:bg-black/40 transition-all group">
-                          <span className="text-xs text-white/70 flex items-center gap-2">
-                            <Play size={10} className="text-red-400" /> {r.label}
+                          <span className="text-xs text-white/60 flex items-center gap-2">
+                            <Play size={9} className="text-red-400 shrink-0" /> {r.label}
                           </span>
-                          <ExternalLink size={10} className="opacity-30 group-hover:opacity-70 transition-opacity shrink-0" />
+                          <ExternalLink size={9} className="opacity-20 group-hover:opacity-50 transition-opacity shrink-0" />
                         </a>
                       ))}
                     </div>
@@ -473,7 +527,7 @@ export default function Home() {
   const [marks, setMarks] = useState<{ [key: string]: string }>({});
   const [calculatedCWA, setCalculatedCWA] = useState<number | null>(null);
   const [notes, setNotes] = useState('');
-  const [daysToFinals, setDaysToFinals] = useState(0);
+  const [daysToEnd, setDaysToEnd] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -489,9 +543,7 @@ export default function Home() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const notifScheduled = useRef(false);
 
-  // ---- POMODORO TIMER ----
-  const FOCUS_SECS = 35 * 60;
-  const BREAK_SECS = 5 * 60;
+  // Pomodoro
   const [timerActive, setTimerActive] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(35 * 60);
   const [timerMode, setTimerMode] = useState<'focus' | 'break'>('focus');
@@ -501,18 +553,17 @@ export default function Home() {
   const [showLofiExit, setShowLofiExit] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ---- NEXT CLASS LIVE BAR ----
+  // Next class
   const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
   const nextClassRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ---- PUSH NOTIFICATIONS LOGIC ----
   const requestNotifications = async () => {
     if (!('Notification' in window)) return false;
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
       setNotificationsEnabled(true);
-      if (typeof window !== 'undefined') localStorage.setItem('bme-notif-enabled', 'true');
-      new Notification('BME Portal 🎓', { body: 'Notifications enabled! We\'ll remind you 30 mins before every class. 🔔' });
+      localStorage.setItem('bme-notif-enabled', 'true');
+      new Notification('BME Portal', { body: 'Notifications enabled. You will be reminded 30 minutes before each class.' });
       return true;
     }
     return false;
@@ -521,24 +572,16 @@ export default function Home() {
   const scheduleClassNotifications = () => {
     if (notifScheduled.current || typeof window === 'undefined') return;
     notifScheduled.current = true;
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const todayClasses = TIMETABLE[days[new Date().getDay()]] || [];
-    const now = new Date();
-    const nowMins = now.getHours() * 60 + now.getMinutes();
-
+    const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
     todayClasses.forEach((cls: any) => {
       const startMins = timeToMinutes(cls.time.split(' - ')[0]);
-      const notifyAt = startMins - 30; // 30 mins before
-      const msUntil = (notifyAt - nowMins) * 60 * 1000;
-      if (msUntil > 0) {
-        setTimeout(() => {
-          if (Notification.permission === 'granted') {
-            new Notification(`⏰ ${cls.course} in 30 minutes!`, {
-              body: `📍 ${cls.venue} • ${cls.time.split(' - ')[0]} start\nDon't forget your things! 🎒`,
-            });
-          }
-        }, msUntil);
-      }
+      const msUntil = (startMins - 30 - nowMins) * 60 * 1000;
+      if (msUntil > 0) setTimeout(() => {
+        if (Notification.permission === 'granted')
+          new Notification(`${cls.course} in 30 minutes`, { body: `${cls.venue} — ${cls.time.split(' - ')[0]}` });
+      }, msUntil);
     });
   };
 
@@ -557,45 +600,34 @@ export default function Home() {
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       const savedNotes = localStorage.getItem('bme-notes');
       if (savedNotes) setNotes(savedNotes);
-      const savedAnnouncements = localStorage.getItem('bme-announcements');
-      if (savedAnnouncements) setAnnouncements(JSON.parse(savedAnnouncements));
+      const savedAnn = localStorage.getItem('bme-announcements');
+      if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem('bme-files');
       if (savedFiles) setFiles(JSON.parse(savedFiles));
       const savedVents = localStorage.getItem('bme-vents');
       if (savedVents) setVents(JSON.parse(savedVents));
-
-      // Check if onboarding needed
-      const onboarded = localStorage.getItem('bme-onboarded');
-      if (!onboarded && savedID && CLASS_LIST[savedID]) setShowOnboarding(true);
-
-      // Notifications
-      const notifEnabled = localStorage.getItem('bme-notif-enabled') === 'true';
-      if (notifEnabled) { setNotificationsEnabled(true); scheduleClassNotifications(); }
+      if (!localStorage.getItem('bme-onboarded') && savedID && CLASS_LIST[savedID]) setShowOnboarding(true);
+      if (localStorage.getItem('bme-notif-enabled') === 'true') { setNotificationsEnabled(true); scheduleClassNotifications(); }
     }
-
-    const finalsDate = new Date('2026-04-07T00:00:00');
-    setDaysToFinals(Math.ceil((finalsDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+    setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000*60*60*24)));
     const punTimer = setInterval(() => setCurrentPun(p => (p + 1) % BME_PUNS.length), 15000);
     return () => clearInterval(punTimer);
   }, []);
 
-  // ---- TIMER TICK ----
+  // Timer tick
   useEffect(() => {
     if (timerActive) {
       timerRef.current = setInterval(() => {
         setTimerSeconds(s => {
           if (s <= 1) {
-            // switch modes
             setTimerMode(prev => {
               if (prev === 'focus') {
                 setTimerSessions(n => n + 1);
-                if (Notification.permission === 'granted') new Notification('✅ Focus session done!', { body: 'Take a 5 minute break. You earned it. 🎉' });
-                setTimerSeconds(5 * 60);
-                return 'break';
+                if (Notification.permission === 'granted') new Notification('Focus session complete', { body: 'Take a 5 minute break.' });
+                setTimerSeconds(5 * 60); return 'break';
               } else {
-                if (Notification.permission === 'granted') new Notification('⏰ Break over!', { body: `Back to ${timerCourse}. Let's go. 💪` });
-                setTimerSeconds(35 * 60);
-                return 'focus';
+                if (Notification.permission === 'granted') new Notification('Break over', { body: `Back to ${timerCourse}.` });
+                setTimerSeconds(35 * 60); return 'focus';
               }
             });
             return 0;
@@ -603,33 +635,29 @@ export default function Home() {
           return s - 1;
         });
       }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
+    } else { if (timerRef.current) clearInterval(timerRef.current); }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [timerActive, timerCourse]);
 
-  // ---- NEXT CLASS BAR UPDATER ----
+  // Next class bar
   useEffect(() => {
-    const computeNext = () => {
+    const compute = () => {
       const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const todayClasses = TIMETABLE[days[new Date().getDay()]] || [];
-      const now = new Date();
-      const nowMins = now.getHours() * 60 + now.getMinutes();
+      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
       let found = null;
       for (const cls of todayClasses) {
-        const startMins = timeToMinutes(cls.time.split(' - ')[0]);
-        const minsUntil = startMins - nowMins;
+        const minsUntil = timeToMinutes(cls.time.split(' - ')[0]) - nowMins;
         if (minsUntil > 0) { found = { course: cls.course, venue: cls.venue, startTime: cls.time.split(' - ')[0], minsUntil }; break; }
       }
       setNextClassInfo(found);
     };
-    computeNext();
-    nextClassRef.current = setInterval(computeNext, 60000);
+    compute();
+    nextClassRef.current = setInterval(compute, 60000);
     return () => { if (nextClassRef.current) clearInterval(nextClassRef.current); };
   }, []);
 
-  // ---- LOFI EXIT GUARD ----
+  // Lofi exit guard
   useEffect(() => {
     if (!lofiMode) return;
     const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; };
@@ -638,7 +666,7 @@ export default function Home() {
   }, [lofiMode]);
 
   const completeOnboarding = async () => {
-    if (typeof window !== 'undefined') localStorage.setItem('bme-onboarded', 'true');
+    localStorage.setItem('bme-onboarded', 'true');
     setShowOnboarding(false);
     await requestNotifications();
     scheduleClassNotifications();
@@ -648,15 +676,15 @@ export default function Home() {
     e.preventDefault();
     if (loginMode === 'admin') {
       if (adminAccessCode === 'ASANT3&GOD') proceedToLogin('22028883', true);
-      else setLoginError('Invalid admin access code.');
+      else setLoginError('Invalid access code.');
       return;
     }
-    if (!CLASS_LIST[studentID]) { setLoginError('Invalid Student ID.'); return; }
+    if (!CLASS_LIST[studentID]) { setLoginError('Student ID not found.'); return; }
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(`pw-${studentID}`);
       if (!stored) {
         if (!isFirstLogin) setIsFirstLogin(true);
-        else if (password.length < 4) setLoginError('Password too short.');
+        else if (password.length < 4) setLoginError('Password must be at least 4 characters.');
         else { localStorage.setItem(`pw-${studentID}`, password); proceedToLogin(studentID); }
       } else {
         if (password === stored) proceedToLogin(studentID);
@@ -674,14 +702,12 @@ export default function Home() {
       if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
       const savedMarked = localStorage.getItem(`bme-marked-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
-      // Show onboarding for first-timers
-      const onboarded = localStorage.getItem('bme-onboarded');
-      if (!onboarded) setShowOnboarding(true);
+      if (!localStorage.getItem('bme-onboarded')) setShowOnboarding(true);
     }
   };
 
   const handleLogout = () => {
-    if (typeof window !== 'undefined') { localStorage.removeItem('bme-session-id'); localStorage.removeItem('bme-admin-access'); }
+    localStorage.removeItem('bme-session-id'); localStorage.removeItem('bme-admin-access');
     setIsLoggedIn(false); setIsAdmin(false); setStudentID(''); setPassword(''); setAdminAccessCode(''); setLoginMode('student');
   };
 
@@ -690,10 +716,8 @@ export default function Home() {
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
     const newMarked = { ...attendanceMarked, [id]: true };
     setAttendance(newAtt); setAttendanceMarked(newMarked);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
-      localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
-    }
+    localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
+    localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
   };
 
   const handleCalculateCWA = () => {
@@ -706,14 +730,11 @@ export default function Home() {
     if (!ventText.trim()) return;
     const newVent = { id: Date.now().toString(), text: ventText, author: studentName.split(' ')[0], time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
     const updated = [newVent, ...vents].slice(0, 20);
-    setVents(updated);
-    if (typeof window !== 'undefined') localStorage.setItem('bme-vents', JSON.stringify(updated));
-    setVentText(''); setVentSubmitted(true);
-    setTimeout(() => setVentSubmitted(false), 3000);
+    setVents(updated); localStorage.setItem('bme-vents', JSON.stringify(updated));
+    setVentText(''); setVentSubmitted(true); setTimeout(() => setVentSubmitted(false), 3000);
   };
 
   const handleExportProfile = () => {
-    if (typeof window === 'undefined') return;
     const blob = new Blob([JSON.stringify({ studentID, studentName, attendance, attendanceMarked, notes }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `bme-profile-${studentID}.json`; a.click(); URL.revokeObjectURL(url);
@@ -725,81 +746,71 @@ export default function Home() {
     reader.onload = (e) => {
       try {
         const d = JSON.parse(e.target?.result as string);
-        if (d.studentID !== studentID) { alert('Wrong profile!'); return; }
+        if (d.studentID !== studentID) { alert('This profile belongs to a different student.'); return; }
         setAttendance(d.attendance || {}); setAttendanceMarked(d.attendanceMarked || {}); setNotes(d.notes || '');
-        if (typeof window !== 'undefined') { localStorage.setItem('bme-attendance', JSON.stringify(d.attendance || {})); localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(d.attendanceMarked || {})); localStorage.setItem('bme-notes', d.notes || ''); }
-        alert('✅ Imported!');
-      } catch { alert('❌ Invalid file!'); }
+        localStorage.setItem('bme-attendance', JSON.stringify(d.attendance || {}));
+        localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(d.attendanceMarked || {}));
+        localStorage.setItem('bme-notes', d.notes || '');
+        alert('Profile imported successfully.');
+      } catch { alert('Invalid file.'); }
     };
     reader.readAsText(file); event.target.value = '';
   };
 
   const getAttendancePct = (classId: string, total: number) => total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
   const fmtTime = (s: number) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
-
-  const handleExitLofi = () => {
-    const midsemDate = new Date('2026-03-20T00:00:00');
-    const daysLeft = Math.ceil((midsemDate.getTime() - new Date().getTime()) / (1000*60*60*24));
-    setShowLofiExit(true);
-    setTimeout(() => setShowLofiExit(false), 5000);
-    // Suppress leaving — just show the warning, don't actually exit yet
-  };
-
-  const confirmExitLofi = () => {
-    setLofiMode(false);
-    setShowLofiExit(false);
-    setTimerActive(false);
-  };
+  const handleExitLofi = () => { setShowLofiExit(true); setTimeout(() => setShowLofiExit(false), 6000); };
+  const confirmExitLofi = () => { setLofiMode(false); setShowLofiExit(false); setTimerActive(false); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); };
   const getFirstName = (name: string) => name.split(' ')[0];
-  const daysList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const daysList = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
   const todayName = daysList[new Date().getDay() - 1] || 'Weekend';
-  const finalsInfo = getFinalsMessage(daysToFinals);
+  const finalsInfo = getFinalsMessage(daysToEnd);
 
   if (!mounted) return null;
 
   // ============================================================
-  // LOGIN SCREEN
+  // LOGIN
   // ============================================================
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 relative">
         <BioBackground />
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-md">
-          <GlassCard className="p-8 border-white/20">
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-sm">
+          <GlassCard className="p-8 border-white/15">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-bold text-lg">BME</div>
-              <h1 className="text-2xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
-              <p className="text-white/30 text-xs mt-1">KNUST BME1 • Class of 2026</p>
+              <div className="w-14 h-14 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-black text-sm tracking-widest">BME</div>
+              <h1 className="text-xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
+              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2026</p>
             </div>
-            <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-2xl">
-              <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-400'}`}>Student</button>
-              <button onClick={() => { setLoginMode('admin'); setLoginError(''); setStudentID(''); setPassword(''); setIsFirstLogin(false); }} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'admin' ? 'bg-red-500 text-white' : 'text-slate-400'}`}>Admin</button>
+            <div className="flex gap-1.5 mb-6 p-1 bg-white/5 rounded-xl">
+              <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-500'}`}>Student</button>
+              <button onClick={() => { setLoginMode('admin'); setLoginError(''); setStudentID(''); setPassword(''); setIsFirstLogin(false); }} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${loginMode === 'admin' ? 'bg-red-500 text-white' : 'text-slate-500'}`}>Admin</button>
             </div>
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-3">
               {loginMode === 'student' ? (
                 <>
-                  <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" />
+                  <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
                   {(isFirstLogin || (typeof window !== 'undefined' && localStorage.getItem(`pw-${studentID}`))) && (
-                    <input type="password" placeholder={isFirstLogin ? "Create Password" : "Password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-center text-white outline-none focus:border-[#00d4ff]" autoFocus />
+                    <input type="password" placeholder={isFirstLogin ? "Create a password" : "Password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
                   )}
-                  <button className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black uppercase hover:scale-[1.02] transition-transform">{isFirstLogin ? 'SAVE & ENTER' : 'CONTINUE'}</button>
-                  {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-40 uppercase">Back</button>}
+                  <button className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider hover:scale-[1.01] transition-transform">{isFirstLogin ? 'Save & Enter' : 'Continue'}</button>
+                  {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-30 uppercase tracking-wider">Back</button>}
                 </>
               ) : (
                 <>
-                  <div className="text-center p-4 bg-red-500/10 rounded-2xl border border-red-500/20">
-                    <p className="text-xs font-bold text-red-500 uppercase">⚠️ Restricted Area</p>
+                  <div className="text-center p-3 bg-red-500/10 rounded-xl border border-red-500/20">
+                    <p className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Restricted Access</p>
                   </div>
-                  <input type="password" placeholder="Admin Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} className="w-full p-4 rounded-2xl bg-white/5 border border-red-500/30 text-center text-white outline-none focus:border-red-500" autoFocus />
-                  <button className="w-full py-4 bg-red-600 text-white rounded-2xl font-black uppercase">Unlock Admin</button>
+                  <input type="password" placeholder="Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-red-500/20 text-center text-white text-sm outline-none focus:border-red-500/50 transition-colors" autoFocus />
+                  <button className="w-full py-3.5 bg-red-600 text-white rounded-xl font-black text-xs uppercase tracking-wider">Unlock</button>
                 </>
               )}
-              {loginError && <p className="text-red-400 text-[10px] text-center font-bold uppercase">{loginError}</p>}
+              {loginError && <p className="text-red-400 text-[10px] text-center font-bold uppercase tracking-wider">{loginError}</p>}
             </form>
-            <div className="mt-6 p-3 bg-white/5 rounded-2xl">
+            <div className="mt-6 p-3 bg-white/5 rounded-xl border border-white/5">
               <AnimatePresence mode="wait">
                 <motion.p key={currentPun} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.4 }}
-                  className="text-white/30 text-[10px] text-center italic">{BME_PUNS[currentPun]}</motion.p>
+                  className="text-white/25 text-[10px] text-center italic">{BME_PUNS[currentPun]}</motion.p>
               </AnimatePresence>
             </div>
           </GlassCard>
@@ -821,17 +832,11 @@ export default function Home() {
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
         {lofiMode && (
           <LofiOverlay
-            timerSeconds={timerSeconds}
-            timerMode={timerMode}
-            timerSessions={timerSessions}
-            timerCourse={timerCourse}
-            timerActive={timerActive}
-            fmtTime={fmtTime}
-            onToggle={() => setTimerActive(a => !a)}
-            onExit={handleExitLofi}
-            showExitWarn={showLofiExit}
-            onConfirmExit={confirmExitLofi}
-            daysToMidsem={Math.ceil((new Date('2026-03-20').getTime() - new Date().getTime()) / (1000*60*60*24))}
+            timerSeconds={timerSeconds} timerMode={timerMode} timerSessions={timerSessions}
+            timerCourse={timerCourse} timerActive={timerActive} fmtTime={fmtTime}
+            onToggle={() => setTimerActive(a => !a)} onExit={handleExitLofi}
+            showExitWarn={showLofiExit} onConfirmExit={confirmExitLofi}
+            daysToEnd={daysToEnd}
           />
         )}
       </AnimatePresence>
@@ -840,148 +845,141 @@ export default function Home() {
       <header className="sticky top-0 z-40 p-4">
         <GlassCard className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center rounded-full border-white/10">
           <div>
-            <h1 className="text-lg font-bold">Hello, {getFirstName(studentName)} 👋</h1>
-            <p className="text-[10px] text-[#48cae4] font-bold uppercase tracking-widest flex items-center gap-1">
-              <Activity size={10} className="animate-pulse" /> ID: {studentID}
-              {notificationsEnabled && <span className="ml-2 text-emerald-400">• 🔔 Active</span>}
+            <h1 className="text-base font-bold text-white">Hello, {getFirstName(studentName)}</h1>
+            <p className="text-[9px] text-[#48cae4] font-bold uppercase tracking-widest flex items-center gap-1">
+              <Activity size={9} className="animate-pulse" /> {studentID}
+              {notificationsEnabled && <span className="ml-2 text-emerald-400">· Alerts on</span>}
             </p>
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
-            {isAdmin && <Link href="/admin" className="p-2 bg-yellow-500/20 text-yellow-500 rounded-xl text-[10px] font-bold flex items-center px-4 uppercase">Admin</Link>}
+            {isAdmin && <Link href="/admin" className="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-yellow-500/20">Admin</Link>}
             {!notificationsEnabled && (
-              <button onClick={requestNotifications} className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-1 px-3">
-                <Bell size={14} /><span className="text-[10px] font-bold uppercase hidden md:inline">Enable Alerts</span>
+              <button onClick={requestNotifications} className="px-3 py-2 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 border border-emerald-500/20">
+                <Bell size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Alerts</span>
               </button>
             )}
-            <button onClick={() => setShowDontPanic(true)} className="p-2 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all flex items-center gap-1 px-3">
-              <Zap size={16} /><span className="text-[10px] font-bold uppercase hidden md:inline">Panic</span>
+            <button onClick={() => setShowDontPanic(true)} className="px-3 py-2 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all flex items-center gap-1.5 border border-purple-500/20">
+              <Zap size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Panic</span>
             </button>
-            <button onClick={handleExportProfile} className="p-2 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500/20 transition-all flex items-center gap-1 px-3">
-              <Download size={16} /><span className="text-[10px] font-bold uppercase hidden md:inline">Export</span>
+            <button onClick={handleExportProfile} className="px-3 py-2 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500/20 transition-all border border-blue-500/20">
+              <Download size={13} />
             </button>
-            <label className="p-2 bg-green-500/10 text-green-400 rounded-xl hover:bg-green-500/20 transition-all flex items-center gap-1 px-3 cursor-pointer">
-              <Upload size={16} /><span className="text-[10px] font-bold uppercase hidden md:inline">Import</span>
+            <label className="px-3 py-2 bg-white/5 text-white/40 rounded-xl hover:bg-white/10 transition-all cursor-pointer border border-white/10">
+              <Upload size={13} />
               <input type="file" accept="application/json,.json" onChange={handleImportProfile} className="hidden" />
             </label>
-            <button onClick={handleLogout} className="p-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all"><LogOut size={18} /></button>
+            <button onClick={handleLogout} className="px-3 py-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all border border-red-500/20"><LogOut size={13} /></button>
           </div>
         </GlassCard>
       </header>
 
-      {/* NEXT CLASS LIVE BAR */}
+      {/* NEXT CLASS BAR */}
       <AnimatePresence>
         {nextClassInfo && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-            className="max-w-5xl mx-auto px-4 pb-2">
-            <div className="bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-2xl px-5 py-3 flex items-center justify-between gap-4 backdrop-blur">
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="max-w-5xl mx-auto px-4 pb-3">
+            <div className="bg-[#00d4ff]/8 border border-[#00d4ff]/20 rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="w-2 h-2 rounded-full bg-[#00d4ff] shrink-0" />
-                <div>
-                  <span className="text-white font-black text-sm">{nextClassInfo.course}</span>
-                  <span className="text-white/40 text-xs mx-2">→</span>
-                  <span className="text-white/60 text-xs font-bold">📍 {nextClassInfo.venue}</span>
+                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] shrink-0" />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-white font-bold text-sm">{nextClassInfo.course}</span>
+                  <span className="text-white/30 text-xs">·</span>
+                  <span className="text-white/50 text-xs">{nextClassInfo.venue}</span>
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-[#00d4ff] font-black text-sm">
-                  {nextClassInfo.minsUntil < 60
-                    ? `in ${nextClassInfo.minsUntil} min${nextClassInfo.minsUntil !== 1 ? 's' : ''}`
-                    : `in ${Math.floor(nextClassInfo.minsUntil/60)}h ${nextClassInfo.minsUntil%60}m`}
+                <p className="text-[#00d4ff] font-bold text-sm">
+                  {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil/60)}h ${nextClassInfo.minsUntil%60}m`}
                 </p>
-                <p className="text-white/30 text-[9px] font-bold uppercase">Starts {nextClassInfo.startTime}</p>
+                <p className="text-white/25 text-[9px] uppercase tracking-widest">{nextClassInfo.startTime}</p>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-6">
+      <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-5">
 
         {/* QUICK ACTIONS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/10 border border-green-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-green-500/20 transition-all">
-            <MessageCircle className="text-green-400" /><span className="text-[10px] font-bold uppercase">WhatsApp</span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/8 border border-green-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-green-500/15 transition-all">
+            <MessageCircle size={18} className="text-green-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">WhatsApp</span>
           </a>
-          <button onClick={() => setShowSurvivalKit(true)} className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-blue-500/20 transition-all">
-            <BookOpen className="text-blue-400" /><span className="text-[10px] font-bold uppercase">Survival Kit</span>
+          <button onClick={() => setShowSurvivalKit(true)} className="p-4 bg-blue-500/8 border border-blue-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-blue-500/15 transition-all">
+            <BookOpen size={18} className="text-blue-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Survival Kit</span>
           </button>
-          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-[#00d4ff]/20 transition-all">
-            <Calculator className="text-[#00d4ff]" /><span className="text-[10px] font-bold uppercase">CWA Calc</span>
+          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-[#00d4ff]/8 border border-[#00d4ff]/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-[#00d4ff]/15 transition-all">
+            <Calculator size={18} className="text-[#00d4ff]" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">CWA Calc</span>
           </button>
-          <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-3xl flex flex-col items-center gap-2 hover:bg-purple-500/20 transition-all relative">
-            <Bell className="text-purple-400" /><span className="text-[10px] font-bold uppercase">Updates Hub</span>
-            {announcements.length > 0 && <div className="absolute top-2 right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black">{announcements.length}</div>}
+          <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-purple-500/8 border border-purple-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-purple-500/15 transition-all relative">
+            <Bell size={18} className="text-purple-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Updates</span>
+            {announcements.length > 0 && <div className="absolute top-2 right-2 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black">{announcements.length}</div>}
           </button>
         </div>
 
-        {/* FINALS COUNTDOWN */}
-        <GlassCard className="p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group" delay={0.05}>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 mb-1">Finals Countdown — April 7, 2026</p>
-          <div className="flex items-baseline gap-3 my-2">
-            <motion.p key={daysToFinals} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-7xl font-black text-white group-hover:scale-110 transition-transform">
-              {daysToFinals > 0 ? daysToFinals : '🎉'}
-            </motion.p>
-            {daysToFinals > 0 && <span className="text-white/40 font-bold uppercase text-sm">days</span>}
+        {/* END OF SEM COUNTDOWN */}
+        <GlassCard className="p-6 flex flex-col items-center justify-center text-center relative overflow-hidden" delay={0.05}>
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/25 mb-2">End of Semester — April 7, 2026</p>
+          <div className="flex items-baseline gap-2 my-1">
+            <p className="text-7xl font-black text-white tabular-nums">{daysToEnd > 0 ? daysToEnd : 'Done'}</p>
+            {daysToEnd > 0 && <span className="text-white/25 font-bold uppercase text-xs tracking-widest">days</span>}
           </div>
-          <p className={`text-sm font-bold mt-1 ${finalsInfo.color}`}>{finalsInfo.msg}</p>
+          <p className={`text-sm mt-2 ${finalsInfo.color}`}>{finalsInfo.msg}</p>
         </GlassCard>
 
-        {/* TIMETABLE + 70% TRACKER */}
+        {/* TIMETABLE */}
         <GlassCard className="p-6 md:p-8" delay={0.1}>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2">
-              <Calendar className="text-[#00d4ff]" /> {showWeekView ? 'Weekly Schedule' : "Today's Agenda"}
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-base font-black uppercase tracking-wider flex items-center gap-2">
+              <Calendar size={16} className="text-[#00d4ff]" /> {showWeekView ? 'Weekly Schedule' : "Today"}
             </h2>
-            <button onClick={() => setShowWeekView(!showWeekView)} className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border border-white/10">
-              {showWeekView ? 'Close' : 'View Week'}
+            <button onClick={() => setShowWeekView(!showWeekView)} className="px-4 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border border-white/10">
+              {showWeekView ? 'Collapse' : 'View Week'}
             </button>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-5">
             {(showWeekView ? daysList : [todayName]).map(day => (
-              <div key={day} className="space-y-4">
-                {showWeekView && <h3 className="text-[#48cae4] font-black text-[10px] uppercase tracking-[0.2em] pl-2 border-l-2 border-[#48cae4] mb-4">{day}</h3>}
+              <div key={day} className="space-y-3">
+                {showWeekView && <p className="text-[#48cae4] font-bold text-[9px] uppercase tracking-[0.25em] pl-2 border-l border-[#48cae4]/50">{day}</p>}
                 {TIMETABLE[day]?.length ? TIMETABLE[day].map((cls: any) => {
                   const pct = getAttendancePct(cls.id, cls.totalClasses);
                   const isSafe = pct >= 70;
                   return (
-                    <div key={cls.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all space-y-3">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="flex gap-4 items-center">
-                          <div className="text-[10px] font-bold opacity-40 bg-white/5 p-2 rounded-lg min-w-[48px] text-center">
-                            <div>ENDS</div><div className="text-[#00d4ff]">{cls.time.split(' - ')[1]}</div>
+                    <div key={cls.id} className="p-4 rounded-2xl bg-white/3 border border-white/8 hover:border-white/15 transition-all space-y-3">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div className="flex gap-3 items-center">
+                          <div className="text-[9px] font-bold text-white/25 bg-white/5 p-2 rounded-lg min-w-[44px] text-center leading-tight">
+                            <div className="uppercase tracking-wider">ends</div>
+                            <div className="text-[#00d4ff] font-black">{cls.time.split(' - ')[1]}</div>
                           </div>
                           <div>
-                            <h4 className="font-bold text-base text-white">{cls.course}</h4>
-                            <p className="text-[10px] opacity-50 font-bold uppercase">📍 {cls.venue} • {cls.lecturer}</p>
-                            <p className="text-[9px] opacity-30 font-bold mt-1">{cls.time}</p>
+                            <h4 className="font-bold text-sm text-white">{cls.course}</h4>
+                            <p className="text-[9px] text-white/35 font-medium uppercase tracking-wider mt-0.5">{cls.venue} · {cls.lecturer}</p>
+                            <p className="text-[9px] text-white/20 mt-0.5">{cls.time}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 justify-between md:justify-end">
-                          <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase ${cls.type === 'Lab' ? 'bg-amber-500/20 text-amber-500' : 'bg-[#00d4ff]/20 text-[#00d4ff]'}`}>{cls.type}</span>
+                        <div className="flex items-center gap-2 justify-between md:justify-end">
+                          <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider ${cls.type === 'Lab' ? 'bg-amber-500/15 text-amber-400' : 'bg-[#00d4ff]/10 text-[#00d4ff]'}`}>{cls.type}</span>
                           <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
-                            className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${attendanceMarked[cls.id] ? 'bg-emerald-500 text-white cursor-not-allowed' : 'bg-white/5 text-slate-400 hover:bg-white/10 cursor-pointer'}`}>
-                            {attendanceMarked[cls.id] ? <span className="flex items-center gap-1"><CheckCircle size={12} /> MARKED</span> : 'MARK PRESENT'}
+                            className={`px-4 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider transition-all ${attendanceMarked[cls.id] ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-default' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10 cursor-pointer'}`}>
+                            {attendanceMarked[cls.id] ? <span className="flex items-center gap-1"><CheckCircle size={10} /> Present</span> : 'Mark Present'}
                           </button>
                         </div>
                       </div>
-                      {/* 70% BAR */}
-                      <div className="space-y-1.5">
+                      {/* Attendance bar — no danger zone label, just the bar */}
+                      <div className="space-y-1">
                         <div className="flex justify-between items-center">
-                          <span className="text-[9px] font-bold uppercase opacity-40">Attendance {attendance[cls.id] || 0}/{cls.totalClasses} ({pct}%)</span>
-                          {isSafe
-                            ? <span className="text-[9px] font-black text-emerald-400 flex items-center gap-1"><CheckCircle size={10} /> Exam Eligible! 🚀</span>
-                            : <span className="text-[9px] font-black text-red-400 flex items-center gap-1"><AlertTriangle size={10} /> Danger Zone ⚠️</span>}
+                          <span className="text-[9px] text-white/25 uppercase tracking-wider">{attendance[cls.id] || 0} / {cls.totalClasses} classes · {pct}%</span>
+                          {isSafe && <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1"><CheckCircle size={9} /> Eligible</span>}
                         </div>
-                        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="w-full h-1 bg-white/8 rounded-full overflow-hidden">
                           <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
-                            className={`h-full rounded-full ${isSafe ? 'bg-emerald-400' : pct >= 50 ? 'bg-yellow-400' : 'bg-red-500'}`} />
+                            className={`h-full rounded-full ${isSafe ? 'bg-emerald-400' : pct >= 50 ? 'bg-yellow-400' : 'bg-red-500/70'}`} />
                         </div>
                       </div>
                     </div>
                   );
-                }) : <p className="text-[10px] opacity-30 italic py-4 text-center uppercase tracking-widest">Rest Day — your body thanks you. 🙏</p>}
+                }) : <p className="text-[9px] text-white/20 italic py-4 text-center uppercase tracking-widest">No classes scheduled</p>}
               </div>
             ))}
           </div>
@@ -990,66 +988,53 @@ export default function Home() {
         {/* POMODORO TIMER */}
         <GlassCard className="p-6 md:p-8" delay={0.15}>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            {/* Left: info */}
             <div className="flex-1">
-              <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2 mb-1">
-                <span className="text-2xl">🍅</span> Study Timer
-              </h2>
-              <p className="text-white/30 text-xs mb-4">35 min focus · 5 min break · lofi included 🎵</p>
-              {/* Course selector */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <h2 className="text-base font-black uppercase tracking-wider mb-1">Study Timer</h2>
+              <p className="text-white/30 text-xs mb-4 tracking-wide">35 min focus · 5 min break</p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
                 {COURSE_CREDITS.map(c => (
                   <button key={c.code} onClick={() => setTimerCourse(c.code)}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${timerCourse === c.code ? 'bg-purple-600 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                    className={`px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${timerCourse === c.code ? 'bg-purple-600 text-white' : 'bg-white/5 text-white/30 hover:bg-white/10 border border-white/10'}`}>
                     {c.code}
                   </button>
                 ))}
               </div>
-              {/* Session dots */}
               <div className="flex items-center gap-2">
-                <p className="text-[9px] font-bold uppercase opacity-30 mr-1">Sessions today</p>
-                {timerSessions === 0
-                  ? <span className="text-[9px] opacity-20">none yet</span>
-                  : Array.from({ length: Math.min(timerSessions, 10) }).map((_, i) => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-purple-400" />
-                  ))}
+                <span className="text-[9px] font-bold uppercase tracking-wider text-white/20">Sessions today</span>
+                {timerSessions > 0 && Array.from({ length: Math.min(timerSessions, 10) }).map((_, i) => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-purple-400/70" />
+                ))}
               </div>
             </div>
-
-            {/* Right: timer face */}
             <div className="flex flex-col items-center gap-4">
-              <div className="relative w-44 h-44 flex items-center justify-center">
-                {/* Ring */}
+              <div className="relative w-40 h-40 flex items-center justify-center">
                 <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
                   <motion.circle cx="50" cy="50" r="44" fill="none"
-                    stroke={timerMode === 'focus' ? '#a855f7' : '#34d399'} strokeWidth="6"
-                    strokeLinecap="round"
+                    stroke={timerMode === 'focus' ? '#a855f7' : '#34d399'} strokeWidth="5" strokeLinecap="round"
                     strokeDasharray={`${2 * Math.PI * 44}`}
                     strokeDashoffset={`${2 * Math.PI * 44 * (1 - timerSeconds / (timerMode === 'focus' ? 35*60 : 5*60))}`}
-                    style={{ transition: 'stroke-dashoffset 1s linear' }}
-                  />
+                    style={{ transition: 'stroke-dashoffset 1s linear' }} />
                 </svg>
                 <div className="text-center z-10">
-                  <p className="text-4xl font-black text-white tabular-nums">{fmtTime(timerSeconds)}</p>
-                  <p className={`text-[9px] font-black uppercase mt-1 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
-                    {timerMode === 'focus' ? '🔴 Focus' : '🟢 Break'}
+                  <p className="text-3xl font-black text-white tabular-nums">{fmtTime(timerSeconds)}</p>
+                  <p className={`text-[9px] font-bold uppercase tracking-wider mt-1 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
+                    {timerMode === 'focus' ? 'Focus' : 'Break'}
                   </p>
                 </div>
               </div>
-              {/* Controls */}
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <button onClick={() => setTimerActive(a => !a)}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase transition-all ${timerActive ? 'bg-white/10 text-white border border-white/20' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
-                  {timerActive ? '⏸ Pause' : '▶ Start'}
+                  className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${timerActive ? 'bg-white/8 text-white border border-white/15' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
+                  {timerActive ? 'Pause' : 'Start'}
                 </button>
                 <button onClick={() => { setTimerSeconds(timerMode === 'focus' ? 35*60 : 5*60); setTimerActive(false); }}
-                  className="px-4 py-2.5 rounded-xl text-xs font-black uppercase bg-white/5 text-white/40 hover:bg-white/10 border border-white/10 transition-all">
-                  ↺
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/5 text-white/30 hover:bg-white/10 border border-white/10 transition-all">
+                  Reset
                 </button>
                 <button onClick={() => { setLofiMode(true); setTimerActive(true); }}
-                  className="px-4 py-2.5 rounded-xl text-xs font-black uppercase bg-indigo-600/30 text-indigo-300 hover:bg-indigo-600/50 border border-indigo-500/30 transition-all flex items-center gap-1">
-                  🎵 LoFi
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-indigo-600/20 text-indigo-300 hover:bg-indigo-600/40 border border-indigo-500/20 transition-all">
+                  LoFi
                 </button>
               </div>
             </div>
@@ -1057,16 +1042,16 @@ export default function Home() {
         </GlassCard>
 
         {/* NOTES + RESOURCES */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <GlassCard className="p-6 flex flex-col h-64" delay={0.2}>
-            <h3 className="font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2"><FileText size={16} className="text-[#00d4ff]" /> Quick Notes</h3>
-            <textarea value={notes} onChange={(e) => { setNotes(e.target.value); if (typeof window !== 'undefined') localStorage.setItem('bme-notes', e.target.value); }} placeholder="Jot down something..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-600" />
+        <div className="grid md:grid-cols-2 gap-4">
+          <GlassCard className="p-6 flex flex-col h-60" delay={0.2}>
+            <h3 className="font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2 text-white/50"><FileText size={13} className="text-[#00d4ff]" /> Notes</h3>
+            <textarea value={notes} onChange={(e) => { setNotes(e.target.value); localStorage.setItem('bme-notes', e.target.value); }} placeholder="Jot something down..." className="flex-1 w-full bg-transparent border-0 outline-none text-sm leading-relaxed resize-none text-slate-300 placeholder:text-slate-700" />
           </GlassCard>
-          <GlassCard className="p-6 flex flex-col h-64 justify-between" delay={0.3}>
-            <h3 className="font-bold text-sm uppercase tracking-widest flex items-center gap-2"><FileText size={16} className="text-emerald-400" /> Class Resources</h3>
-            <div className="flex-1 flex flex-col items-center justify-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                <svg viewBox="0 0 87.3 78" className="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+          <GlassCard className="p-6 flex flex-col h-60 justify-between" delay={0.3}>
+            <h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2 text-white/50"><FileText size={13} className="text-emerald-400" /> Class Resources</h3>
+            <div className="flex-1 flex flex-col items-center justify-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/15 flex items-center justify-center">
+                <svg viewBox="0 0 87.3 78" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
                   <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
                   <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
                   <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
@@ -1076,56 +1061,55 @@ export default function Home() {
                 </svg>
               </div>
               <div className="text-center">
-                <p className="text-white/60 text-xs mb-1">Shared lecture notes, past papers & more</p>
-                <p className="text-white/30 text-[10px]">BME1 Class Drive Folder</p>
+                <p className="text-white/40 text-xs">Lecture notes, past papers, shared files</p>
+                <p className="text-white/20 text-[9px] mt-0.5 uppercase tracking-wider">BME1 Class Drive</p>
               </div>
             </div>
             <a href="https://drive.google.com/drive/folders/1QsLCU6OA8fswVkqO4A09ynnXSbk3PsWk" target="_blank" rel="noopener noreferrer"
-              className="w-full py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-2xl text-[10px] font-black uppercase text-center flex items-center justify-center gap-2 hover:bg-emerald-500/30 transition-all">
-              <ExternalLink size={12} /> Open Class Drive
+              className="w-full py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-[9px] font-bold uppercase tracking-wider text-center flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition-all">
+              <ExternalLink size={11} /> Open Drive
             </a>
           </GlassCard>
         </div>
 
-        {/* THE DEPARTMENT VENT */}
+        {/* DEPARTMENT VENT */}
         <GlassCard className="p-6 md:p-8" delay={0.4}>
-          <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2 mb-1">
-            <Laugh className="text-yellow-400" /> The Department Vent
+          <h2 className="text-base font-black uppercase tracking-wider flex items-center gap-2 mb-1">
+            <Laugh size={16} className="text-yellow-400" /> The Department Vent
           </h2>
-          <p className="text-white/30 text-xs mb-6">Anonymous ideas & complaints. Admin sees these. No cap. 👀</p>
-          <textarea value={ventText} onChange={(e) => setVentText(e.target.value.slice(0, 280))} placeholder="What would make BME better? (Besides free food and shorter lab reports)..." className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-sm text-white placeholder:text-slate-600 outline-none focus:border-yellow-400/50 resize-none h-24 transition-colors" />
+          <p className="text-white/25 text-xs mb-5 tracking-wide">Anonymous. Admin sees these.</p>
+          <textarea value={ventText} onChange={(e) => setVentText(e.target.value.slice(0, 280))} placeholder="What would improve the BME experience?" className="w-full p-4 rounded-2xl bg-white/5 border border-white/8 text-sm text-white placeholder:text-slate-700 outline-none focus:border-white/20 resize-none h-20 transition-colors" />
           <div className="flex justify-between items-center mt-3">
-            <span className="text-[10px] opacity-30">{ventText.length}/280</span>
+            <span className="text-[9px] text-white/20 tracking-wider">{ventText.length} / 280</span>
             <button onClick={handleVentSubmit} disabled={!ventText.trim() || ventSubmitted}
-              className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase flex items-center gap-2 transition-all ${ventSubmitted ? 'bg-emerald-500 text-white' : 'bg-yellow-400/20 border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/30 disabled:opacity-40'}`}>
-              {ventSubmitted ? <><CheckCircle size={12} /> Sent! 🎉</> : <><Send size={12} /> Submit</>}
+              className={`px-5 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-wider flex items-center gap-2 transition-all ${ventSubmitted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 hover:bg-yellow-400/20 disabled:opacity-30'}`}>
+              {ventSubmitted ? <><CheckCircle size={11} /> Submitted</> : <><Send size={11} /> Submit</>}
             </button>
           </div>
           {vents.length > 0 && (
-            <div className="mt-6 space-y-3">
-              <p className="text-[10px] font-bold uppercase opacity-30 tracking-widest">Recent Vents</p>
+            <div className="mt-5 space-y-2">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-white/20">Recent</p>
               {vents.slice(0, 3).map((v) => (
-                <div key={v.id} className="p-3 rounded-2xl bg-white/5 border border-white/5">
-                  <p className="text-sm text-white/80">{v.text}</p>
-                  <p className="text-[9px] opacity-30 mt-1 font-bold">{v.author} • {v.time}</p>
+                <div key={v.id} className="p-3 rounded-xl bg-white/3 border border-white/5">
+                  <p className="text-sm text-white/60">{v.text}</p>
+                  <p className="text-[9px] text-white/20 mt-1 uppercase tracking-wider">{v.author} · {v.time}</p>
                 </div>
               ))}
             </div>
           )}
         </GlassCard>
 
-        {/* KNUST PUN TICKER */}
-        <GlassCard className="p-5" delay={0.5}>
+        {/* PUN TICKER */}
+        <GlassCard className="p-4" delay={0.5}>
           <div className="flex items-center gap-3">
-            <Coffee className="text-amber-400 shrink-0" size={20} />
+            <Coffee size={16} className="text-white/20 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] font-bold uppercase opacity-30 mb-1">KNUST BME Energy ☕</p>
               <AnimatePresence mode="wait">
-                <motion.p key={currentPun} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.4 }}
-                  className="text-sm text-white/70 italic">{BME_PUNS[currentPun]}</motion.p>
+                <motion.p key={currentPun} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.4 }}
+                  className="text-xs text-white/30 italic">{BME_PUNS[currentPun]}</motion.p>
               </AnimatePresence>
             </div>
-            <button onClick={() => setCurrentPun(p => (p + 1) % BME_PUNS.length)} className="p-2 bg-white/5 rounded-xl text-white/40 hover:text-white/70 transition-all shrink-0 text-xs">→</button>
+            <button onClick={() => setCurrentPun(p => (p + 1) % BME_PUNS.length)} className="text-white/20 hover:text-white/50 transition-all shrink-0 text-xs px-2">›</button>
           </div>
         </GlassCard>
 
@@ -1136,23 +1120,23 @@ export default function Home() {
         {showCWAModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
             <GlassCard className="w-full max-w-md p-8 relative">
-              <button onClick={() => setShowCWAModal(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white">✕</button>
-              <h2 className="text-xl font-black mb-2 text-white uppercase flex items-center gap-2"><Calculator className="text-[#00d4ff]" /> CWA Calculator</h2>
-              <p className="text-white/30 text-xs mb-6">Enter marks. Pray. Calculate. 🙏</p>
-              <div className="space-y-3 max-h-[40vh] overflow-y-auto mb-6 pr-2">
+              <button onClick={() => setShowCWAModal(false)} className="absolute top-5 right-5 text-white/20 hover:text-white/60 transition-colors"><X size={16} /></button>
+              <h2 className="text-base font-black mb-1 text-white uppercase tracking-wider flex items-center gap-2"><Calculator size={15} className="text-[#00d4ff]" /> CWA Calculator</h2>
+              <p className="text-white/25 text-xs mb-6 tracking-wide">Enter your scores to project your CWA.</p>
+              <div className="space-y-2 max-h-[40vh] overflow-y-auto mb-6 pr-1">
                 {COURSE_CREDITS.map(c => (
-                  <div key={c.code} className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <div><p className="font-bold text-xs uppercase text-white">{c.code}</p><p className="text-[10px] opacity-40">{c.name} • {c.credits} cr</p></div>
-                    <input type="number" placeholder="0" min="0" max="100" className="w-16 p-2 rounded-xl bg-black/20 text-center font-bold text-[#00d4ff] outline-none border border-transparent focus:border-[#00d4ff]"
+                  <div key={c.code} className="flex justify-between items-center bg-white/3 p-3.5 rounded-xl border border-white/8">
+                    <div><p className="font-bold text-xs uppercase tracking-wider text-white">{c.code}</p><p className="text-[9px] text-white/25 tracking-wide">{c.name} · {c.credits} cr</p></div>
+                    <input type="number" placeholder="—" min="0" max="100" className="w-14 p-2 rounded-lg bg-black/20 text-center font-bold text-[#00d4ff] text-sm outline-none border border-white/10 focus:border-[#00d4ff]/40 transition-colors"
                       onChange={(e) => { const v = Math.min(100, Math.max(0, parseInt(e.target.value) || 0)); setMarks({ ...marks, [c.code]: v.toString() }); e.target.value = v.toString(); }} />
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between items-center border-t border-white/10 pt-4 mb-6">
-                <span className="font-bold text-xs opacity-50 uppercase">Predicted CWA</span>
-                <span className="text-4xl font-black text-[#00d4ff]">{calculatedCWA || '--'}</span>
+              <div className="flex justify-between items-center border-t border-white/8 pt-4 mb-5">
+                <span className="text-xs text-white/30 uppercase tracking-wider">Projected CWA</span>
+                <span className="text-4xl font-black text-[#00d4ff] tabular-nums">{calculatedCWA ?? '—'}</span>
               </div>
-              <button onClick={handleCalculateCWA} className="w-full py-4 bg-[#00d4ff] text-[#0a0f1c] rounded-2xl font-black text-xs uppercase">Calculate Score</button>
+              <button onClick={handleCalculateCWA} className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">Calculate</button>
             </GlassCard>
           </motion.div>
         )}
@@ -1162,32 +1146,32 @@ export default function Home() {
       <AnimatePresence>
         {showUpdatesHub && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
-            <GlassCard className="w-full max-w-3xl p-8 relative max-h-[90vh] overflow-y-auto">
-              <button onClick={() => setShowUpdatesHub(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white text-2xl">✕</button>
-              <h2 className="text-2xl font-black mb-6 text-white uppercase flex items-center gap-2"><Bell className="text-purple-400" /> Updates Hub</h2>
+            <GlassCard className="w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto">
+              <button onClick={() => setShowUpdatesHub(false)} className="absolute top-5 right-5 text-white/20 hover:text-white/60 transition-colors"><X size={16} /></button>
+              <h2 className="text-base font-black mb-6 text-white uppercase tracking-wider flex items-center gap-2"><Bell size={15} className="text-purple-400" /> Updates Hub</h2>
               <div className="mb-8">
-                <h3 className="text-lg font-black mb-4 text-white">📢 Announcements ({announcements.length})</h3>
-                {announcements.length === 0 ? <p className="text-center py-8 opacity-50 text-sm">No announcements yet. Enjoy the silence. 🤫</p> : (
-                  <div className="space-y-3">{announcements.map((ann: any) => (
-                    <div key={ann.id} className={`p-4 rounded-2xl border-l-4 ${ann.type === 'urgent' ? 'border-red-500 bg-red-500/10' : 'border-blue-500 bg-blue-500/10'}`}>
-                      <p className="text-sm text-white">{ann.text}</p><p className="text-xs opacity-50 mt-1">{ann.date}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">Announcements ({announcements.length})</p>
+                {announcements.length === 0 ? <p className="text-center py-8 text-white/20 text-sm">No announcements yet.</p> : (
+                  <div className="space-y-2">{announcements.map((ann: any) => (
+                    <div key={ann.id} className={`p-4 rounded-xl border-l-2 ${ann.type === 'urgent' ? 'border-red-500 bg-red-500/8' : 'border-blue-500 bg-blue-500/8'}`}>
+                      <p className="text-sm text-white/80">{ann.text}</p><p className="text-[9px] text-white/25 mt-1 uppercase tracking-wider">{ann.date}</p>
                     </div>
                   ))}</div>
                 )}
               </div>
               <div className="mb-8">
-                <h3 className="text-lg font-black mb-4 text-white">📁 Shared Files ({files.length})</h3>
-                {files.length === 0 ? <p className="text-center py-8 opacity-50 text-sm">No files yet. 😅</p> : (
-                  <div className="grid md:grid-cols-2 gap-4">{files.map((file: any) => (
-                    <div key={file.id} className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                      <p className="font-black text-sm text-white">{file.course}</p>
-                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="mt-2 block w-full p-2 bg-blue-600 text-white rounded-lg text-xs font-bold text-center hover:bg-blue-700 transition">Open File</a>
+                <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">Shared Files ({files.length})</p>
+                {files.length === 0 ? <p className="text-center py-8 text-white/20 text-sm">No files shared yet.</p> : (
+                  <div className="grid md:grid-cols-2 gap-3">{files.map((file: any) => (
+                    <div key={file.id} className="p-4 rounded-xl bg-white/3 border border-white/8">
+                      <p className="font-bold text-sm text-white mb-2">{file.course}</p>
+                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="block w-full p-2.5 bg-white/8 text-white/60 rounded-lg text-xs font-bold text-center hover:bg-white/15 transition-all uppercase tracking-wider">Open</a>
                     </div>
                   ))}</div>
                 )}
               </div>
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-                <p className="text-sm font-bold text-emerald-400">All courses on schedule ✅</p>
+              <div className="p-4 rounded-xl bg-emerald-500/8 border border-emerald-500/15">
+                <p className="text-xs text-emerald-400 font-bold uppercase tracking-wider">All courses on schedule</p>
               </div>
             </GlassCard>
           </motion.div>
