@@ -1050,11 +1050,11 @@ export default function Home() {
                   setTimerActive(true);
                   // Play audio immediately on this user click event
                   if (!lofiAudioRef.current) {
-                    lofiAudioRef.current = new Audio(window.location.origin + '/lofi.mp3');
-                    lofiAudioRef.current.loop = true;
+                    // Direct MP3 stream — no CORS issues, plays on click
+                    lofiAudioRef.current = new Audio('https://stream.zeno.fm/f3wvbbqmdg8uv');
+                    lofiAudioRef.current.loop = false; // stream handles looping
                     lofiAudioRef.current.volume = 0.5;
                   }
-                  lofiAudioRef.current.currentTime = 0;
                   lofiAudioRef.current.play().catch((err) => console.warn('Audio play failed:', err));
                 }}
                   className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-indigo-600/20 text-indigo-300 hover:bg-indigo-600/40 border border-indigo-500/20 transition-all">
