@@ -174,11 +174,11 @@ const BME_PUNS = [
   "KNUST: Knowledge Never Stops Unless Tired. Very tired. 😴",
   "PB212 lecture at 8am? My body is here but my soul is at the hostel. 🛏️",
   "The way Ghanaians say 'I'll be there in 5 minutes'... that's my attendance rate. ⏰",
-  "TME LAB assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
-  "Me to Dr. KIDI: Please sir, can you slow down?' Him: *writes faster*. 📝",
+  "CHEM 151 assignment due tomorrow. I just found out. It's 11pm. God is faithful. 🙏",
+  "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*. 📝",
   "My data finished during the online lecture. God's plan. 📡",
   "Asante is the GOAT. No debate. 🐐",
-  "Dr. Sarkodie once said: \"You ever since you came to my class you've never solved a question before, let this be your first.\" 💀",
+  "Dr. Sarkodie once said: \"You since you came to my class you've never solved a question before, let this be your first.\" 💀",
   "Dr. Sarkodie once said: \"Just dey play.\" 😭",
   "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk. 💻",
   "If stress was creditworthy, I'd have a First Class by now. 🎓",
@@ -230,7 +230,7 @@ const ONBOARDING_SLIDES = [
   {
     emoji: "🚀",
     title: "You're Set!",
-    body: "KNUST BME1, Class of 2029. The grind is real but so is the glory. Let's go. 💪",
+    body: "KNUST BME1, Class of 2026. The grind is real but so is the glory. Let's go. 💪",
   },
 ];
 
@@ -258,6 +258,83 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}
     className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[32px] shadow-2xl ${className}`}>
     {children}
+  </motion.div>
+);
+
+// ============================================================
+// LOFI MODE OVERLAY
+// ============================================================
+const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToMidsem }: any) => (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+    className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
+    style={{ background: 'linear-gradient(135deg, #0a0014 0%, #050820 50%, #00100a 100%)' }}>
+    {/* Lofi YouTube embed — audio only vibes */}
+    <iframe
+      src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&controls=0&loop=1&playlist=jfKfPfyJRdk"
+      allow="autoplay"
+      className="w-0 h-0 opacity-0 absolute"
+      title="lofi"
+    />
+    {/* Ambient blobs */}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity }}
+        className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-purple-700 blur-[120px]" />
+      <motion.div animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity }}
+        className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-800 blur-[120px]" />
+    </div>
+
+    {/* Course label */}
+    <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.3em] mb-6 z-10">
+      📚 Studying — {timerCourse}
+    </p>
+
+    {/* Big timer */}
+    <motion.div key={timerMode} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+      className="text-center z-10 mb-10">
+      <p className={`text-[100px] md:text-[140px] font-black leading-none tabular-nums ${timerMode === 'focus' ? 'text-white' : 'text-emerald-400'}`}>
+        {fmtTime(timerSeconds)}
+      </p>
+      <p className={`text-sm font-black uppercase tracking-[0.3em] mt-2 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
+        {timerMode === 'focus' ? '🔴 Focus' : '🟢 Break'}
+      </p>
+    </motion.div>
+
+    {/* Sessions */}
+    <div className="flex gap-2 mb-10 z-10">
+      {Array.from({ length: Math.min(timerSessions, 8) }).map((_, i) => (
+        <div key={i} className="w-3 h-3 rounded-full bg-purple-400 opacity-80" />
+      ))}
+      {timerSessions === 0 && <p className="text-white/20 text-xs">No sessions yet — start focusing!</p>}
+    </div>
+
+    {/* Controls */}
+    <div className="flex gap-4 z-10">
+      <button onClick={onToggle}
+        className={`px-10 py-4 rounded-2xl font-black text-sm uppercase transition-all ${timerActive ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
+        {timerActive ? '⏸ Pause' : '▶ Resume'}
+      </button>
+      <button onClick={onExit}
+        className="px-6 py-4 rounded-2xl font-black text-sm uppercase bg-white/5 text-white/30 border border-white/10 hover:bg-white/10 transition-all">
+        Exit
+      </button>
+    </div>
+
+    <p className="text-white/15 text-[10px] mt-8 z-10 uppercase tracking-widest">lofi hip hop • study beats</p>
+
+    {/* Exit warning */}
+    <AnimatePresence>
+      {showExitWarn && (
+        <motion.div initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] bg-red-900/90 border border-red-500/50 rounded-2xl p-5 max-w-sm w-[90vw] text-center backdrop-blur">
+          <p className="text-white font-black text-sm mb-1">You sure you want to leave? 👀</p>
+          <p className="text-red-300 text-xs mb-4">Midsem is in <span className="font-black text-white">{daysToMidsem} days</span>. Every session counts.</p>
+          <div className="flex gap-3">
+            <button onClick={onConfirmExit} className="flex-1 py-2 bg-red-600 rounded-xl text-xs font-black text-white">Yeah, exit</button>
+            <button onClick={() => {}} className="flex-1 py-2 bg-white/10 rounded-xl text-xs font-black text-white/60">Stay focused 💪</button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   </motion.div>
 );
 
@@ -412,6 +489,22 @@ export default function Home() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const notifScheduled = useRef(false);
 
+  // ---- POMODORO TIMER ----
+  const FOCUS_SECS = 35 * 60;
+  const BREAK_SECS = 5 * 60;
+  const [timerActive, setTimerActive] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(35 * 60);
+  const [timerMode, setTimerMode] = useState<'focus' | 'break'>('focus');
+  const [timerSessions, setTimerSessions] = useState(0);
+  const [timerCourse, setTimerCourse] = useState('MATH 151');
+  const [lofiMode, setLofiMode] = useState(false);
+  const [showLofiExit, setShowLofiExit] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ---- NEXT CLASS LIVE BAR ----
+  const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
+  const nextClassRef = useRef<NodeJS.Timeout | null>(null);
+
   // ---- PUSH NOTIFICATIONS LOGIC ----
   const requestNotifications = async () => {
     if (!('Notification' in window)) return false;
@@ -485,6 +578,64 @@ export default function Home() {
     const punTimer = setInterval(() => setCurrentPun(p => (p + 1) % BME_PUNS.length), 15000);
     return () => clearInterval(punTimer);
   }, []);
+
+  // ---- TIMER TICK ----
+  useEffect(() => {
+    if (timerActive) {
+      timerRef.current = setInterval(() => {
+        setTimerSeconds(s => {
+          if (s <= 1) {
+            // switch modes
+            setTimerMode(prev => {
+              if (prev === 'focus') {
+                setTimerSessions(n => n + 1);
+                if (Notification.permission === 'granted') new Notification('✅ Focus session done!', { body: 'Take a 5 minute break. You earned it. 🎉' });
+                setTimerSeconds(5 * 60);
+                return 'break';
+              } else {
+                if (Notification.permission === 'granted') new Notification('⏰ Break over!', { body: `Back to ${timerCourse}. Let's go. 💪` });
+                setTimerSeconds(35 * 60);
+                return 'focus';
+              }
+            });
+            return 0;
+          }
+          return s - 1;
+        });
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [timerActive, timerCourse]);
+
+  // ---- NEXT CLASS BAR UPDATER ----
+  useEffect(() => {
+    const computeNext = () => {
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const todayClasses = TIMETABLE[days[new Date().getDay()]] || [];
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      let found = null;
+      for (const cls of todayClasses) {
+        const startMins = timeToMinutes(cls.time.split(' - ')[0]);
+        const minsUntil = startMins - nowMins;
+        if (minsUntil > 0) { found = { course: cls.course, venue: cls.venue, startTime: cls.time.split(' - ')[0], minsUntil }; break; }
+      }
+      setNextClassInfo(found);
+    };
+    computeNext();
+    nextClassRef.current = setInterval(computeNext, 60000);
+    return () => { if (nextClassRef.current) clearInterval(nextClassRef.current); };
+  }, []);
+
+  // ---- LOFI EXIT GUARD ----
+  useEffect(() => {
+    if (!lofiMode) return;
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [lofiMode]);
 
   const completeOnboarding = async () => {
     if (typeof window !== 'undefined') localStorage.setItem('bme-onboarded', 'true');
@@ -584,6 +735,21 @@ export default function Home() {
   };
 
   const getAttendancePct = (classId: string, total: number) => total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
+  const fmtTime = (s: number) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+
+  const handleExitLofi = () => {
+    const midsemDate = new Date('2026-03-20T00:00:00');
+    const daysLeft = Math.ceil((midsemDate.getTime() - new Date().getTime()) / (1000*60*60*24));
+    setShowLofiExit(true);
+    setTimeout(() => setShowLofiExit(false), 5000);
+    // Suppress leaving — just show the warning, don't actually exit yet
+  };
+
+  const confirmExitLofi = () => {
+    setLofiMode(false);
+    setShowLofiExit(false);
+    setTimerActive(false);
+  };
   const getFirstName = (name: string) => name.split(' ')[0];
   const daysList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const todayName = daysList[new Date().getDay() - 1] || 'Weekend';
@@ -603,7 +769,7 @@ export default function Home() {
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-bold text-lg">BME</div>
               <h1 className="text-2xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
-              <p className="text-white/30 text-xs mt-1">KNUST BME1 • Class of 2029</p>
+              <p className="text-white/30 text-xs mt-1">KNUST BME1 • Class of 2026</p>
             </div>
             <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-2xl">
               <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-400'}`}>Student</button>
@@ -653,6 +819,21 @@ export default function Home() {
         {showDontPanic && <DontPanic onClose={() => setShowDontPanic(false)} />}
         {showOnboarding && <OnboardingModal onComplete={completeOnboarding} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
+        {lofiMode && (
+          <LofiOverlay
+            timerSeconds={timerSeconds}
+            timerMode={timerMode}
+            timerSessions={timerSessions}
+            timerCourse={timerCourse}
+            timerActive={timerActive}
+            fmtTime={fmtTime}
+            onToggle={() => setTimerActive(a => !a)}
+            onExit={handleExitLofi}
+            showExitWarn={showLofiExit}
+            onConfirmExit={confirmExitLofi}
+            daysToMidsem={Math.ceil((new Date('2026-03-20').getTime() - new Date().getTime()) / (1000*60*60*24))}
+          />
+        )}
       </AnimatePresence>
 
       {/* HEADER */}
@@ -686,6 +867,34 @@ export default function Home() {
           </div>
         </GlassCard>
       </header>
+
+      {/* NEXT CLASS LIVE BAR */}
+      <AnimatePresence>
+        {nextClassInfo && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+            className="max-w-5xl mx-auto px-4 pb-2">
+            <div className="bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-2xl px-5 py-3 flex items-center justify-between gap-4 backdrop-blur">
+              <div className="flex items-center gap-3">
+                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="w-2 h-2 rounded-full bg-[#00d4ff] shrink-0" />
+                <div>
+                  <span className="text-white font-black text-sm">{nextClassInfo.course}</span>
+                  <span className="text-white/40 text-xs mx-2">→</span>
+                  <span className="text-white/60 text-xs font-bold">📍 {nextClassInfo.venue}</span>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-[#00d4ff] font-black text-sm">
+                  {nextClassInfo.minsUntil < 60
+                    ? `in ${nextClassInfo.minsUntil} min${nextClassInfo.minsUntil !== 1 ? 's' : ''}`
+                    : `in ${Math.floor(nextClassInfo.minsUntil/60)}h ${nextClassInfo.minsUntil%60}m`}
+                </p>
+                <p className="text-white/30 text-[9px] font-bold uppercase">Starts {nextClassInfo.startTime}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-6">
 
@@ -778,7 +987,76 @@ export default function Home() {
           </div>
         </GlassCard>
 
-        {/* NOTES + STRESS SLIDER */}
+        {/* POMODORO TIMER */}
+        <GlassCard className="p-6 md:p-8" delay={0.15}>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            {/* Left: info */}
+            <div className="flex-1">
+              <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2 mb-1">
+                <span className="text-2xl">🍅</span> Study Timer
+              </h2>
+              <p className="text-white/30 text-xs mb-4">35 min focus · 5 min break · lofi included 🎵</p>
+              {/* Course selector */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {COURSE_CREDITS.map(c => (
+                  <button key={c.code} onClick={() => setTimerCourse(c.code)}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${timerCourse === c.code ? 'bg-purple-600 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                    {c.code}
+                  </button>
+                ))}
+              </div>
+              {/* Session dots */}
+              <div className="flex items-center gap-2">
+                <p className="text-[9px] font-bold uppercase opacity-30 mr-1">Sessions today</p>
+                {timerSessions === 0
+                  ? <span className="text-[9px] opacity-20">none yet</span>
+                  : Array.from({ length: Math.min(timerSessions, 10) }).map((_, i) => (
+                    <div key={i} className="w-2 h-2 rounded-full bg-purple-400" />
+                  ))}
+              </div>
+            </div>
+
+            {/* Right: timer face */}
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative w-44 h-44 flex items-center justify-center">
+                {/* Ring */}
+                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
+                  <motion.circle cx="50" cy="50" r="44" fill="none"
+                    stroke={timerMode === 'focus' ? '#a855f7' : '#34d399'} strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeDasharray={`${2 * Math.PI * 44}`}
+                    strokeDashoffset={`${2 * Math.PI * 44 * (1 - timerSeconds / (timerMode === 'focus' ? 35*60 : 5*60))}`}
+                    style={{ transition: 'stroke-dashoffset 1s linear' }}
+                  />
+                </svg>
+                <div className="text-center z-10">
+                  <p className="text-4xl font-black text-white tabular-nums">{fmtTime(timerSeconds)}</p>
+                  <p className={`text-[9px] font-black uppercase mt-1 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
+                    {timerMode === 'focus' ? '🔴 Focus' : '🟢 Break'}
+                  </p>
+                </div>
+              </div>
+              {/* Controls */}
+              <div className="flex gap-3">
+                <button onClick={() => setTimerActive(a => !a)}
+                  className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase transition-all ${timerActive ? 'bg-white/10 text-white border border-white/20' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
+                  {timerActive ? '⏸ Pause' : '▶ Start'}
+                </button>
+                <button onClick={() => { setTimerSeconds(timerMode === 'focus' ? 35*60 : 5*60); setTimerActive(false); }}
+                  className="px-4 py-2.5 rounded-xl text-xs font-black uppercase bg-white/5 text-white/40 hover:bg-white/10 border border-white/10 transition-all">
+                  ↺
+                </button>
+                <button onClick={() => { setLofiMode(true); setTimerActive(true); }}
+                  className="px-4 py-2.5 rounded-xl text-xs font-black uppercase bg-indigo-600/30 text-indigo-300 hover:bg-indigo-600/50 border border-indigo-500/30 transition-all flex items-center gap-1">
+                  🎵 LoFi
+                </button>
+              </div>
+            </div>
+          </div>
+        </GlassCard>
+
+        {/* NOTES + RESOURCES */}
         <div className="grid md:grid-cols-2 gap-6">
           <GlassCard className="p-6 flex flex-col h-64" delay={0.2}>
             <h3 className="font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2"><FileText size={16} className="text-[#00d4ff]" /> Quick Notes</h3>
