@@ -112,6 +112,8 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
     emoji: '⚙️',
     resources: [
       { label: 'Basic Mechanics Playlist', url: 'https://www.youtube.com/watch?v=FnudcA72olU&list=PLInywrvFyvq6FUfAigJ3157kg-nZ020fd&t=35s' },
+      { label: 'Basic Mechanics Playlist', url: 'https://www.youtube.com/playlist?list=PLBWqF09uZJ9UlHekluVGdO_B2sKNkAe62'},
+      { label: 'Equillibrium', url: 'https://www.youtube.com/watch?v=YBvHNTTzic8&list=PLBWqF09uZJ9UXCyaK_noCtd3oQa9FgWaY'},
     ]
   },
   {
