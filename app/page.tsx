@@ -326,26 +326,36 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
 const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd }: any) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioStarted = useRef(false);
+
+  const startAudio = () => {
+    if (audioStarted.current || !audioRef.current) return;
+    audioStarted.current = true;
+    audioRef.current.volume = 0.5;
+    audioRef.current.play().catch(() => {});
+  };
 
   useEffect(() => {
-    // Request true fullscreen when overlay mounts
     const el = overlayRef.current;
     if (!el) return;
     if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
     else if ((el as any).webkitRequestFullscreen) (el as any).webkitRequestFullscreen();
 
-    // Autoplay audio
-    if (audioRef.current) {
-      audioRef.current.volume = 0.5;
-      audioRef.current.play().catch(() => {});
-    }
+    // Play on first interaction — bypasses browser autoplay block
+    document.addEventListener('click', startAudio, { once: true });
+    document.addEventListener('touchstart', startAudio, { once: true });
 
-    // F key exits
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit(); };
+    // F key exits (also triggers audio start)
+    const onKey = (e: KeyboardEvent) => {
+      startAudio();
+      if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit();
+    };
     document.addEventListener('keydown', onKey);
 
     return () => {
       document.removeEventListener('keydown', onKey);
+      document.removeEventListener('click', startAudio);
+      document.removeEventListener('touchstart', startAudio);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; }
     };
