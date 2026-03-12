@@ -112,8 +112,6 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
     emoji: '⚙️',
     resources: [
       { label: 'Basic Mechanics Playlist', url: 'https://www.youtube.com/watch?v=FnudcA72olU&list=PLInywrvFyvq6FUfAigJ3157kg-nZ020fd&t=35s' },
-      { label: 'Basic Mechanics Playlist', url: 'https://www.youtube.com/playlist?list=PLBWqF09uZJ9UlHekluVGdO_B2sKNkAe62'},
-      { label: 'Equillibrium', url: 'https://www.youtube.com/watch?v=YBvHNTTzic8&list=PLBWqF09uZJ9UXCyaK_noCtd3oQa9FgWaY'},
     ]
   },
   {
@@ -327,6 +325,7 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
 // ============================================================
 const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd }: any) => {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     // Request true fullscreen when overlay mounts
@@ -335,6 +334,12 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
     if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
     else if ((el as any).webkitRequestFullscreen) (el as any).webkitRequestFullscreen();
 
+    // Autoplay audio
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5;
+      audioRef.current.play().catch(() => {});
+    }
+
     // F key exits
     const onKey = (e: KeyboardEvent) => { if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit(); };
     document.addEventListener('keydown', onKey);
@@ -342,6 +347,7 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
     return () => {
       document.removeEventListener('keydown', onKey);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; }
     };
   }, []);
 
@@ -349,6 +355,9 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
     <motion.div ref={overlayRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
       style={{ background: 'linear-gradient(135deg, #0a0014 0%, #050820 50%, #00100a 100%)' }}>
+
+      {/* Audio */}
+      <audio ref={audioRef} src="/lofi.mp3" loop preload="auto" />
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity }}
@@ -391,6 +400,14 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
       <p className="text-white/15 text-[10px] mt-8 z-10 uppercase tracking-widest">
         Press F or back to exit
       </p>
+
+      {/* Volume control */}
+      <div className="flex items-center gap-3 mt-4 z-10 opacity-30 hover:opacity-70 transition-opacity">
+        <span className="text-white text-[9px] uppercase tracking-widest">Vol</span>
+        <input type="range" min="0" max="1" step="0.05" defaultValue="0.5"
+          onChange={(e) => { if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value); }}
+          className="w-24 accent-purple-400 cursor-pointer" />
+      </div>
 
       <AnimatePresence>
         {showExitWarn && (
