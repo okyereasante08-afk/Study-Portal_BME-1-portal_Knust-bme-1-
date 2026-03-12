@@ -323,17 +323,8 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
 // ============================================================
 // LOFI MODE — true fullscreen (Fullscreen API)
 // ============================================================
-const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd }: any) => {
+const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd, audioRef }: any) => {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const audioStarted = useRef(false);
-
-  const startAudio = () => {
-    if (audioStarted.current || !audioRef.current) return;
-    audioStarted.current = true;
-    audioRef.current.volume = 0.5;
-    audioRef.current.play().catch(() => {});
-  };
 
   useEffect(() => {
     const el = overlayRef.current;
@@ -341,23 +332,14 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
     if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
     else if ((el as any).webkitRequestFullscreen) (el as any).webkitRequestFullscreen();
 
-    // Play on first interaction — bypasses browser autoplay block
-    document.addEventListener('click', startAudio, { once: true });
-    document.addEventListener('touchstart', startAudio, { once: true });
-
-    // F key exits (also triggers audio start)
     const onKey = (e: KeyboardEvent) => {
-      startAudio();
       if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit();
     };
     document.addEventListener('keydown', onKey);
 
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.removeEventListener('click', startAudio);
-      document.removeEventListener('touchstart', startAudio);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-      if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; }
     };
   }, []);
 
@@ -365,9 +347,6 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
     <motion.div ref={overlayRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
       style={{ background: 'linear-gradient(135deg, #0a0014 0%, #050820 50%, #00100a 100%)' }}>
-
-      {/* Audio */}
-      <audio ref={audioRef} src="/lofi.mp3" loop preload="auto" />
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity }}
@@ -415,7 +394,7 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
       <div className="flex items-center gap-3 mt-4 z-10 opacity-30 hover:opacity-70 transition-opacity">
         <span className="text-white text-[9px] uppercase tracking-widest">Vol</span>
         <input type="range" min="0" max="1" step="0.05" defaultValue="0.5"
-          onChange={(e) => { if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value); }}
+          onChange={(e) => { if (audioRef?.current) audioRef.current.volume = parseFloat(e.target.value); }}
           className="w-24 accent-purple-400 cursor-pointer" />
       </div>
 
@@ -581,6 +560,7 @@ export default function Home() {
   const [lofiMode, setLofiMode] = useState(false);
   const [showLofiExit, setShowLofiExit] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const lofiAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Next class
   const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
@@ -789,7 +769,11 @@ export default function Home() {
   const getAttendancePct = (classId: string, total: number) => total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
   const fmtTime = (s: number) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
   const handleExitLofi = () => { setShowLofiExit(true); setTimeout(() => setShowLofiExit(false), 6000); };
-  const confirmExitLofi = () => { setLofiMode(false); setShowLofiExit(false); setTimerActive(false); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); };
+  const confirmExitLofi = () => {
+    setLofiMode(false); setShowLofiExit(false); setTimerActive(false);
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    if (lofiAudioRef.current) { lofiAudioRef.current.pause(); lofiAudioRef.current.currentTime = 0; }
+  };
   const getFirstName = (name: string) => name.split(' ')[0];
   const daysList = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
   const todayName = daysList[new Date().getDay() - 1] || 'Weekend';
@@ -865,7 +849,7 @@ export default function Home() {
             timerCourse={timerCourse} timerActive={timerActive} fmtTime={fmtTime}
             onToggle={() => setTimerActive(a => !a)} onExit={handleExitLofi}
             showExitWarn={showLofiExit} onConfirmExit={confirmExitLofi}
-            daysToEnd={daysToEnd}
+            daysToEnd={daysToEnd} audioRef={lofiAudioRef}
           />
         )}
       </AnimatePresence>
@@ -1061,7 +1045,18 @@ export default function Home() {
                   className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/5 text-white/30 hover:bg-white/10 border border-white/10 transition-all">
                   Reset
                 </button>
-                <button onClick={() => { setLofiMode(true); setTimerActive(true); }}
+                <button onClick={() => {
+                  setLofiMode(true);
+                  setTimerActive(true);
+                  // Play audio immediately on this user click event
+                  if (!lofiAudioRef.current) {
+                    lofiAudioRef.current = new Audio(window.location.origin + '/lofi.mp3');
+                    lofiAudioRef.current.loop = true;
+                    lofiAudioRef.current.volume = 0.5;
+                  }
+                  lofiAudioRef.current.currentTime = 0;
+                  lofiAudioRef.current.play().catch((err) => console.warn('Audio play failed:', err));
+                }}
                   className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-indigo-600/20 text-indigo-300 hover:bg-indigo-600/40 border border-indigo-500/20 transition-all">
                   LoFi
                 </button>
