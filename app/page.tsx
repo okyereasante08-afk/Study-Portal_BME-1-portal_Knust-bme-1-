@@ -233,7 +233,7 @@ const ONBOARDING_SLIDES = [
   {
     emoji: "📞",
     title: "Need help? or have any feedback?",
-    body: "Contact admin on 0556965453",
+    body: "Just text/call Kwaku on +233556965453",
   },
   {
     emoji: "🚀",
@@ -1279,7 +1279,11 @@ export default function Home() {
                       else { setIsFirstLogin(false); setLoginError(''); }
                     }} className="w-full text-[10px] font-bold opacity-30 uppercase tracking-wider">Back</button>
                   )}
-                  {!isFirstLogin && <button type="button" onClick={() => { setShowReset(true); setResetError(''); setResetStep('verify'); }} className="w-full text-[10px] font-bold opacity-30 hover:opacity-60 uppercase tracking-wider transition-opacity">Forgot password?</button>}
+                  {/* Always show forgot password — visible at all times on student login */}
+                  <button type="button" onClick={() => { setShowReset(true); setResetError(''); setResetStep('verify'); setResetID(studentID); }}
+                    className="w-full text-[10px] font-bold opacity-25 hover:opacity-60 uppercase tracking-wider transition-opacity">
+                    Forgot password?
+                  </button>
                 </>
               ) : (
                 <>
