@@ -602,7 +602,7 @@ const TUTORIAL_SECTIONS = [
     steps: [
       "Enter your 8-digit KNUST student ID.",
       "First time? You'll be asked to create a password — pick something you'll remember.",
-      "Forgot your password? Tap 'Forgot password?' on the login screen, verify with your ID and full name as registered, and set a new one.",
+      "Forgot your password? Tap 'Forgot password?' on the login screen, enter your student ID and answer your security question (your mother's first name), then set a new password.",
       "Admin login uses a separate access code — contact Kwaku if needed.",
     ]
   },
@@ -745,7 +745,7 @@ const DontPanic = ({ onClose }: { onClose: () => void }) => (
       className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">
       DON'T<br />PANIC
     </motion.p>
-    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">NEVER SAY EII, In all things, eat first 🤣😭</p>
+    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">The BME Student's Guide to the Galaxy</p>
     <p className="text-white/20 text-xs mt-4">tap anywhere to dismiss</p>
   </motion.div>
 );
@@ -847,11 +847,15 @@ export default function Home() {
   const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const [resetID, setResetID] = useState('');
-  const [resetName, setResetName] = useState('');
+  const [resetAnswer, setResetAnswer] = useState('');
   const [resetNewPw, setResetNewPw] = useState('');
   const [resetStep, setResetStep] = useState<'verify' | 'newpw'>('verify');
   const [resetError, setResetError] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
+  // First login security question
+  const [securityAnswer, setSecurityAnswer] = useState('');
+  const [firstLoginStep, setFirstLoginStep] = useState<'password' | 'security'>('password');
+  const [tempPassword, setTempPassword] = useState('');
   const [studentName, setStudentName] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showWeekView, setShowWeekView] = useState(false);
@@ -1021,9 +1025,22 @@ export default function Home() {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(`pw-${studentID}`);
       if (!stored) {
-        if (!isFirstLogin) setIsFirstLogin(true);
-        else if (password.length < 4) setLoginError('Password must be at least 4 characters.');
-        else { localStorage.setItem(`pw-${studentID}`, password); proceedToLogin(studentID); }
+        // First login — two steps: password then security question
+        if (!isFirstLogin) {
+          setIsFirstLogin(true);
+          setFirstLoginStep('password');
+        } else if (firstLoginStep === 'password') {
+          if (password.length < 4) { setLoginError('Password must be at least 4 characters.'); return; }
+          setTempPassword(password);
+          setFirstLoginStep('security');
+          setLoginError('');
+        } else {
+          // security step
+          if (securityAnswer.trim().length < 2) { setLoginError('Please enter your answer.'); return; }
+          localStorage.setItem(`pw-${studentID}`, tempPassword);
+          localStorage.setItem(`sq-${studentID}`, securityAnswer.trim().toLowerCase());
+          proceedToLogin(studentID);
+        }
       } else {
         if (password === stored) proceedToLogin(studentID);
         else setLoginError('Incorrect password.');
@@ -1034,11 +1051,11 @@ export default function Home() {
   const handleReset = () => {
     setResetError('');
     if (resetStep === 'verify') {
-      const name = CLASS_LIST[resetID];
-      if (!name) { setResetError('Student ID not found.'); return; }
-      // Normalise both to lowercase for comparison
-      if (name.toLowerCase().trim() !== resetName.toLowerCase().trim()) {
-        setResetError('Name does not match our records.'); return;
+      if (!CLASS_LIST[resetID]) { setResetError('Student ID not found.'); return; }
+      const stored = localStorage.getItem(`sq-${resetID}`);
+      if (!stored) { setResetError('No security answer on file. Contact Kwaku to reset manually.'); return; }
+      if (stored !== resetAnswer.trim().toLowerCase()) {
+        setResetError('Incorrect answer. Try again.'); return;
       }
       setResetStep('newpw');
     } else {
@@ -1046,7 +1063,7 @@ export default function Home() {
       localStorage.setItem(`pw-${resetID}`, resetNewPw);
       setResetSuccess(true);
       setTimeout(() => {
-        setShowReset(false); setResetID(''); setResetName(''); setResetNewPw('');
+        setShowReset(false); setResetID(''); setResetAnswer(''); setResetNewPw('');
         setResetStep('verify'); setResetSuccess(false); setResetError('');
       }, 2000);
     }
@@ -1155,12 +1172,54 @@ export default function Home() {
             <form onSubmit={handleLogin} className="space-y-3">
               {loginMode === 'student' ? (
                 <>
-                  <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
-                  {(isFirstLogin || (typeof window !== 'undefined' && localStorage.getItem(`pw-${studentID}`))) && (
-                    <input type="password" placeholder={isFirstLogin ? "Create a password" : "Password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                  {/* Step indicator for first login */}
+                  {isFirstLogin && (
+                    <div className="flex gap-1.5 mb-1">
+                      <div className={`h-1 flex-1 rounded-full transition-all ${firstLoginStep === 'password' ? 'bg-[#00d4ff]' : 'bg-emerald-400'}`} />
+                      <div className={`h-1 flex-1 rounded-full transition-all ${firstLoginStep === 'security' ? 'bg-[#00d4ff]' : 'bg-white/15'}`} />
+                    </div>
                   )}
-                  <button className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider hover:scale-[1.01] transition-transform">{isFirstLogin ? 'Save & Enter' : 'Continue'}</button>
-                  {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-30 uppercase tracking-wider">Back</button>}
+
+                  <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+
+                  {/* Normal login */}
+                  {!isFirstLogin && typeof window !== 'undefined' && localStorage.getItem(`pw-${studentID}`) && (
+                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                  )}
+
+                  {/* First login step 1: create password */}
+                  {isFirstLogin && firstLoginStep === 'password' && (
+                    <>
+                      <input type="password" placeholder="Create a password (min 4 chars)" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                      <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                        <p className="text-amber-400 text-[10px] font-bold uppercase tracking-wider text-center">Remember this password — you cannot log in without it</p>
+                      </div>
+                    </>
+                  )}
+
+                  {/* First login step 2: security question */}
+                  {isFirstLogin && firstLoginStep === 'security' && (
+                    <>
+                      <div className="p-3 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-xl">
+                        <p className="text-[#00d4ff] text-[10px] font-bold uppercase tracking-wider text-center mb-1">Security Question</p>
+                        <p className="text-white/60 text-xs text-center">What is your mother's first name?</p>
+                      </div>
+                      <input type="text" placeholder="Your answer" value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                      <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                        <p className="text-amber-400 text-[10px] font-bold uppercase tracking-wider text-center">Remember this answer — it's how you reset your password if you forget it</p>
+                      </div>
+                    </>
+                  )}
+
+                  <button className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider hover:scale-[1.01] transition-transform">
+                    {!isFirstLogin ? 'Continue' : firstLoginStep === 'password' ? 'Next →' : 'Finish Setup'}
+                  </button>
+                  {isFirstLogin && (
+                    <button type="button" onClick={() => {
+                      if (firstLoginStep === 'security') { setFirstLoginStep('password'); setLoginError(''); }
+                      else { setIsFirstLogin(false); setLoginError(''); }
+                    }} className="w-full text-[10px] font-bold opacity-30 uppercase tracking-wider">Back</button>
+                  )}
                   {!isFirstLogin && <button type="button" onClick={() => { setShowReset(true); setResetError(''); setResetStep('verify'); }} className="w-full text-[10px] font-bold opacity-30 hover:opacity-60 uppercase tracking-wider transition-opacity">Forgot password?</button>}
                 </>
               ) : (
@@ -1211,12 +1270,16 @@ export default function Home() {
                           <input type="text" placeholder="Student ID" value={resetID}
                             onChange={e => setResetID(e.target.value)}
                             className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
-                          <input type="text" placeholder="Full name (as registered)"
-                            value={resetName} onChange={e => setResetName(e.target.value)}
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/8">
+                            <p className="text-white/40 text-[10px] text-center uppercase tracking-wider">Security Question</p>
+                            <p className="text-white/70 text-xs text-center mt-1">What is your mother's first name?</p>
+                          </div>
+                          <input type="text" placeholder="Your answer"
+                            value={resetAnswer} onChange={e => setResetAnswer(e.target.value)}
                             className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
                           <button onClick={handleReset}
                             className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
-                            Verify Identity
+                            Verify
                           </button>
                         </>
                       ) : (
