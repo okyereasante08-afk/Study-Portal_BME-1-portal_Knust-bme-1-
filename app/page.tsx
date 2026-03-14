@@ -1279,11 +1279,7 @@ export default function Home() {
                       else { setIsFirstLogin(false); setLoginError(''); }
                     }} className="w-full text-[10px] font-bold opacity-30 uppercase tracking-wider">Back</button>
                   )}
-                  {/* Always show forgot password — visible at all times on student login */}
-                  <button type="button" onClick={() => { setShowReset(true); setResetError(''); setResetStep('verify'); setResetID(studentID); }}
-                    className="w-full text-[10px] font-bold opacity-25 hover:opacity-60 uppercase tracking-wider transition-opacity">
-                    Forgot password?
-                  </button>
+
                 </>
               ) : (
                 <>
@@ -1296,7 +1292,18 @@ export default function Home() {
               )}
               {loginError && <p className="text-red-400 text-[10px] text-center font-bold uppercase tracking-wider">{loginError}</p>}
             </form>
-            <div className="mt-6 p-3 bg-white/5 rounded-xl border border-white/5">
+
+            {/* Forgot password — always visible on student tab, outside form so it never submits */}
+            {loginMode === 'student' && (
+              <button
+                type="button"
+                onClick={() => { setShowReset(true); setResetError(''); setResetStep('verify'); setResetID(studentID); }}
+                className="w-full mt-3 py-2 text-[11px] font-bold text-white/40 hover:text-[#00d4ff] uppercase tracking-widest transition-colors text-center">
+                Forgot password?
+              </button>
+            )}
+
+            <div className="mt-3 p-3 bg-white/5 rounded-xl border border-white/5">
               <AnimatePresence mode="wait">
                 <motion.p key={currentPun} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.4 }}
                   className="text-white/25 text-[10px] text-center italic">{BME_PUNS[currentPun]}</motion.p>
