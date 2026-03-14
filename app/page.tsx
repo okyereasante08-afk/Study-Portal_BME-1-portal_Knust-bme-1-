@@ -852,7 +852,10 @@ export default function Home() {
   const [resetID, setResetID] = useState('');
   const [resetAnswer, setResetAnswer] = useState('');
   const [resetNewPw, setResetNewPw] = useState('');
-  const [resetStep, setResetStep] = useState<'verify' | 'newpw'>('verify');
+  const [resetNewSQ, setResetNewSQ] = useState('');
+  const [resetStep, setResetStep] = useState<'verify' | 'newpw' | 'setsecurity'>('verify');
+  const [resetIsLegacy, setResetIsLegacy] = useState(false);
+  const [resetLegacyName, setResetLegacyName] = useState('');
   const [resetError, setResetError] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
   // First login security question
@@ -1057,20 +1060,50 @@ export default function Home() {
 
   const handleReset = () => {
     setResetError('');
+
     if (resetStep === 'verify') {
       if (!CLASS_LIST[resetID]) { setResetError('Student ID not found.'); return; }
-      const stored = localStorage.getItem(`sq-${resetID}`);
-      if (!stored) { setResetError('No security answer on file. Contact Kwaku to reset manually.'); return; }
-      if (stored !== resetAnswer.trim().toLowerCase()) {
-        setResetError('Incorrect answer. Try again.'); return;
+      const storedSQ = localStorage.getItem(`sq-${resetID}`);
+
+      if (!storedSQ) {
+        // Legacy user — no security question on file, fall back to full name check
+        const registeredName = CLASS_LIST[resetID];
+        if (resetLegacyName.trim().toLowerCase() !== registeredName.toLowerCase().trim()) {
+          setResetError('Name does not match. Enter your full name exactly as registered.'); return;
+        }
+        setResetIsLegacy(true);
+        setResetStep('newpw');
+      } else {
+        // New user — verify security answer
+        if (storedSQ !== resetAnswer.trim().toLowerCase()) {
+          setResetError('Incorrect answer. Try again.'); return;
+        }
+        setResetIsLegacy(false);
+        setResetStep('newpw');
       }
-      setResetStep('newpw');
-    } else {
+
+    } else if (resetStep === 'newpw') {
       if (resetNewPw.length < 4) { setResetError('Password must be at least 4 characters.'); return; }
       localStorage.setItem(`pw-${resetID}`, resetNewPw);
+      if (resetIsLegacy) {
+        // Legacy user — now enroll them with a security question
+        setResetStep('setsecurity');
+      } else {
+        setResetSuccess(true);
+        setTimeout(() => {
+          setShowReset(false); setResetID(''); setResetAnswer(''); setResetNewPw('');
+          setResetLegacyName(''); setResetNewSQ(''); setResetIsLegacy(false);
+          setResetStep('verify'); setResetSuccess(false); setResetError('');
+        }, 2000);
+      }
+
+    } else if (resetStep === 'setsecurity') {
+      if (resetNewSQ.trim().length < 2) { setResetError('Please enter an answer.'); return; }
+      localStorage.setItem(`sq-${resetID}`, resetNewSQ.trim().toLowerCase());
       setResetSuccess(true);
       setTimeout(() => {
         setShowReset(false); setResetID(''); setResetAnswer(''); setResetNewPw('');
+        setResetLegacyName(''); setResetNewSQ(''); setResetIsLegacy(false);
         setResetStep('verify'); setResetSuccess(false); setResetError('');
       }, 2000);
     }
@@ -1288,42 +1321,95 @@ export default function Home() {
                   <>
                     <h2 className="text-base font-black text-white uppercase tracking-wider mb-1">Reset Password</h2>
                     <p className="text-white/30 text-xs mb-6 tracking-wide">
-                      {resetStep === 'verify' ? 'Verify your identity first.' : 'Set your new password.'}
+                      {resetStep === 'verify' ? 'Verify your identity.' : resetStep === 'newpw' ? 'Set your new password.' : 'One last step — set a security question.'}
                     </p>
+
+                    {/* Step dots */}
+                    <div className="flex gap-1.5 mb-5">
+                      {(['verify','newpw','setsecurity'] as const).map((s, i) => (
+                        <div key={i} className={`h-1 flex-1 rounded-full transition-all ${
+                          resetStep === s ? 'bg-[#00d4ff]' :
+                          (['verify','newpw','setsecurity'].indexOf(resetStep) > i) ? 'bg-emerald-400' : 'bg-white/10'
+                        }`} />
+                      ))}
+                    </div>
+
                     <div className="space-y-3">
-                      {resetStep === 'verify' ? (
+                      {resetStep === 'verify' && (
                         <>
                           <input type="text" placeholder="Student ID" value={resetID}
-                            onChange={e => setResetID(e.target.value)}
+                            onChange={e => { setResetID(e.target.value); setResetError(''); }}
                             className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
-                          <div className="p-3 bg-white/5 rounded-xl border border-white/8">
-                            <p className="text-white/40 text-[10px] text-center uppercase tracking-wider">Security Question</p>
-                            <p className="text-white/70 text-xs text-center mt-1">What is your mother's first name?</p>
-                          </div>
-                          <input type="text" placeholder="Your answer"
-                            value={resetAnswer} onChange={e => setResetAnswer(e.target.value)}
-                            className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+
+                          {/* Show security question if they have one, otherwise name fallback */}
+                          {resetID && !localStorage.getItem(`sq-${resetID}`) ? (
+                            <>
+                              <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                                <p className="text-amber-400 text-[10px] text-center uppercase tracking-wider font-bold">Legacy account</p>
+                                <p className="text-white/50 text-xs text-center mt-1">Enter your full name as registered to verify</p>
+                              </div>
+                              <input type="text" placeholder="Full name (e.g. Asante Kwaku Okyere)"
+                                value={resetLegacyName} onChange={e => setResetLegacyName(e.target.value)}
+                                className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                            </>
+                          ) : (
+                            <>
+                              <div className="p-3 bg-white/5 rounded-xl border border-white/8">
+                                <p className="text-white/40 text-[10px] text-center uppercase tracking-wider">Security Question</p>
+                                <p className="text-white/70 text-xs text-center mt-1">What is your mother's first name?</p>
+                              </div>
+                              <input type="text" placeholder="Your answer"
+                                value={resetAnswer} onChange={e => setResetAnswer(e.target.value)}
+                                className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                            </>
+                          )}
                           <button onClick={handleReset}
                             className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
                             Verify
                           </button>
                         </>
-                      ) : (
+                      )}
+
+                      {resetStep === 'newpw' && (
                         <>
-                          <p className="text-center text-white/40 text-xs">Identity verified for <span className="text-white font-bold">{CLASS_LIST[resetID]}</span></p>
-                          <input type="password" placeholder="New password" value={resetNewPw}
+                          <p className="text-center text-white/40 text-xs">Verified: <span className="text-white font-bold">{CLASS_LIST[resetID]}</span></p>
+                          <input type="password" placeholder="New password (min 4 chars)" value={resetNewPw}
                             onChange={e => setResetNewPw(e.target.value)} autoFocus
                             className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                          {resetIsLegacy && (
+                            <div className="p-3 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-xl">
+                              <p className="text-[#00d4ff] text-[10px] text-center uppercase tracking-wider font-bold">Next: set a security question</p>
+                              <p className="text-white/40 text-xs text-center mt-1">You'll set your mother's first name as your reset answer after this</p>
+                            </div>
+                          )}
                           <button onClick={handleReset}
                             className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
-                            Save New Password
+                            {resetIsLegacy ? 'Save & Continue →' : 'Save Password'}
                           </button>
                           <button onClick={() => setResetStep('verify')}
-                            className="w-full text-[10px] font-bold opacity-30 hover:opacity-60 uppercase tracking-wider transition-opacity">
-                            Back
+                            className="w-full text-[10px] font-bold opacity-30 hover:opacity-60 uppercase tracking-wider transition-opacity">Back</button>
+                        </>
+                      )}
+
+                      {resetStep === 'setsecurity' && (
+                        <>
+                          <div className="p-3 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-xl">
+                            <p className="text-[#00d4ff] text-[10px] text-center uppercase tracking-wider font-bold">Security Question</p>
+                            <p className="text-white/60 text-xs text-center mt-1">What is your mother's first name?</p>
+                          </div>
+                          <input type="text" placeholder="Your answer" value={resetNewSQ}
+                            onChange={e => setResetNewSQ(e.target.value)} autoFocus
+                            className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                          <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                            <p className="text-amber-400 text-[10px] text-center font-bold uppercase tracking-wider">Remember this — it's how you reset your password next time</p>
+                          </div>
+                          <button onClick={handleReset}
+                            className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
+                            Finish Setup
                           </button>
                         </>
                       )}
+
                       {resetError && <p className="text-red-400 text-[10px] text-center font-bold uppercase tracking-wider">{resetError}</p>}
                     </div>
                   </>
