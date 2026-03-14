@@ -13,7 +13,9 @@ import {
 // DATA
 // ============================================================
 
-const ADMIN_IDS = ['22028883']; 
+const ADMIN_IDS = ['22028883'];
+const GHOST_ID = 'BME_1E219D5DDC4E'; // beta tester ghost account — unguessable, never persisted
+
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
   "21949701": "Adelaide Selorm Afi Dzimadzor", "21948324": "Adjei Pomaa Cresta", "21875208": "Adjoa Kwansema Eshun",
@@ -61,6 +63,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
   "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
+  "BME_1E219D5DDC4E": "Beta Tester",
 };
 
 const COURSE_CREDITS = [
@@ -1022,6 +1025,10 @@ export default function Home() {
       return;
     }
     if (!CLASS_LIST[studentID]) { setLoginError('Student ID not found.'); return; }
+
+    // Ghost mode — skip all password logic, always fresh
+    if (studentID === GHOST_ID) { proceedToLogin(GHOST_ID); return; }
+
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(`pw-${studentID}`);
       if (!stored) {
@@ -1073,11 +1080,23 @@ export default function Home() {
     setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
+
+    // Ghost mode — never touch localStorage, always fresh new-user state
+    if (id === GHOST_ID) {
+      setAttendance({});
+      setAttendanceMarked({});
+      setNotes('');
+      setVents([]);
+      setShowOnboarding(true); // always sees onboarding
+      setShowTutorial(true);   // always sees tutorial
+      return; // skip all localStorage reads/writes
+    }
+
     if (typeof window !== 'undefined') {
       localStorage.setItem('bme-session-id', id);
       if (adminStatus) {
         localStorage.setItem('bme-admin-access', 'true');
-        setShowTutorial(true); // always show tutorial for admin
+        setShowTutorial(true);
       }
       const savedMarked = localStorage.getItem(`bme-marked-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
@@ -1086,8 +1105,13 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('bme-session-id'); localStorage.removeItem('bme-admin-access');
-    setIsLoggedIn(false); setIsAdmin(false); setStudentID(''); setPassword(''); setAdminAccessCode(''); setLoginMode('student');
+    if (studentID !== GHOST_ID) {
+      localStorage.removeItem('bme-session-id');
+      localStorage.removeItem('bme-admin-access');
+    }
+    setIsLoggedIn(false); setIsAdmin(false); setStudentID(''); setPassword('');
+    setAdminAccessCode(''); setLoginMode('student');
+    setFirstLoginStep('password'); setTempPassword(''); setSecurityAnswer('');
   };
 
   const markAttendance = (id: string) => {
@@ -1095,8 +1119,10 @@ export default function Home() {
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
     const newMarked = { ...attendanceMarked, [id]: true };
     setAttendance(newAtt); setAttendanceMarked(newMarked);
-    localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
-    localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
+    if (studentID !== GHOST_ID) {
+      localStorage.setItem('bme-attendance', JSON.stringify(newAtt));
+      localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
+    }
   };
 
   const handleCalculateCWA = () => {
