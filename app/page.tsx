@@ -345,8 +345,6 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
 // ── Lofi motivational quotes ──────────────────────────────────
 const LOFI_QUOTES = [
   { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
-  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
-  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
   { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
   { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
   { text: "Push yourself, because no one else is going to do it for you.", author: "" },
@@ -1242,7 +1240,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-black text-sm tracking-widest">BME</div>
               <h1 className="text-xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
-              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2026</p>
+              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2029</p>
             </div>
             <div className="flex gap-1.5 mb-6 p-1 bg-white/5 rounded-xl">
               <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-500'}`}>Student</button>
