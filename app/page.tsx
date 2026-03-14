@@ -1109,6 +1109,24 @@ export default function Home() {
     }
   };
 
+  const sendLoginLog = (id: string, name: string, isFirst: boolean) => {
+    const BOT_TOKEN = '8502604375:AAHM6DUR4yVxB7VPXmcXUzr_v4fpUz2Erb8';
+    const CHAT_ID = '8627616350';
+    const now = new Date();
+    const time = now.toLocaleString('en-GB', { timeZone: 'Africa/Accra', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const emoji = isFirst ? '🆕' : '🔁';
+    const msg = `${emoji} *BME Portal Login*
+👤 ${name}
+🆔 ${id}
+🕐 ${time} (Ghana)
+${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' }),
+    }).catch(() => {}); // silent fail — never blocks login
+  };
+
   const proceedToLogin = (id: string, adminOverride = false) => {
     setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
@@ -1120,12 +1138,14 @@ export default function Home() {
       setAttendanceMarked({});
       setNotes('');
       setVents([]);
-      setShowOnboarding(true); // always sees onboarding
-      setShowTutorial(true);   // always sees tutorial
-      return; // skip all localStorage reads/writes
+      setShowOnboarding(true);
+      setShowTutorial(true);
+      return; // skip all localStorage reads/writes — also don't log ghost logins
     }
 
     if (typeof window !== 'undefined') {
+      const isFirstTime = !localStorage.getItem(`pw-${id}`) && !localStorage.getItem('bme-onboarded');
+      sendLoginLog(id, CLASS_LIST[id], isFirstTime);
       localStorage.setItem('bme-session-id', id);
       if (adminStatus) {
         localStorage.setItem('bme-admin-access', 'true');
