@@ -233,7 +233,7 @@ const ONBOARDING_SLIDES = [
   {
     emoji: "📞",
     title: "Need help? or have any feedback?",
-    body: "Just text/call Kwaku on +233556965453",
+    body: "Contact admin on 0556965453",
   },
   {
     emoji: "🚀",
