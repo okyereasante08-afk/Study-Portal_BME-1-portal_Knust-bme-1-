@@ -75,25 +75,25 @@ const COURSE_CREDITS = [
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture', totalClasses: 20 },
-    { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture', totalClasses: 15 },
+    { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture', totalClasses: 4 },
+    { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture', totalClasses: 4 },
   ],
   Tuesday: [
-    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab', totalClasses: 12 },
-    { id: 'm1', time: '17:00 - 19:00', course: 'COE 181', venue: 'VSLA', lecturer: 'K.O.K. Sarkodie', type: 'Lecture', totalClasses: 20 },
+    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab', totalClasses: 4 },
+    { id: 'm1', time: '17:00 - 19:00', course: 'COE 181', venue: 'VSLA', lecturer: 'K.O.K. Sarkodie', type: 'Lecture', totalClasses: 4 },
   ],
   Wednesday: [
-    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 20 },
-    { id: 'w2', time: '13:00 - 13:55', course: 'COE 181', venue: '303', lecturer: 'K.O.K Sarkodie', type: 'Lecture', totalClasses: 20 },
+    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 3 },
+    { id: 'w2', time: '13:00 - 13:55', course: 'COE 181', venue: '303', lecturer: 'K.O.K Sarkodie', type: 'Lecture', totalClasses: 3 },
   ],
   Thursday: [
-    { id: 'th1', time: '08:00 - 09:55', course: 'ME 161', venue: 'A110', lecturer: 'K.O Amoabeng', type: 'Lecture', totalClasses: 20 },
-    { id: 'th2', time: '13:00 - 14:55', course: 'MATH 151 B', venue: 'PB020', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 20 },
-    { id: 'th3', time: '15:00 - 16:55', course: 'BME 161', venue: 'PB008', lecturer: 'P. Adjei', type: 'Lecture', totalClasses: 20 },
+    { id: 'th1', time: '08:00 - 09:55', course: 'ME 161', venue: 'A110', lecturer: 'K.O Amoabeng', type: 'Lecture', totalClasses: 3 },
+    { id: 'th2', time: '13:00 - 14:55', course: 'MATH 151 B', venue: 'PB020', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 3 },
+    { id: 'th3', time: '15:00 - 16:55', course: 'BME 161', venue: 'PB008', lecturer: 'P. Adjei', type: 'Lecture', totalClasses: 3 },
   ],
   Friday: [
-    { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab', totalClasses: 12 },
-    { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab', totalClasses: 12 },
+    { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab', totalClasses: 3 },
+    { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab', totalClasses: 3 },
   ],
 };
 
@@ -111,7 +111,14 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
     color: 'orange',
     emoji: '⚙️',
     resources: [
+      { label: 'Basic Mechanics R.C hibbler solved', url: 'https://www.youtube.com/watch?v=09o0125cde8&list=PLWWf-r6pJvvXjhc2-uOzvFTqigm8o14g8'},
       { label: 'Basic Mechanics Playlist', url: 'https://www.youtube.com/watch?v=FnudcA72olU&list=PLInywrvFyvq6FUfAigJ3157kg-nZ020fd&t=35s' },
+      { label: 'RC hibbler Force Vectors', url: 'https://www.youtube.com/watch?v=bGj55QoS65w&list=PLBWqF09uZJ9UlHekluVGdO_B2sKNkAe62'},
+      { label: 'Equillibrium of a Rigid body', url: 'https://www.youtube.com/watch?v=YBvHNTTzic8&list=PLBWqF09uZJ9UXCyaK_noCtd3oQa9FgWaY'},
+      { label: 'Equillibrium of a Particle', url: 'https://www.youtube.com/watch?v=xxhhgfhJtyA&list=PLBWqF09uZJ9Uc-848ySvjH_6o-6uk-nzk'},
+      { label: 'Structural Analysis', url: 'https://www.youtube.com/watch?v=KfoqQcCua_8&list=PLBWqF09uZJ9V_K5uvVB78Y68GlSuwRkIm'},
+      { label: 'Moments and Internal Forces', url: 'https://www.youtube.com/watch?v=wOp8dkj-_e8&list=PLBWqF09uZJ9XAlU5uZjqgaxU0AcjleUNy'},
+      { label: 'Friction', url: 'https://www.youtube.com/watch?v=GGiXSPyXT3Y&list=PLBWqF09uZJ9UTd0bywwHNpqkrnl9NOTTo'},
     ]
   },
   {
@@ -119,8 +126,9 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
     color: 'yellow',
     emoji: '⚡',
     resources: [
-      { label: 'Applied Electricity Playlist 1', url: 'https://www.youtube.com/watch?v=7VEbQWOQzA4&list=PLZX9WOQeh5xV_Aiubcy9S6kc1lpNnz2Nc' },
-      { label: 'Applied Electricity Playlist 2', url: 'https://www.youtube.com/watch?v=rE_0ejMU6yM&list=PLXePpKFSUW2abKgvj_hClQS1NK86SCHfy' },
+      { label: 'Applied Electricity Playlist 1- Skancity Academy', url: 'https://www.youtube.com/playlist?list=PLInywrvFyvq7pFsDEDu2-n0f5UOhpqWBD' },
+      { label: 'Applied Electricity Playlist 2- Learn the basics', url: 'https://www.youtube.com/watch?v=rE_0ejMU6yM&list=PLXePpKFSUW2abKgvj_hClQS1NK86SCHfy' },
+      { label: 'Applied Electricity Playlist 3- Maths Hub Gh', url: 'https://www.youtube.com/watch?v=f1o5dXu8zKM&list=PLldc0i2lkatV0FTguKTiFDE3Fz3xhVwZ7'},
     ]
   },
   {
@@ -138,6 +146,9 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
       { label: 'Cell Adhesion Molecules (1)', url: 'https://www.youtube.com/watch?v=UM8i1Lfoc6U' },
       { label: 'Cell Adhesion Molecules (2)', url: 'https://www.youtube.com/watch?v=CccR-3c3Jck' },
       { label: 'DNA, Mitosis, Meiosis', url: 'https://www.youtube.com/watch?v=LUDws4JrIiI&t=2506s' },
+      { label: 'Apoptosis vs Necrosis', url:  'https://www.youtube.com/watch?v=jRZHDhHf3tA&pp=ygUJYXBvcHRvc2lz'},
+      { label: 'Endosomes', url: 'https://www.youtube.com/watch?v=6MZN24Il5Sc&pp=ygUJZW5kb3NvbWVz'},
+      { label: 'Lysosomes- Structure and function (Ninja Nerd)', url: 'https://www.youtube.com/watch?v=QtGMAgxv72Y&pp=ygUJZW5kb3NvbWVz'}
     ]
   },
   {
@@ -172,9 +183,9 @@ const BME_PUNS = [
   "Me to the lecturer: 'Please sir, can you slow down?' Him: *writes faster*.",
   "My data finished during the online lecture. God's plan.",
   "Asante is the GOAT. No debate.",
+  "CWA - hmm",
   "Dr. Sarkodie once said: \"You since you came to my class you've never solved a question before, let this be your first.\"",
   "Dr. Sarkodie once said: \"Just dey play.\"",
-  "COE 153 lab report is 40% effort, 60% formatting to look busy. Real talk.",
   "If stress was creditworthy, I'd have a First Class by now.",
   "Passed Applied Electricity. My ancestors had to intervene personally.",
 ];
@@ -216,10 +227,15 @@ const ONBOARDING_SLIDES = [
     title: "BME Survival Kit",
     body: "Curated YouTube playlists for every course. Linear Algebra, Cell Biology, Applied Electricity — all there when you need them.",
   },
+   {
+    emoji: "📞",
+    title: "Need help? or have any feedback?",
+    body: "Just text/call Kwaku on +233556965453",
+  },
   {
     emoji: "🚀",
     title: "You're Set",
-    body: "KNUST BME1, Class of 2026. Let's get to work.",
+    body: "KNUST BME1, Class of 2029. Let's get to work.",
   },
 ];
 
@@ -323,8 +339,141 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
 // ============================================================
 // LOFI MODE — true fullscreen (Fullscreen API)
 // ============================================================
+// ── Lofi motivational quotes ──────────────────────────────────
+const LOFI_QUOTES = [
+  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "Push yourself, because no one else is going to do it for you.", author: "" },
+  { text: "Great things never come from comfort zones.", author: "" },
+  { text: "Dream it. Wish it. Do it.", author: "" },
+  { text: "Success doesn't just find you. You have to go out and get it.", author: "" },
+  { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "" },
+  { text: "Don't stop when you're tired. Stop when you're done.", author: "" },
+  { text: "Wake up with determination. Go to bed with satisfaction.", author: "" },
+  { text: "Little by little, a little becomes a lot.", author: "Tanzanian proverb" },
+  { text: "Your future is created by what you do today, not tomorrow.", author: "" },
+  { text: "Discipline is choosing between what you want now and what you want most.", author: "" },
+];
+
+// ── Aurora ripple canvas (separate from neural-net background) ─
+const AuroraRipple = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -999, y: -999 });
+  const animRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let W = window.innerWidth, H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+
+    const onResize = () => { W = window.innerWidth; H = window.innerHeight; canvas.width = W; canvas.height = H; };
+    window.addEventListener('resize', onResize);
+
+    const onMove = (e: MouseEvent) => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
+    const onTouch = (e: TouchEvent) => { if (e.touches[0]) mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onTouch, { passive: true });
+
+    // Aurora orbs — slow drifting blobs of colour
+    type Orb = { x: number; y: number; vx: number; vy: number; r: number; hue: number; phase: number };
+    const orbs: Orb[] = [
+      { x: W*0.2, y: H*0.3, vx: 0.18, vy: 0.12, r: 420, hue: 270, phase: 0 },
+      { x: W*0.7, y: H*0.6, vx: -0.14, vy: 0.16, r: 380, hue: 160, phase: 1.5 },
+      { x: W*0.5, y: H*0.15, vx: 0.1, vy: -0.13, r: 350, hue: 210, phase: 3 },
+      { x: W*0.85, y: H*0.2, vx: -0.2, vy: 0.1, r: 300, hue: 300, phase: 4.5 },
+    ];
+
+    // Ripple rings spawned by cursor
+    type Ripple = { x: number; y: number; r: number; maxR: number; alpha: number; hue: number };
+    const ripples: Ripple[] = [];
+    let lastRipple = 0;
+
+    const spawnRipple = (x: number, y: number) => {
+      const now = performance.now();
+      if (now - lastRipple < 120) return;
+      lastRipple = now;
+      ripples.push({ x, y, r: 0, maxR: 120 + Math.random()*80, alpha: 0.6, hue: 250 + Math.random()*80 });
+    };
+
+    let t = 0;
+    const draw = () => {
+      t += 0.008;
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw aurora orbs
+      orbs.forEach(o => {
+        o.phase += 0.005;
+        // Cursor attraction
+        const dx = mouseRef.current.x - o.x, dy = mouseRef.current.y - o.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 500 && dist > 0) { o.vx += dx/dist * 0.008; o.vy += dy/dist * 0.008; }
+        o.vx *= 0.97; o.vy *= 0.97;
+        o.x += o.vx; o.y += o.vy;
+        if (o.x < -o.r) o.x = W + o.r; if (o.x > W + o.r) o.x = -o.r;
+        if (o.y < -o.r) o.y = H + o.r; if (o.y > H + o.r) o.y = -o.r;
+
+        const alpha = 0.07 + Math.sin(o.phase) * 0.03;
+        const grad = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+        grad.addColorStop(0, `hsla(${o.hue + Math.sin(t)*20}, 80%, 65%, ${alpha})`);
+        grad.addColorStop(0.5, `hsla(${o.hue + 30}, 70%, 50%, ${alpha * 0.5})`);
+        grad.addColorStop(1, 'transparent');
+        ctx.beginPath();
+        ctx.ellipse(o.x, o.y, o.r, o.r * (0.7 + Math.sin(o.phase*0.7)*0.2), t*0.1, 0, Math.PI*2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      });
+
+      // Spawn ripple at cursor
+      const mx = mouseRef.current.x, my = mouseRef.current.y;
+      if (mx > 0 && mx < W) spawnRipple(mx + (Math.random()-0.5)*30, my + (Math.random()-0.5)*30);
+
+      // Draw & age ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rp = ripples[i];
+        rp.r += 2.5;
+        rp.alpha *= 0.94;
+        if (rp.alpha < 0.01 || rp.r > rp.maxR) { ripples.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI*2);
+        ctx.strokeStyle = `hsla(${rp.hue}, 80%, 70%, ${rp.alpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Glow dot at cursor
+      if (mx > 0 && mx < W) {
+        const cg = ctx.createRadialGradient(mx, my, 0, mx, my, 60);
+        cg.addColorStop(0, 'rgba(200,150,255,0.25)');
+        cg.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(mx, my, 60, 0, Math.PI*2);
+        ctx.fillStyle = cg; ctx.fill();
+      }
+
+      animRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('touchmove', onTouch);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ mixBlendMode: 'screen' }} />;
+};
+
 const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd, audioRef }: any) => {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [quoteIdx, setQuoteIdx] = useState(() => 0);
 
   useEffect(() => {
     const el = overlayRef.current;
@@ -332,76 +481,102 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
     if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
     else if ((el as any).webkitRequestFullscreen) (el as any).webkitRequestFullscreen();
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'f' || e.key === 'F' || e.key === 'Escape') onExit(); };
     document.addEventListener('keydown', onKey);
+
+    // Rotate quote every 30s
+    const qt = setInterval(() => setQuoteIdx(i => (i + 1) % LOFI_QUOTES.length), 30000);
 
     return () => {
       document.removeEventListener('keydown', onKey);
+      clearInterval(qt);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     };
   }, []);
 
+  const quote = LOFI_QUOTES[quoteIdx];
+
   return (
     <motion.div ref={overlayRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
-      style={{ background: 'linear-gradient(135deg, #0a0014 0%, #050820 50%, #00100a 100%)' }}>
+      className="fixed inset-0 z-[80] flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: '#04000f' }}>
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-purple-700 blur-[120px]" />
-        <motion.div animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity }}
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-800 blur-[120px]" />
-      </div>
+      {/* Aurora ripple layer */}
+      <AuroraRipple />
 
-      <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em] mb-6 z-10">
-        Studying — {timerCourse}
-      </p>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center w-full px-6">
 
-      <motion.div key={timerMode} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center z-10 mb-10">
-        <p className={`text-[100px] md:text-[140px] font-black leading-none tabular-nums ${timerMode === 'focus' ? 'text-white' : 'text-emerald-400'}`}>
-          {fmtTime(timerSeconds)}
+        {/* Course label */}
+        <p className="text-white/25 text-[10px] font-bold uppercase tracking-[0.35em] mb-8">
+          Studying — {timerCourse}
         </p>
-        <p className={`text-xs font-bold uppercase tracking-[0.3em] mt-2 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
-          {timerMode === 'focus' ? 'Focus' : 'Break'}
-        </p>
-      </motion.div>
 
-      <div className="flex gap-2 mb-10 z-10">
-        {Array.from({ length: Math.min(timerSessions, 8) }).map((_, i) => (
-          <div key={i} className="w-2.5 h-2.5 rounded-full bg-purple-400 opacity-80" />
-        ))}
-        {timerSessions === 0 && <p className="text-white/20 text-xs tracking-widest uppercase">No sessions yet</p>}
-      </div>
+        {/* Timer */}
+        <motion.div key={timerMode} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center mb-6">
+          <p className={`font-black leading-none tabular-nums ${timerMode === 'focus' ? 'text-white' : 'text-emerald-300'}`}
+            style={{ fontSize: 'clamp(72px, 18vw, 140px)', textShadow: timerMode === 'focus' ? '0 0 60px rgba(168,85,247,0.4)' : '0 0 60px rgba(52,211,153,0.4)' }}>
+            {fmtTime(timerSeconds)}
+          </p>
+          <p className={`text-xs font-bold uppercase tracking-[0.35em] mt-3 ${timerMode === 'focus' ? 'text-purple-400' : 'text-emerald-400'}`}>
+            {timerMode === 'focus' ? 'Focus' : 'Break'}
+          </p>
+        </motion.div>
 
-      <div className="flex gap-4 z-10">
-        <button onClick={onToggle}
-          className={`px-10 py-4 rounded-2xl font-bold text-sm uppercase tracking-wider transition-all ${timerActive ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
-          {timerActive ? 'Pause' : 'Resume'}
-        </button>
-        <button onClick={onExit}
-          className="px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wider bg-white/5 text-white/30 border border-white/10 hover:bg-white/10 transition-all">
-          Exit
-        </button>
-      </div>
+        {/* Motivational quote */}
+        <AnimatePresence mode="wait">
+          <motion.div key={quoteIdx}
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 1 }}
+            className="text-center mb-8 max-w-xl px-4">
+            <p className="text-white/80 leading-snug"
+              style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: 'clamp(15px, 2.5vw, 22px)', fontStyle: 'italic', textShadow: '0 2px 30px rgba(168,85,247,0.3)' }}>
+              "{quote.text}"
+            </p>
+            {quote.author && (
+              <p className="text-white/30 text-xs uppercase tracking-[0.25em] mt-3 font-bold">
+                — {quote.author}
+              </p>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-      <p className="text-white/15 text-[10px] mt-8 z-10 uppercase tracking-widest">
-        Press F or back to exit
-      </p>
+        {/* Session dots */}
+        <div className="flex items-center gap-2 mb-8">
+          {timerSessions === 0
+            ? <p className="text-white/15 text-[10px] uppercase tracking-widest">No sessions yet</p>
+            : Array.from({ length: Math.min(timerSessions, 10) }).map((_, i) => (
+              <div key={i} className="w-2 h-2 rounded-full bg-purple-400/70" />
+            ))}
+        </div>
 
-      {/* Volume control */}
-      <div className="flex items-center gap-3 mt-4 z-10 opacity-30 hover:opacity-70 transition-opacity">
-        <span className="text-white text-[9px] uppercase tracking-widest">Vol</span>
-        <input type="range" min="0" max="1" step="0.05" defaultValue="0.5"
-          onChange={(e) => { if (audioRef?.current) audioRef.current.volume = parseFloat(e.target.value); }}
-          className="w-24 accent-purple-400 cursor-pointer" />
+        {/* Controls */}
+        <div className="flex gap-3 mb-6">
+          <button onClick={onToggle}
+            className={`px-10 py-3.5 rounded-2xl font-bold text-sm uppercase tracking-wider transition-all backdrop-blur-sm ${timerActive ? 'bg-white/8 text-white border border-white/15 hover:bg-white/15' : 'bg-purple-600/80 text-white hover:bg-purple-500'}`}>
+            {timerActive ? 'Pause' : 'Resume'}
+          </button>
+          <button onClick={onExit}
+            className="px-6 py-3.5 rounded-2xl font-bold text-sm uppercase tracking-wider bg-white/5 text-white/20 border border-white/8 hover:bg-white/10 transition-all backdrop-blur-sm">
+            Exit
+          </button>
+        </div>
+
+        {/* Volume */}
+        <div className="flex items-center gap-3 opacity-25 hover:opacity-60 transition-opacity">
+          <span className="text-white text-[9px] uppercase tracking-widest">Vol</span>
+          <input type="range" min="0" max="1" step="0.05" defaultValue="0.5"
+            onChange={(e) => { if (audioRef?.current) audioRef.current.volume = parseFloat(e.target.value); }}
+            className="w-24 accent-purple-400 cursor-pointer" />
+        </div>
+
+        <p className="text-white/10 text-[9px] mt-5 uppercase tracking-widest">Press F · Esc · or Exit to leave</p>
       </div>
 
       <AnimatePresence>
         {showExitWarn && (
           <motion.div initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] bg-[#0f0f1a] border border-white/10 rounded-2xl p-6 max-w-sm w-[90vw] text-center">
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 max-w-sm w-[90vw] text-center">
             <p className="text-white font-bold text-sm mb-1">Leave the session?</p>
             <p className="text-white/40 text-xs mb-5">
               End of semester in <span className="font-bold text-white">{daysToEnd} days</span>. Every session matters.
