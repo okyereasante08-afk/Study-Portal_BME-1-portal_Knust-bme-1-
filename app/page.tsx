@@ -227,7 +227,7 @@ const ONBOARDING_SLIDES = [
     title: "BME Survival Kit",
     body: "Curated YouTube playlists for every course. Linear Algebra, Cell Biology, Applied Electricity — all there when you need them.",
   },
-   {
+  {
     emoji: "📞",
     title: "Need help? or have any feedback?",
     body: "Just text/call Kwaku on +233556965453",
@@ -592,6 +592,152 @@ const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, time
   );
 };
 
+// ============================================================
+// TUTORIAL MODAL — detailed guide, accessible anytime
+// ============================================================
+const TUTORIAL_SECTIONS = [
+  {
+    icon: "🔐",
+    title: "Logging In",
+    steps: [
+      "Enter your 8-digit KNUST student ID.",
+      "First time? You'll be asked to create a password — pick something you'll remember.",
+      "Forgot your password? Tap 'Forgot password?' on the login screen, verify with your ID and full name as registered, and set a new one.",
+      "Admin login uses a separate access code — contact Kwaku if needed.",
+    ]
+  },
+  {
+    icon: "📅",
+    title: "Timetable & Attendance",
+    steps: [
+      "The portal shows today's classes by default. Tap 'View Week' to see the full weekly schedule.",
+      "After attending a class, tap 'Mark Present' on that class card.",
+      "The attendance bar below each class shows your percentage out of the remaining lectures this semester.",
+      "Stay above 70% to remain exam eligible — the bar turns green when you're safe.",
+      "Each class can only be marked once per day.",
+    ]
+  },
+  {
+    icon: "📚",
+    title: "BME Survival Kit",
+    steps: [
+      "Tap 'Survival Kit' from the quick actions grid.",
+      "Select any course to expand its playlist resources.",
+      "Courses covered: MATH 151, ME 161, EE 151, BME 161, COE 153.",
+      "Links open directly on YouTube in a new tab.",
+    ]
+  },
+  {
+    icon: "🧮",
+    title: "CWA Calculator",
+    steps: [
+      "Tap 'CWA Calc' from the quick actions grid.",
+      "Enter your scores for each course (0–100).",
+      "Tap Calculate — the portal weights each course by its credit hours and shows your projected CWA.",
+    ]
+  },
+  {
+    icon: "🍅",
+    title: "Study Timer & LoFi Mode",
+    steps: [
+      "Select a course, then tap Start for a 35-minute focus session followed by a 5-minute break.",
+      "Tap LoFi to enter fullscreen study mode — aurora visuals, motivational quotes, and lofi music.",
+      "Move your cursor or finger in LoFi mode to create ripple effects.",
+      "Press F, Escape, or the Exit button to leave LoFi mode.",
+      "Use the volume slider (bottom of LoFi screen) to adjust music.",
+    ]
+  },
+  {
+    icon: "🔔",
+    title: "Notifications",
+    steps: [
+      "Tap 'Alerts' in the header and allow browser notifications.",
+      "You'll get a reminder 30 minutes before every scheduled lecture.",
+      "Notifications only work while the portal is open in your browser.",
+    ]
+  },
+  {
+    icon: "📢",
+    title: "Updates Hub & Vents",
+    steps: [
+      "Tap 'Updates' to see class announcements and shared files posted by admin.",
+      "The Department Vent lets you submit anonymous feedback — admin sees all submissions.",
+      "Keep vents to 280 characters.",
+    ]
+  },
+  {
+    icon: "💾",
+    title: "Export & Import Profile",
+    steps: [
+      "Tap the download icon in the header to export your attendance and notes as a JSON file.",
+      "On a new device, tap the upload icon and select your saved file to restore your data.",
+      "Your data is stored locally in your browser — clearing browser data will reset it.",
+    ]
+  },
+];
+
+const TutorialModal = ({ onClose }: { onClose: () => void }) => {
+  const [active, setActive] = useState<number | null>(null);
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/85 backdrop-blur-xl z-[90] flex items-center justify-center p-4">
+      <GlassCard className="w-full max-w-2xl relative max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="p-6 pb-4 border-b border-white/8 flex items-center justify-between shrink-0">
+          <div>
+            <h2 className="text-base font-black text-white uppercase tracking-wider">Portal Guide</h2>
+            <p className="text-white/30 text-xs mt-0.5 tracking-wide">Everything you need to know</p>
+          </div>
+          <button onClick={onClose} className="text-white/20 hover:text-white/60 transition-colors"><X size={16} /></button>
+        </div>
+
+        {/* Sections */}
+        <div className="overflow-y-auto flex-1 p-6 space-y-2">
+          {TUTORIAL_SECTIONS.map((sec, i) => (
+            <div key={i} className="rounded-2xl border border-white/8 bg-white/3 overflow-hidden">
+              <button onClick={() => setActive(active === i ? null : i)}
+                className="w-full p-4 flex items-center justify-between text-left">
+                <span className="flex items-center gap-3">
+                  <span className="text-lg">{sec.icon}</span>
+                  <span className="font-bold text-sm text-white tracking-wide">{sec.title}</span>
+                </span>
+                <ChevronRight size={13} className={`text-white/30 transition-transform ${active === i ? 'rotate-90' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {active === i && (
+                  <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+                    <div className="px-5 pb-5 space-y-2.5 border-t border-white/5 pt-3">
+                      {sec.steps.map((step, j) => (
+                        <div key={j} className="flex gap-3 items-start">
+                          <span className="text-[#00d4ff] font-black text-[10px] mt-0.5 shrink-0 w-4">{j + 1}.</span>
+                          <p className="text-white/60 text-xs leading-relaxed">{step}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+
+          {/* Contact */}
+          <div className="mt-4 p-4 rounded-2xl bg-[#00d4ff]/8 border border-[#00d4ff]/15 text-center">
+            <p className="text-white/50 text-xs tracking-wide">Need help or found a bug?</p>
+            <p className="text-[#00d4ff] font-bold text-sm mt-1">+233 55 696 5453 — Kwaku</p>
+          </div>
+        </div>
+
+        <div className="p-4 pt-0 shrink-0">
+          <button onClick={onClose}
+            className="w-full py-3 bg-white/8 text-white/60 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-white/15 transition-all border border-white/10">
+            Got it
+          </button>
+        </div>
+      </GlassCard>
+    </motion.div>
+  );
+};
+
 const DontPanic = ({ onClose }: { onClose: () => void }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
     className="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center cursor-pointer">
@@ -599,7 +745,7 @@ const DontPanic = ({ onClose }: { onClose: () => void }) => (
       className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">
       DON'T<br />PANIC
     </motion.p>
-    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">The BME Student's Guide to the Galaxy</p>
+    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">NEVER SAY EII, In all things, eat first 🤣😭</p>
     <p className="text-white/20 text-xs mt-4">tap anywhere to dismiss</p>
   </motion.div>
 );
@@ -699,6 +845,13 @@ export default function Home() {
   const [studentID, setStudentID] = useState('');
   const [password, setPassword] = useState('');
   const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [showReset, setShowReset] = useState(false);
+  const [resetID, setResetID] = useState('');
+  const [resetName, setResetName] = useState('');
+  const [resetNewPw, setResetNewPw] = useState('');
+  const [resetStep, setResetStep] = useState<'verify' | 'newpw'>('verify');
+  const [resetError, setResetError] = useState('');
+  const [resetSuccess, setResetSuccess] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showWeekView, setShowWeekView] = useState(false);
@@ -723,6 +876,7 @@ export default function Home() {
   const [showDontPanic, setShowDontPanic] = useState(false);
   const [currentPun, setCurrentPun] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const notifScheduled = useRef(false);
 
@@ -877,13 +1031,37 @@ export default function Home() {
     }
   };
 
+  const handleReset = () => {
+    setResetError('');
+    if (resetStep === 'verify') {
+      const name = CLASS_LIST[resetID];
+      if (!name) { setResetError('Student ID not found.'); return; }
+      // Normalise both to lowercase for comparison
+      if (name.toLowerCase().trim() !== resetName.toLowerCase().trim()) {
+        setResetError('Name does not match our records.'); return;
+      }
+      setResetStep('newpw');
+    } else {
+      if (resetNewPw.length < 4) { setResetError('Password must be at least 4 characters.'); return; }
+      localStorage.setItem(`pw-${resetID}`, resetNewPw);
+      setResetSuccess(true);
+      setTimeout(() => {
+        setShowReset(false); setResetID(''); setResetName(''); setResetNewPw('');
+        setResetStep('verify'); setResetSuccess(false); setResetError('');
+      }, 2000);
+    }
+  };
+
   const proceedToLogin = (id: string, adminOverride = false) => {
     setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
     if (typeof window !== 'undefined') {
       localStorage.setItem('bme-session-id', id);
-      if (adminStatus) localStorage.setItem('bme-admin-access', 'true');
+      if (adminStatus) {
+        localStorage.setItem('bme-admin-access', 'true');
+        setShowTutorial(true); // always show tutorial for admin
+      }
       const savedMarked = localStorage.getItem(`bme-marked-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       if (!localStorage.getItem('bme-onboarded')) setShowOnboarding(true);
@@ -983,6 +1161,7 @@ export default function Home() {
                   )}
                   <button className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider hover:scale-[1.01] transition-transform">{isFirstLogin ? 'Save & Enter' : 'Continue'}</button>
                   {isFirstLogin && <button type="button" onClick={() => setIsFirstLogin(false)} className="w-full text-[10px] font-bold opacity-30 uppercase tracking-wider">Back</button>}
+                  {!isFirstLogin && <button type="button" onClick={() => { setShowReset(true); setResetError(''); setResetStep('verify'); }} className="w-full text-[10px] font-bold opacity-30 hover:opacity-60 uppercase tracking-wider transition-opacity">Forgot password?</button>}
                 </>
               ) : (
                 <>
@@ -1003,6 +1182,67 @@ export default function Home() {
             </div>
           </GlassCard>
         </motion.div>
+
+        {/* PASSWORD RESET MODAL */}
+        <AnimatePresence>
+          {showReset && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+              <GlassCard className="w-full max-w-sm p-8 relative">
+                <button onClick={() => { setShowReset(false); setResetStep('verify'); setResetError(''); }}
+                  className="absolute top-5 right-5 text-white/20 hover:text-white/60 transition-colors">
+                  <X size={16} />
+                </button>
+                {resetSuccess ? (
+                  <div className="text-center py-4">
+                    <p className="text-4xl mb-4">✓</p>
+                    <p className="text-white font-bold text-sm">Password reset successfully.</p>
+                    <p className="text-white/30 text-xs mt-1">You can now log in.</p>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-base font-black text-white uppercase tracking-wider mb-1">Reset Password</h2>
+                    <p className="text-white/30 text-xs mb-6 tracking-wide">
+                      {resetStep === 'verify' ? 'Verify your identity first.' : 'Set your new password.'}
+                    </p>
+                    <div className="space-y-3">
+                      {resetStep === 'verify' ? (
+                        <>
+                          <input type="text" placeholder="Student ID" value={resetID}
+                            onChange={e => setResetID(e.target.value)}
+                            className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                          <input type="text" placeholder="Full name (as registered)"
+                            value={resetName} onChange={e => setResetName(e.target.value)}
+                            className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                          <button onClick={handleReset}
+                            className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
+                            Verify Identity
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-center text-white/40 text-xs">Identity verified for <span className="text-white font-bold">{CLASS_LIST[resetID]}</span></p>
+                          <input type="password" placeholder="New password" value={resetNewPw}
+                            onChange={e => setResetNewPw(e.target.value)} autoFocus
+                            className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                          <button onClick={handleReset}
+                            className="w-full py-3.5 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
+                            Save New Password
+                          </button>
+                          <button onClick={() => setResetStep('verify')}
+                            className="w-full text-[10px] font-bold opacity-30 hover:opacity-60 uppercase tracking-wider transition-opacity">
+                            Back
+                          </button>
+                        </>
+                      )}
+                      {resetError && <p className="text-red-400 text-[10px] text-center font-bold uppercase tracking-wider">{resetError}</p>}
+                    </div>
+                  </>
+                )}
+              </GlassCard>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
@@ -1017,6 +1257,7 @@ export default function Home() {
       <AnimatePresence>
         {showDontPanic && <DontPanic onClose={() => setShowDontPanic(false)} />}
         {showOnboarding && <OnboardingModal onComplete={completeOnboarding} />}
+        {showTutorial && <TutorialModal onClose={() => setShowTutorial(false)} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
         {lofiMode && (
           <LofiOverlay
@@ -1041,6 +1282,7 @@ export default function Home() {
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
             {isAdmin && <Link href="/admin" className="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-yellow-500/20">Admin</Link>}
+            <button onClick={() => setShowTutorial(true)} className="px-3 py-2 bg-white/5 text-white/40 rounded-xl hover:bg-white/10 transition-all border border-white/10 text-[10px] font-bold uppercase tracking-wider">Guide</button>
             {!notificationsEnabled && (
               <button onClick={requestNotifications} className="px-3 py-2 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 border border-emerald-500/20">
                 <Bell size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Alerts</span>
