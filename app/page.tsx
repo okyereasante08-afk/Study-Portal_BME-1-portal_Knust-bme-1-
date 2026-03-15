@@ -345,6 +345,8 @@ const GlassCard = ({ children, className = "", delay = 0 }: any) => (
 // ── Lofi motivational quotes ──────────────────────────────────
 const LOFI_QUOTES = [
   { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+  { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
   { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
   { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
   { text: "Push yourself, because no one else is going to do it for you.", author: "" },
@@ -472,7 +474,7 @@ const AuroraRipple = () => {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ mixBlendMode: 'screen' }} />;
 };
 
-const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd, audioRef }: any) => {
+const LofiOverlay = ({ timerSeconds, timerMode, timerSessions, timerCourse, timerActive, fmtTime, focusMins = 35, onToggle, onExit, showExitWarn, onConfirmExit, daysToEnd, audioRef }: any) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [quoteIdx, setQuoteIdx] = useState(() => 0);
 
@@ -894,6 +896,7 @@ export default function Home() {
   const [timerMode, setTimerMode] = useState<'focus' | 'break'>('focus');
   const [timerSessions, setTimerSessions] = useState(0);
   const [timerCourse, setTimerCourse] = useState('MATH 151');
+  const [focusMins, setFocusMins] = useState(35);
   const [lofiMode, setLofiMode] = useState(false);
   const [showLofiExit, setShowLofiExit] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -969,11 +972,12 @@ export default function Home() {
             setTimerMode(prev => {
               if (prev === 'focus') {
                 setTimerSessions(n => n + 1);
-                if (Notification.permission === 'granted') new Notification('Focus session complete', { body: 'Take a 5 minute break.' });
-                setTimerSeconds(5 * 60); return 'break';
+                const breakSecs = Math.round(focusMins / 5) * 60;
+                if (Notification.permission === 'granted') new Notification('Focus session complete', { body: `Take a ${Math.round(focusMins/5)} minute break.` });
+                setTimerSeconds(breakSecs); return 'break';
               } else {
                 if (Notification.permission === 'granted') new Notification('Break over', { body: `Back to ${timerCourse}.` });
-                setTimerSeconds(35 * 60); return 'focus';
+                setTimerSeconds(focusMins * 60); return 'focus';
               }
             });
             return 0;
@@ -1240,7 +1244,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-black text-sm tracking-widest">BME</div>
               <h1 className="text-xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
-              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2029</p>
+              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2026</p>
             </div>
             <div className="flex gap-1.5 mb-6 p-1 bg-white/5 rounded-xl">
               <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-500'}`}>Student</button>
@@ -1467,6 +1471,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
           <LofiOverlay
             timerSeconds={timerSeconds} timerMode={timerMode} timerSessions={timerSessions}
             timerCourse={timerCourse} timerActive={timerActive} fmtTime={fmtTime}
+            focusMins={focusMins}
             onToggle={() => setTimerActive(a => !a)} onExit={handleExitLofi}
             showExitWarn={showLofiExit} onConfirmExit={confirmExitLofi}
             daysToEnd={daysToEnd} audioRef={lofiAudioRef}
@@ -1624,7 +1629,49 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex-1">
               <h2 className="text-base font-black uppercase tracking-wider mb-1">Study Timer</h2>
-              <p className="text-white/30 text-xs mb-4 tracking-wide">35 min focus · 5 min break</p>
+              <p className="text-white/30 text-xs mb-4 tracking-wide">{focusMins} min focus · {Math.round(focusMins/5)} min break</p>
+
+              {/* Duration slider */}
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/30">Focus Duration</span>
+                  <span className={`text-[10px] font-black tabular-nums ${focusMins >= 300 ? 'text-red-400' : focusMins >= 240 ? 'text-orange-400' : focusMins >= 180 ? 'text-yellow-400' : 'text-purple-400'}`}>
+                    {focusMins >= 60 ? `${Math.floor(focusMins/60)}h${focusMins%60 > 0 ? ` ${focusMins%60}m` : ''}` : `${focusMins}m`}
+                  </span>
+                </div>
+                <input
+                  type="range" min={20} max={300} step={5}
+                  value={focusMins}
+                  onChange={e => {
+                    const v = parseInt(e.target.value);
+                    setFocusMins(v);
+                    if (!timerActive) setTimerSeconds(v * 60);
+                  }}
+                  className="w-full accent-purple-500 cursor-pointer h-1.5 rounded-full"
+                />
+                <div className="flex justify-between text-[8px] text-white/15 mt-1 font-bold uppercase tracking-wider">
+                  <span>20m</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span>
+                </div>
+
+                {/* Duration warnings */}
+                {focusMins >= 300 && (
+                  <div className="mt-2 p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl">
+                    <p className="text-red-400 text-[10px] font-bold text-center">Eiii 😭 5 hours?? Okay we respect the grind but please eat something.</p>
+                  </div>
+                )}
+                {focusMins >= 240 && focusMins < 300 && (
+                  <div className="mt-2 p-2.5 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+                    <p className="text-orange-400 text-[10px] font-bold text-center">4 hours straight? Studies show diminishing returns set in hard here. Break it up if you can.</p>
+                  </div>
+                )}
+                {focusMins >= 180 && focusMins < 240 && (
+                  <div className="mt-2 p-2.5 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                    <p className="text-yellow-400 text-[10px] font-bold text-center">Research suggests 3+ hours of continuous study reduces retention by up to 40%. You can still do it — just know the break matters more now.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Course selector */}
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {COURSE_CREDITS.map(c => (
                   <button key={c.code} onClick={() => setTimerCourse(c.code)}
@@ -1647,7 +1694,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
                   <motion.circle cx="50" cy="50" r="44" fill="none"
                     stroke={timerMode === 'focus' ? '#a855f7' : '#34d399'} strokeWidth="5" strokeLinecap="round"
                     strokeDasharray={`${2 * Math.PI * 44}`}
-                    strokeDashoffset={`${2 * Math.PI * 44 * (1 - timerSeconds / (timerMode === 'focus' ? 35*60 : 5*60))}`}
+                    strokeDashoffset={`${2 * Math.PI * 44 * (1 - timerSeconds / (timerMode === 'focus' ? focusMins*60 : Math.round(focusMins/5)*60))}`}
                     style={{ transition: 'stroke-dashoffset 1s linear' }} />
                 </svg>
                 <div className="text-center z-10">
@@ -1662,7 +1709,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
                   className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${timerActive ? 'bg-white/8 text-white border border-white/15' : 'bg-purple-600 text-white hover:bg-purple-500'}`}>
                   {timerActive ? 'Pause' : 'Start'}
                 </button>
-                <button onClick={() => { setTimerSeconds(timerMode === 'focus' ? 35*60 : 5*60); setTimerActive(false); }}
+                <button onClick={() => { setTimerSeconds(timerMode === 'focus' ? focusMins*60 : Math.round(focusMins/5)*60); setTimerActive(false); }}
                   className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/5 text-white/30 hover:bg-white/10 border border-white/10 transition-all">
                   Reset
                 </button>
