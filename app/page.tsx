@@ -195,6 +195,50 @@ const BME_PUNS = [
 
 const END_OF_SEM_DATE = new Date('2026-04-07T00:00:00');
 
+// ── What's New — update version string when you add new features ──
+const PORTAL_VERSION = '1.3.0';
+const WHATS_NEW = [
+  {
+    version: '1.3.0',
+    date: 'March 2026',
+    items: [
+      { label: 'Customisable Study Timer', detail: 'Set your focus duration from 20 minutes all the way up to 5 hours. Break time auto-calculates.' },
+      { label: 'Password Reset', detail: 'Forgot your password? Verify with your security question and set a new one instantly.' },
+      { label: 'Security Question', detail: 'New accounts now set a security question (your mother's first name) on first login for safer recovery.' },
+      { label: 'Portal Guide', detail: 'Tap the Guide button in the header for a full walkthrough of every feature.' },
+      { label: 'Install as App', detail: 'The portal can now be installed on your phone's home screen like a real app — no app store needed.' },
+    ]
+  },
+  {
+    version: '1.2.0',
+    date: 'March 2026',
+    items: [
+      { label: 'LoFi Mode', detail: 'Fullscreen study environment with aurora ripple visuals, motivational quotes and lofi music.' },
+      { label: 'Motivational Quotes', detail: 'Quotes rotate every 30 seconds in LoFi mode, starting with Mandela.' },
+      { label: 'Aurora Ripple Background', detail: 'Move your cursor or finger in LoFi mode to create fluid aurora ripple effects.' },
+      { label: 'Attendance Counts Fixed', detail: 'Total class counts updated to reflect remaining lectures before April 7.' },
+    ]
+  },
+  {
+    version: '1.1.0',
+    date: 'March 2026',
+    items: [
+      { label: 'Neural Network Background', detail: 'Interactive canvas background — nodes follow your cursor across the whole app.' },
+      { label: 'Next Class Bar', detail: 'Live countdown to your next class appears at the top of the dashboard.' },
+      { label: 'Push Notifications', detail: '30-minute reminders before every scheduled lecture.' },
+      { label: 'BME Survival Kit Expanded', detail: 'ME 161 now has 8 playlists including RC Hibbeler solved. EE 151 and BME 161 also updated.' },
+      { label: 'Export / Import Profile', detail: 'Back up your attendance and notes as a JSON file and restore on any device.' },
+    ]
+  },
+  {
+    version: '1.0.0',
+    date: 'February 2026',
+    items: [
+      { label: 'Portal Launch', detail: 'Timetable, attendance tracker, CWA calculator, Survival Kit, study timer, updates hub and vent box.' },
+    ]
+  },
+];
+
 const getFinalsMessage = (days: number) => {
   if (days > 60) return { msg: "End of semester exams are far. But far doesn't mean forever.", color: "text-emerald-400" };
   if (days > 45) return { msg: "Plenty of time. Use it well.", color: "text-green-400" };
@@ -741,6 +785,67 @@ const TutorialModal = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
+// ── What's New Modal ─────────────────────────────────────────
+const WhatsNewModal = ({ onClose }: { onClose: () => void }) => {
+  const [openVersion, setOpenVersion] = useState<string | null>(WHATS_NEW[0].version);
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/85 backdrop-blur-xl z-[90] flex items-center justify-center p-4">
+      <GlassCard className="w-full max-w-lg relative max-h-[88vh] flex flex-col">
+        <div className="p-6 pb-4 border-b border-white/8 flex items-center justify-between shrink-0">
+          <div>
+            <h2 className="text-base font-black text-white uppercase tracking-wider">What's New</h2>
+            <p className="text-white/30 text-xs mt-0.5 tracking-wide">BME Portal v{PORTAL_VERSION}</p>
+          </div>
+          <button onClick={onClose} className="text-white/20 hover:text-white/60 transition-colors"><X size={16} /></button>
+        </div>
+        <div className="overflow-y-auto flex-1 p-5 space-y-2">
+          {WHATS_NEW.map((release) => (
+            <div key={release.version} className="rounded-2xl border border-white/8 bg-white/3 overflow-hidden">
+              <button onClick={() => setOpenVersion(openVersion === release.version ? null : release.version)}
+                className="w-full p-4 flex items-center justify-between text-left">
+                <div className="flex items-center gap-3">
+                  {release.version === WHATS_NEW[0].version && (
+                    <span className="px-2 py-0.5 bg-[#00d4ff]/20 text-[#00d4ff] text-[8px] font-black uppercase tracking-wider rounded-full">Latest</span>
+                  )}
+                  <span className="font-bold text-sm text-white">v{release.version}</span>
+                  <span className="text-white/25 text-[10px]">{release.date}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] text-white/25 uppercase tracking-wider">{release.items.length} updates</span>
+                  <ChevronRight size={13} className={`text-white/30 transition-transform ${openVersion === release.version ? 'rotate-90' : ''}`} />
+                </div>
+              </button>
+              <AnimatePresence>
+                {openVersion === release.version && (
+                  <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+                    <div className="px-5 pb-4 space-y-3 border-t border-white/5 pt-3">
+                      {release.items.map((item, i) => (
+                        <div key={i} className="flex gap-3">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] mt-1.5 shrink-0" />
+                          <div>
+                            <p className="text-white/80 text-xs font-bold">{item.label}</p>
+                            <p className="text-white/35 text-[10px] mt-0.5 leading-relaxed">{item.detail}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+        <div className="p-4 pt-0 shrink-0">
+          <button onClick={onClose} className="w-full py-3 bg-[#00d4ff] text-[#0a0f1c] rounded-xl font-black text-xs uppercase tracking-wider">
+            Got it
+          </button>
+        </div>
+      </GlassCard>
+    </motion.div>
+  );
+};
+
 const DontPanic = ({ onClose }: { onClose: () => void }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
     className="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center cursor-pointer">
@@ -884,6 +989,9 @@ export default function Home() {
   const [ventSubmitted, setVentSubmitted] = useState(false);
   const [vents, setVents] = useState<{ id: string; text: string; author: string; time: string }[]>([]);
   const [showDontPanic, setShowDontPanic] = useState(false);
+  const [showWhatsNew, setShowWhatsNew] = useState(false);
+  const deferredPromptRef = useRef<any>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [currentPun, setCurrentPun] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -960,7 +1068,22 @@ export default function Home() {
     }
     setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000*60*60*24)));
     const punTimer = setInterval(() => setCurrentPun(p => (p + 1) % BME_PUNS.length), 15000);
-    return () => clearInterval(punTimer);
+
+    // PWA install prompt
+    const onBeforeInstall = (e: any) => { e.preventDefault(); deferredPromptRef.current = e; setShowInstallBanner(true); };
+    window.addEventListener('beforeinstallprompt', onBeforeInstall);
+
+    // Show What's New for returning users when version changes
+    if (typeof window !== 'undefined') {
+      const lastVersion = localStorage.getItem('bme-version');
+      if (lastVersion && lastVersion !== PORTAL_VERSION) setShowWhatsNew(true);
+      localStorage.setItem('bme-version', PORTAL_VERSION);
+    }
+
+    return () => {
+      clearInterval(punTimer);
+      window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+    };
   }, []);
 
   // Timer tick
@@ -1464,6 +1587,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
 
       <AnimatePresence>
         {showDontPanic && <DontPanic onClose={() => setShowDontPanic(false)} />}
+        {showWhatsNew && <WhatsNewModal onClose={() => setShowWhatsNew(false)} />}
         {showOnboarding && <OnboardingModal onComplete={completeOnboarding} />}
         {showTutorial && <TutorialModal onClose={() => setShowTutorial(false)} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
@@ -1497,6 +1621,9 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
                 <Bell size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Alerts</span>
               </button>
             )}
+            <button onClick={() => setShowWhatsNew(true)} className="px-3 py-2 bg-[#00d4ff]/10 text-[#00d4ff] rounded-xl hover:bg-[#00d4ff]/20 transition-all border border-[#00d4ff]/20 text-[10px] font-bold uppercase tracking-wider hidden md:flex items-center gap-1.5">
+              What's New
+            </button>
             <button onClick={() => setShowDontPanic(true)} className="px-3 py-2 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all flex items-center gap-1.5 border border-purple-500/20">
               <Zap size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Panic</span>
             </button>
@@ -1511,6 +1638,37 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
           </div>
         </GlassCard>
       </header>
+
+      {/* PWA INSTALL BANNER */}
+      <AnimatePresence>
+        {showInstallBanner && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+            className="max-w-5xl mx-auto px-4 pb-2">
+            <div className="bg-[#00d4ff]/8 border border-[#00d4ff]/20 rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <img src="/icon-72x72.png" className="w-8 h-8 rounded-xl" alt="BME Portal" />
+                <div>
+                  <p className="text-white font-bold text-xs">Install BME Portal</p>
+                  <p className="text-white/40 text-[10px]">Add to your home screen for quick access</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button onClick={async () => {
+                  if (deferredPromptRef.current) {
+                    deferredPromptRef.current.prompt();
+                    await deferredPromptRef.current.userChoice;
+                    deferredPromptRef.current = null;
+                  }
+                  setShowInstallBanner(false);
+                }} className="px-4 py-1.5 bg-[#00d4ff] text-[#0a0f1c] rounded-lg text-[10px] font-black uppercase tracking-wider">
+                  Install
+                </button>
+                <button onClick={() => setShowInstallBanner(false)} className="text-white/20 hover:text-white/50 transition-colors"><X size={14} /></button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* NEXT CLASS BAR */}
       <AnimatePresence>
