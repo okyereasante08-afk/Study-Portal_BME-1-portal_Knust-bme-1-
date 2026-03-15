@@ -204,9 +204,9 @@ const WHATS_NEW = [
     items: [
       { label: 'Customisable Study Timer', detail: 'Set your focus duration from 20 minutes all the way up to 5 hours. Break time auto-calculates.' },
       { label: 'Password Reset', detail: 'Forgot your password? Verify with your security question and set a new one instantly.' },
-      { label: 'Security Question', detail: 'New accounts now set a security question (your mother's first name) on first login for safer recovery.' },
+      { label: 'Security Question', detail: "New accounts now set a security question (your mother's first name) on first login for safer recovery." },
       { label: 'Portal Guide', detail: 'Tap the Guide button in the header for a full walkthrough of every feature.' },
-      { label: 'Install as App', detail: 'The portal can now be installed on your phone's home screen like a real app — no app store needed.' },
+      { label: 'Install as App', detail: "The portal can now be installed on your phone's home screen like a real app — no app store needed." },
     ]
   },
   {
@@ -853,7 +853,7 @@ const DontPanic = ({ onClose }: { onClose: () => void }) => (
       className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">
       DON'T<br />PANIC
     </motion.p>
-    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">The BME Student's Guide to the Galaxy</p>
+    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">In all Things "EAT FIRST"</p>
     <p className="text-white/20 text-xs mt-4">tap anywhere to dismiss</p>
   </motion.div>
 );
@@ -1367,7 +1367,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-black text-sm tracking-widest">BME</div>
               <h1 className="text-xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
-              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2026</p>
+              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2029</p>
             </div>
             <div className="flex gap-1.5 mb-6 p-1 bg-white/5 rounded-xl">
               <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-500'}`}>Student</button>
