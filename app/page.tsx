@@ -867,8 +867,9 @@ Friday: COE 153 Lab (10:30-12:25 & 13:00-14:55, LAB)
 
 const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
   const [open, setOpen] = useState(false);
+  const [showBetaNotice, setShowBetaNotice] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
-    { role: 'assistant', content: `Hey ${studentName.split(' ')[0]} 👋 I'm your BME portal assistant. Ask me anything — how features work, course questions, CWA calculations, or just need motivation. What's up?` }
+    { role: 'assistant', content: `Hey ${studentName.split(' ')[0]} 👋 I'm your BME assistant — still in beta, but I know your timetable, MATH 151 manual, all portal features, and can calculate your CWA. What do you need?` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -882,17 +883,6 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
     }
   }, [messages, open]);
 
-  const sendToTelegram = (question: string) => {
-    const BOT_TOKEN = '8502604375:AAHM6DUR4yVxB7VPXmcXUzr_v4fpUz2Erb8';
-    const CHAT_ID = '8627616350';
-    const msg = `🤖 *BME Chat — Unanswered*\n👤 ${studentName}\n🆔 ${studentID}\n❓ ${question}`;
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' }),
-    }).catch(() => {});
-  };
-
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
     const userMsg = input.trim();
@@ -901,32 +891,6 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
     setLoading(true);
 
     try {
-      const systemPrompt = `You are the BME Portal assistant for KNUST Biomedical Engineering Year 1 students (Class of 2029). You are built into their student portal by Kwaku Asante Okyere (student ID: 22028883, contact: +233556965453).
-
-You know everything about the portal:
-- TIMETABLE: ${TIMETABLE_CONTEXT}
-- COURSES: MATH 151 (Linear Algebra, 4cr), BME 161 (Cell Biology, 3cr), EE 151 (Applied Electricity, 3cr), ME 161 (Basic Mechanics, 3cr), CHEM 151 (General Chemistry, 2cr), COE 153 (Engineering Tech, 2cr), ENGL 157 (Comm Skills, 2cr)
-- FEATURES: Timetable with attendance tracking (need 70%+ for exam eligibility), BME Survival Kit (YouTube playlists per course), CWA Calculator, Study Timer (20min-5hrs with LoFi mode), Push Notifications (30min before lectures), Updates Hub, Department Vent (anonymous feedback), Export/Import profile
-- PASSWORD RESET: Uses security question (mother's first name). Legacy users verify by full name first.
-- PORTAL VERSION: 1.3.0, End of semester: April 7 2026
-- The student talking to you is: ${studentName} (ID: ${studentID})
-
-You can:
-1. Answer any portal question
-2. Calculate CWA if given scores (weighted by credit hours: sum(score×credits)/sum(credits))
-3. Explain course concepts (cell biology, mechanics, circuits, chemistry, linear algebra)
-4. Quiz students on their courses
-5. Give study tips and motivation
-6. Tell them today's timetable or upcoming classes
-
-
-
-When answering MATH 151 questions: reference the manual above. Walk through exact exercise solutions step by step. If asked to quiz them, use actual questions from the manual.
-
-If a question is completely outside your knowledge or you're unsure, say so honestly and end with: [LOG_UNANSWERED] so the system can flag it.
-
-Be friendly and use KNUST/Ghana context. Keep responses under 200 words unless working through a mathematical proof — then be as detailed as needed.`;
-
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -937,34 +901,56 @@ Be friendly and use KNUST/Ghana context. Keep responses under 200 words unless w
         }),
       });
 
+      if (!response.ok) throw new Error('API error');
       const data = await response.json();
       const reply = data.reply || 'Something went wrong. Try again.';
-
-      if (reply.includes('[LOG_UNANSWERED]')) {
-        sendToTelegram(userMsg);
-        const cleanReply = reply.replace('[LOG_UNANSWERED]', '').trim();
-        setMessages(m => [...m, { role: 'assistant', content: cleanReply + '\n\n_Flagged for Kwaku to look into._' }]);
-      } else {
-        setMessages(m => [...m, { role: 'assistant', content: reply }]);
-      }
+      setMessages(m => [...m, { role: 'assistant', content: reply }]);
     } catch {
-      sendToTelegram(userMsg + ' [network error]');
-      setMessages(m => [...m, { role: 'assistant', content: 'Network issue — try again in a moment.' }]);
+      setMessages(m => [...m, { role: 'assistant', content: 'Could not reach the server. Make sure you are connected and try again.' }]);
     }
     setLoading(false);
   };
 
   return (
     <>
-      {/* Floating button */}
-      <button
-        onClick={() => setOpen(o => !o)}
-        className={`fixed bottom-6 right-6 z-[70] w-13 h-13 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${open ? 'bg-white/10 border border-white/20 rotate-90' : 'bg-[#00d4ff] hover:scale-110'}`}
-        style={{ width: 52, height: 52 }}>
-        {open
-          ? <X size={20} className="text-white" />
-          : <MessageSquare size={22} className="text-[#0a0f1c]" />}
-      </button>
+      {/* Floating button with beta badge */}
+      <div className="fixed bottom-6 right-6 z-[70]">
+        <button
+          onClick={() => setOpen(o => !o)}
+          className={`w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${open ? 'bg-white/10 border border-white/20 rotate-90' : 'bg-[#00d4ff] hover:scale-110'}`}>
+          {open
+            ? <X size={20} className="text-white" />
+            : <MessageSquare size={22} className="text-[#0a0f1c]" />}
+        </button>
+        {!open && (
+          <button
+            onClick={() => setShowBetaNotice(n => !n)}
+            className="absolute -top-2 -left-2 bg-amber-400 text-[#0a0f1c] text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full tracking-wider">
+            BETA
+          </button>
+        )}
+      </div>
+
+      {/* Beta notice tooltip */}
+      <AnimatePresence>
+        {showBetaNotice && !open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
+            className="fixed bottom-20 right-4 z-[70] w-64 rounded-2xl border border-amber-400/20 bg-black/90 backdrop-blur-xl p-4">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <p className="text-amber-400 text-[10px] font-black uppercase tracking-wider">Beta Feature</p>
+              <button onClick={() => setShowBetaNotice(false)} className="text-white/30 hover:text-white/60"><X size={12} /></button>
+            </div>
+            <p className="text-white/60 text-[11px] leading-relaxed">
+              The BME Assistant is still in progress. It knows your timetable and the MATH 151 manual — but may not always get things right. Responses improve over time.
+            </p>
+            <button onClick={() => { setShowBetaNotice(false); setOpen(true); }}
+              className="mt-3 w-full py-2 bg-[#00d4ff]/15 border border-[#00d4ff]/20 text-[#00d4ff] rounded-xl text-[10px] font-bold uppercase tracking-wider">
+              Try it anyway
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Chat panel */}
       <AnimatePresence>
@@ -983,8 +969,11 @@ Be friendly and use KNUST/Ghana context. Keep responses under 200 words unless w
                 <MessageSquare size={14} className="text-[#00d4ff]" />
               </div>
               <div>
-                <p className="text-white text-xs font-bold">BME Assistant</p>
-                <p className="text-white/30 text-[9px] uppercase tracking-wider">Powered by Claude</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-white text-xs font-bold">BME Assistant</p>
+                  <span className="bg-amber-400/20 text-amber-400 text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full tracking-wider">Beta</span>
+                </div>
+                <p className="text-white/30 text-[9px] uppercase tracking-wider">Powered by Groq · Llama 3.3</p>
               </div>
               <div className="ml-auto flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -993,7 +982,7 @@ Be friendly and use KNUST/Ghana context. Keep responses under 200 words unless w
             </div>
 
             {/* Messages */}
-            <div className="h-72 overflow-y-auto px-4 py-4 space-y-3 scrollbar-hide">
+            <div className="h-72 overflow-y-auto px-4 py-4 space-y-3">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
@@ -1022,7 +1011,7 @@ Be friendly and use KNUST/Ghana context. Keep responses under 200 words unless w
             {/* Quick suggestions */}
             {messages.length === 1 && (
               <div className="px-4 pb-2 flex gap-2 flex-wrap">
-                {["What's today's timetable?", "Quiz me on BME 161", "Calculate my CWA"].map(s => (
+                {["Today's timetable", "Quiz me on MATH 151", "Calculate my CWA"].map(s => (
                   <button key={s} onClick={() => { setInput(s); setTimeout(() => inputRef.current?.focus(), 50); }}
                     className="text-[9px] px-2.5 py-1.5 rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/25 transition-all">
                     {s}
