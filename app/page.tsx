@@ -155,6 +155,14 @@ const SURVIVAL_KIT: { course: string; color: string; emoji: string; resources: {
     ]
   },
   {
+    course: 'CHEM 151 — General Chemistry',
+    color: 'teal',
+    emoji: '🧪',
+    resources: [
+      { label: 'Add your Google Drive link here', url: 'https://drive.google.com' },
+    ]
+  },
+  {
     course: 'COE 153 — Engineering Tech',
     color: 'purple',
     emoji: '🖥️',
@@ -853,7 +861,7 @@ const DontPanic = ({ onClose }: { onClose: () => void }) => (
       className="text-[80px] md:text-[140px] font-black text-white tracking-tight text-center leading-none">
       DON'T<br />PANIC
     </motion.p>
-    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">In all Things "EAT FIRST"</p>
+    <p className="text-white/40 text-sm mt-8 uppercase tracking-widest">The BME Student's Guide to the Galaxy</p>
     <p className="text-white/20 text-xs mt-4">tap anywhere to dismiss</p>
   </motion.div>
 );
@@ -899,6 +907,7 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
     yellow: 'border-yellow-500/30 bg-yellow-500/5 text-yellow-400',
     green: 'border-green-500/30 bg-green-500/5 text-green-400',
     purple: 'border-purple-500/30 bg-purple-500/5 text-purple-400',
+    teal: 'border-teal-500/30 bg-teal-500/5 text-teal-400',
   };
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -967,6 +976,9 @@ export default function Home() {
   const [securityAnswer, setSecurityAnswer] = useState('');
   const [firstLoginStep, setFirstLoginStep] = useState<'password' | 'security'>('password');
   const [tempPassword, setTempPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [showResetPw, setShowResetPw] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showWeekView, setShowWeekView] = useState(false);
@@ -1166,9 +1178,11 @@ export default function Home() {
           setFirstLoginStep('password');
         } else if (firstLoginStep === 'password') {
           if (password.length < 4) { setLoginError('Password must be at least 4 characters.'); return; }
+          if (password !== confirmPassword) { setLoginError('Passwords do not match.'); return; }
           setTempPassword(password);
           setFirstLoginStep('security');
           setLoginError('');
+          setConfirmPassword('');
         } else {
           // security step
           if (securityAnswer.trim().length < 2) { setLoginError('Please enter your answer.'); return; }
@@ -1367,7 +1381,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00d4ff] font-black text-sm tracking-widest">BME</div>
               <h1 className="text-xl font-black tracking-tight text-white">PORTAL ACCESS</h1>
-              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2029</p>
+              <p className="text-white/25 text-xs mt-1 tracking-widest uppercase">KNUST BME1 · Class of 2026</p>
             </div>
             <div className="flex gap-1.5 mb-6 p-1 bg-white/5 rounded-xl">
               <button onClick={() => { setLoginMode('student'); setLoginError(''); }} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${loginMode === 'student' ? 'bg-[#00d4ff] text-[#0a0f1c]' : 'text-slate-500'}`}>Student</button>
@@ -1388,13 +1402,32 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
 
                   {/* Normal login */}
                   {!isFirstLogin && typeof window !== 'undefined' && localStorage.getItem(`pw-${studentID}`) && (
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                    <div className="relative">
+                      <input type={showPw ? 'text' : 'password'} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 pr-12 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                      <button type="button" onClick={() => setShowPw(s => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors text-xs font-bold uppercase tracking-wider">
+                        {showPw ? 'Hide' : 'Show'}
+                      </button>
+                    </div>
                   )}
 
                   {/* First login step 1: create password */}
                   {isFirstLogin && firstLoginStep === 'password' && (
                     <>
-                      <input type="password" placeholder="Create a password (min 4 chars)" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                      <div className="relative">
+                        <input type={showPw ? 'text' : 'password'} placeholder="Create a password (min 4 chars)" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3.5 pr-12 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" autoFocus />
+                        <button type="button" onClick={() => setShowPw(s => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors text-xs font-bold uppercase tracking-wider">
+                          {showPw ? 'Hide' : 'Show'}
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <input type={showPw ? 'text' : 'password'} placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                          className={`w-full p-3.5 pr-12 rounded-xl bg-white/5 border text-center text-white text-sm outline-none transition-colors ${confirmPassword && confirmPassword !== password ? 'border-red-500/50' : confirmPassword && confirmPassword === password ? 'border-emerald-500/50' : 'border-white/10'}`} />
+                        {confirmPassword && (
+                          <span className={`absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold ${confirmPassword === password ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {confirmPassword === password ? '✓' : '✗'}
+                          </span>
+                        )}
+                      </div>
                       <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
                         <p className="text-amber-400 text-[10px] font-bold uppercase tracking-wider text-center">Remember this password — you cannot log in without it</p>
                       </div>
@@ -1529,9 +1562,14 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
                       {resetStep === 'newpw' && (
                         <>
                           <p className="text-center text-white/40 text-xs">Verified: <span className="text-white font-bold">{CLASS_LIST[resetID]}</span></p>
-                          <input type="password" placeholder="New password (min 4 chars)" value={resetNewPw}
-                            onChange={e => setResetNewPw(e.target.value)} autoFocus
-                            className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                          <div className="relative">
+                            <input type={showResetPw ? 'text' : 'password'} placeholder="New password (min 4 chars)" value={resetNewPw}
+                              onChange={e => setResetNewPw(e.target.value)} autoFocus
+                              className="w-full p-3.5 pr-12 rounded-xl bg-white/5 border border-white/10 text-center text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors" />
+                            <button type="button" onClick={() => setShowResetPw(s => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors text-xs font-bold uppercase tracking-wider">
+                              {showResetPw ? 'Hide' : 'Show'}
+                            </button>
+                          </div>
                           {resetIsLegacy && (
                             <div className="p-3 bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-xl">
                               <p className="text-[#00d4ff] text-[10px] text-center uppercase tracking-wider font-bold">Next: set a security question</p>
