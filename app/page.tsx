@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { 
   Calculator, MessageCircle, BookOpen, Calendar, LogOut, Activity,
   Download, Upload, Bell, CheckCircle, FileText, Send,
-  Zap, Coffee, Laugh, Play, ChevronRight, X, ExternalLink
+  Zap, Coffee, Laugh, Play, ChevronRight, X, ExternalLink, MessageSquare
 } from "lucide-react";
 
 // ============================================================
@@ -851,6 +851,205 @@ const WhatsNewModal = ({ onClose }: { onClose: () => void }) => {
         </div>
       </GlassCard>
     </motion.div>
+  );
+};
+
+// ============================================================
+// BME AI CHATBOT
+// ============================================================
+const TIMETABLE_CONTEXT = `
+Monday: CHEM 151 (10:30-12:25, PB212), ENGL 157 (17:00-17:55, ENG AUDIT)
+Tuesday: COE 153 Lab (08:00-14:55, LAB), COE 181 (17:00-19:00, VSLA)
+Wednesday: MATH 151 A (08:00-09:55, VSLA), COE 181 (13:00-13:55, Room 303)
+Thursday: ME 161 (08:00-09:55, A110), MATH 151 B (13:00-14:55, PB020), BME 161 (15:00-16:55, PB008)
+Friday: COE 153 Lab (10:30-12:25 & 13:00-14:55, LAB)
+`;
+
+const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
+    { role: 'assistant', content: `Hey ${studentName.split(' ')[0]} 👋 I'm your BME portal assistant. Ask me anything — how features work, course questions, CWA calculations, or just need motivation. What's up?` }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [messages, open]);
+
+  const sendToTelegram = (question: string) => {
+    const BOT_TOKEN = '8502604375:AAHM6DUR4yVxB7VPXmcXUzr_v4fpUz2Erb8';
+    const CHAT_ID = '8627616350';
+    const msg = `🤖 *BME Chat — Unanswered*\n👤 ${studentName}\n🆔 ${studentID}\n❓ ${question}`;
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' }),
+    }).catch(() => {});
+  };
+
+  const sendMessage = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg = input.trim();
+    setInput('');
+    setMessages(m => [...m, { role: 'user', content: userMsg }]);
+    setLoading(true);
+
+    try {
+      const systemPrompt = `You are the BME Portal assistant for KNUST Biomedical Engineering Year 1 students (Class of 2029). You are built into their student portal by Kwaku Asante Okyere (student ID: 22028883, contact: +233556965453).
+
+You know everything about the portal:
+- TIMETABLE: ${TIMETABLE_CONTEXT}
+- COURSES: MATH 151 (Linear Algebra, 4cr), BME 161 (Cell Biology, 3cr), EE 151 (Applied Electricity, 3cr), ME 161 (Basic Mechanics, 3cr), CHEM 151 (General Chemistry, 2cr), COE 153 (Engineering Tech, 2cr), ENGL 157 (Comm Skills, 2cr)
+- FEATURES: Timetable with attendance tracking (need 70%+ for exam eligibility), BME Survival Kit (YouTube playlists per course), CWA Calculator, Study Timer (20min-5hrs with LoFi mode), Push Notifications (30min before lectures), Updates Hub, Department Vent (anonymous feedback), Export/Import profile
+- PASSWORD RESET: Uses security question (mother's first name). Legacy users verify by full name first.
+- PORTAL VERSION: 1.3.0, End of semester: April 7 2026
+- The student talking to you is: ${studentName} (ID: ${studentID})
+
+You can:
+1. Answer any portal question
+2. Calculate CWA if given scores (weighted by credit hours: sum(score×credits)/sum(credits))
+3. Explain course concepts (cell biology, mechanics, circuits, chemistry, linear algebra)
+4. Quiz students on their courses
+5. Give study tips and motivation
+6. Tell them today's timetable or upcoming classes
+
+If a question is completely outside your knowledge or you're unsure, say so honestly and end with: [LOG_UNANSWERED] so the system can flag it.
+
+Be friendly, concise, and use KNUST/Ghana context when relevant. Keep responses under 150 words unless explaining a concept that needs more.`;
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [...messages, { role: 'user', content: userMsg }].map(m => ({ role: m.role, content: m.content })),
+        }),
+      });
+
+      const data = await response.json();
+      const reply = data.content?.[0]?.text || 'Something went wrong. Try again.';
+
+      if (reply.includes('[LOG_UNANSWERED]')) {
+        sendToTelegram(userMsg);
+        const cleanReply = reply.replace('[LOG_UNANSWERED]', '').trim();
+        setMessages(m => [...m, { role: 'assistant', content: cleanReply + '\n\n_I\'ve flagged this for Kwaku to look into._' }]);
+      } else {
+        setMessages(m => [...m, { role: 'assistant', content: reply }]);
+      }
+    } catch {
+      sendToTelegram(userMsg + ' [network error]');
+      setMessages(m => [...m, { role: 'assistant', content: 'Network issue — try again in a moment.' }]);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <>
+      {/* Floating button */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        className={`fixed bottom-6 right-6 z-[70] w-13 h-13 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${open ? 'bg-white/10 border border-white/20 rotate-90' : 'bg-[#00d4ff] hover:scale-110'}`}
+        style={{ width: 52, height: 52 }}>
+        {open
+          ? <X size={20} className="text-white" />
+          : <MessageSquare size={22} className="text-[#0a0f1c]" />}
+      </button>
+
+      {/* Chat panel */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-24 right-4 z-[70] w-[min(380px,calc(100vw-32px))] rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+            style={{ background: 'rgba(10,15,28,0.97)', backdropFilter: 'blur(24px)' }}>
+
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-white/8 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#00d4ff]/20 border border-[#00d4ff]/30 flex items-center justify-center">
+                <MessageSquare size={14} className="text-[#00d4ff]" />
+              </div>
+              <div>
+                <p className="text-white text-xs font-bold">BME Assistant</p>
+                <p className="text-white/30 text-[9px] uppercase tracking-wider">Powered by Claude</p>
+              </div>
+              <div className="ml-auto flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-emerald-400 text-[9px] uppercase tracking-wider">Online</span>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div className="h-72 overflow-y-auto px-4 py-4 space-y-3 scrollbar-hide">
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
+                    msg.role === 'user'
+                      ? 'bg-[#00d4ff] text-[#0a0f1c] font-medium rounded-br-sm'
+                      : 'bg-white/8 text-white/80 border border-white/8 rounded-bl-sm'
+                  }`}>
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="bg-white/8 border border-white/8 px-4 py-3 rounded-2xl rounded-bl-sm">
+                    <div className="flex gap-1.5 items-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Quick suggestions */}
+            {messages.length === 1 && (
+              <div className="px-4 pb-2 flex gap-2 flex-wrap">
+                {["What's today's timetable?", "Quiz me on BME 161", "Calculate my CWA"].map(s => (
+                  <button key={s} onClick={() => { setInput(s); setTimeout(() => inputRef.current?.focus(), 50); }}
+                    className="text-[9px] px-2.5 py-1.5 rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/25 transition-all">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Input */}
+            <div className="px-4 pb-4 pt-2 border-t border-white/8">
+              <div className="flex gap-2 items-center bg-white/5 border border-white/10 rounded-2xl px-3 py-2 focus-within:border-[#00d4ff]/40 transition-colors">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                  placeholder="Ask anything..."
+                  className="flex-1 bg-transparent text-white text-xs outline-none placeholder:text-white/25"
+                />
+                <button onClick={sendMessage} disabled={!input.trim() || loading}
+                  className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${input.trim() && !loading ? 'bg-[#00d4ff] hover:scale-105' : 'bg-white/5'}`}>
+                  <Send size={12} className={input.trim() && !loading ? 'text-[#0a0f1c]' : 'text-white/20'} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -2029,6 +2228,9 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* AI CHATBOT */}
+      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
       {/* UPDATES HUB */}
       <AnimatePresence>
