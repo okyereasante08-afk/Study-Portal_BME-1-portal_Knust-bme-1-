@@ -919,28 +919,31 @@ You can:
 5. Give study tips and motivation
 6. Tell them today's timetable or upcoming classes
 
+
+
+When answering MATH 151 questions: reference the manual above. Walk through exact exercise solutions step by step. If asked to quiz them, use actual questions from the manual.
+
 If a question is completely outside your knowledge or you're unsure, say so honestly and end with: [LOG_UNANSWERED] so the system can flag it.
 
-Be friendly, concise, and use KNUST/Ghana context when relevant. Keep responses under 150 words unless explaining a concept that needs more.`;
+Be friendly and use KNUST/Ghana context. Keep responses under 200 words unless working through a mathematical proof — then be as detailed as needed.`;
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: systemPrompt,
           messages: [...messages, { role: 'user', content: userMsg }].map(m => ({ role: m.role, content: m.content })),
+          studentName,
+          studentID,
         }),
       });
 
       const data = await response.json();
-      const reply = data.content?.[0]?.text || 'Something went wrong. Try again.';
+      const reply = data.reply || 'Something went wrong. Try again.';
 
       if (reply.includes('[LOG_UNANSWERED]')) {
         sendToTelegram(userMsg);
         const cleanReply = reply.replace('[LOG_UNANSWERED]', '').trim();
-        setMessages(m => [...m, { role: 'assistant', content: cleanReply + '\n\n_I\'ve flagged this for Kwaku to look into._' }]);
+        setMessages(m => [...m, { role: 'assistant', content: cleanReply + '\n\n_Flagged for Kwaku to look into._' }]);
       } else {
         setMessages(m => [...m, { role: 'assistant', content: reply }]);
       }
