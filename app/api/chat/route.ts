@@ -5,7 +5,7 @@ Monday: CHEM 151 (10:30-12:25, PB212), ENGL 157 (17:00-17:55, ENG AUDIT)
 Tuesday: COE 153 Lab (08:00-14:55, LAB), COE 181 (17:00-19:00, VSLA)
 Wednesday: MATH 151 A (08:00-09:55, VSLA), COE 181 (13:00-13:55, Room 303)
 Thursday: ME 161 (08:00-09:55, A110), MATH 151 B (13:00-14:55, PB020), BME 161 (15:00-16:55, PB008)
-Friday: COE 153 Lab (10:30-12:25 & 13:00-14:55, LAB)
+Friday: COE 153 Lab (10:30-12:25 and 13:00-14:55, LAB)
 `;
 
 const MATH151_MANUAL = `MATH: 151
@@ -11130,52 +11130,65 @@ export async function POST(req: NextRequest) {
 PORTAL KNOWLEDGE:
 - TIMETABLE: ${TIMETABLE_CONTEXT}
 - COURSES: MATH 151 (Linear Algebra, 4cr), BME 161 (Cell Biology, 3cr), EE 151 (Applied Electricity, 3cr), ME 161 (Basic Mechanics, 3cr), CHEM 151 (General Chemistry, 2cr), COE 153 (Engineering Tech, 2cr), ENGL 157 (Comm Skills, 2cr)
+- CWA formula: sum(score x credits) / sum(credits)
 - FEATURES: Attendance tracking (70%+ for exam eligibility), BME Survival Kit (YouTube playlists), CWA Calculator, Study Timer (20min-5hrs, LoFi mode), Push Notifications, Updates Hub, Department Vent, Export/Import profile
-- PASSWORD RESET: Security question = mother's first name. Legacy users verify by full name.
+- PASSWORD RESET: Security question = mother first name. Legacy users verify by full name.
 - End of semester: April 7 2026. Current user: ${studentName} (ID: ${studentID})
 
 === MATH 151 nT MANUAL (J.K.K. Asamoah, KNUST) ===
 ${MATH151_MANUAL}
 === END MANUAL ===
 
-CAPABILITIES:
-1. Answer portal questions
-2. Calculate CWA: sum(score x credits) / sum(credits)
-3. Explain MATH 151 using the manual above — walk through proofs, solutions, exercises
-4. Quiz students using actual manual questions
-5. Explain other course concepts (cell biology, mechanics, circuits, chemistry)
-6. Study tips, motivation, timetable info
+WHAT YOU CAN DO:
+1. Answer any portal question
+2. Calculate CWA when given scores
+3. Explain MATH 151 using the manual — walk through exact proofs and exercise solutions
+4. Quiz students using actual questions from the manual
+5. Explain BME 161, ME 161, EE 151, CHEM 151, COE 153 concepts
+6. Motivate students, give study tips
+7. Tell them today or this week's timetable
 
-For MATH 151: reference the manual directly. Be detailed on proofs.
-If unsure or outside knowledge: answer honestly and append [LOG_UNANSWERED].
-Be friendly, use KNUST context. Under 200 words unless solving math.`;
+For MATH 151: always reference the manual. Be thorough on proofs and solutions.
+If unsure or outside your knowledge: be honest and append [LOG_UNANSWERED].
+Be friendly, use KNUST/Ghana context. Under 200 words unless solving maths.`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY || '',
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 1024,
-        system: systemPrompt,
-        messages: messages,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages,
+        ],
       }),
     });
 
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('Groq error:', err);
+      return NextResponse.json({ reply: 'Something went wrong. Try again.' }, { status: 500 });
+    }
+
     const data = await response.json();
-    const reply = data.content?.[0]?.text || 'Something went wrong.';
+    const reply = data.choices?.[0]?.message?.content || 'Something went wrong.';
 
     if (reply.includes('[LOG_UNANSWERED]')) {
       const lastMsg = messages[messages.length - 1]?.content || '';
-      await sendTelegram(`\u{1F916} *BME Chat — Unanswered*\n\u{1F464} ${studentName}\n\u{1F194} ${studentID}\n\u{2753} ${lastMsg}`);
+      await sendTelegram(`🤖 *BME Chat — Unanswered*
+👤 ${studentName}
+🆔 ${studentID}
+❓ ${lastMsg}`);
     }
 
     return NextResponse.json({ reply: reply.replace('[LOG_UNANSWERED]', '').trim() });
+
   } catch (err) {
-    console.error('Chat API error:', err);
-    return NextResponse.json({ reply: 'Something went wrong. Try again.' }, { status: 500 });
+    console.error('Chat route error:', err);
+    return NextResponse.json({ reply: 'Network issue — try again in a moment.' }, { status: 500 });
   }
 }
