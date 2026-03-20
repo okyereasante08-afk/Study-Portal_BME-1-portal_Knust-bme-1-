@@ -204,45 +204,70 @@ const BME_PUNS = [
 const END_OF_SEM_DATE = new Date('2026-04-07T00:00:00');
 
 // ── What's New — update version string when you add new features ──
-const PORTAL_VERSION = '1.3.0';
+const PORTAL_VERSION = '1.5.0';
 const WHATS_NEW = [
+  {
+    version: '1.5.0',
+    date: 'March 2026',
+    items: [
+      { label: 'BME AI Assistant (Beta)', detail: 'Floating chat button on your dashboard. Ask anything — timetable, CWA calculations, course concepts, portal help. Powered by Groq / Llama 3.3.' },
+      { label: 'CHEM 151 Resources', detail: 'General Chemistry now has a dedicated folder in the Survival Kit with class notes and resources.' },
+      { label: 'Show / Hide Password', detail: 'All password fields now have a Show/Hide toggle so you can see what you are typing.' },
+      { label: 'Confirm Password', detail: 'First-time login now asks you to confirm your password before saving. Green tick when they match.' },
+      { label: 'Install as App (PWA)', detail: 'The portal can now be installed on your phone home screen. Android shows a banner automatically. iOS: tap Share then Add to Home Screen.' },
+    ]
+  },
+  {
+    version: '1.4.0',
+    date: 'March 2026',
+    items: [
+      { label: 'Customisable Study Timer', detail: 'Set your focus duration from 20 minutes all the way up to 5 hours. Break time auto-calculates. Warnings at 3, 4 and 5 hours.' },
+      { label: 'Password Reset', detail: 'Forgot your password? Tap Forgot password on the login screen, verify with your security question, set a new one.' },
+      { label: 'Security Question', detail: "New accounts set a security question (your mother's first name) on first login for password recovery." },
+      { label: 'Legacy Account Reset', detail: 'Accounts made before the security question update can reset using their full name, then get enrolled automatically.' },
+      { label: 'Portal Guide', detail: 'Tap the Guide button in the header for a full walkthrough of every feature, accessible any time.' },
+      { label: "What's New Modal", detail: 'This screen. Opens automatically when the portal updates so you always know what changed.' },
+    ]
+  },
   {
     version: '1.3.0',
     date: 'March 2026',
     items: [
-      { label: 'Customisable Study Timer', detail: 'Set your focus duration from 20 minutes all the way up to 5 hours. Break time auto-calculates.' },
-      { label: 'Password Reset', detail: 'Forgot your password? Verify with your security question and set a new one instantly.' },
-      { label: 'Security Question', detail: "New accounts now set a security question (your mother's first name) on first login for safer recovery." },
-      { label: 'Portal Guide', detail: 'Tap the Guide button in the header for a full walkthrough of every feature.' },
-      { label: 'Install as App', detail: "The portal can now be installed on your phone's home screen like a real app — no app store needed." },
+      { label: 'LoFi Mode', detail: 'Fullscreen study environment — aurora ripple visuals that follow your cursor, motivational quotes, and lofi radio music.' },
+      { label: 'Aurora Ripple Background', detail: 'Move your cursor or finger in LoFi mode to spawn ripple rings and attract glowing orbs.' },
+      { label: 'Motivational Quotes', detail: 'Rotate every 30 seconds in LoFi mode. The Mandela quote shows most often.' },
+      { label: 'Telegram Login Notifications', detail: 'Kwaku gets a Telegram message every time someone logs in — name, ID, time, and whether it is a first login.' },
+      { label: 'Ghost Beta Account', detail: 'A hidden test account that always starts fresh — no data saved, always sees onboarding.' },
     ]
   },
   {
     version: '1.2.0',
     date: 'March 2026',
     items: [
-      { label: 'LoFi Mode', detail: 'Fullscreen study environment with aurora ripple visuals, motivational quotes and lofi music.' },
-      { label: 'Motivational Quotes', detail: 'Quotes rotate every 30 seconds in LoFi mode, starting with Mandela.' },
-      { label: 'Aurora Ripple Background', detail: 'Move your cursor or finger in LoFi mode to create fluid aurora ripple effects.' },
-      { label: 'Attendance Counts Fixed', detail: 'Total class counts updated to reflect remaining lectures before April 7.' },
+      { label: 'Neural Network Background', detail: 'Interactive canvas background — glowing nodes connect and follow your cursor across the whole app.' },
+      { label: 'Next Class Live Bar', detail: 'Live countdown to your next class sits just below the header all day.' },
+      { label: 'Push Notifications', detail: 'Allow alerts and get a reminder 30 minutes before every scheduled lecture.' },
+      { label: 'BME Survival Kit Expanded', detail: 'ME 161 now has 8 playlists including RC Hibbeler solved. EE 151 updated with Skancity Academy and Maths Hub Gh. BME 161 has 13 resources.' },
+      { label: 'Export / Import Profile', detail: 'Back up your attendance and notes as a JSON file. Restore on any device with the Import button.' },
+      { label: 'Attendance Counts Fixed', detail: 'Total class counts updated to reflect actual remaining lectures before April 7.' },
     ]
   },
   {
     version: '1.1.0',
-    date: 'March 2026',
+    date: 'February 2026',
     items: [
-      { label: 'Neural Network Background', detail: 'Interactive canvas background — nodes follow your cursor across the whole app.' },
-      { label: 'Next Class Bar', detail: 'Live countdown to your next class appears at the top of the dashboard.' },
-      { label: 'Push Notifications', detail: '30-minute reminders before every scheduled lecture.' },
-      { label: 'BME Survival Kit Expanded', detail: 'ME 161 now has 8 playlists including RC Hibbeler solved. EE 151 and BME 161 also updated.' },
-      { label: 'Export / Import Profile', detail: 'Back up your attendance and notes as a JSON file and restore on any device.' },
+      { label: 'Onboarding Walkthrough', detail: '6-slide intro shown on first login. Covers all features and asks for notification permission.' },
+      { label: 'Department Vent', detail: 'Submit anonymous feedback. Admin sees all submissions.' },
+      { label: 'Updates Hub', detail: 'Announcements and shared files from admin live here.' },
+      { label: 'CWA Calculator', detail: 'Enter your scores, get your projected CWA weighted by credit hours instantly.' },
+      { label: 'Study Timer', detail: '35 min focus, 5 min break. SVG ring drains as time counts down. Session dots track your day.' },
     ]
   },
   {
     version: '1.0.0',
     date: 'February 2026',
     items: [
-      { label: 'Portal Launch', detail: 'Timetable, attendance tracker, CWA calculator, Survival Kit, study timer, updates hub and vent box.' },
+      { label: 'Portal Launch', detail: 'Timetable with attendance tracking, 70% eligibility bar, BME Survival Kit, CWA calculator, quick notes, class resources and the vent box. Built for KNUST BME1 by Kwaku.' },
     ]
   },
 ];
