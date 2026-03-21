@@ -1502,6 +1502,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
       const isFirstTime = !localStorage.getItem(`pw-${id}`) && !localStorage.getItem('bme-onboarded');
       sendLoginLog(id, CLASS_LIST[id], isFirstTime);
       localStorage.setItem('bme-session-id', id);
+      localStorage.setItem('bme-name', CLASS_LIST[id] || '');
       if (adminStatus) {
         localStorage.setItem('bme-admin-access', 'true');
         setShowTutorial(true);
@@ -1951,7 +1952,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
       <main className="max-w-5xl mx-auto p-4 md:p-8 space-y-5">
 
         {/* QUICK ACTIONS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/8 border border-green-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-green-500/15 transition-all">
             <MessageCircle size={18} className="text-green-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">WhatsApp</span>
           </a>
@@ -1965,6 +1966,11 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
             <Bell size={18} className="text-purple-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Updates</span>
             {announcements.length > 0 && <div className="absolute top-2 right-2 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black">{announcements.length}</div>}
           </button>
+          <Link href="/map" className="p-4 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-indigo-500/15 transition-all relative">
+            <span className="text-lg">🧠</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Brain Map</span>
+            <span className="absolute top-2 right-2 text-[7px] font-black uppercase tracking-wider text-indigo-400 bg-indigo-500/20 px-1.5 py-0.5 rounded-full">New</span>
+          </Link>
         </div>
 
         {/* END OF SEM COUNTDOWN */}
