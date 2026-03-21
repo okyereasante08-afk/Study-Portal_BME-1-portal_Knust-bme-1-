@@ -204,8 +204,20 @@ const BME_PUNS = [
 const END_OF_SEM_DATE = new Date('2026-04-07T00:00:00');
 
 // ── What's New — update version string when you add new features ──
-const PORTAL_VERSION = '1.5.0';
+const PORTAL_VERSION = '1.6.0';
 const WHATS_NEW = [
+  {
+    version: '1.6.0',
+    date: 'March 2026',
+    items: [
+      { label: 'Orion — BME1 Communication Hub', detail: 'A full Discord-style chat built into your portal. Course channels, study rooms, direct messages, emoji reactions and file sharing. Tap the Orion button on your dashboard.' },
+      { label: 'Course Channels', detail: '#general plus a dedicated channel for every course — MATH 151, BME 161, EE 151, ME 161, CHEM 151, COE 153, ENGL 157.' },
+      { label: 'Study Rooms', detail: 'Create a named room for a study session. Classmates can join and chat together in real time.' },
+      { label: 'Direct Messages', detail: 'Private one-on-one messages with any classmate who has set up their profile.' },
+      { label: 'Emoji Reactions + File Sharing', detail: 'Hover any message to react with an emoji. Attach images and PDFs directly in any channel.' },
+      { label: 'Orion Constellation Map', detail: 'The class node map is now part of Orion. Every student is a glowing node — tap to see their strengths and message them directly.' },
+    ]
+  },
   {
     version: '1.5.0',
     date: 'March 2026',
@@ -1966,9 +1978,9 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
             <Bell size={18} className="text-purple-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Updates</span>
             {announcements.length > 0 && <div className="absolute top-2 right-2 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black">{announcements.length}</div>}
           </button>
-          <Link href="/map" className="p-4 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-indigo-500/15 transition-all relative">
-            <span className="text-lg">🧠</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Brain Map</span>
+          <Link href="/orion" className="p-4 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-indigo-500/15 transition-all relative">
+            <span className="text-lg">⭐</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Orion</span>
             <span className="absolute top-2 right-2 text-[7px] font-black uppercase tracking-wider text-indigo-400 bg-indigo-500/20 px-1.5 py-0.5 rounded-full">New</span>
           </Link>
         </div>
