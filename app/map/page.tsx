@@ -509,7 +509,7 @@ export default function BrainMap() {
                 <div>
                   <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-2">Your vibe / bio</p>
                   <input type="text" value={bio} onChange={e => setBio(e.target.value.slice(0, 80))}
-                    placeholder='e.g. "Ask me about vectors. Don\'t ask about ENGL."'
+                    placeholder="e.g. Ask me about vectors. Don't ask about ENGL."
                     className="w-full p-3.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-[#00d4ff]/50 transition-colors placeholder:text-white/20" />
                   <p className="text-[9px] text-white/20 mt-1 text-right">{bio.length}/80</p>
                 </div>
