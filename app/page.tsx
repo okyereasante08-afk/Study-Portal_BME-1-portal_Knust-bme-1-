@@ -1905,7 +1905,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
                   <span className="text-white/20 group-hover:text-white/60 transition-colors">→</span>
                 </a>
                 <a
-                  href="https://knust-bme1.vercel.app/cwa"
+                  href="https://cwa-calculator-one.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between w-full px-4 py-3 rounded-2xl border border-[#00d4ff]/15 bg-[#00d4ff]/5 hover:bg-[#00d4ff]/10 transition-all group"
