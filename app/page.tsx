@@ -1230,6 +1230,7 @@ export default function Home() {
   const [vents, setVents] = useState<{ id: string; text: string; author: string; time: string }[]>([]);
   const [showDontPanic, setShowDontPanic] = useState(false);
   const [showWhatsNew, setShowWhatsNew] = useState(false);
+  const [showSemesterEnd, setShowSemesterEnd] = useState(false);
   const deferredPromptRef = useRef<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [currentPun, setCurrentPun] = useState(0);
@@ -1318,6 +1319,14 @@ export default function Home() {
       const lastVersion = localStorage.getItem('bme-version');
       if (lastVersion !== PORTAL_VERSION) setShowWhatsNew(true);
       localStorage.setItem('bme-version', PORTAL_VERSION);
+      // Show semester end popup once
+      const semEndShown = localStorage.getItem('bme-sem1-end-shown');
+      const now = new Date();
+      const semEnd = new Date('2026-04-07');
+      if (!semEndShown && now >= semEnd) {
+        setShowSemesterEnd(true);
+        localStorage.setItem('bme-sem1-end-shown', '1');
+      }
     }
 
     return () => {
@@ -1855,6 +1864,73 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
       <AnimatePresence>
         {showDontPanic && <DontPanic onClose={() => setShowDontPanic(false)} />}
         {showWhatsNew && <WhatsNewModal onClose={() => setShowWhatsNew(false)} />}
+      {showSemesterEnd && (
+        <div className="fixed inset-0 z-[90] bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
+          <div className="w-full max-w-md rounded-3xl overflow-hidden border border-white/10" style={{background:'rgba(10,15,28,0.98)'}}>
+            {/* Gold top bar */}
+            <div className="h-1 bg-gradient-to-r from-[#b8932a] via-[#d4aa4a] to-[#b8932a]" />
+            <div className="p-8">
+              {/* Header */}
+              <div className="mb-6">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#b8932a] mb-3">KNUST BME1 · Class of 2029</p>
+                <h2 className="font-light text-white leading-tight mb-2" style={{fontFamily:'Cormorant Garamond, serif', fontSize:'clamp(24px, 5vw, 32px)'}}>
+                  Congratulations on completing your<br/>
+                  <em className="italic" style={{color:'#d4aa4a'}}>1st Semester</em>
+                </h2>
+                <p className="text-white/40 text-xs leading-relaxed tracking-wide mt-3">
+                  You made it through. Every lecture, every late night, every exam. That took real commitment.
+                </p>
+              </div>
+              {/* Divider */}
+              <div className="h-px bg-white/8 mb-6" />
+              {/* 2nd semester section */}
+              <div className="mb-6">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 mb-3">What's next</p>
+                <p className="text-white/60 text-xs leading-relaxed tracking-wide mb-4">
+                  We're already preparing the BME1 Portal for Semester 2 — new timetable, updated survival kit, and everything you need to hit the ground running.
+                </p>
+                <a
+                  href="https://forms.gle/3u5F82nnwHDqCdRQA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full px-4 py-3 rounded-xl border border-white/10 bg-white/3 hover:bg-white/6 transition-all group mb-3"
+                >
+                  <div>
+                    <p className="text-white text-xs font-bold tracking-wide">Share your feedback</p>
+                    <p className="text-white/30 text-[10px] mt-0.5">Help us make Semester 2 even better</p>
+                  </div>
+                  <span className="text-white/20 group-hover:text-white/60 transition-colors text-lg">→</span>
+                </a>
+                <a
+                  href="https://cwa-calculator.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full px-4 py-3 rounded-xl border border-[#b8932a]/20 bg-[#b8932a]/5 hover:bg-[#b8932a]/10 transition-all group"
+                >
+                  <div>
+                    <p className="text-[#d4aa4a] text-xs font-bold tracking-wide">CWA Calculator</p>
+                    <p className="text-white/30 text-[10px] mt-0.5">Calculate your projected Semester 1 CWA</p>
+                  </div>
+                  <span className="text-[#b8932a]/40 group-hover:text-[#b8932a] transition-colors text-lg">→</span>
+                </a>
+              </div>
+              {/* Actions */}
+              <button
+                onClick={() => setShowSemesterEnd(false)}
+                className="w-full py-3.5 bg-[#b8932a] text-[#060a14] rounded-2xl font-black text-xs uppercase tracking-wider hover:bg-[#d4aa4a] transition-all"
+              >
+                Let's go — Semester 2
+              </button>
+              <button
+                onClick={() => setShowSemesterEnd(false)}
+                className="w-full mt-2 py-2 text-white/20 text-xs uppercase tracking-wider hover:text-white/40 transition-colors"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
         {showOnboarding && <OnboardingModal onComplete={completeOnboarding} />}
         {showTutorial && <TutorialModal onClose={() => setShowTutorial(false)} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
