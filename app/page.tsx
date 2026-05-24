@@ -953,8 +953,13 @@ export default function Home() {
   const renderHome = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
+  
+        <style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tangerine:wght@400;700&family=Ultra&display=swap');
+</style>
+      </style>
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>
+        <h2 style={{ fontSize: 26, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -1510,9 +1515,9 @@ export default function Home() {
       </div>
 
 {/* Copyright Footer Links */}
-<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '12px', color: '#a8967a' }}>
+<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
 <div className="brand-line">
-<span>Built by</span> <a className="brand" style={{ color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer">Asante Inc.</a>
+<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine' : , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
 </div>
 <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
 </div>
