@@ -1,22 +1,20 @@
 {
-  "name": "BME1 Portal — KNUST",
-  "short_name": "BME Portal",
-  "description": "The unofficial student portal for KNUST Biomedical Engineering Year 1",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0a0f1c",
-  "theme_color": "#00d4ff",
-  "orientation": "portrait-primary",
+  "name": "MyWebSite",
+  "short_name": "MySite",
   "icons": [
-    { "src": "/icon-72x72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-96x96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-128x128.png", "sizes": "128x128", "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-144x144.png", "sizes": "144x144", "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "maskable any" },
-    { "src": "/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
+    {
+      "src": "/public/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/public/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
-  "categories": ["education", "productivity"],
-  "lang": "en"
-}
+  "theme_color": "#ffffff",
+  "background_color": "#1d130a",
+  "display": "standalone"
