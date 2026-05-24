@@ -67,36 +67,34 @@ const CLASS_LIST: { [id: string]: string } = {
 };
 
 const COURSE_CREDITS = [
-  { code: 'MATH 151', name: 'Algebra', credits: 4 },
-  { code: 'BME 161', name: 'Cell Biology', credits: 3 },
-  { code: 'EE 151', name: 'Applied Electricity', credits: 3 },
-  { code: 'ME 161', name: 'Basic Mechanics', credits: 3 },
-  { code: 'CHEM 151', name: 'General Chemistry', credits: 2 },
-  { code: 'COE 153', name: 'Engineering Tech', credits: 2 },
-  { code: 'ENGL 157', name: 'Comm. Skills I', credits: 2 },
+  { code: 'MATH 152', name: 'Calculus', credits: 4 },
+  { code: 'COE 152', name: 'Basic Electronics', credits: 3 },
+  { code: 'BME 166', name: 'Biochemistry', credits: 3 },
+  { code: 'PHY 154', name: 'Properties of Matter', credits: 3 },
+  { code: 'ME 166', name: 'Applied Thermodynamics', credits: 2 },
+  { code: 'ENGL 158', name: 'Comm. Skills II', credits: 2 },
+  { code: 'SOC 152', name: 'Sociology', credits: 2 },
 ];
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: 'm2', time: '10:30 - 12:25', course: 'CHEM 151', venue: 'PB212', lecturer: 'L. Sarpong', type: 'Lecture', totalClasses: 4 },
-    { id: 'm3', time: '17:00 - 17:55', course: 'ENGL 157', venue: 'ENG AUDIT', lecturer: 'P.O Yeboah', type: 'Lecture', totalClasses: 4 },
+    { id: 'm1', time: '13:00 - 14:55', course: 'PHY 154', venue: 'Room G01', lecturer: 'R. M. Noye', type: 'Lecture', totalClasses: 4 },
+    { id: 'm2', time: '15:00 - 16:55', course: 'ENGL 158', venue: 'Eng. Audit', lecturer: 'Z. Osei', type: 'Lecture', totalClasses: 4 },
   ],
   Tuesday: [
-    { id: 't1', time: '08:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo/G.S. Klogo', type: 'Lab', totalClasses: 4 },
-    { id: 'm1', time: '17:00 - 19:00', course: 'COE 181', venue: 'VSLA', lecturer: 'K.O.K. Sarkodie', type: 'Lecture', totalClasses: 4 },
+    { id: 't1', time: '08:00 - 09:55', course: 'SOC 152', venue: 'PB012', lecturer: 'O. K. J. R. Kwabena', type: 'Lecture', totalClasses: 4 },
+    { id: 't2', time: '10:30 - 12:25', course: 'COE 152', venue: 'PB020', lecturer: 'D. A. Addo', type: 'Lecture', totalClasses: 4 },
+    { id: 't3', time: '13:00 - 14:55', course: 'BME 166', venue: 'PB020', lecturer: 'Charles Apprey', type: 'Lecture', totalClasses: 4 },
   ],
   Wednesday: [
-    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 151 A', venue: 'VSLA', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 3 },
-    { id: 'w2', time: '13:00 - 13:55', course: 'COE 181', venue: '303', lecturer: 'K.O.K Sarkodie', type: 'Lecture', totalClasses: 3 },
+    { id: 'w1', time: '08:00 - 09:55', course: 'MATH 152 A', venue: 'NEB-GF', lecturer: 'J. K. K. Asamoah', type: 'Lecture', totalClasses: 3 },
   ],
   Thursday: [
-    { id: 'th1', time: '08:00 - 09:55', course: 'ME 161', venue: 'A110', lecturer: 'K.O Amoabeng', type: 'Lecture', totalClasses: 3 },
-    { id: 'th2', time: '13:00 - 14:55', course: 'MATH 151 B', venue: 'PB020', lecturer: 'J. K. K. ASAMOAH', type: 'Lecture', totalClasses: 3 },
-    { id: 'th3', time: '15:00 - 16:55', course: 'BME 161', venue: 'PB008', lecturer: 'P. Adjei', type: 'Lecture', totalClasses: 3 },
+    { id: 'th1', time: '13:00 - 14:55', course: 'MATH 152 B', venue: 'NEB-FF1', lecturer: 'J. K. K. Asamoah', type: 'Lecture', totalClasses: 3 },
   ],
   Friday: [
-    { id: 'f1', time: '10:30 - 12:25', course: 'COE 153', venue: 'LAB', lecturer: 'D. A Addo', type: 'Lab', totalClasses: 3 },
-    { id: 'f2', time: '13:00 - 14:55', course: 'COE 153', venue: 'LAB', lecturer: 'G.S. Klogo', type: 'Lab', totalClasses: 3 },
+    { id: 'f1', time: '08:00 - 09:55', course: 'ME 166', venue: 'NEB-FF2', lecturer: 'K. O. Amoabeng', type: 'Lecture', totalClasses: 3 },
+    { id: 'f2', time: '10:30 - 11:25', course: 'COE 152', venue: 'Lab', lecturer: 'D. A. Addo', type: 'Lab', totalClasses: 3 },
   ],
 };
 
@@ -715,7 +713,7 @@ const TUTORIAL_SECTIONS = [
     steps: [
       "Tap 'Survival Kit' from the quick actions grid.",
       "Select any course to expand its playlist resources.",
-      "Courses covered: MATH 151, ME 161, EE 151, BME 161, COE 153.",
+      "Courses covered: MATH 152, PHY 154, COE 152, BME 166, ME 166, ENGL 158, SOC 152.",
       "Links open directly on YouTube in a new tab.",
     ]
   },
@@ -895,18 +893,18 @@ const WhatsNewModal = ({ onClose }: { onClose: () => void }) => {
 // BME AI CHATBOT
 // ============================================================
 const TIMETABLE_CONTEXT = `
-Monday: CHEM 151 (10:30-12:25, PB212), ENGL 157 (17:00-17:55, ENG AUDIT)
-Tuesday: COE 153 Lab (08:00-14:55, LAB), COE 181 (17:00-19:00, VSLA)
-Wednesday: MATH 151 A (08:00-09:55, VSLA), COE 181 (13:00-13:55, Room 303)
-Thursday: ME 161 (08:00-09:55, A110), MATH 151 B (13:00-14:55, PB020), BME 161 (15:00-16:55, PB008)
-Friday: COE 153 Lab (10:30-12:25 & 13:00-14:55, LAB)
+Monday: PHY 154 (13:00-14:55, Room G01), ENGL 158 (15:00-16:55, Eng. Audit)
+Tuesday: SOC 152 (08:00-09:55, PB012), COE 152 (10:30-12:25, PB020), BME 166 (13:00-14:55, PB020)
+Wednesday: MATH 152 A (08:00-09:55, NEB-GF)
+Thursday: MATH 152 B (13:00-14:55, NEB-FF1)
+Friday: ME 166 (08:00-09:55, NEB-FF2), COE 152 Lab (10:30-11:25, Lab)
 `;
 
 const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
   const [open, setOpen] = useState(false);
   const [showBetaNotice, setShowBetaNotice] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
-    { role: 'assistant', content: `Hey ${studentName.split(' ')[0]} 👋 I'm your BME assistant — still in beta, but I know your timetable, MATH 151 manual, all portal features, and can calculate your CWA. What do you need?` }
+    { role: 'assistant', content: `Hey ${studentName.split(' ')[0]} 👋 I'm your BME assistant — still in beta, but I know your timetable, MATH 152 manual, all portal features, and can calculate your CWA. What do you need?` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -979,7 +977,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
               <button onClick={() => setShowBetaNotice(false)} className="text-white/30 hover:text-white/60"><X size={12} /></button>
             </div>
             <p className="text-white/60 text-[11px] leading-relaxed">
-              The BME Assistant is still in progress. It knows your timetable and the MATH 151 manual — but may not always get things right. Responses improve over time.
+              The BME Assistant is still in progress. It knows your timetable and the MATH 152 manual — but may not always get things right. Responses improve over time.
             </p>
             <button onClick={() => { setShowBetaNotice(false); setOpen(true); }}
               className="mt-3 w-full py-2 bg-[#00d4ff]/15 border border-[#00d4ff]/20 text-[#00d4ff] rounded-xl text-[10px] font-bold uppercase tracking-wider">
@@ -1048,7 +1046,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
             {/* Quick suggestions */}
             {messages.length === 1 && (
               <div className="px-4 pb-2 flex gap-2 flex-wrap">
-                {["Today's timetable", "Quiz me on MATH 151", "Calculate my CWA"].map(s => (
+                {["Today's timetable", "Quiz me on MATH 152", "Calculate my CWA"].map(s => (
                   <button key={s} onClick={() => { setInput(s); setTimeout(() => inputRef.current?.focus(), 50); }}
                     className="text-[9px] px-2.5 py-1.5 rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/25 transition-all">
                     {s}
@@ -1244,7 +1242,7 @@ export default function Home() {
   const [timerSeconds, setTimerSeconds] = useState(35 * 60);
   const [timerMode, setTimerMode] = useState<'focus' | 'break'>('focus');
   const [timerSessions, setTimerSessions] = useState(0);
-  const [timerCourse, setTimerCourse] = useState('MATH 151');
+  const [timerCourse, setTimerCourse] = useState('MATH 152');
   const [focusMins, setFocusMins] = useState(35);
   const [lofiMode, setLofiMode] = useState(false);
   const [showLofiExit, setShowLofiExit] = useState(false);
