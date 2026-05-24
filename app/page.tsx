@@ -234,6 +234,7 @@ interface AvatarProps {
   showUploadHint?: boolean;
   onFileSelect?: (file: File) => void;
   onRemove?: () => void;
+  onClick?: () => void; // <--- ADD THIS LINE
 }
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -242,8 +243,20 @@ const Avatar: React.FC<AvatarProps> = ({
   avatarUrl = null,
   showUploadHint = false,
   onFileSelect,
-  onRemove
+  onRemove,
+  onClick // <--- ADD THIS
 }) => {
+  // ...
+  return (
+    <div 
+      onClick={onClick} // <--- ADD THIS to the container div
+      style={{ position: "relative", width: size, height: size, flexShrink: 0, cursor: onClick ? "pointer" : "default" }}
+      className="avatar-container"
+    >
+      {/* ... rest of your code */}
+    </div>
+  );
+};
   const fileInputRef = useRef<HTMLInputElement>(null);
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
 
