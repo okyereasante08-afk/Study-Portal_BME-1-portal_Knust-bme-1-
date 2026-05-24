@@ -153,11 +153,10 @@ const SURVIVAL_KIT = [
       { label: "First Law of Thermodynamics Open Systems 2(Enthalpy)", url: "https://www.youtube.com/watch?v=ReOaRZA2eLo&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=2"},
       { label: "Turbines, Throttles, Nozzles, Fans, and Heaters", url: "https://www.youtube.com/watch?v=WAHa3y7NEsk&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=5"},
       { label: "Entropy: Thermodynamics - Second Law", url:"https://www.youtube.com/watch?v=QBd2zraOe2k"}, 
-        
+      ] 
   },
   {
-    course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪"
-    
+    course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
     resources: [{ label: "Density", url:"youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
                 { label: "Fortins Barometer", url:"https://www.youtube.com/watch?v=S4pUMNdSIYk"},
                 { label: "Variation of atmospheric pressure with altitude", url:"https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p"},
