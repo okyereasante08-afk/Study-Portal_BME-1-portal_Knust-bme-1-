@@ -65,7 +65,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
   "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
-  "BME_1E219D5DDC4E": "Beta Tester",
+  "BME_BETA1": "Beta Tester",
 };
 
 const COURSE_CREDITS = [
@@ -114,33 +114,68 @@ const TIMETABLE: { [key: string]: any[] } = {
 
 const SURVIVAL_KIT = [
   {
-    course: "MATH 151 — Linear Algebra", color: "#8b5cf6", emoji: "📐",
-    resources: [{ label: "Linear Algebra Full Playlist", url: "https://www.youtube.com/watch?v=VIhUX-8ZooM&list=PLInywrvFyvq4IE-nW-ikwkZ2v81n31HQX&t=214s" }]
+    course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
+    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" }]
+                { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i"},
+                { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl"},
   },
+
   {
-    course: "ME 161 — Basic Mechanics", color: "#f97316", emoji: "⚙️",
+    course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
     resources: [
-      { label: "RC Hibbeler Solved", url: "https://www.youtube.com/watch?v=09o0125cde8&list=PLWWf-r6pJvvXjhc2-uOzvFTqigm8o14g8" },
-      { label: "Basic Mechanics Playlist", url: "https://www.youtube.com/watch?v=FnudcA72olU&list=PLInywrvFyvq6FUfAigJ3157kg-nZ020fd&t=35s" },
+      { label: "Basic Electronics-KNUST(Maths Hub GH)", url:"https://www.youtube.com/playlist?list=PLldc0i2lkatVFhbnQRS-dOcI6xRdTJ0Lm"},
+      { label: "SemiConductors", url: "https://youtu.be/ErcH_OuCaNY?si=woPM9OXzL6NrihZe" },
+      { label: "Half-Wave Rectification", url: "https://youtu.be/CpcJxhFnmMo?si=8l5HO3BrsVDO3fgk" },
+      { label: "Full-Wave Rectification", url: "https://youtu.be/quyqtaKIr78?si=pMMeyYYVmKqkhHGg" },
+      { label: "Full-Wave Rectification (Demonstration)", url: "https://youtu.be/dNi_T0P5TLk?si=spqbtmaZ8CEkZyWk" },
+      { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
+      { label: "Solving Diode Circuits", url:"https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh"},
+      { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url:"https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL"},
+      { label: "", url:""},
     ]
   },
   {
-    course: "EE 151 — Applied Electricity", color: "#f59e0b", emoji: "⚡",
+    course: "BME 166 — Biochemistry", color: "#f59e0b", emoji: "⚕️",
     resources: [
-      { label: "Applied Electricity Playlist 1", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq7pFsDEDu2-n0f5UOhpqWBD" },
-      { label: "Applied Electricity Playlist 2", url: "https://www.youtube.com/watch?v=rE_0ejMU6yM&list=PLXePpKFSUW2abKgvj_hClQS1NK86SCHfy" },
+      { label: "Biochemistry (Ninja Nerd) Playlist ", url: "https://www.youtube.com/playlist?list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
+      { label: "Metabolism (Ninja Nerd) Playlist", url: "https://www.youtube.com/watch?v=4eLjRcHnMCk&list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
+      { label: "Drug Metabolism", url: "https://youtu.be/qvucMHUVZA4?si=6w3bg-OtR_dZxIt6"},
+      { label: "Pharmacokinetics simplified", url:"https://youtu.be/16wNysLC9Fs?si=GUyEDdHymiWSSvD"},
+      { label: "Fatty Acid Metabolism", url:"https://youtu.be/uYutpPY7xcw?si=OcIViUwwzDZLqNAh"},
     ]
   },
   {
-    course: "BME 161 — Cell Biology", color: "#22c55e", emoji: "🧬",
+    course: "ME 166 — Applied thermodynamics", color: "#22c55e", emoji: "⚙️",
     resources: [
-      { label: "Cell Structure & Function", url: "https://www.youtube.com/watch?v=XRwc89cGsy4&list=PPSV" },
-      { label: "Bioenergetics Playlist", url: "https://www.youtube.com/watch?v=luh2zg-dzBM&list=PL6-1ifYymxJYitIhsa4IrkHWncOicKpOy" },
-    ]
+      { label: "Engineering Thermodynamics I Online Course", url: "https://www.youtube.com/playlist?list=PLISIF5ACui17dQ5VbzxNu9QtMnfKb856n" },
+      { label: "First Law of Thermodynamics Open Systems 1(Control Volume Analysis)", url: "https://www.youtube.com/watch?v=VBdapBeycv4&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH" },
+      { label: "First Law of Thermodynamics Open Systems 2(Enthalpy)", url: "https://www.youtube.com/watch?v=ReOaRZA2eLo&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=2"},
+      { label: "Turbines, Throttles, Nozzles, Fans, and Heaters", url: "https://www.youtube.com/watch?v=WAHa3y7NEsk&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=5"},
+      { label: "Entropy: Thermodynamics - Second Law", url:"https://www.youtube.com/watch?v=QBd2zraOe2k"}, 
+        
   },
   {
-    course: "CHEM 151 — General Chemistry", color: "#06b6d4", emoji: "🧪",
-    resources: [{ label: "Class Notes & Resources", url: "https://drive.google.com/drive/folders/1Ep18Th1HDpxVCASB9Z7lZFMsX2yMlXDy?usp=sharing" }]
+    course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪"
+    
+    resources: [{ label: "Density", url:"youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
+                { label: "Fortins Barometer", url:"https://www.youtube.com/watch?v=S4pUMNdSIYk"},
+                { label: "Variation of atmospheric pressure with altitude", url:"https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p"},
+                { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url:"https://www.youtube.com/watch?v=xTAfyc06ZxQ"},
+                { label: "Bernoulli's Principle Demo: Levitated Balls", url:"https://www.youtube.com/watch?v=Ye3QPgDdJNg"},
+                { label: "Torricelli's Theorem -Explained", url:"https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU"},
+                { label: "Torricelli's Law in 2 minutes", url:"https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S"},
+                { label: "Torricelli's Theorem practice problems", url:"https://www.youtube.com/watch?v=046-DygKrhc"},
+                { label: "What is pitot tube? 3D Animation", url:"https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6"},
+                { label: "Pitot Static Tube Introduction & Example", url:"https://www.youtube.com/watch?v=VOMO7zsvHsM"},
+                { label: "Streamlines and Velocity", url:"https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_"},
+                { label: "Streamlines and Velocity 2", url:"https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn"},
+                { label: "Steady vs Unsteady Flow", url:"https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq"},
+                { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D"},
+                { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url:"https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa"},
+                { label: "Viscosity of Fluids& Velocity Gradient", url:"https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD"},
+                { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url:"https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k"},
+      
+      ]
   },
 ];
 
@@ -527,11 +562,7 @@ export default function Home() {
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
-    }
-    setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-    const punTimer = setInterval(() => setCurrentPun((p) => (p + 1) % BME_PUNS.length), 15000);
-    return () => clearInterval(punTimer);
-  }, []);
+ 
 
   // Timer tick
   useEffect(() => {
