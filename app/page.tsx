@@ -16,7 +16,7 @@ import {
 // ============================================================
 
 const ADMIN_IDS = ["22028883"];
-const GHOST_ID = "BME_1E219D5DDC4E";
+const GHOST_ID = "BME_BETA1";
 
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
@@ -65,7 +65,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
   "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
-  "BME_1E219D5DDC4E": "Beta Tester",
+  "BME_BETA1": "Beta Tester",
 };
 
 const COURSE_CREDITS = [
@@ -114,49 +114,74 @@ const TIMETABLE: { [key: string]: any[] } = {
 
 const SURVIVAL_KIT = [
   {
-    course: "MATH 151 — Linear Algebra", color: "#8b5cf6", emoji: "📐",
-    resources: [{ label: "Linear Algebra Full Playlist", url: "https://www.youtube.com/watch?v=VIhUX-8ZooM&list=PLInywrvFyvq4IE-nW-ikwkZ2v81n31HQX&t=214s" }]
+    course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
+    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
+                { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i"},
+                { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl"},
+                ]
   },
+
   {
-    course: "ME 161 — Basic Mechanics", color: "#f97316", emoji: "⚙️",
+    course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
     resources: [
-      { label: "RC Hibbeler Solved", url: "https://www.youtube.com/watch?v=09o0125cde8&list=PLWWf-r6pJvvXjhc2-uOzvFTqigm8o14g8" },
-      { label: "Basic Mechanics Playlist", url: "https://www.youtube.com/watch?v=FnudcA72olU&list=PLInywrvFyvq6FUfAigJ3157kg-nZ020fd&t=35s" },
+      { label: "Basic Electronics-KNUST(Maths Hub GH)", url:"https://www.youtube.com/playlist?list=PLldc0i2lkatVFhbnQRS-dOcI6xRdTJ0Lm"},
+      { label: "SemiConductors", url: "https://youtu.be/ErcH_OuCaNY?si=woPM9OXzL6NrihZe" },
+      { label: "Half-Wave Rectification", url: "https://youtu.be/CpcJxhFnmMo?si=8l5HO3BrsVDO3fgk" },
+      { label: "Full-Wave Rectification", url: "https://youtu.be/quyqtaKIr78?si=pMMeyYYVmKqkhHGg" },
+      { label: "Full-Wave Rectification (Demonstration)", url: "https://youtu.be/dNi_T0P5TLk?si=spqbtmaZ8CEkZyWk" },
+      { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
+      { label: "Solving Diode Circuits", url:"https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh"},
+      { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url:"https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL"},
+    
     ]
   },
   {
-    course: "EE 151 — Applied Electricity", color: "#f59e0b", emoji: "⚡",
+    course: "BME 166 — Biochemistry", color: "#f59e0b", emoji: "⚕️",
     resources: [
-      { label: "Applied Electricity Playlist 1", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq7pFsDEDu2-n0f5UOhpqWBD" },
-      { label: "Applied Electricity Playlist 2", url: "https://www.youtube.com/watch?v=rE_0ejMU6yM&list=PLXePpKFSUW2abKgvj_hClQS1NK86SCHfy" },
+      { label: "Biochemistry (Ninja Nerd) Playlist ", url: "https://www.youtube.com/playlist?list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
+      { label: "Metabolism (Ninja Nerd) Playlist", url: "https://www.youtube.com/watch?v=4eLjRcHnMCk&list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
+      { label: "Drug Metabolism", url: "https://youtu.be/qvucMHUVZA4?si=6w3bg-OtR_dZxIt6"},
+      { label: "Pharmacokinetics simplified", url:"https://youtu.be/16wNysLC9Fs?si=GUyEDdHymiWSSvD"},
+      { label: "Fatty Acid Metabolism", url:"https://youtu.be/uYutpPY7xcw?si=OcIViUwwzDZLqNAh"},
     ]
   },
   {
-    course: "BME 161 — Cell Biology", color: "#22c55e", emoji: "🧬",
+    course: "ME 166 — Applied thermodynamics", color: "#22c55e", emoji: "⚙️",
     resources: [
-      { label: "Cell Structure & Function", url: "https://www.youtube.com/watch?v=XRwc89cGsy4&list=PPSV" },
-      { label: "Bioenergetics Playlist", url: "https://www.youtube.com/watch?v=luh2zg-dzBM&list=PL6-1ifYymxJYitIhsa4IrkHWncOicKpOy" },
-    ]
+      { label: "Engineering Thermodynamics I Online Course", url: "https://www.youtube.com/playlist?list=PLISIF5ACui17dQ5VbzxNu9QtMnfKb856n" },
+      { label: "First Law of Thermodynamics Open Systems 1(Control Volume Analysis)", url: "https://www.youtube.com/watch?v=VBdapBeycv4&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH" },
+      { label: "First Law of Thermodynamics Open Systems 2(Enthalpy)", url: "https://www.youtube.com/watch?v=ReOaRZA2eLo&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=2"},
+      { label: "Turbines, Throttles, Nozzles, Fans, and Heaters", url: "https://www.youtube.com/watch?v=WAHa3y7NEsk&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=5"},
+      { label: "Entropy: Thermodynamics - Second Law", url:"https://www.youtube.com/watch?v=QBd2zraOe2k"}, 
+      ] 
   },
   {
-    course: "CHEM 151 — General Chemistry", color: "#06b6d4", emoji: "🧪",
-    resources: [{ label: "Class Notes & Resources", url: "https://drive.google.com/drive/folders/1Ep18Th1HDpxVCASB9Z7lZFMsX2yMlXDy?usp=sharing" }]
+    course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
+    resources: [{ label: "Density", url:"youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
+                { label: "Fortins Barometer", url:"https://www.youtube.com/watch?v=S4pUMNdSIYk"},
+                { label: "Variation of atmospheric pressure with altitude", url:"https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p"},
+                { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url:"https://www.youtube.com/watch?v=xTAfyc06ZxQ"},
+                { label: "Bernoulli's Principle Demo: Levitated Balls", url:"https://www.youtube.com/watch?v=Ye3QPgDdJNg"},
+                { label: "Torricelli's Theorem -Explained", url:"https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU"},
+                { label: "Torricelli's Law in 2 minutes", url:"https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S"},
+                { label: "Torricelli's Theorem practice problems", url:"https://www.youtube.com/watch?v=046-DygKrhc"},
+                { label: "What is pitot tube? 3D Animation", url:"https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6"},
+                { label: "Pitot Static Tube Introduction & Example", url:"https://www.youtube.com/watch?v=VOMO7zsvHsM"},
+                { label: "Streamlines and Velocity", url:"https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_"},
+                { label: "Streamlines and Velocity 2", url:"https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn"},
+                { label: "Steady vs Unsteady Flow", url:"https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq"},
+                { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D"},
+                { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url:"https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa"},
+                { label: "Viscosity of Fluids& Velocity Gradient", url:"https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD"},
+                { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url:"https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k"},
+      
+      ]
   },
 ];
 
-const BME_PUNS = [
-  "Ei, the trotro of knowledge has left. Were you on board?",
-  "KNUST: Knowledge Never Stops Unless Tired.",
-  "PB212 lecture at 8am? My body is here but my soul is at the hostel.",
-  "CHEM 151 assignment due tomorrow. It's 11pm. God is faithful.",
-  "If stress was creditworthy, I'd have a First Class by now.",
-  "Asante is the GOAT. No debate.",
-  "Passed Applied Electricity. My ancestors had to intervene personally.",
-];
 
 const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
 const MID_SEM_START = new Date("2026-07-06T00:00:00");
-const MID_SEM_END = new Date("2026-07-10T00:00:00");
 const EXAMS_START = new Date("2026-08-17T00:00:00");
 const PORTAL_VERSION = "2.1.0";
 
@@ -175,7 +200,7 @@ const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
     <div
       style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
     >
-      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Instrument Serif', serif" }}>{initials}</span>
+      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
 };
@@ -515,7 +540,6 @@ export default function Home() {
   const [daysToExams, setDaysToExams] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
-  const [currentPun, setCurrentPun] = useState(0);
   const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -541,16 +565,17 @@ export default function Home() {
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       const savedAnn = localStorage.getItem("bme-announcements");
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
-      const savedFiles = localStorage.getItem("bme-files");
+ const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
-    }
+    } // Closes the 'if (typeof window !== "undefined")' block
+
+    // Restored: Semester countdown
     setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     setDaysToMidSem(Math.ceil((MID_SEM_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     setDaysToExams(Math.ceil((EXAMS_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-    const punTimer = setInterval(() => setCurrentPun((p) => (p + 1) % BME_PUNS.length), 15000);
-    return () => clearInterval(punTimer);
-  }, []);
+  }, []); // Closes the useEffect hook
 
+ 
   // Timer tick
   useEffect(() => {
     if (timerActive) {
@@ -695,16 +720,22 @@ export default function Home() {
   })();
   const focusSessionsToday = timerSessions;
 
-  if (!mounted) return null;
+  if (!mounted) return (
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontSize: 13, color: "#f0ebe3", fontWeight: 800 }}>BME</span>
+      </div>
+    </div>
+  );
 
   // ============================================================
   // LOGIN SCREEN
   // ============================================================
   if (!isLoggedIn) {
     return (
-      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
+      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
           * { box-sizing: border-box; }
           input::placeholder { color: #c9b89a; }
           input:focus { border-color: #8b7355 !important; }
@@ -714,9 +745,9 @@ export default function Home() {
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
             <div style={{ width: 64, height: 64, borderRadius: 20, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
-              <span style={{ fontSize: 22, fontFamily: "'Instrument Serif', serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
+              <span style={{ fontSize: 22, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
             </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Instrument Serif', serif" }}>Portal Access</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
             <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
 
@@ -868,7 +899,7 @@ export default function Home() {
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Instrument Serif', serif" }}>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -983,26 +1014,15 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Pun ticker */}
-      <div style={{ ...S.card, padding: "12px 16px", display: "flex", alignItems: "center", gap: 10 }}>
-        <Coffee size={14} color="#c9b89a" />
-        <AnimatePresence mode="wait">
-          <motion.p key={currentPun} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.3 }}
-            style={{ flex: 1, fontSize: 12, color: "#a8967a", fontStyle: "italic", margin: 0 }}>
-            {BME_PUNS[currentPun]}
-          </motion.p>
-        </AnimatePresence>
-        <button onClick={() => setCurrentPun((p) => (p + 1) % BME_PUNS.length)} style={{ background: "none", border: "none", cursor: "pointer", color: "#c9b89a", fontSize: 16, padding: "0 4px" }}>›</button>
-      </div>
+   
     </div>
   );
 
   const renderSchedule = () => {
-    // ── Grid timetable data ──
     const TIME_SLOTS = ["08:00","09:00","10:30","11:30","13:00","14:00","15:00","16:00"];
     const GRID_DAYS = ["Mon","Tue","Wed","Thu","Fri"];
     const GRID_DAY_MAP: Record<string, string> = { Mon:"Monday",Tue:"Tuesday",Wed:"Wednesday",Thu:"Thursday",Fri:"Friday" };
-    const GRID_COURSE_STYLES: Record<string, { bg: string; text: string }> = {
+    const GRID_STYLES: Record<string, { bg: string; text: string }> = {
       "PHY 154":    { bg: "#E6F1FB", text: "#0C447C" },
       "ENGL 158":   { bg: "#FFF3E0", text: "#633806" },
       "SOC 152":    { bg: "#FBEAF0", text: "#72243E" },
@@ -1012,21 +1032,19 @@ export default function Home() {
       "MATH 152 B": { bg: "#E1F5EE", text: "#085041" },
       "ME 166":     { bg: "#FAECE7", text: "#712B13" },
     };
-
-    const getGridCell = (dayKey: string, slot: string) => {
-      const classes = TIMETABLE[GRID_DAY_MAP[dayKey]] || [];
-      return classes.find((cls) => cls.time.startsWith(slot)) || null;
-    };
+    const todayColIdx = new Date().getDay() - 1; // 0=Mon
+    const getCell = (dayKey: string, slot: string) =>
+      (TIMETABLE[GRID_DAY_MAP[dayKey]] || []).find((c) => c.time.startsWith(slot)) || null;
 
     const GridView = () => (
       <div style={{ overflowX: "auto", borderRadius: 16, border: "1px solid #ece8e0" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480, fontSize: 12 }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480 }}>
           <thead>
             <tr>
               <th style={{ padding: "8px 10px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: "#a8967a", fontWeight: 600, fontSize: 11, textAlign: "left", width: 52 }}>Time</th>
-              {GRID_DAYS.map((d) => (
-                <th key={d} style={{ padding: "8px 6px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: d === GRID_DAYS[new Date().getDay() - 1] ? "#2d2416" : "#a8967a", fontWeight: d === GRID_DAYS[new Date().getDay() - 1] ? 800 : 600, fontSize: 12, textAlign: "center" }}>
-                  {d} {d === GRID_DAYS[new Date().getDay() - 1] && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", verticalAlign: "middle", marginLeft: 3 }} />}
+              {GRID_DAYS.map((d, i) => (
+                <th key={d} style={{ padding: "8px 6px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: i === todayColIdx ? "#2d2416" : "#a8967a", fontWeight: i === todayColIdx ? 800 : 600, fontSize: 12, textAlign: "center" }}>
+                  {d}{i === todayColIdx && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", verticalAlign: "middle", marginLeft: 3 }} />}
                 </th>
               ))}
             </tr>
@@ -1036,8 +1054,8 @@ export default function Home() {
               <tr key={slot}>
                 <td style={{ padding: "4px 8px", borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", color: "#a8967a", fontSize: 10, fontWeight: 600, background: "#faf8f4", whiteSpace: "nowrap", verticalAlign: "middle" }}>{slot}</td>
                 {GRID_DAYS.map((d) => {
-                  const cls = getGridCell(d, slot);
-                  const st = cls ? (GRID_COURSE_STYLES[cls.course] || { bg: "#f7f3ed", text: "#6b5438" }) : null;
+                  const cls = getCell(d, slot);
+                  const st = cls ? (GRID_STYLES[cls.course] || { bg: "#f7f3ed", text: "#6b5438" }) : null;
                   return (
                     <td key={d} style={{ padding: 4, borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", height: 50, verticalAlign: "top", background: cls ? st!.bg : "transparent" }}>
                       {cls && (
@@ -1053,9 +1071,8 @@ export default function Home() {
             ))}
           </tbody>
         </table>
-        {/* Legend */}
-        <div style={{ padding: "12px 14px", borderTop: "1px solid #ece8e0", display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {Object.entries(GRID_COURSE_STYLES).filter(([k]) => !k.includes(" B")).map(([code, st]) => (
+        <div style={{ padding: "10px 14px", borderTop: "1px solid #ece8e0", display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {Object.entries(GRID_STYLES).filter(([k]) => !k.includes(" B")).map(([code, st]) => (
             <span key={code} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: "#6b5438" }}>
               <span style={{ width: 8, height: 8, borderRadius: 2, background: st.text, display: "inline-block", opacity: 0.75 }} />
               {code.replace(" A", "")}
@@ -1068,13 +1085,13 @@ export default function Home() {
     return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0 }}>Timetable</h2>
-        <div style={{ display: "flex", gap: 5, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
+        <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
           {(["Today", "Week", "Grid"] as const).map((v) => {
-            const viewKey = v.toLowerCase() as "today" | "week" | "grid";
-            const active = scheduleView === viewKey;
+            const key = v.toLowerCase() as "today" | "week" | "grid";
+            const active = scheduleView === key;
             return (
-              <button key={v} onClick={() => { setScheduleView(viewKey); setShowWeekView(viewKey === "week"); }}
+              <button key={v} onClick={() => { setScheduleView(key); setShowWeekView(key === "week"); }}
                 style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? "#2d2416" : "transparent", color: active ? "#f0ebe3" : "#8b7355", transition: "all 0.15s" }}>
                 {v}
               </button>
@@ -1152,7 +1169,7 @@ export default function Home() {
         })
       )}
     </div>
-  );
+    );
   };
 
   const renderProgress = () => {
@@ -1160,7 +1177,7 @@ export default function Home() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Instrument Serif', serif" }}>Progress</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
           <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance & study timer</p>
         </div>
 
@@ -1241,16 +1258,16 @@ export default function Home() {
         {/* Semester milestones */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
-            { label: "Mid-sems", sub: "6–10 Jul 2026", days: daysToMidSem, color: "#f59e0b", past: daysToMidSem <= 0 },
-            { label: "Exams start", sub: "Aug 17, 2026", days: daysToExams, color: "#ef4444", past: daysToExams <= 0 },
-            { label: "End of sem", sub: "Sep 4, 2026", days: daysToEnd, color: "#22c55e", past: daysToEnd <= 0 },
+            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
+            { label: "Exams", sub: "Aug 17", days: daysToExams, color: "#ef4444" },
+            { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
           ].map((m) => (
-            <div key={m.label} style={{ ...S.card, padding: "16px 12px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: m.past ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
-                {m.past ? "✓" : m.days}
+            <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+                {m.days <= 0 ? "✓" : m.days}
               </p>
               <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
-              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.past ? "Done" : m.sub}</p>
+              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
             </div>
           ))}
         </div>
@@ -1263,7 +1280,7 @@ export default function Home() {
       {/* Profile card */}
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
         <Avatar name={studentName} size={72} />
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Instrument Serif', serif" }}>{studentName}</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
         {isAdmin && (
           <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
@@ -1322,7 +1339,7 @@ export default function Home() {
   return (
     <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&display=swap');;
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
         ::-webkit-scrollbar { width: 0; }
@@ -1417,8 +1434,8 @@ export default function Home() {
             {/* Scrollable pill tabs */}
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20,  cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
+             <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
                   {React.cloneElement(tab.icon, { size: 14 })}
                   {tab.label}
                 </button>
