@@ -740,6 +740,23 @@ export default function StudentPortal() {
   const [files, setFiles] = useState<any[]>([]);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [avatarDataUrl, setAvatarDataUrl] = useState<string>("");
+
+
+  // ====== 1. AVATAR STATE & AUTO-HYDRATION HOOK ======
+  const [avatarDataUrl, setAvatarDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isLoggedIn && studentID) {
+      try {
+        const savedAvatar = localStorage.getItem(`bme_avatar_${studentID}`);
+        if (savedAvatar) setAvatarDataUrl(savedAvatar);
+      } catch (e) {
+        console.error("Failed to read from storage cache:", e);
+      }
+    } else if (!isLoggedIn) {
+      setAvatarDataUrl(null);
+    }
+  }, [isLoggedIn, studentID]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -906,6 +923,32 @@ const handleAvatarUpload = (file: File) => {
     }
     return null;
   }, [currentTime]);
+
+  // ====== 2. THE MISSING HANDLERS WRITTEN FOR THE COMPILER ======
+  const handleAvatarUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64String = e.target?.result as string;
+      setAvatarDataUrl(base64String);
+
+      try {
+        localStorage.setItem(`bme_avatar_${studentID}`, base64String);
+      } catch (error) {
+        console.error("Storage quota exceeded:", error);
+        alert("Storage limit hit. Your profile photo will reset upon refreshing the tab.");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAvatarRemove = () => {
+    setAvatarDataUrl(null);
+    try {
+      localStorage.removeItem(`bme_avatar_${studentID}`);
+    } catch (error) {
+      console.error("Error removing avatar:", error);
+    }
+  };
 
   // ── 3. EARLY RETURN FOR LOGIN SCREEN (SAFE) ────────────────────────────────
   if (!isLoggedIn) {
