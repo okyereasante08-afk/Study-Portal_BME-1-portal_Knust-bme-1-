@@ -1508,9 +1508,16 @@ export default function Home() {
           </div>
         </main>
       </div>
+{/* Copyright Footer Links */}
+<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '12px', color: '#a8967a' }}>
+  <div className="brand-line">
+    <span>Built by</span> <a className="brand" style={{ color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer">Asante Inc.</a>
+  </div>
+  <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
+</div>
 
-      {/* Chatbot */}
-      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+{/* Chatbot */}
+{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
       {/* Modals */}
       <AnimatePresence>
