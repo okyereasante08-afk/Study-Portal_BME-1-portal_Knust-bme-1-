@@ -1228,95 +1228,122 @@ export default function Home() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
         ::-webkit-scrollbar { width: 0; }
+        .syne { font-family: 'Syne', sans-serif !important; }
       `}</style>
 
-      {/* DESKTOP LAYOUT */}
-      <div style={{ display: "none" }} className="md-layout">
-        {/* handled below via media query approach in inline — we use a responsive wrapper */}
-      </div>
+      {/* Full-bleed flex layout */}
+      <div style={{ display: "flex", minHeight: "100vh" }}>
 
-      {/* Responsive wrapper */}
-      <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", minHeight: "100vh" }}>
-
-        {/* DESKTOP SIDEBAR — hidden on mobile via CSS */}
-        <aside style={{ width: 220, flexShrink: 0, padding: "24px 0", display: "flex", flexDirection: "column", borderRight: "1px solid #ece8e0", background: "#faf8f4", position: "sticky", top: 0, height: "100vh" }}
+        {/* DESKTOP SIDEBAR */}
+        <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: "1px solid #ece8e0", background: "#faf8f4", position: "sticky", top: 0, height: "100vh" }}
           className="desktop-sidebar">
-          <div style={{ padding: "0 16px 24px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 13, fontFamily: "'Instrument Serif', serif", color: "#f0ebe3", fontWeight: 700 }}>BME</span>
+          {/* Logo */}
+          <div style={{ padding: "0 20px 28px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 14, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
               </div>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 800, color: "#1a1208", margin: 0 }}>BME1 Portal</p>
-                <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>Semester 2</p>
+                <p style={{ fontSize: 14, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>BME1 Portal</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>KNUST · Semester 2</p>
               </div>
             </div>
           </div>
 
-          <nav style={{ flex: 1, padding: "0 10px" }}>
+          {/* Nav */}
+          <nav style={{ flex: 1, padding: "0 12px" }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
             {tabs.map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, border: "none", cursor: "pointer", marginBottom: 2, background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? "#1a1208" : "#8b7355", fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, boxShadow: activeTab === tab.id ? "0 2px 8px rgba(0,0,0,0.06)" : "none", transition: "all 0.15s", textAlign: "left" }}>
-                <span style={{ opacity: activeTab === tab.id ? 1 : 0.6 }}>{tab.icon}</span>
+                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? "#1a1208" : "#8b7355", fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
+                <span style={{ opacity: activeTab === tab.id ? 1 : 0.55, color: activeTab === tab.id ? "#2d2416" : "#a8967a" }}>{tab.icon}</span>
                 {tab.label}
               </button>
             ))}
+
+            {/* Extra links in sidebar */}
+            <div style={{ marginTop: 20, borderTop: "1px solid #ece8e0", paddingTop: 16 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
+              {[
+                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: "#8b5cf6" },
+                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: "#3b82f6" },
+                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: "#f97316", badge: announcements.length },
+                { label: "Orion Hub", icon: <Star size={15} />, action: () => {}, href: "/orion", color: "#6366f1" },
+              ].map((item) => (
+                item.href ? (
+                  <Link key={item.label} href={item.href}
+                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, textDecoration: "none", color: "#6b5438", fontSize: 13, fontWeight: 500, marginBottom: 2, position: "relative" }}>
+                    <span style={{ color: item.color }}>{item.icon}</span>{item.label}
+                  </Link>
+                ) : (
+                  <button key={item.label} onClick={item.action}
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: "#6b5438", fontSize: 13, fontWeight: 500, fontFamily: "'Plus Jakarta Sans', sans-serif", textAlign: "left", marginBottom: 2, position: "relative" }}>
+                    <span style={{ color: item.color }}>{item.icon}</span>{item.label}
+                    {item.badge && item.badge > 0 ? <span style={{ marginLeft: "auto", minWidth: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>{item.badge}</span> : null}
+                  </button>
+                )
+              ))}
+            </div>
           </nav>
 
-          <div style={{ padding: "16px 16px 24px", borderTop: "1px solid #ece8e0" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {/* User card at bottom */}
+          <div style={{ padding: "16px 20px 20px", borderTop: "1px solid #ece8e0" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: "#fff", border: "1px solid #ece8e0" }}>
               <Avatar name={studentName} size={36} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
                 <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{studentID}</p>
               </div>
-              <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
-                <LogOut size={14} color="#c9b89a" />
+              <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
+                <LogOut size={15} color="#c9b89a" />
               </button>
             </div>
           </div>
         </aside>
 
-        {/* MAIN CONTENT */}
-        <main style={{ flex: 1, minWidth: 0, padding: "16px 16px 80px", overflowY: "auto" }}>
-          {/* Mobile header */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, paddingTop: 4 }} className="mobile-header">
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 9, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 11, fontFamily: "'Instrument Serif', serif", color: "#f0ebe3", fontWeight: 700 }}>BME</span>
+        {/* MAIN CONTENT — full width, scrolls independently */}
+        <main style={{ flex: 1, minWidth: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
+          {/* Mobile top header */}
+          <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50, background: "#f7f3ed", borderBottom: "1px solid #ece8e0", padding: "0 16px" }}>
+            {/* Top row: logo + avatar */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 10, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800 }}>BME</span>
+                </div>
+                <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#1a1208" }}>BME Portal</span>
+              <Avatar name={studentName} size={32} />
             </div>
-            <Avatar name={studentName} size={34} />
+            {/* Scrollable pill tabs */}
+            <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
+              {tabs.map((tab) => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, border: "none", cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
+                  {React.cloneElement(tab.icon, { size: 14 })}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Tab content with animated transition */}
-          <AnimatePresence mode="wait">
-            <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
-              {tabContent[activeTab]}
-            </motion.div>
-          </AnimatePresence>
+          {/* Page content with generous desktop padding */}
+          <div style={{ flex: 1, padding: "24px 20px 40px" }} className="content-area">
+            <AnimatePresence mode="wait">
+              <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
+                {tabContent[activeTab]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </main>
       </div>
-
-      {/* MOBILE BOTTOM NAV */}
-      <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: "1px solid #ece8e0", display: "flex", zIndex: 60, paddingBottom: "env(safe-area-inset-bottom, 0px)" }} className="mobile-nav">
-        {tabs.map((tab) => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "10px 0 8px", border: "none", background: "none", cursor: "pointer", color: activeTab === tab.id ? "#2d2416" : "#c9b89a", transition: "color 0.15s" }}>
-            <span style={{ transition: "transform 0.15s", transform: activeTab === tab.id ? "scale(1.1)" : "scale(1)" }}>
-              {React.cloneElement(tab.icon, { size: 22, strokeWidth: activeTab === tab.id ? 2.5 : 1.8 })}
-            </span>
-            <span style={{ fontSize: 10, fontWeight: activeTab === tab.id ? 700 : 500 }}>{tab.label}</span>
-          </button>
-        ))}
-      </nav>
 
       {/* Chatbot */}
       {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
@@ -1331,13 +1358,15 @@ export default function Home() {
       {/* Responsive CSS */}
       <style>{`
         .desktop-sidebar { display: none !important; }
-        .mobile-header { display: flex !important; }
-        .mobile-nav { display: flex !important; }
+        .mobile-header { display: block !important; }
+        .content-area { padding: 20px 16px 36px !important; }
         @media (min-width: 768px) {
           .desktop-sidebar { display: flex !important; }
           .mobile-header { display: none !important; }
-          .mobile-nav { display: none !important; }
-          main { padding-bottom: 24px !important; }
+          .content-area { padding: 36px 48px 48px !important; }
+        }
+        @media (min-width: 1200px) {
+          .content-area { padding: 40px 72px 56px !important; }
         }
       `}</style>
     </div>
