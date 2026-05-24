@@ -573,7 +573,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
 
   // Dashboard state
-  const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "profile">("home");
+  const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "focus" | "profile">("home");
   const [showWeekView, setShowWeekView] = useState(false);
   const [scheduleView, setScheduleView] = useState<"today" | "week" | "grid">("today");
   const [showCWAModal, setShowCWAModal] = useState(false);
@@ -599,6 +599,14 @@ export default function Home() {
   const [timerSessions, setTimerSessions] = useState(0);
   const [focusMins, setFocusMins] = useState(25);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Lofi player state
+  const [lofiPlaying, setLofiPlaying] = useState(false);
+  const [lofiVolume, setLofiVolume] = useState(0.6);
+  const [lofiChannel, setLofiChannel] = useState("lofi-hiphop");
+  const [lofiCustomUrl, setLofiCustomUrl] = useState("");
+  const [lofiShowCustom, setLofiShowCustom] = useState(false);
+  const lofiIframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -1131,7 +1139,7 @@ export default function Home() {
           {[
             { icon: <Calculator size={20} color="#8b5cf6" />, label: "CWA calc", sub: "Project your grade", bg: "#f5f3ff", action: () => setShowCWAModal(true) },
             { icon: <BookOpen size={20} color="#3b82f6" />, label: "Survival kit", sub: "Course resources", bg: "#eff6ff", action: () => setShowSurvivalKit(true) },
-            { icon: <MessageCircle size={20} color="#22c55e" />, label: "BME assistant", sub: "Ask anything", bg: "#f0fdf4", action: () => { const btn = document.querySelector('[data-chatbot-toggle]') as HTMLButtonElement; btn?.click(); } },
+            { icon: <Zap size={20} color="#f59e0b" />, label: "Focus Studio", sub: "Timer · Lofi · Deep work", bg: "#fffbeb", action: () => setActiveTab("focus") },
             { icon: <Bell size={20} color="#f97316" />, label: "Updates", sub: "Announcements", bg: "#fff7ed", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
           ].map((item) => (
             <button key={item.label} onClick={item.action}
@@ -1344,7 +1352,7 @@ export default function Home() {
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ paddingBottom: 4 }}>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
-          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance & study timer</p>
+          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance overview</p>
         </div>
 
         {/* Attendance summary */}
@@ -1383,45 +1391,248 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Study timer */}
-        <div style={S.card}>
-          <div style={{ padding: "16px 18px 14px" }}>
-            <h3 style={{ ...S.sectionTitle, marginBottom: 4 }}>Focus timer</h3>
-            <p style={{ fontSize: 12, color: "#a8967a", margin: "0 0 16px" }}>
-              {focusMins}min focus · {Math.round(focusMins / 5)}min break · {timerSessions} sessions today
-            </p>
-            <div style={{ textAlign: "center", marginBottom: 16 }}>
-              <p style={{ fontSize: 11, color: "#a8967a", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
+        {/* Semester milestones */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+          {[
+            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
+            { label: "Exams", sub: "Aug 17", days: daysToExams, color: "#ef4444" },
+            { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
+          ].map((m) => (
+            <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+                {m.days <= 0 ? "✓" : m.days}
               </p>
-              <p style={{ fontSize: 56, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "monospace", letterSpacing: 2, lineHeight: 1 }}>
+              <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
+              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderFocus = () => {
+    // ── Lofi stream catalogue ─────────────────────────────────────────────────
+    const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; src: string }[] = [
+      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",    src: "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&controls=1" },
+      { id: "lofi-jazz",    label: "Jazz Café",        emoji: "🎷", tag: "jazz",     src: "https://www.youtube.com/embed/HuFYqnbVbzY?autoplay=1&controls=1" },
+      { id: "lofi-jazz2",   label: "Jazz & Bossa",     emoji: "🎺", tag: "jazz",     src: "https://www.youtube.com/embed/4xDzrJKXOOY?autoplay=1&controls=1" },
+      { id: "lofi-pop",     label: "Lofi Pop Vibes",   emoji: "🌸", tag: "pop",      src: "https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&controls=1" },
+      { id: "lofi-study",   label: "Study Beats",      emoji: "📚", tag: "study",    src: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&controls=1" },
+      { id: "lofi-sleep",   label: "Sleepy Beats",     emoji: "🌙", tag: "ambient",  src: "https://www.youtube.com/embed/rUxyKA_-grg?autoplay=1&controls=1" },
+      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient",  src: "https://www.youtube.com/embed/9Q634rbsypE?autoplay=1&controls=1" },
+      { id: "lofi-rnb",     label: "R&B Lofi",         emoji: "🎶", tag: "r&b",      src: "https://www.youtube.com/embed/kgx4WGK0oNU?autoplay=1&controls=1" },
+      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",   src: "" },
+    ];
+    const TAG_COLORS: Record<string, { bg: string; text: string }> = {
+      chill:   { bg: "#e0f2fe", text: "#075985" },
+      jazz:    { bg: "#fef9c3", text: "#78350f" },
+      pop:     { bg: "#fce7f3", text: "#831843" },
+      study:   { bg: "#dcfce7", text: "#14532d" },
+      ambient: { bg: "#ede9fe", text: "#4c1d95" },
+      "r&b":   { bg: "#ffedd5", text: "#7c2d12" },
+      custom:  { bg: "#f1f5f9", text: "#334155" },
+    };
+
+    const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
+    const embedSrc = lofiChannel === "custom"
+      ? (() => {
+          const u = lofiCustomUrl.trim();
+          if (!u) return "";
+          // Convert youtube watch URLs to embed
+          const ytMatch = u.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+          if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&controls=1`;
+          return u; // pass through as-is for non-YT links
+        })()
+      : activeStation.src;
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Header */}
+        <div style={{ paddingBottom: 4 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Focus Studio</h2>
+          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Timer · Lofi · Deep work</p>
+        </div>
+
+        {/* ── TIMER CARD ─────────────────────────────────────────────────── */}
+        <div style={{ ...S.card, background: timerActive && timerMode === "focus" ? "#1e1810" : timerActive && timerMode === "break" ? "#052e16" : "#fff", transition: "background 0.6s ease" }}>
+          <div style={{ padding: "20px 20px 18px" }}>
+            {/* Mode label */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {timerActive && (
+                  <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.4 }}
+                    style={{ width: 7, height: 7, borderRadius: "50%", background: timerMode === "focus" ? "#f59e0b" : "#22c55e" }} />
+                )}
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase",
+                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : "#a8967a" }}>
+                  {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
+                </span>
+              </div>
+              <span style={{ fontSize: 11, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 600 }}>
+                {timerSessions} sessions today
+              </span>
+            </div>
+
+            {/* Clock face */}
+            <div style={{ textAlign: "center", marginBottom: 20 }}>
+              <p style={{ fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "monospace",
+                color: timerActive ? (timerMode === "focus" ? "#f0ebe3" : "#86efac") : "#1a1208" }}>
                 {fmtTime(timerSeconds)}
               </p>
             </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 16 }}>
-              <button onClick={() => { if (!timerActive) { setTimerSeconds(focusMins * 60); setTimerMode("focus"); } setTimerActive((a) => !a); }}
-                style={{ width: 48, height: 48, borderRadius: 24, border: "none", background: "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                {timerActive ? <span style={{ width: 14, height: 14, borderLeft: "4px solid #f0ebe3", borderRight: "4px solid #f0ebe3", display: "inline-block" }} /> : <Play size={18} color="#f0ebe3" fill="#f0ebe3" />}
+
+            {/* Controls */}
+            <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 20 }}>
+              {/* Reset */}
+              <button onClick={() => { setTimerActive(false); setTimerSeconds(focusMins * 60); setTimerMode("focus"); }}
+                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 16, color: timerActive ? "#6b5438" : "#c9b89a" }}>↺</span>
+              </button>
+              {/* Play/Pause */}
+              <button onClick={() => { if (!timerActive) { setTimerSeconds(timerSeconds > 0 ? timerSeconds : focusMins * 60); setTimerMode(timerMode); } setTimerActive((a) => !a); }}
+                style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
+                {timerActive
+                  ? <span style={{ width: 16, height: 16, borderLeft: "5px solid #1a1208", borderRight: "5px solid #1a1208", display: "inline-block" }} />
+                  : <Play size={20} color="#f0ebe3" fill="#f0ebe3" />}
+              </button>
+              {/* Skip to break/focus */}
+              <button onClick={() => { const next = timerMode === "focus" ? "break" : "focus"; setTimerMode(next); setTimerSeconds(next === "break" ? Math.round(focusMins / 5) * 60 : focusMins * 60); if (next === "focus") setTimerSessions(s => s + 1); }}
+                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 700 }}>⏭</span>
               </button>
             </div>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ ...S.label }}>Focus duration</span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#2d2416" }}>
+
+            {/* Duration slider */}
+            <div style={{ padding: "14px 0 0", borderTop: `1px solid ${timerActive ? "#2a2010" : "#f0ebe3"}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: timerActive ? "#6b5438" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>Focus duration</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: timerActive ? "#f0ebe3" : "#2d2416" }}>
                   {focusMins >= 60 ? `${Math.floor(focusMins / 60)}h${focusMins % 60 > 0 ? ` ${focusMins % 60}m` : ""}` : `${focusMins}m`}
                 </span>
               </div>
               <input type="range" min={20} max={120} step={5} value={focusMins}
                 onChange={(e) => { const v = parseInt(e.target.value); setFocusMins(v); if (!timerActive) setTimerSeconds(v * 60); }}
-                style={{ width: "100%", accentColor: "#2d2416", cursor: "pointer", height: 6, borderRadius: 3 }} />
+                style={{ width: "100%", accentColor: "#f59e0b", cursor: "pointer", height: 5, borderRadius: 3 }} />
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-                {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => <span key={l} style={{ fontSize: 9, color: "#c9b89a" }}>{l}</span>)}
+                {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => (
+                  <span key={l} style={{ fontSize: 9, color: timerActive ? "#4a3a28" : "#c9b89a" }}>{l}</span>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Semester milestones */}
+        {/* ── LOFI PLAYER CARD ──────────────────────────────────────────────── */}
+        <div style={S.card}>
+          {/* Header row */}
+          <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              <h3 style={{ ...S.sectionTitle, margin: "0 0 2px" }}>Lofi Mode</h3>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>
+                {lofiPlaying ? `▶ Playing — ${activeStation.label}` : "Pick a station and press play"}
+              </p>
+            </div>
+            {/* Big play/stop toggle */}
+            <button
+              onClick={() => setLofiPlaying(p => !p)}
+              style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
+                background: lofiPlaying ? "#fef2f2" : "#2d2416",
+                color: lofiPlaying ? "#ef4444" : "#f0ebe3",
+                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
+              {lofiPlaying ? "⏹ Stop" : "▶ Play"}
+            </button>
+          </div>
+
+          {/* Station grid */}
+          <div style={{ padding: "0 14px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {LOFI_STATIONS.filter(s => s.id !== "custom").map(station => {
+              const active = lofiChannel === station.id;
+              const tagStyle = TAG_COLORS[station.tag] ?? TAG_COLORS.custom;
+              return (
+                <button key={station.id}
+                  onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
+                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
+                    border: active ? "2px solid #2d2416" : "1.5px solid #ece8e0",
+                    background: active ? "#faf6f0" : "#fff",
+                    boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none",
+                    transition: "all 0.15s" }}>
+                  <span style={{ fontSize: 22, lineHeight: 1 }}>{station.emoji}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 6, ...tagStyle }}>{station.tag}</span>
+                  </div>
+                  {active && lofiPlaying && (
+                    <div style={{ display: "flex", gap: 2, alignItems: "flex-end", height: 16, flexShrink: 0 }}>
+                      {[1, 2, 3].map((i) => (
+                        <motion.div key={i}
+                          animate={{ height: ["40%", "100%", "40%"] }}
+                          transition={{ repeat: Infinity, duration: 0.7, delay: i * 0.15, ease: "easeInOut" }}
+                          style={{ width: 3, background: "#2d2416", borderRadius: 2 }} />
+                      ))}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Custom link row */}
+          <div style={{ padding: "0 14px 14px" }}>
+            <button
+              onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
+              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
+                border: lofiChannel === "custom" ? "2px solid #2d2416" : "1.5px dashed #d4c7b4",
+                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s" }}>
+              <span style={{ fontSize: 20 }}>🔗</span>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: 0 }}>Custom Link</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>YouTube, podcast, or any stream</p>
+              </div>
+            </button>
+            {(lofiChannel === "custom" || lofiShowCustom) && (
+              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+                <input
+                  type="text"
+                  placeholder="Paste YouTube or stream URL…"
+                  value={lofiCustomUrl}
+                  onChange={e => setLofiCustomUrl(e.target.value)}
+                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 12, outline: "none", color: "#1a1208", background: "#fff" }}
+                />
+                <button
+                  onClick={() => { setLofiChannel("custom"); if (lofiCustomUrl.trim()) setLofiPlaying(true); }}
+                  style={{ padding: "10px 16px", borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+                  Load
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Embedded player — hidden iframe approach, shows when playing */}
+          {lofiPlaying && embedSrc && (
+            <div style={{ padding: "0 14px 14px" }}>
+              <div style={{ borderRadius: 14, overflow: "hidden", border: "1px solid #ece8e0", position: "relative" }}>
+                <iframe
+                  ref={lofiIframeRef}
+                  key={embedSrc} // remount on src change to force autoplay
+                  src={embedSrc}
+                  width="100%"
+                  height="180"
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  style={{ display: "block", background: "#000" }}
+                  title="Lofi Stream"
+                />
+              </div>
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
+                Audio continues while you switch tabs · Allow autoplay if prompted
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* ── SEMESTER MILESTONES ────────────────────────────────────────────── */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
             { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
@@ -1494,11 +1705,12 @@ export default function Home() {
   );
 
   // Tab content map
-  const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), profile: renderProfile() };
+  const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
   const tabs = [
     { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
     { id: "schedule", label: "Timetable", icon: <Calendar size={20} /> },
     { id: "progress", label: "Progress", icon: <BarChart2 size={20} /> },
+    { id: "focus", label: "Focus", icon: <Zap size={20} /> },
     { id: "profile", label: "Profile", icon: <User size={20} /> },
   ];
 
