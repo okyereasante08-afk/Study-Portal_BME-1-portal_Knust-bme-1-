@@ -115,14 +115,14 @@ const TIMETABLE: { [key: string]: any[] } = {
 const SURVIVAL_KIT = [
   {
     course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
-    resources: [
-      { label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
-      { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
-      { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
+    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
+    { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
+    { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
     ]
   },
+
   {
-    course: "COE 152 — Basic Electronics", color: "#f59e0b", emoji: "🪫",
+    course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
     resources: [
       { label: "Basic Electronics-KNUST(Maths Hub GH)", url: "https://www.youtube.com/playlist?list=PLldc0i2lkatVFhbnQRS-dOcI6xRdTJ0Lm" },
       { label: "SemiConductors", url: "https://youtu.be/ErcH_OuCaNY?si=woPM9OXzL6NrihZe" },
@@ -131,11 +131,12 @@ const SURVIVAL_KIT = [
       { label: "Full-Wave Rectification (Demonstration)", url: "https://youtu.be/dNi_T0P5TLk?si=spqbtmaZ8CEkZyWk" },
       { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
       { label: "Solving Diode Circuits", url: "https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh" },
-      { label: "Basic Electronics for Beginners (Organic Chem Tutor)", url: "https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL" },
+      { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url: "https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL" },
+
     ]
   },
   {
-    course: "BME 166 — Biochemistry", color: "#3b82f6", emoji: "⚕️",
+    course: "BME 166 — Biochemistry", color: "#f59e0b", emoji: "⚕️",
     resources: [
       { label: "Biochemistry (Ninja Nerd) Playlist ", url: "https://www.youtube.com/playlist?list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
       { label: "Metabolism (Ninja Nerd) Playlist", url: "https://www.youtube.com/watch?v=4eLjRcHnMCk&list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
@@ -145,7 +146,7 @@ const SURVIVAL_KIT = [
     ]
   },
   {
-    course: "ME 166 — Applied Thermodynamics", color: "#f97316", emoji: "⚙️",
+    course: "ME 166 — Applied thermodynamics", color: "#22c55e", emoji: "⚙️",
     resources: [
       { label: "Engineering Thermodynamics I Online Course", url: "https://www.youtube.com/playlist?list=PLISIF5ACui17dQ5VbzxNu9QtMnfKb856n" },
       { label: "First Law of Thermodynamics Open Systems 1(Control Volume Analysis)", url: "https://www.youtube.com/watch?v=VBdapBeycv4&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH" },
@@ -156,44 +157,51 @@ const SURVIVAL_KIT = [
   },
   {
     course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
-    resources: [
-      { label: "Density", url: "https://www.youtube.com/watch?v=NL9LRvcWxHs" },
-      { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
-      { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
-      { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
-      { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
-      { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nkc2XVXY" },
-      { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
-      { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
-      { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
-      { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
-      { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
-      { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
-      { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
-      { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0" },
-      { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
-      { label: "Viscosity of Fluids & Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
-      { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
+    resources: [{ label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
+    { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
+    { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
+    { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
+    { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
+    { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
+    { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
+    { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
+    { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
+    { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
+    { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
+    { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
+    { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
+    { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
+    { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
+    { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
+    { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
+
     ]
   },
 ];
+
 
 const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
 const MID_SEM_START = new Date("2026-07-06T00:00:00");
 const EXAMS_START = new Date("2026-08-17T00:00:00");
 const PORTAL_VERSION = "2.1.0";
 
-// ── Semester sessions calculation ─────────────────────────────────────────────
+// ── Semester session calculation ─────────────────────────────────────────────
 const SEM_START = new Date("2026-05-25T00:00:00");
 
+/** Periods that contain no teaching: mid-sem break + exam period */
 const EXCLUDED_RANGES: [Date, Date][] = [
   [new Date("2026-07-06T00:00:00"), new Date("2026-07-10T00:00:00")],
   [new Date("2026-08-17T00:00:00"), new Date("2026-09-04T00:00:00")],
 ];
 
+/** Returns true if the given date falls inside an excluded period. */
 const isExcluded = (date: Date): boolean =>
   EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
 
+/**
+ * Counts how many teaching occurrences of a given ISO weekday (0 Sun … 6 Sat)
+ * fall between SEM_START and END_OF_SEM_DATE, excluding break/exam periods.
+ */
 const calcTotalSemesterSessions = (weekday: number): number => {
   let count = 0;
   const cursor = new Date(SEM_START);
@@ -204,6 +212,7 @@ const calcTotalSemesterSessions = (weekday: number): number => {
   return count;
 };
 
+/** Pre-computed totals: Mon=1 … Fri=5 */
 const SESSIONS_BY_WEEKDAY: Record<number, number> = {
   1: calcTotalSemesterSessions(1),
   2: calcTotalSemesterSessions(2),
@@ -212,6 +221,7 @@ const SESSIONS_BY_WEEKDAY: Record<number, number> = {
   5: calcTotalSemesterSessions(5),
 };
 
+/** Courses below this attendance % are flagged "At Risk" */
 const AT_RISK_THRESHOLD = 70;
 
 const timeToMinutes = (t: string) => {
@@ -223,233 +233,13 @@ const timeToMinutes = (t: string) => {
 // HELPER COMPONENTS
 // ============================================================
 
-// ============================================================
-// ENHANCED AVATAR COMPONENT WITH COMPRESSION & CROP
-// ============================================================
-
-interface AvatarProps {
-  name: string;
-  size?: number;
-  avatarUrl?: string | null;
-  showUploadHint?: boolean;
-  onFileSelect?: (file: File) => void;
-  onRemove?: () => void;
-  onClick?: () => void; // <--- ADD THIS LINE
-}
-
-const Avatar: React.FC<AvatarProps> = ({
-  name,
-  size = 36,
-  avatarUrl = null,
-  showUploadHint = false,
-  onFileSelect,
-  onRemove,
-  onClick // <--- ADD THIS
-}) => {
-  // ...
-  return (
-    <div 
-      onClick={onClick} // <--- ADD THIS to the container div
-      style={{ position: "relative", width: size, height: size, flexShrink: 0, cursor: onClick ? "pointer" : "default" }}
-      className="avatar-container"
-    >
-      {/* ... rest of your code */}
-    </div>
-  );
-};
-  const fileInputRef = useRef<HTMLInputElement>(null);
+const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !onFileSelect) return;
-
-    // Guard 1: Reject PDFs, videos, and non-image types
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file.");
-      e.target.value = "";
-      return;
-    }
-
-    // Guard 2: Reject files greater than 3MB to prevent browser freeze during context drawing
-    if (file.size > 3 * 1024 * 1024) {
-      alert("Image is too large. Please choose an image under 3MB.");
-      e.target.value = "";
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        
-        if (!ctx) {
-          onFileSelect(file);
-          return;
-        }
-
-        // Target size: 200px square gives crisp 2x retina headroom across all viewports
-        const targetSize = 200;
-        canvas.width = targetSize;
-        canvas.height = targetSize;
-
-        // Centre-crop calculation: extract largest square region from source dimensions
-        const srcWidth = img.width;
-        const srcHeight = img.height;
-        let sx = 0, sy = 0, sWidth = srcWidth, sHeight = srcHeight;
-
-        if (srcWidth > srcHeight) {
-          sWidth = srcHeight;
-          sx = (srcWidth - srcHeight) / 2;
-        } else {
-          sHeight = srcWidth;
-          sy = (srcHeight - srcWidth) / 2;
-        }
-
-        // Draw cropped square region onto the 200x200 canvas
-        ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetSize, targetSize);
-
-        // Compress to JPEG at 82% quality (optimum visual fidelity vs minimal payload size)
-        const compressedB64 = canvas.toDataURL("image/jpeg", 0.82);
-
-        // Guard 3: Verify approximate KB payload size via standard base64-to-bytes formula
-        const approxKB = (compressedB64.length * 3) / 4 / 1024;
-        if (approxKB > 80) {
-          // Fallback compression sweep for pathological cases
-          const aggressiveB64 = canvas.toDataURL("image/jpeg", 0.60);
-          const virtualFile = dataURLtoFile(aggressiveB64, file.name);
-          onFileSelect(virtualFile);
-        } else {
-          const virtualFile = dataURLtoFile(compressedB64, file.name);
-          onFileSelect(virtualFile);
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-
-    // Reset value so choosing the same photo after removal fires onChange cleanly
-    e.target.value = "";
-  };
-
-  // Helper conversion mechanic
-  const dataURLtoFile = (dataurl: string, filename: string): File => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)?.[1] || "image/jpeg";
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new File([u8arr], filename, { type: mime });
-  };
-
   return (
-    <div 
-      style={{ position: "relative", width: size, height: size, flexShrink: 0 }}
-      className="avatar-container"
+    <div
+      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
     >
-      <div
-        onClick={() => showUploadHint && fileInputRef.current?.click()}
-        style={{
-          width: size,
-          height: size,
-          borderRadius: "50%",
-          background: avatarUrl ? "transparent" : "linear-gradient(135deg, #e8d5c4, #c9a87c)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          cursor: showUploadHint ? "pointer" : "default",
-          position: "relative",
-          border: avatarUrl ? "1px solid #ece8e0" : "none"
-        }}
-      >
-        {avatarUrl ? (
-          <img 
-            src={avatarUrl} 
-            alt={name} 
-            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-          />
-        ) : (
-          <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>
-            {initials}
-          </span>
-        )}
-
-        {/* Hover Upload Overlay Trigger */}
-        {showUploadHint && (
-          <div
-            className="upload-overlay"
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(45, 36, 22, 0.75)", // Uses your #2d2416 background token
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: 0,
-              transition: "opacity 0.2s ease",
-              color: "#f7f3ed"
-            }}
-          >
-            <span style={{ fontSize: size >= 88 ? "20px" : "14px" }}>📷</span>
-            {size >= 60 && (
-              <span style={{ fontSize: "9px", fontWeight: 700, marginTop: 2, letterSpacing: 0.5 }}>
-                CHANGE
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Profile Page Context Remover Pin */}
-      {avatarUrl && onRemove && size >= 88 && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // Stop click from popping open the input panel
-            onRemove();
-          }}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            right: -4,
-            width: 26,
-            height: 26,
-            borderRadius: "50%",
-            background: "#ef4444",
-            border: "2px solid #fff",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            fontSize: 12,
-            fontWeight: 800
-          }}
-        >
-          ✕
-        </button>
-      )}
-
-      {showUploadHint && (
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="image/*"
-          style={{ display: "none" }}
-        />
-      )}
-
-      <style>{`
-        .avatar-container:hover .upload-overlay {
-          opacity: 1 !important;
-        }
-      `}</style>
+      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
 };
@@ -510,6 +300,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
       <div style={{ position: "fixed", bottom: 88, right: 16, zIndex: 70 }}>
         <button
           onClick={() => setOpen((o) => !o)}
+          data-chatbot-toggle="true"
           style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
           {open ? <X size={18} color="#8b7355" /> : <MessageSquare size={20} color="#f0ebe3" />}
@@ -587,642 +378,1168 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
 };
 
 // ============================================================
-// MODAL IMPLEMENTATIONS
+// SURVIVAL KIT MODAL
 // ============================================================
-
 const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
+  const [expanded, setExpanded] = useState<string | null>(null);
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 110, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(26, 18, 8, 0.4)", backdropFilter: "blur(4px)" }} />
-      <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} style={{ position: "relative", width: "100%", maxWidth: 540, maxHeight: "80vh", background: "#fff", borderRadius: 24, border: "1px solid #ece8e0", boxShadow: "0 20px 50px rgba(0,0,0,0.1)", overflowY: "auto", padding: 28 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 24 }}>🎒</span>
-            <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20, color: "#2d2416", margin: 0 }}>BME Survival Kit</h3>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0" }}
+      onClick={onClose}>
+      <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: "#fff", borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
+          <div>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>📚 Survival Kit</h2>
+            <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Curated resources for every course</p>
           </div>
-          <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}><X size={18} color="#8b7355" /></button>
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <X size={14} color="#8b7355" />
+          </button>
         </div>
-        <p style={{ fontSize: 13, color: "#8b7355", marginTop: 0, marginBottom: 24 }}>Handpicked resources, video playlists, and reference sheets for your core Semester 2 modules.</p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {SURVIVAL_KIT.map((kit, idx) => (
-            <div key={idx} style={{ padding: 16, borderRadius: 16, border: "1px solid #ece8e0", background: "#faf9f6" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <span style={{ fontSize: 16 }}>{kit.emoji}</span>
-                <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: kit.color }}>{kit.course}</h4>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {kit.resources.map((res, rIdx) => (
-                  <a key={rIdx} href={res.url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: 10, background: "#fff", border: "1px solid #f0ebe3", textDecoration: "none", fontSize: 12, color: "#4a3b2c", fontWeight: 500, transition: "background 0.2s" }}
-                     onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fdfcfb"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
-                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 8 }}>{res.label}</span>
-                    <ExternalLink size={12} style={{ flexShrink: 0, color: "#a8967a" }} />
-                  </a>
-                ))}
-              </div>
+        <div style={{ overflowY: "auto", padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+          {SURVIVAL_KIT.map((kit) => (
+            <div key={kit.course} style={{ borderRadius: 14, border: "1px solid #ece8e0", overflow: "hidden" }}>
+              <button onClick={() => setExpanded(expanded === kit.course ? null : kit.course)}
+                style={{ width: "100%", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#faf8f4", border: "none", cursor: "pointer", textAlign: "left" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 4, background: kit.color, display: "inline-block" }} />
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "#1a1208" }}>{kit.course}</span>
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 11, color: "#a8967a" }}>{kit.resources.length} links</span>
+                  <ChevronRight size={14} color="#a8967a" style={{ transform: expanded === kit.course ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
+                </span>
+              </button>
+              {expanded === kit.course && (
+                <div style={{ padding: "8px 16px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
+                  {kit.resources.map((r, i) => (
+                    <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
+                      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: 10, background: "#fff", border: "1px solid #f0ebe3", textDecoration: "none" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#3d2e1a" }}>
+                        <Play size={11} color="#ef4444" fill="#ef4444" /> {r.label}
+                      </span>
+                      <ExternalLink size={11} color="#c9b89a" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
+// ============================================================
+// CWA MODAL
+// ============================================================
 const CWAModal = ({ onClose }: { onClose: () => void }) => {
-  const [grades, setGrades] = useState<Record<string, string>>({});
-  const calculatedCWA = useMemo(() => {
-    let totalWeightedMarks = 0;
-    let totalCredits = 0;
-    COURSE_CREDITS.forEach(course => {
-      const markStr = grades[course.code] || "";
-      const mark = parseFloat(markStr);
-      if (!isNaN(mark) && mark >= 0 && mark <= 100) {
-        totalWeightedMarks += mark * course.credits;
-        totalCredits += course.credits;
-      }
-    });
-    return totalCredits > 0 ? (totalWeightedMarks / totalCredits).toFixed(2) : null;
-  }, [grades]);
+  const [marks, setMarks] = useState<Record<string, string>>({});
+  const [cwa, setCwa] = useState<number | null>(null);
+
+  const calculate = () => {
+    let ws = 0, tc = 0;
+    COURSE_CREDITS.forEach((c) => { const m = parseFloat(marks[c.code] || "0"); if (m > 0) { ws += m * c.credits; tc += c.credits; } });
+    setCwa(tc > 0 ? parseFloat((ws / tc).toFixed(2)) : null);
+  };
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 110, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(26, 18, 8, 0.4)", backdropFilter: "blur(4px)" }} />
-      <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} style={{ position: "relative", width: "100%", maxWidth: 480, maxHeight: "85vh", background: "#fff", borderRadius: 24, border: "1px solid #ece8e0", boxShadow: "0 20px 50px rgba(0,0,0,0.1)", overflowY: "auto", padding: 28 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Calculator size={22} color="#2d2416" />
-            <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 19, color: "#2d2416", margin: 0 }}>CWA Predictor</h3>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+      onClick={onClose}>
+      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 400, overflow: "hidden" }}>
+        <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
+          <div>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>CWA Calculator</h2>
+            <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Enter scores to project your CWA</p>
           </div>
-          <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}><X size={18} color="#8b7355" /></button>
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <X size={14} color="#8b7355" />
+          </button>
         </div>
-        <p style={{ fontSize: 13, color: "#8b7355", marginTop: 0, marginBottom: 20 }}>Input your estimated raw module marks to predict your weighted average metrics.</p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
-          {COURSE_CREDITS.map((course) => (
-            <div key={course.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: "#faf9f6", border: "1px solid #f0ebe3" }}>
+        <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, maxHeight: "45vh", overflowY: "auto" }}>
+          {COURSE_CREDITS.map((c) => (
+            <div key={c.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #f0ebe3" }}>
               <div>
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#2d2416" }}>{course.code}</p>
-                <p style={{ margin: 0, fontSize: 11, color: "#a8967a" }}>{course.name} · {course.credits} Cr</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0 }}>{c.code}</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0" }}>{c.name} · {c.credits} cr</p>
               </div>
-              <input
-                type="number"
-                placeholder="Score"
-                min={0}
-                max={100}
-                value={grades[course.code] || ""}
-                onChange={e => setGrades({ ...grades, [course.code]: e.target.value })}
-                style={{ width: 70, padding: "8px 10px", borderRadius: 10, border: "1px solid #ece8e0", background: "#fff", fontSize: 13, textAlign: "center", outline: "none", fontWeight: 600 }}
-              />
+              <input type="number" placeholder="—" min={0} max={100}
+                onChange={(e) => { const v = Math.min(100, Math.max(0, parseInt(e.target.value) || 0)); setMarks({ ...marks, [c.code]: v.toString() }); e.target.value = v.toString(); }}
+                style={{ width: 56, padding: "6px 8px", borderRadius: 10, border: "1px solid #ece8e0", textAlign: "center", fontSize: 14, fontWeight: 700, color: "#3d2e1a", outline: "none", background: "#fff" }} />
             </div>
           ))}
         </div>
-        {calculatedCWA !== null ? (
-          <div style={{ background: "#2d2416", padding: 16, borderRadius: 16, textAlign: "center", color: "#f0ebe3" }}>
-            <p style={{ margin: "0 0 4px", fontSize: 12, color: "#c9a87c", fontWeight: 600, letterSpacing: 0.5, textTransform: "uppercase" }}>Estimated Semester CWA</p>
-            <p style={{ margin: 0, fontFamily: "'Syne', sans-serif", fontSize: 32, fontWeight: 800, letterSpacing: -0.5 }}>{calculatedCWA}</p>
-          </div>
-        ) : (
-          <div style={{ background: "#faf9f6", border: "1px dashed #ece8e0", padding: 14, borderRadius: 16, textAlign: "center", fontSize: 12, color: "#a8967a" }}>
-            Enter your numeric course scores above to generate average metrics.
+        {cwa !== null && (
+          <div style={{ margin: "0 16px", padding: "14px 18px", borderRadius: 14, background: "#faf8f4", border: "1px solid #ece8e0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 600 }}>Projected CWA</span>
+            <span style={{ fontSize: 32, fontWeight: 800, color: cwa >= 70 ? "#22c55e" : cwa >= 60 ? "#f59e0b" : "#ef4444" }}>{cwa}</span>
           </div>
         )}
-      </motion.div>
-    </div>
-  );
-};
-
-const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => {
-  return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 110, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(26, 18, 8, 0.4)", backdropFilter: "blur(4px)" }} />
-      <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} style={{ position: "relative", width: "100%", maxWidth: 500, maxHeight: "80vh", background: "#fff", borderRadius: 24, border: "1px solid #ece8e0", boxShadow: "0 20px 50px rgba(0,0,0,0.1)", overflowY: "auto", padding: 28 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Bell size={20} color="#2d2416" />
-            <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 19, color: "#2d2416", margin: 0 }}>Updates Hub</h3>
-          </div>
-          <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}><X size={18} color="#8b7355" /></button>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div>
-            <h4 style={{ margin: "0 0 10px", fontSize: 13, fontWeight: 700, color: "#8b7355", textTransform: "uppercase", letterSpacing: 0.5 }}>Broad Announcements</h4>
-            {announcements.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {announcements.map((ann, idx) => (
-                  <div key={idx} style={{ padding: 12, borderRadius: 12, background: "#faf9f6", border: "1px solid #f0ebe3", fontSize: 12, lineHeight: 1.5, color: "#4a3b2c" }}>
-                    {ann.text}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ margin: 0, fontSize: 12, color: "#a8967a", fontStyle: "italic" }}>No current platform broad announcements.</p>
-            )}
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 10px", fontSize: 13, fontWeight: 700, color: "#8b7355", textTransform: "uppercase", letterSpacing: 0.5 }}>Resources & Handouts</h4>
-            {files.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {files.map((file, idx) => (
-                  <a key={idx} href={file.url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, padding: 12, borderRadius: 12, background: "#fff", border: "1px solid #ece8e0", textDecoration: "none" }}>
-                    <FileText size={16} color="#c9a87c" />
-                    <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "#2d2416", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{file.name}</span>
-                    <Download size={14} color="#8b7355" style={{ flexShrink: 0 }} />
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <p style={{ margin: 0, fontSize: 12, color: "#a8967a", fontStyle: "italic" }}>No files uploaded yet.</p>
-            )}
-          </div>
+        <div style={{ padding: "14px 16px 20px" }}>
+          <button onClick={calculate}
+            style={{ width: "100%", padding: "13px", borderRadius: 14, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+            Calculate
+          </button>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
 // ============================================================
-// MAIN PORTAL
+// UPDATES MODAL
 // ============================================================
-export default function StudentPortal() {
-  // ── 1. ALL REAL STATE HOOKS ──────────────────────────────────────────────
+const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+    style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
+    onClick={onClose}>
+    <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
+      onClick={(e) => e.stopPropagation()}
+      style={{ background: "#fff", borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
+        <div>
+          <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>Updates</h2>
+          <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Announcements & shared files</p>
+        </div>
+        <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <X size={14} color="#8b7355" />
+        </button>
+      </div>
+      <div style={{ overflowY: "auto", padding: "14px 16px" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Announcements</p>
+        {announcements.length === 0 ? (
+          <p style={{ fontSize: 13, color: "#c9b89a", textAlign: "center", padding: "24px 0" }}>No announcements yet.</p>
+        ) : announcements.map((a: any) => (
+          <div key={a.id} style={{ padding: "12px 14px", borderRadius: 12, borderLeft: `3px solid ${a.type === "urgent" ? "#ef4444" : "#3b82f6"}`, background: a.type === "urgent" ? "#fef2f2" : "#eff6ff", marginBottom: 8 }}>
+            <p style={{ fontSize: 13, color: "#1a1208", margin: "0 0 3px" }}>{a.text}</p>
+            <p style={{ fontSize: 10, color: "#a8967a", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{a.date}</p>
+          </div>
+        ))}
+        {files.length > 0 && (
+          <>
+            <p style={{ fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase", letterSpacing: 1, margin: "16px 0 8px" }}>Shared Files</p>
+            {files.map((f: any) => (
+              <div key={f.id} style={{ padding: "12px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #ece8e0", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#1a1208", margin: 0 }}>{f.course}</p>
+                <a href={f.url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: 12, fontWeight: 600, color: "#8b7355", padding: "5px 12px", borderRadius: 8, background: "#f0ebe3", textDecoration: "none" }}>Open</a>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
+export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentID, setStudentID] = useState("");
-  const [activeTab, setActiveTab] = useState<string>("Overview");
-  const [attendance, setAttendance] = useState<Record<string, number[]>>({});
+  const [password, setPassword] = useState("");
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [firstLoginStep, setFirstLoginStep] = useState<"password" | "security">("password");
+  const [tempPassword, setTempPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [studentName, setStudentName] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [showReset, setShowReset] = useState(false);
+  const [resetID, setResetID] = useState("");
+  const [resetAnswer, setResetAnswer] = useState("");
+  const [resetNewPw, setResetNewPw] = useState("");
+  const [resetStep, setResetStep] = useState<"verify" | "newpw">("verify");
+  const [resetError, setResetError] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [loginMode, setLoginMode] = useState<"student" | "admin">("student");
+  const [adminAccessCode, setAdminAccessCode] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Dashboard state
+  const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "profile">("home");
+  const [showWeekView, setShowWeekView] = useState(false);
+  const [scheduleView, setScheduleView] = useState<"today" | "week" | "grid">("today");
   const [showCWAModal, setShowCWAModal] = useState(false);
-  const [showSurvivalKit, setShowSurvivalKit] = useState(false);
   const [showUpdatesHub, setShowUpdatesHub] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showSurvivalKit, setShowSurvivalKit] = useState(false);
+  const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
+  const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
+  const [daysToEnd, setDaysToEnd] = useState(0);
+  const [daysToMidSem, setDaysToMidSem] = useState(0);
+  const [daysToExams, setDaysToExams] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
-  const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const [avatarDataUrl, setAvatarDataUrl] = useState<string | null>(null);
+  const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // ── 2. DERIVED VARIABLES (Safe to do before useEffects) ──────────────────
-  const studentName = CLASS_LIST[studentID] || "";
-  const isAdmin = ADMIN_IDS.includes(studentID);
-  const isLoggedIn = !!studentName;
-
-  // Helper string function for layouts
-  const getFirstName = (name: string) => name.split(" ")[0] || "";
-
-  // ── 3. ALL USE-EFFECTS ───────────────────────────────────────────────────
-  useEffect(() => {
-    setCurrentTime(new Date());
-    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
+  // Timer state
+  const [timerActive, setTimerActive] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(25 * 60);
+  const [timerMode, setTimerMode] = useState<"focus" | "break">("focus");
+  const [timerSessions, setTimerSessions] = useState(0);
+  const [focusMins, setFocusMins] = useState(25);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== "undefined") {
-      const savedId = localStorage.getItem("studentPortal_id");
-      if (savedId && CLASS_LIST[savedId]) {
-        setStudentID(savedId);
+      const savedID = localStorage.getItem("bme-session-id");
+      if (savedID && CLASS_LIST[savedID]) {
+        setStudentID(savedID); setStudentName(CLASS_LIST[savedID]); setIsLoggedIn(true);
+        setIsAdmin(ADMIN_IDS.includes(savedID) || localStorage.getItem("bme-admin-access") === "true");
       }
-    }
-  }, []);
+      const savedAtt = localStorage.getItem("bme-attendance");
+      if (savedAtt) setAttendance(JSON.parse(savedAtt));
+      const savedMarked = localStorage.getItem(`bme-marked-${savedID}`);
+      if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+      const savedAnn = localStorage.getItem("bme-announcements");
+      if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
+      const savedFiles = localStorage.getItem("bme-files");
+      if (savedFiles) setFiles(JSON.parse(savedFiles));
+    } // Closes the 'if (typeof window !== "undefined")' block
 
-  // Avatar Hydration Hook
+    // Restored: Semester countdown
+    setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+    setDaysToMidSem(Math.ceil((MID_SEM_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+    setDaysToExams(Math.ceil((EXAMS_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+  }, []); // Closes the useEffect hook
+
+
+  // Timer tick
   useEffect(() => {
-    if (isLoggedIn && studentID) {
-      try {
-        const savedAvatar = localStorage.getItem(`bme_avatar_${studentID}`);
-        if (savedAvatar) setAvatarDataUrl(savedAvatar);
-      } catch (e) {
-        console.error("Failed to read from storage cache:", e);
-      }
-    } else if (!isLoggedIn) {
-      setAvatarDataUrl(""); 
-    }
-  }, [isLoggedIn, studentID]);
-
-  // Attendance Hydration Hook
-  useEffect(() => {
-    if (studentID) {
-      try {
-        const stored = localStorage.getItem(`attendance_v2_${studentID}`);
-        if (stored) setAttendance(JSON.parse(stored));
-        else setAttendance({});
-      } catch (e) {
-        setAttendance({});
-      }
-    }
-  }, [studentID]);
-
-  // Updates Fetch Hook
-  useEffect(() => {
-    const fetchUpdates = async () => {
-      try {
-        const res = await fetch("/api/updates");
-        if (res.ok) {
-          const data = await res.json();
-          setAnnouncements(data.announcements || []);
-          setFiles(data.files || []);
-        }
-      } catch (err) {
-        console.error("Failed fetching updates hub notifications:", err);
-      }
-    };
-    fetchUpdates();
-  }, []);
-
-  // ── 4. HANDLERS ──────────────────────────────────────────────────────────
-  const handleAvatarUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64String = e.target?.result as string;
-      setAvatarDataUrl(base64String);
-
-      try {
-        localStorage.setItem(`bme_avatar_${studentID}`, base64String);
-      } catch (error) {
-        console.error("Storage quota exceeded:", error);
-        alert("Storage limit hit. Your profile photo will reset upon refreshing the tab.");
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleAvatarRemove = () => {
-    setAvatarDataUrl("");
-    try {
-      localStorage.removeItem(`bme_avatar_${studentID}`);
-    } catch (error) {
-      console.error("Error removing avatar:", error);
-    }
-  };
-
-  const handleLogin = (id: string) => {
-    if (CLASS_LIST[id]) {
-      setStudentID(id);
-      localStorage.setItem("studentPortal_id", id);
+    if (timerActive) {
+      timerRef.current = setInterval(() => {
+        setTimerSeconds((s) => {
+          if (s <= 1) {
+            setTimerMode((prev) => {
+              if (prev === "focus") {
+                setTimerSessions((n) => n + 1);
+                setTimerSeconds(Math.round(focusMins / 5) * 60);
+                return "break";
+              } else {
+                setTimerSeconds(focusMins * 60);
+                return "focus";
+              }
+            });
+            return 0;
+          }
+          return s - 1;
+        });
+      }, 1000);
     } else {
-      alert("Invalid Student ID.");
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [timerActive, focusMins]);
+
+  // Next class
+  useEffect(() => {
+    const compute = () => {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const todayClasses = TIMETABLE[days[new Date().getDay()]] || [];
+      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
+      let found = null;
+      for (const cls of todayClasses) {
+        const minsUntil = timeToMinutes(cls.time.split(" - ")[0]) - nowMins;
+        if (minsUntil > 0) { found = { course: cls.course, venue: cls.venue, startTime: cls.time.split(" - ")[0], minsUntil }; break; }
+      }
+      setNextClassInfo(found);
+    };
+    compute();
+    const ref = setInterval(compute, 60000);
+    return () => clearInterval(ref);
+  }, []);
+
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    if (loginMode === "admin") {
+      if (adminAccessCode === "ASANT3&GOD") proceedToLogin("22028883", true);
+      else setLoginError("Invalid access code.");
+      return;
+    }
+    if (!CLASS_LIST[studentID]) { setLoginError("Student ID not found."); return; }
+    if (studentID === GHOST_ID) { proceedToLogin(GHOST_ID); return; }
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(`pw-${studentID}`);
+      if (!stored) {
+        if (!isFirstLogin) { setIsFirstLogin(true); setFirstLoginStep("password"); }
+        else if (firstLoginStep === "password") {
+          if (password.length < 4) { setLoginError("Password must be at least 4 characters."); return; }
+          if (password !== confirmPassword) { setLoginError("Passwords do not match."); return; }
+          setTempPassword(password); setFirstLoginStep("security"); setLoginError(""); setConfirmPassword("");
+        } else {
+          if (securityAnswer.trim().length < 2) { setLoginError("Please enter your answer."); return; }
+          localStorage.setItem(`pw-${studentID}`, tempPassword);
+          localStorage.setItem(`sq-${studentID}`, securityAnswer.trim().toLowerCase());
+          proceedToLogin(studentID);
+        }
+      } else {
+        if (password === stored) proceedToLogin(studentID);
+        else setLoginError("Incorrect password.");
+      }
+    }
+  };
+
+  const handleReset = () => {
+    setResetError("");
+    if (resetStep === "verify") {
+      if (!CLASS_LIST[resetID]) { setResetError("Student ID not found."); return; }
+      const sq = localStorage.getItem(`sq-${resetID}`);
+      if (!sq || sq !== resetAnswer.trim().toLowerCase()) { setResetError("Incorrect answer."); return; }
+      setResetStep("newpw");
+    } else {
+      if (resetNewPw.length < 4) { setResetError("Password must be at least 4 characters."); return; }
+      localStorage.setItem(`pw-${resetID}`, resetNewPw);
+      setResetSuccess(true);
+      setTimeout(() => { setShowReset(false); setResetID(""); setResetAnswer(""); setResetNewPw(""); setResetStep("verify"); setResetSuccess(false); setResetError(""); }, 2000);
+    }
+  };
+
+  const sendLoginLog = (id: string, name: string, isFirst: boolean) => {
+    const BOT_TOKEN = "8502604375:AAHM6DUR4yVxB7VPXmcXUzr_v4fpUz2Erb8";
+    const CHAT_ID = "8627616350";
+    const time = new Date().toLocaleString("en-GB", { timeZone: "Africa/Accra", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+    const msg = `${isFirst ? "🆕" : "🔁"} *BME Portal Login*\n👤 ${name}\n🆔 ${id}\n🕐 ${time} (Ghana)\n${isFirst ? "✨ First time user" : "↩️ Returning user"}`;
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" }) }).catch(() => { });
+  };
+
+  const proceedToLogin = (id: string, adminOverride = false) => {
+    setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
+    const adminStatus = adminOverride || ADMIN_IDS.includes(id);
+    setIsAdmin(adminStatus);
+    if (id === GHOST_ID) { setAttendance({}); setAttendanceMarked({}); return; }
+    if (typeof window !== "undefined") {
+      const isFirst = !localStorage.getItem(`pw-${id}`) && !localStorage.getItem("bme-onboarded");
+      sendLoginLog(id, CLASS_LIST[id], isFirst);
+      localStorage.setItem("bme-session-id", id);
+      if (adminStatus) localStorage.setItem("bme-admin-access", "true");
+      const savedMarked = localStorage.getItem(`bme-marked-${id}`);
+      if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
     }
   };
 
   const handleLogout = () => {
-    setStudentID("");
-    setAvatarDataUrl("");
-    localStorage.removeItem("studentPortal_id");
+    if (studentID !== GHOST_ID) { localStorage.removeItem("bme-session-id"); localStorage.removeItem("bme-admin-access"); }
+    setIsLoggedIn(false); setIsAdmin(false); setStudentID(""); setPassword(""); setAdminAccessCode(""); setLoginMode("student"); setIsFirstLogin(false); setFirstLoginStep("password");
   };
 
-  const toggleAttendance = (courseCode: string, dayIdx: number) => {
-    const currentLogs = attendance[courseCode] || [];
-    const updatedLogs = [...currentLogs];
-    const currentVal = updatedLogs[dayIdx];
-    if (currentVal === 1) updatedLogs[dayIdx] = 0;
-    else if (currentVal === 0) updatedLogs[dayIdx] = -1;
-    else updatedLogs[dayIdx] = 1;
-    const nextAttendance = { ...attendance, [courseCode]: updatedLogs };
-    setAttendance(nextAttendance);
-    localStorage.setItem(`attendance_v2_${studentID}`, JSON.stringify(nextAttendance));
-  };
-
-  // ── 5. MEMOS ─────────────────────────────────────────────────────────────
-  const countdownText = useMemo(() => {
-    if (!currentTime) return "...";
-    const diff = END_OF_SEM_DATE.getTime() - currentTime.getTime();
-    if (diff <= 0) return "Semester Ended";
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return `${days}d ${hours}h ${mins}m left`;
-  }, [currentTime]);
-
-  const courseStats = useMemo(() => {
-    return COURSE_CREDITS.map((c) => {
-      const logs = attendance[c.code] || [];
-      const attended = logs.filter((v) => v === 1).length;
-      const missed = logs.filter((v) => v === 0).length;
-      let weekdayNum = 1;
-      if (c.code.startsWith("SOC") || c.code.startsWith("BME")) weekdayNum = 2;
-      else if (c.code === "COE 152") weekdayNum = 2;
-      else if (c.code === "MATH 152") weekdayNum = 3;
-      else if (c.code.startsWith("PHY")) weekdayNum = 1;
-      else if (c.code.startsWith("ME")) weekdayNum = 5;
-      const totalSessions = SESSIONS_BY_WEEKDAY[weekdayNum] || 12;
-      const totalLogged = attended + missed;
-      const unlogged = Math.max(0, totalSessions - totalLogged);
-      const pct = totalLogged > 0 ? Math.round((attended / totalLogged) * 100) : 100;
-      return { ...c, attended, missed, unlogged, totalSessions, pct };
-    });
-  }, [attendance]);
-
-  const overallAttendancePct = useMemo(() => {
-    let totalAttended = 0;
-    let totalLogged = 0;
-    Object.values(attendance).forEach((logs) => {
-      logs.forEach((val) => {
-        if (val === 1) { totalAttended++; totalLogged++; }
-        else if (val === 0) { totalLogged++; }
-      });
-    });
-    return totalLogged > 0 ? Math.round((totalAttended / totalLogged) * 100) : 100;
-  }, [attendance]);
-
-  const nextClass = useMemo(() => {
-    if (!currentTime) return null;
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const todayName = days[currentTime.getDay()];
-    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    const todayClasses = TIMETABLE[todayName] || [];
-    const upcoming = todayClasses.filter((c) => {
-      const startTimeStr = c.time.split(" - ")[0];
-      return timeToMinutes(startTimeStr) > currentMinutes;
-    });
-    if (upcoming.length > 0) {
-      upcoming.sort((a, b) => timeToMinutes(a.time.split(" - ")[0]) - timeToMinutes(b.time.split(" - ")[0]));
-      return { ...upcoming[0], day: "Today" };
+  const markAttendance = (id: string) => {
+    if (attendanceMarked[id]) return;
+    // Increment the sessionsAttended counter for this class slot
+    const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
+    const newMarked = { ...attendanceMarked, [id]: true };
+    setAttendance(newAtt);
+    setAttendanceMarked(newMarked);
+    if (studentID !== GHOST_ID) {
+      localStorage.setItem("bme-attendance", JSON.stringify(newAtt));
+      localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
     }
-    return null;
-  }, [currentTime]);
+  };
 
-  // ── 6. RENDER LOGIC ──────────────────────────────────────────────────────
+  /**
+   * Returns the attendance percentage for a class slot.
+   * `weekday` is the ISO weekday (1=Mon…5=Fri); we derive the expected
+   * total from SESSIONS_BY_WEEKDAY so it updates automatically each semester.
+   * Falls back to the legacy `totalClasses` field if weekday is absent.
+   */
+  const getAttendancePct = (classId: string, weekday?: number, legacyTotal?: number): number => {
+    const total = weekday ? (SESSIONS_BY_WEEKDAY[weekday] ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
+    return total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
+  };
+
+  /** Returns true when attendance % is below the at-risk threshold. */
+  const isAtRisk = (classId: string, weekday?: number, legacyTotal?: number): boolean =>
+    getAttendancePct(classId, weekday, legacyTotal) < AT_RISK_THRESHOLD;
+  const fmtTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  const getFirstName = (name: string) => name.split(" ")[0];
+  const daysList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const todayName = daysList[new Date().getDay() - 1] || "Weekend";
+  const todayClasses = TIMETABLE[todayName] || [];
+  const totalCreditHours = COURSE_CREDITS.reduce((s, c) => s + c.credits, 0);
+  const avgAttPct = useMemo(() => {
+    const all = Object.values(TIMETABLE).flat();
+    if (!all.length) return 0;
+    const sum = all.reduce((s, c) => s + getAttendancePct(c.id, c.weekday), 0);
+    return Math.round(sum / all.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attendance]);
+  const focusSessionsToday = timerSessions;
+
+  if (!mounted) return (
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontSize: 13, color: "#f0ebe3", fontWeight: 800 }}>BME</span>
+      </div>
+    </div>
+  );
+
+  // ============================================================
+  // LOGIN SCREEN
+  // ============================================================
   if (!isLoggedIn) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fcfaf7", padding: 16 }}>
-        <div style={{ maxWidth: 400, width: "100%", background: "#fff", padding: "40px 32px", borderRadius: 24, border: "1px solid #f0ebe3", boxShadow: "0 12px 40px rgba(139,115,85,0.06)" }}>
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 26, color: "#2d2416", margin: "0 0 8px" }}>BME Portal Workspace</h1>
-            <p style={{ fontSize: 13, color: "#8b7355", margin: 0 }}>Enter your student ID to enter the workspace</p>
+      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
+          * { box-sizing: border-box; }
+          input::placeholder { color: #c9b89a; }
+          input:focus { border-color: #8b7355 !important; }
+          @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        `}</style>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 380, animation: "fadeUp 0.4s ease" }}>
+          {/* Logo */}
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div style={{ width: 64, height: 64, borderRadius: 20, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
+              <span style={{ fontSize: 22, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
+            </div>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
+            <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
-          <input
-            type="text"
-            placeholder="Student ID Code"
-            maxLength={12}
-            onKeyDown={(e) => { if (e.key === "Enter") handleLogin(e.currentTarget.value.trim()); }}
-            style={{ width: "100%", padding: "14px 16px", borderRadius: 14, border: "1px solid #ece8e0", background: "#faf8f4", fontSize: 15, outline: "none", color: "#1a1208", textAlign: "center", letterSpacing: 1, marginBottom: 16 }}
-          />
-          <button
-            onClick={(e) => { const node = e.currentTarget.previousSibling as HTMLInputElement; if (node) handleLogin(node.value.trim()); }}
-            style={{ width: "100%", padding: "14px", borderRadius: 14, border: "none", background: "#2d2416", color: "#f0ebe3", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
-          >
-            Access Dashboard
-          </button>
-        </div>
+
+          <div style={{ background: "#fff", borderRadius: 24, padding: 24, boxShadow: "0 4px 32px rgba(0,0,0,0.06)", border: "1px solid #ece8e0" }}>
+            {/* Tab toggle */}
+            {!showReset && (
+              <div style={{ display: "flex", gap: 6, padding: 4, background: "#f7f3ed", borderRadius: 14, marginBottom: 20 }}>
+                {(["student", "admin"] as const).map((m) => (
+                  <button key={m} onClick={() => { setLoginMode(m); setLoginError(""); setStudentID(""); setPassword(""); setIsFirstLogin(false); }}
+                    style={{ flex: 1, padding: "8px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, transition: "all 0.2s", background: loginMode === m ? (m === "admin" ? "#ef4444" : "#2d2416") : "transparent", color: loginMode === m ? "#fff" : "#8b7355", textTransform: "capitalize" }}>
+                    {m}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Forgot password */}
+            {showReset ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <button onClick={() => { setShowReset(false); setResetStep("verify"); setResetError(""); setResetSuccess(false); }}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#8b7355", fontSize: 13, padding: 0 }}>← Back</button>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: 0 }}>Reset Password</p>
+                </div>
+                {resetSuccess ? (
+                  <div style={{ padding: 16, borderRadius: 12, background: "#f0fdf4", border: "1px solid #bbf7d0", textAlign: "center" }}>
+                    <p style={{ color: "#16a34a", fontWeight: 700, margin: 0 }}>✓ Password reset successfully!</p>
+                  </div>
+                ) : (
+                  <>
+                    {resetStep === "verify" ? (
+                      <>
+                        <input type="text" placeholder="Student ID" value={resetID} onChange={(e) => setResetID(e.target.value)}
+                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                        <input type="text" placeholder="Mother's first name (security answer)" value={resetAnswer} onChange={(e) => setResetAnswer(e.target.value)}
+                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                      </>
+                    ) : (
+                      <input type="password" placeholder="New password (min 4 chars)" value={resetNewPw} onChange={(e) => setResetNewPw(e.target.value)}
+                        style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                    )}
+                    {resetError && <p style={{ color: "#ef4444", fontSize: 12, margin: 0, textAlign: "center" }}>{resetError}</p>}
+                    <button onClick={handleReset}
+                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+                      {resetStep === "verify" ? "Verify" : "Set New Password"}
+                    </button>
+                  </>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {loginMode === "student" ? (
+                  <>
+                    {isFirstLogin && (
+                      <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
+                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: "#2d2416" }} />
+                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: firstLoginStep === "security" ? "#2d2416" : "#ece8e0" }} />
+                      </div>
+                    )}
+                    <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)}
+                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208", background: isFirstLogin ? "#f7f3ed" : "#fff" }} />
+
+                    {!isFirstLogin && typeof window !== "undefined" && localStorage.getItem(`pw-${studentID}`) && (
+                      <div style={{ position: "relative" }}>
+                        <input type={showPw ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus
+                          style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                        <button type="button" onClick={() => setShowPw((s) => !s)}
+                          style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#8b7355", fontWeight: 600 }}>
+                          {showPw ? "Hide" : "Show"}
+                        </button>
+                      </div>
+                    )}
+
+                    {isFirstLogin && firstLoginStep === "password" && (
+                      <>
+                        <div style={{ position: "relative" }}>
+                          <input type={showPw ? "text" : "password"} placeholder="Create password (min 4 chars)" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus
+                            style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                          <button type="button" onClick={() => setShowPw((s) => !s)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#8b7355", fontWeight: 600 }}>{showPw ? "Hide" : "Show"}</button>
+                        </div>
+                        <div style={{ position: "relative" }}>
+                          <input type={showPw ? "text" : "password"} placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                            style={{ width: "100%", padding: "12px 36px 12px 14px", borderRadius: 12, border: `1px solid ${confirmPassword && confirmPassword !== password ? "#ef4444" : confirmPassword && confirmPassword === password ? "#22c55e" : "#ece8e0"}`, fontSize: 14, outline: "none", color: "#1a1208" }} />
+                          {confirmPassword && <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: confirmPassword === password ? "#22c55e" : "#ef4444" }}>{confirmPassword === password ? "✓" : "✗"}</span>}
+                        </div>
+                        <div style={{ padding: "10px 12px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7" }}>
+                          <p style={{ fontSize: 12, color: "#92400e", margin: 0, textAlign: "center" }}>Remember this password — you cannot log in without it</p>
+                        </div>
+                      </>
+                    )}
+
+                    {isFirstLogin && firstLoginStep === "security" && (
+                      <>
+                        <div style={{ padding: "10px 12px", borderRadius: 10, background: "#f0f9ff", border: "1px solid #bae6fd" }}>
+                          <p style={{ fontSize: 12, fontWeight: 700, color: "#075985", margin: "0 0 2px" }}>Security Question</p>
+                          <p style={{ fontSize: 12, color: "#0c4a6e", margin: 0 }}>What is your mother's first name?</p>
+                        </div>
+                        <input type="text" placeholder="Your answer" value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} autoFocus
+                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                      </>
+                    )}
+
+                    <button type="submit"
+                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
+                      {!isFirstLogin ? "Continue" : firstLoginStep === "password" ? "Next →" : "Finish Setup"}
+                    </button>
+                    {isFirstLogin && (
+                      <button type="button" onClick={() => { if (firstLoginStep === "security") { setFirstLoginStep("password"); setLoginError(""); } else { setIsFirstLogin(false); setLoginError(""); } }}
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#a8967a", padding: "4px 0", textAlign: "center" }}>Back</button>
+                    )}
+                    {!isFirstLogin && (
+                      <button type="button" onClick={() => setShowReset(true)}
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#a8967a", padding: "2px 0", textAlign: "center" }}>Forgot password?</button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div style={{ padding: "10px 12px", borderRadius: 10, background: "#fef2f2", border: "1px solid #fecaca", textAlign: "center" }}>
+                      <p style={{ fontSize: 12, fontWeight: 700, color: "#991b1b", margin: 0 }}>Restricted Access</p>
+                    </div>
+                    <input type="password" placeholder="Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} autoFocus
+                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #fecaca", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                    <button type="submit" style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#ef4444", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Unlock</button>
+                  </>
+                )}
+                {loginError && <p style={{ color: "#ef4444", fontSize: 12, margin: 0, textAlign: "center", fontWeight: 600 }}>{loginError}</p>}
+              </form>
+            )}
+          </div>
+
+          <p style={{ textAlign: "center", fontSize: 11, color: "#c9b89a", marginTop: 20 }}>KNUST BME1 · Class of 2029 · v{PORTAL_VERSION}</p>
+        </motion.div>
       </div>
     );
   }
 
-  const tabContent: Record<string, React.ReactNode> = {
-    Overview: (
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
-          <div>
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: "#1a1208", margin: 0 }}>Welcome back, {getFirstName(studentName)} 👋</h2>
-            <p style={{ fontSize: 13, color: "#a8967a", margin: "4px 0 0" }}>Biomedical Engineering Workspace · Year 1 Sem 2</p>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => setShowCWAModal(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", borderRadius: 12, border: "1px solid #ece8e0", background: "#fff", fontSize: 12, color: "#4a3b2c", fontWeight: 600, cursor: "pointer" }}>
-              <Calculator size={14} /> Predict CWA
-            </button>
-            <button onClick={() => setShowSurvivalKit(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", borderRadius: 12, border: "none", background: "#2d2416", fontSize: 12, color: "#fff", fontWeight: 600, cursor: "pointer" }}>
-              <BookOpen size={14} /> Survival Kit
-            </button>
-          </div>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
-          <div style={{ background: "#fff", padding: 20, borderRadius: 20, border: "1px solid #ece8e0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}><span style={{ fontSize: 12, color: "#8b7355", fontWeight: 600 }}>SEMESTER COUNTDOWN</span><Clock size={16} color="#c9a87c" /></div>
-            <p style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>{countdownText}</p>
-          </div>
-          <div style={{ background: "#fff", padding: 20, borderRadius: 20, border: "1px solid #ece8e0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}><span style={{ fontSize: 12, color: "#8b7355", fontWeight: 600 }}>OVERALL COMPLIANCE</span><Activity size={16} color="#22c55e" /></div>
-            <p style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#22c55e", fontFamily: "'Syne', sans-serif" }}>{overallAttendancePct}%</p>
-          </div>
-          <div style={{ background: "#fff", padding: 20, borderRadius: 20, border: "1px solid #ece8e0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}><span style={{ fontSize: 12, color: "#8b7355", fontWeight: 600 }}>NEXT LECTURE</span><MapPin size={16} color="#f59e0b" /></div>
-            {nextClass ? (
-              <div>
-                <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#1a1208" }}>{nextClass.course} ({nextClass.venue})</p>
-                <p style={{ margin: "2px 0 0", fontSize: 11, color: "#a8967a" }}>{nextClass.time}</p>
-              </div>
-            ) : <p style={{ margin: 0, fontSize: 13, color: "#a8967a", fontStyle: "italic" }}>No upcoming classes today</p>}
-          </div>
-        </div>
-
-        <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #ece8e0", padding: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Attendance Tracker Matrix</h3>
-            <button onClick={() => setActiveTab("Attendance")} style={{ fontSize: 12, background: "none", border: "none", color: "#c9a87c", fontWeight: 600, cursor: "pointer" }}>Manage Matrix →</button>
-          </div>
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead>
-                <tr style={{ borderBottom: "1px solid #f0ebe3", textAlign: "left" }}>
-                  <th style={{ padding: "10px 8px", color: "#8b7355", fontWeight: 600 }}>Module</th>
-                  <th style={{ padding: "10px 8px", color: "#8b7355", fontWeight: 600 }}>Attended</th>
-                  <th style={{ padding: "10px 8px", color: "#8b7355", fontWeight: 600 }}>Missed</th>
-                  <th style={{ padding: "10px 8px", color: "#8b7355", fontWeight: 600 }}>Rate</th>
-                  <th style={{ padding: "10px 8px", color: "#8b7355", fontWeight: 600 }}>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {courseStats.map((c) => (
-                  <tr key={c.code} style={{ borderBottom: "1px solid #faf8f4" }}>
-                    <td style={{ padding: "12px 8px", fontWeight: 600, color: "#2d2416" }}>{c.code}</td>
-                    <td style={{ padding: "12px 8px", color: "#22c55e", fontWeight: 600 }}>{c.attended}</td>
-                    <td style={{ padding: "12px 8px", color: "#ef4444", fontWeight: 600 }}>{c.missed}</td>
-                    <td style={{ padding: "12px 8px", fontWeight: 700 }}>{c.pct}%</td>
-                    <td style={{ padding: "12px 8px" }}><AttendanceBadge pct={c.pct} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    ),
-    Timetable: (
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <div>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1208", margin: 0 }}>Class Schedule Matrix</h2>
-          <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Weekly synchronized lecture and laboratory schedule</p>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {Object.entries(TIMETABLE).map(([day, classes]) => (
-            <div key={day} style={{ background: "#fff", borderRadius: 16, border: "1px solid #ece8e0", padding: 16 }}>
-              <h4 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#8b7355", textTransform: "uppercase" }}>{day}</h4>
-              {classes.length > 0 ? (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-                  {classes.map((c) => (
-                    <div key={c.id} style={{ display: "flex", gap: 12, padding: 12, borderRadius: 12, background: "#faf8f4", borderLeft: `4px solid ${COURSE_COLORS[c.course] || "#ece8e0"}` }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1208" }}>{c.course}</span>
-                          <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 8, background: "#fff", border: "1px solid #ece8e0", color: "#6b5438", fontWeight: 600 }}>{c.type}</span>
-                        </div>
-                        <p style={{ margin: "4px 0 0", fontSize: 11, color: "#8b7355", display: "flex", alignItems: "center", gap: 4 }}><Clock size={11} /> {c.time}</p>
-                        <p style={{ margin: "2px 0 0", fontSize: 11, color: "#a8967a", display: "flex", alignItems: "center", gap: 4 }}><MapPin size={11} /> {c.venue} · {c.lecturer}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : <p style={{ margin: 0, fontSize: 12, color: "#a8967a", fontStyle: "italic" }}>No lectures scheduled</p>}
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-    Attendance: (
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <div>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1208", margin: 0 }}>Compliance Monitor Workspace</h2>
-          <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Click columns to alternate state triggers: Attended (Green), Missed (Red), Clear (Gray)</p>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {courseStats.map((c) => (
-            <div key={c.code} style={{ background: "#fff", borderRadius: 18, border: "1px solid #ece8e0", padding: 18 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
-                <div>
-                  <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#2d2416" }}>{c.code} — {c.name}</h4>
-                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#a8967a" }}>Required semester session runs: ~ {c.totalSessions} targets</p>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#1a1208" }}>{c.pct}% Rate</span>
-                  <AttendanceBadge pct={c.pct} />
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {Array.from({ length: c.totalSessions }).map((_, idx) => {
-                  const val = (attendance[c.code] || [])[idx];
-                  let bg = "#eef0f2";
-                  if (val === 1) bg = "#22c55e";
-                  else if (val === 0) bg = "#ef4444";
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => toggleAttendance(c.code, idx)}
-                      style={{ width: 28, height: 28, borderRadius: 8, border: "none", background: bg, cursor: "pointer", transition: "transform 0.1s" }}
-                      title={`Session #${idx + 1}`}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-    Profile: (
-      <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #ece8e0", padding: 24, maxWidth: 500 }}>
-        <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>Identity Settings</h3>
-        <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 24 }}>
-          <Avatar 
-            name={studentName} 
-            avatarUrl={avatarDataUrl} 
-            size={88} 
-            showUploadHint={true} 
-            onFileSelect={handleAvatarUpload}
-            onRemove={handleAvatarRemove}
-          />
-          <div>
-            <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#1a1208" }}>{studentName}</h4>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8b7355" }}>Student ID Reference: #{studentID}</p>
-          </div>
-        </div>
-        <div style={{ paddingTop: 16, borderTop: "1px solid #f0ebe3" }}>
-          <p style={{ margin: 0, fontSize: 11, color: "#a8967a" }}>Your access credentials are saved locally in your browser workspace storage maps.</p>
-        </div>
-      </div>
-    )
+  // ============================================================
+  // DASHBOARD
+  // ============================================================
+  const S = {
+    // Shared styles object
+    card: { background: "#fff", borderRadius: 20, border: "1px solid #ece8e0", overflow: "hidden" } as React.CSSProperties,
+    label: { fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase" as const, letterSpacing: 0.8 },
+    sectionTitle: { fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 14px" },
   };
 
-  return (
-    <div style={{ minHeight: "100vh", display: "flex", background: "#fcfaf7" }}>
-      {/* DESKTOP SIDEBAR */}
-      <aside className="desktop-sidebar" style={{ width: 260, borderRight: "1px solid #f0ebe3", background: "#fff", display: "flex", flexDirection: "column", flexShrink: 0 }}>
-        <div style={{ padding: 24, borderBottom: "1px solid #f0ebe3", display: "flex", alignItems: "center", gap: 12 }}>
-          <Avatar name={studentName} avatarUrl={avatarDataUrl} onClick={() => setActiveTab("Profile")} />
-          <div style={{ overflow: "hidden" }}>
-            <p style={{ fontSize: 13, fontWeight: 700, margin: 0, color: "#1a1208", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
-            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>BME Undergraduate</p>
+  // Render the selected tab's content
+  const renderHome = () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Greeting */}
+      <div style={{ paddingBottom: 4 }}>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>
+          Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
+        </h2>
+        <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
+          {new Date().toLocaleDateString("en-GB", { weekday: "long" })} · Semester 2, Week {Math.ceil((new Date().getTime() - new Date("2026-01-12").getTime()) / (7 * 24 * 60 * 60 * 1000))}
+        </p>
+      </div>
+
+      {/* Next class alert */}
+      {nextClassInfo && (
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          style={{ ...S.card, background: "#2d2416", border: "none", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}
+              style={{ width: 8, height: 8, borderRadius: 4, background: "#f59e0b" }} />
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#f0ebe3", margin: "0 0 1px" }}>{nextClassInfo.course}</p>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
+            </div>
           </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontSize: 18, fontWeight: 800, color: "#f59e0b", margin: "0 0 1px" }}>
+              {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil / 60)}h ${nextClassInfo.minsUntil % 60}m`}
+            </p>
+            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>until class</p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Stats row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+        {[
+          { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: "#2d2416" },
+          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" },
+          { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#8b5cf6" },
+        ].map((stat) => (
+          <div key={stat.label} style={{ ...S.card, padding: "14px 12px" }}>
+            <p style={{ fontSize: 24, fontWeight: 800, color: stat.color, margin: "0 0 2px", lineHeight: 1 }}>{stat.value}</p>
+            <p style={{ ...S.label, margin: "0 0 3px" }}>{stat.label}</p>
+            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Today's classes */}
+      <div style={S.card}>
+        <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h3 style={S.sectionTitle}>Today's classes</h3>
+          <button onClick={() => setActiveTab("schedule")}
+            style={{ fontSize: 12, color: "#8b7355", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>View week →</button>
         </div>
-        
-        <nav style={{ flex: 1, padding: "20px 12px", display: "flex", flexDirection: "column", gap: 4 }}>
-          {Object.keys(tabContent).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                width: "100%", padding: "12px 16px", borderRadius: 12, border: "none",
-                background: activeTab === tab ? "#f7f3ed" : "transparent",
-                color: activeTab === tab ? "#2d2416" : "#6b5438",
-                fontWeight: activeTab === tab ? 700 : 500, fontSize: 13, textAlign: "left", cursor: "pointer"
-              }}
-            >
-              {tab}
+        {todayClasses.length === 0 ? (
+          <div style={{ padding: "20px 18px", textAlign: "center" }}>
+            <p style={{ fontSize: 13, color: "#c9b89a" }}>No classes today 🎉</p>
+          </div>
+        ) : (
+          <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
+            {todayClasses.map((cls) => {
+              const pct = getAttendancePct(cls.id, cls.weekday);
+              const color = COURSE_COLORS[cls.course] || "#8b7355";
+              return (
+                <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: "#faf8f4" }}>
+                  <div style={{ width: 4, height: 48, borderRadius: 2, background: color, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: 0 }}>{cls.course}</p>
+                      <span style={{ fontSize: 11, color: "#a8967a" }}>{cls.time.split(" - ")[0]}</span>
+                    </div>
+                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 6px" }}>{cls.venue} · {cls.lecturer}</p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#ece8e0", overflow: "hidden" }}>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
+                          style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                      </div>
+                      <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
+                    </div>
+                  </div>
+                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
+                    style={{ padding: "6px 12px", borderRadius: 10, border: "none", cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 12, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#2d2416", color: attendanceMarked[cls.id] ? "#22c55e" : "#f0ebe3", flexShrink: 0, transition: "all 0.2s" }}>
+                    {attendanceMarked[cls.id] ? "✓" : "Here"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Quick actions */}
+      <div>
+        <p style={{ ...S.label, marginBottom: 10 }}>Quick actions</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          {[
+            { icon: <Calculator size={20} color="#8b5cf6" />, label: "CWA calc", sub: "Project your grade", bg: "#f5f3ff", action: () => setShowCWAModal(true) },
+            { icon: <BookOpen size={20} color="#3b82f6" />, label: "Survival kit", sub: "Course resources", bg: "#eff6ff", action: () => setShowSurvivalKit(true) },
+            { icon: <MessageCircle size={20} color="#22c55e" />, label: "BME assistant", sub: "Ask anything", bg: "#f0fdf4", action: () => { const btn = document.querySelector('[data-chatbot-toggle]') as HTMLButtonElement; btn?.click(); } },
+            { icon: <Bell size={20} color="#f97316" />, label: "Updates", sub: "Announcements", bg: "#fff7ed", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
+          ].map((item) => (
+            <button key={item.label} onClick={item.action}
+              style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: item.bg, border: "none", cursor: "pointer", textAlign: "left", position: "relative" }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+                {item.icon}
+              </div>
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{item.sub}</p>
+              </div>
+              {item.badge && item.badge > 0 ? (
+                <span style={{ position: "absolute", top: 10, right: 10, width: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{item.badge}</span>
+              ) : null}
             </button>
           ))}
-          <button onClick={() => setShowUpdatesHub(true)} style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: "none", background: "transparent", color: "#6b5438", fontWeight: 500, fontSize: 13, textAlign: "left", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
-            <Bell size={14} /> Updates Hub {(announcements.length > 0 || files.length > 0) && <span style={{ width: 6, height: 6, borderRadius: 3, background: "#ef4444" }} />}
-          </button>
-        </nav>
-
-        <div style={{ padding: 16, borderTop: "1px solid #f0ebe3" }}>
-          <button onClick={handleLogout} style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 10, border: "none", background: "transparent", color: "#ef4444", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            <LogOut size={16} /> Disconnect Session
-          </button>
         </div>
-      </aside>
+      </div>
 
-      {/* CORE FRAME CONTAINER */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* MOBILE HEADER */}
-        <header className="mobile-header" style={{ background: "#fff", borderBottom: "1px solid #f0ebe3", padding: "12px 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <Avatar name={studentName} avatarUrl={avatarDataUrl} onClick={() => setActiveTab("Profile")} />
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: "transparent", border: "none", cursor: "pointer" }}>
-              <Menu size={24} color="#2d2416" />
-            </button>
+
+    </div>
+  );
+
+  const renderSchedule = () => {
+    const TIME_SLOTS = ["08:00", "09:00", "10:30", "11:30", "13:00", "14:00", "15:00", "16:00"];
+    const GRID_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    const GRID_DAY_MAP: Record<string, string> = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday" };
+    const GRID_STYLES: Record<string, { bg: string; text: string }> = {
+      "PHY 154": { bg: "#E6F1FB", text: "#0C447C" },
+      "ENGL 158": { bg: "#FFF3E0", text: "#633806" },
+      "SOC 152": { bg: "#FBEAF0", text: "#72243E" },
+      "COE 152": { bg: "#EAF3DE", text: "#27500A" },
+      "BME 166": { bg: "#EEEDFE", text: "#3C3489" },
+      "MATH 152 A": { bg: "#E1F5EE", text: "#085041" },
+      "MATH 152 B": { bg: "#E1F5EE", text: "#085041" },
+      "ME 166": { bg: "#FAECE7", text: "#712B13" },
+    };
+    const todayColIdx = new Date().getDay() - 1; // 0=Mon
+    const getCell = (dayKey: string, slot: string) =>
+      (TIMETABLE[GRID_DAY_MAP[dayKey]] || []).find((c) => c.time.startsWith(slot)) || null;
+
+    const GridView = () => (
+      <div style={{ overflowX: "auto", borderRadius: 16, border: "1px solid #ece8e0" }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480 }}>
+          <thead>
+            <tr>
+              <th style={{ padding: "8px 10px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: "#a8967a", fontWeight: 600, fontSize: 11, textAlign: "left", width: 52 }}>Time</th>
+              {GRID_DAYS.map((d, i) => (
+                <th key={d} style={{ padding: "8px 6px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: i === todayColIdx ? "#2d2416" : "#a8967a", fontWeight: i === todayColIdx ? 800 : 600, fontSize: 12, textAlign: "center" }}>
+                  {d}{i === todayColIdx && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", verticalAlign: "middle", marginLeft: 3 }} />}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {TIME_SLOTS.map((slot) => (
+              <tr key={slot}>
+                <td style={{ padding: "4px 8px", borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", color: "#a8967a", fontSize: 10, fontWeight: 600, background: "#faf8f4", whiteSpace: "nowrap", verticalAlign: "middle" }}>{slot}</td>
+                {GRID_DAYS.map((d) => {
+                  const cls = getCell(d, slot);
+                  const st = cls ? (GRID_STYLES[cls.course] || { bg: "#f7f3ed", text: "#6b5438" }) : null;
+                  return (
+                    <td key={d} style={{ padding: 4, borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", height: 50, verticalAlign: "top", background: cls ? st!.bg : "transparent" }}>
+                      {cls && (
+                        <div style={{ padding: "4px 6px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: st!.text, lineHeight: 1.2 }}>{cls.course}</span>
+                          <span style={{ fontSize: 10, color: st!.text, opacity: 0.7, marginTop: 2 }}>{cls.venue}</span>
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ padding: "10px 14px", borderTop: "1px solid #ece8e0", display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {Object.entries(GRID_STYLES).filter(([k]) => !k.includes(" B")).map(([code, st]) => (
+            <span key={code} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: "#6b5438" }}>
+              <span style={{ width: 8, height: 8, borderRadius: 2, background: st.text, display: "inline-block", opacity: 0.75 }} />
+              {code.replace(" A", "")}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
+          <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
+            {(["Today", "Week", "Grid"] as const).map((v) => {
+              const key = v.toLowerCase() as "today" | "week" | "grid";
+              const active = scheduleView === key;
+              return (
+                <button key={v} onClick={() => { setScheduleView(key); setShowWeekView(key === "week"); }}
+                  style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? "#2d2416" : "transparent", color: active ? "#f0ebe3" : "#8b7355", transition: "all 0.15s" }}>
+                  {v}
+                </button>
+              );
+            })}
           </div>
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} style={{ overflow: "hidden", marginTop: 12 }}>
-                {Object.keys(tabContent).map((tab) => (
-                  <button key={tab} onClick={() => { setActiveTab(tab); setMobileMenuOpen(false); }} style={{ width: "100%", padding: "12px 8px", border: "none", background: "transparent", textAlign: "left", fontSize: 14, color: activeTab === tab ? "#2d2416" : "#6b5438", fontWeight: activeTab === tab ? 700 : 500 }}>
-                    {tab}
-                  </button>
-                ))}
-                <button onClick={() => { setShowUpdatesHub(true); setMobileMenuOpen(false); }} style={{ width: "100%", padding: "12px 8px", border: "none", background: "transparent", color: "#6b5438", textAlign: "left", fontSize: 14, fontWeight: 500 }}>
-                  Updates Hub
-                </button>
-                <button onClick={handleLogout} style={{ width: "100%", padding: "12px 8px", border: "none", background: "transparent", color: "#ef4444", textAlign: "left", fontSize: 14, fontWeight: 600 }}>
-                  Disconnect Session
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </header>
+        </div>
 
-        {/* CONTROLLER MAIN WINDOW */}
-        <main style={{ flex: 1, padding: "24px 20px 40px", overflowY: "auto" }} className="content-area">
-          <AnimatePresence mode="wait">
-            <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
-              {tabContent[activeTab]}
-            </motion.div>
-          </AnimatePresence>
+        {scheduleView === "grid" ? <GridView /> : (
+          (scheduleView === "week" ? daysList : [todayName]).map((day) => {
+            const classes = TIMETABLE[day] || [];
+            return (
+              <div key={day}>
+                {scheduleView === "week" && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
+                    <span style={{ fontSize: 12, fontWeight: 700, color: day === todayName ? "#2d2416" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>
+                      {day} {day === todayName && "· Today"}
+                    </span>
+                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
+                  </div>
+                )}
+                {classes.length === 0 ? (
+                  <div style={{ padding: "12px 0", textAlign: "center" }}>
+                    <p style={{ fontSize: 12, color: "#c9b89a" }}>No classes</p>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {classes.map((cls) => {
+                      const pct = getAttendancePct(cls.id, cls.weekday);
+                      const color = COURSE_COLORS[cls.course] || "#8b7355";
+                      return (
+                        <div key={cls.id} style={{ ...S.card, padding: "14px 16px" }}>
+                          <div style={{ display: "flex", gap: 12 }}>
+                            <div style={{ width: 4, borderRadius: 2, background: color, flexShrink: 0 }} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
+                                <div>
+                                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{cls.course}</p>
+                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px" }}>{cls.lecturer}</p>
+                                  <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
+                                  </div>
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                                  <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
+                                    {cls.type}
+                                  </span>
+                                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
+                                    style={{ padding: "5px 12px", borderRadius: 10, border: `1px solid ${attendanceMarked[cls.id] ? "#bbf7d0" : "#ece8e0"}`, cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 11, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#fff", color: attendanceMarked[cls.id] ? "#16a34a" : "#6b5438" }}>
+                                    {attendanceMarked[cls.id] ? "✓ Present" : "Mark present"}
+                                  </button>
+                                </div>
+                              </div>
+                              <div style={{ marginTop: 8 }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                                  <span style={{ fontSize: 11, color: "#a8967a" }}>{attendance[cls.id] || 0}/{SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} attended</span>
+                                  <AttendanceBadge pct={pct} />
+                                </div>
+                                <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
+                                  <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
+                                    style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+    );
+  };
+
+  const renderProgress = () => {
+    const allClasses = Object.values(TIMETABLE).flat();
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ paddingBottom: 4 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
+          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance & study timer</p>
+        </div>
+
+        {/* Attendance summary */}
+        <div style={S.card}>
+          <div style={{ padding: "16px 18px 12px" }}>
+            <h3 style={{ ...S.sectionTitle, marginBottom: 6 }}>Attendance</h3>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 36, fontWeight: 800, color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" }}>{avgAttPct}%</span>
+              <div>
+                <p style={{ fontSize: 12, color: "#1a1208", fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
+                <AttendanceBadge pct={avgAttPct} />
+              </div>
+            </div>
+          </div>
+          <div style={{ padding: "0 16px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {allClasses.map((cls) => {
+              const pct = getAttendancePct(cls.id, cls.weekday);
+              const color = COURSE_COLORS[cls.course] || "#8b7355";
+              return (
+                <div key={cls.id}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#1a1208" }}>
+                      <span style={{ width: 8, height: 8, borderRadius: 4, background: color, display: "inline-block" }} />
+                      {cls.course}
+                    </span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }}>{pct}%</span>
+                  </div>
+                  <div style={{ height: 6, borderRadius: 3, background: "#f0ebe3", overflow: "hidden" }}>
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
+                      style={{ height: "100%", borderRadius: 3, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                  </div>
+                  <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Study timer */}
+        <div style={S.card}>
+          <div style={{ padding: "16px 18px 14px" }}>
+            <h3 style={{ ...S.sectionTitle, marginBottom: 4 }}>Focus timer</h3>
+            <p style={{ fontSize: 12, color: "#a8967a", margin: "0 0 16px" }}>
+              {focusMins}min focus · {Math.round(focusMins / 5)}min break · {timerSessions} sessions today
+            </p>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <p style={{ fontSize: 11, color: "#a8967a", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.8 }}>
+                {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
+              </p>
+              <p style={{ fontSize: 56, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "monospace", letterSpacing: 2, lineHeight: 1 }}>
+                {fmtTime(timerSeconds)}
+              </p>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 16 }}>
+              <button onClick={() => { if (!timerActive) { setTimerSeconds(focusMins * 60); setTimerMode("focus"); } setTimerActive((a) => !a); }}
+                style={{ width: 48, height: 48, borderRadius: 24, border: "none", background: "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {timerActive ? <span style={{ width: 14, height: 14, borderLeft: "4px solid #f0ebe3", borderRight: "4px solid #f0ebe3", display: "inline-block" }} /> : <Play size={18} color="#f0ebe3" fill="#f0ebe3" />}
+              </button>
+            </div>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <span style={{ ...S.label }}>Focus duration</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#2d2416" }}>
+                  {focusMins >= 60 ? `${Math.floor(focusMins / 60)}h${focusMins % 60 > 0 ? ` ${focusMins % 60}m` : ""}` : `${focusMins}m`}
+                </span>
+              </div>
+              <input type="range" min={20} max={120} step={5} value={focusMins}
+                onChange={(e) => { const v = parseInt(e.target.value); setFocusMins(v); if (!timerActive) setTimerSeconds(v * 60); }}
+                style={{ width: "100%", accentColor: "#2d2416", cursor: "pointer", height: 6, borderRadius: 3 }} />
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+                {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => <span key={l} style={{ fontSize: 9, color: "#c9b89a" }}>{l}</span>)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Semester milestones */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+          {[
+            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
+            { label: "Exams", sub: "Aug 17", days: daysToExams, color: "#ef4444" },
+            { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
+          ].map((m) => (
+            <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+                {m.days <= 0 ? "✓" : m.days}
+              </p>
+              <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
+              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderProfile = () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Profile card */}
+      <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
+        <Avatar name={studentName} size={72} />
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
+        <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
+        {isAdmin && (
+          <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
+            Admin Panel →
+          </Link>
+        )}
+      </div>
+
+      {/* Actions */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {[
+          { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
+          { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei", color: "#f0fdf4" },
+        ].map((item) => (
+          <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+            style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
+            <span style={{ fontSize: 24 }}>{item.icon}</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{item.sub}</p>
+            </div>
+            <ChevronRight size={16} color="#c9b89a" />
+          </a>
+        ))}
+      </div>
+
+      {/* Portal info */}
+      <div style={{ ...S.card, padding: "16px 18px" }}>
+        <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button onClick={handleLogout}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
+        <LogOut size={16} /> Sign out
+      </button>
+    </div>
+  );
+
+  // Tab content map
+  const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), profile: renderProfile() };
+  const tabs = [
+    { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
+    { id: "schedule", label: "Timetable", icon: <Calendar size={20} /> },
+    { id: "progress", label: "Progress", icon: <BarChart2 size={20} /> },
+    { id: "profile", label: "Profile", icon: <User size={20} /> },
+  ];
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
+      <style>{`
+       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&display=swap');;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
+        ::-webkit-scrollbar { width: 0; }
+        .syne { font-family: 'Syne', sans-serif !important; }
+      `}</style>
+
+      {/* Full-bleed flex layout */}
+      <div style={{ display: "flex", minHeight: "100vh" }}>
+
+        {/* DESKTOP SIDEBAR */}
+        <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: "1px solid #ece8e0", background: "#faf8f4", position: "sticky", top: 0, height: "100vh" }}
+          className="desktop-sidebar">
+          {/* Logo */}
+          <div style={{ padding: "0 20px 28px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 14, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>BME1 Portal</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>KNUST · Semester 2</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Nav */}
+          <nav style={{ flex: 1, padding: "0 12px" }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
+            {tabs.map((tab) => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? "#1a1208" : "#8b7355", fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
+                <span style={{ opacity: activeTab === tab.id ? 1 : 0.55, color: activeTab === tab.id ? "#2d2416" : "#a8967a" }}>{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+
+            {/* Extra links in sidebar */}
+            <div style={{ marginTop: 20, borderTop: "1px solid #ece8e0", paddingTop: 16 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
+              {[
+                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: "#8b5cf6" },
+                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: "#3b82f6" },
+                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: "#f97316", badge: announcements.length },
+                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: "#6366f1" },
+              ].map((item) => (
+                item.href ? (
+                  <Link key={item.label} href={item.href}
+                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, textDecoration: "none", color: "#6b5438", fontSize: 13, fontWeight: 500, marginBottom: 2, position: "relative" }}>
+                    <span style={{ color: item.color }}>{item.icon}</span>{item.label}
+                  </Link>
+                ) : (
+                  <button key={item.label} onClick={item.action}
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: "#6b5438", fontSize: 13, fontWeight: 500, fontFamily: "'Plus Jakarta Sans', sans-serif", textAlign: "left", marginBottom: 2, position: "relative" }}>
+                    <span style={{ color: item.color }}>{item.icon}</span>{item.label}
+                    {item.badge && item.badge > 0 ? <span style={{ marginLeft: "auto", minWidth: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>{item.badge}</span> : null}
+                  </button>
+                )
+              ))}
+            </div>
+          </nav>
+
+          {/* User card at bottom */}
+          <div style={{ padding: "16px 20px 20px", borderTop: "1px solid #ece8e0" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: "#fff", border: "1px solid #ece8e0" }}>
+              <Avatar name={studentName} size={36} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
+                <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{studentID}</p>
+              </div>
+              <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
+                <LogOut size={15} color="#c9b89a" />
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT — full width, scrolls independently */}
+        <main style={{ flex: 1, minWidth: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
+          {/* Mobile top header */}
+          <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50, background: "#f7f3ed", borderBottom: "1px solid #ece8e0", padding: "0 16px" }}>
+            {/* Top row: logo + avatar */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 10, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800 }}>BME</span>
+                </div>
+                <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
+              </div>
+              <Avatar name={studentName} size={32} />
+            </div>
+            {/* Scrollable pill tabs */}
+            <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
+              {tabs.map((tab) => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
+                  {React.cloneElement(tab.icon, { size: 14 })}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Page content with generous desktop padding */}
+          <div style={{ flex: 1, padding: "24px 20px 40px" }} className="content-area">
+            <AnimatePresence mode="wait">
+              <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
+                {tabContent[activeTab]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </main>
       </div>
 
-      {/* FLOATING ARTIFICIAL INTELLIGENCE CHATBOT */}
-      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+{/* Copyright Footer Links */}
+<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '12px', color: '#a8967a' }}>
+<div className="brand-line">
+<span>Built by</span> <a className="brand" style={{ color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer">Asante Inc.</a>
+</div>
+<div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
+</div>
 
-      {/* MODAL PORTAL ATTACHMENTS */}
+
+{/* Chatbot */}
+{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+
+      {/* Modals */}
       <AnimatePresence>
         {showCWAModal && <CWAModal onClose={() => setShowCWAModal(false)} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
         {showUpdatesHub && <UpdatesModal announcements={announcements} files={files} onClose={() => setShowUpdatesHub(false)} />}
       </AnimatePresence>
 
-      {/* LAYOUT ARCHITECTURE RESPONSIVE CSS SCOPES */}
+      {/* Responsive CSS */}
       <style>{`
-        .desktop-sidebar { display: flex !important; }
-        .mobile-header { display: none !important; }
-        @media (max-width: 767px) {
-          .desktop-sidebar { display: none !important; }
-          .mobile-header { display: block !important; }
-          .content-area { padding: 20px 16px 36px !important; }
+        .desktop-sidebar { display: none !important; }
+        .mobile-header { display: block !important; }
+        .content-area { padding: 20px 16px 36px !important; }
+        @media (min-width: 768px) {
+          .desktop-sidebar { display: flex !important; }
+          .mobile-header { display: none !important; }
+          .content-area { padding: 36px 48px 48px !important; }
+        }
+        @media (min-width: 1200px) {
+          .content-area { padding: 40px 72px 56px !important; }
         }
       `}</style>
     </div>
