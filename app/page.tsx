@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Calculator, MessageCircle, BookOpen, Bell, LogOut, Activity,
   Download, Upload, CheckCircle, Send, Zap, Coffee, Laugh,
-  Play, ChevronRight, X, ExternalLink, MessageSquare, Home,
+  Play, ChevronRight, X, ExternalLink, MessageSquare, Home as HomeIcon,
   Calendar, BarChart2, User, Menu, ChevronDown, Clock, MapPin,
   TrendingUp, AlertCircle, FileText, Star
 } from "lucide-react";
@@ -1221,7 +1221,7 @@ export default function Home() {
   // Tab content map
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), profile: renderProfile() };
   const tabs = [
-    { id: "home", label: "Home", icon: <Home size={20} /> },
+    { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
     { id: "schedule", label: "Timetable", icon: <Calendar size={20} /> },
     { id: "progress", label: "Progress", icon: <BarChart2 size={20} /> },
     { id: "profile", label: "Profile", icon: <User size={20} /> },
