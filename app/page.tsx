@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -92,23 +92,23 @@ const COURSE_COLORS: Record<string, string> = {
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: "m1", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", totalClasses: 4 },
-    { id: "m2", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", totalClasses: 4 },
+    { id: "m1", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", weekday: 1 },
+    { id: "m2", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", weekday: 1 },
   ],
   Tuesday: [
-    { id: "t1", time: "08:00 - 09:55", course: "SOC 152", venue: "PB012", lecturer: "O. K. J. R. Kwabena", type: "Lecture", totalClasses: 4 },
-    { id: "t2", time: "10:30 - 12:25", course: "COE 152", venue: "PB020", lecturer: "D. A. Addo", type: "Lecture", totalClasses: 4 },
-    { id: "t3", time: "13:00 - 14:55", course: "BME 166", venue: "PB020", lecturer: "C. Apprey", type: "Lecture", totalClasses: 4 },
+    { id: "t1", time: "08:00 - 09:55", course: "SOC 152", venue: "PB012", lecturer: "O. K. J. R. Kwabena", type: "Lecture", weekday: 2 },
+    { id: "t2", time: "10:30 - 12:25", course: "COE 152", venue: "PB020", lecturer: "D. A. Addo", type: "Lecture", weekday: 2 },
+    { id: "t3", time: "13:00 - 14:55", course: "BME 166", venue: "PB020", lecturer: "C. Apprey", type: "Lecture", weekday: 2 },
   ],
   Wednesday: [
-    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-GF", lecturer: "J. K. K. Asamoah", type: "Lecture", totalClasses: 3 },
+    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-GF", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
   ],
   Thursday: [
-    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-FF1", lecturer: "J. K. K. Asamoah", type: "Lecture", totalClasses: 3 },
+    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-FF1", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
   ],
   Friday: [
-    { id: "f1", time: "08:00 - 09:55", course: "ME 166", venue: "NEB-FF2", lecturer: "K. O. Amoabeng", type: "Lecture", totalClasses: 3 },
-    { id: "f2", time: "10:30 - 11:25", course: "COE 152", venue: "Lab", lecturer: "D. A. Addo", type: "Lab", totalClasses: 3 },
+    { id: "f1", time: "08:00 - 09:55", course: "ME 166", venue: "NEB-FF2", lecturer: "K. O. Amoabeng", type: "Lecture", weekday: 5 },
+    { id: "f2", time: "10:30 - 11:25", course: "COE 152", venue: "Lab", lecturer: "D. A. Addo", type: "Lab", weekday: 5 },
   ],
 };
 
@@ -116,23 +116,23 @@ const SURVIVAL_KIT = [
   {
     course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
     resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
-                { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i"},
-                { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl"},
-                ]
+    { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
+    { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
+    ]
   },
 
   {
     course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
     resources: [
-      { label: "Basic Electronics-KNUST(Maths Hub GH)", url:"https://www.youtube.com/playlist?list=PLldc0i2lkatVFhbnQRS-dOcI6xRdTJ0Lm"},
+      { label: "Basic Electronics-KNUST(Maths Hub GH)", url: "https://www.youtube.com/playlist?list=PLldc0i2lkatVFhbnQRS-dOcI6xRdTJ0Lm" },
       { label: "SemiConductors", url: "https://youtu.be/ErcH_OuCaNY?si=woPM9OXzL6NrihZe" },
       { label: "Half-Wave Rectification", url: "https://youtu.be/CpcJxhFnmMo?si=8l5HO3BrsVDO3fgk" },
       { label: "Full-Wave Rectification", url: "https://youtu.be/quyqtaKIr78?si=pMMeyYYVmKqkhHGg" },
       { label: "Full-Wave Rectification (Demonstration)", url: "https://youtu.be/dNi_T0P5TLk?si=spqbtmaZ8CEkZyWk" },
       { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
-      { label: "Solving Diode Circuits", url:"https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh"},
-      { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url:"https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL"},
-    
+      { label: "Solving Diode Circuits", url: "https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh" },
+      { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url: "https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL" },
+
     ]
   },
   {
@@ -140,9 +140,9 @@ const SURVIVAL_KIT = [
     resources: [
       { label: "Biochemistry (Ninja Nerd) Playlist ", url: "https://www.youtube.com/playlist?list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
       { label: "Metabolism (Ninja Nerd) Playlist", url: "https://www.youtube.com/watch?v=4eLjRcHnMCk&list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
-      { label: "Drug Metabolism", url: "https://youtu.be/qvucMHUVZA4?si=6w3bg-OtR_dZxIt6"},
-      { label: "Pharmacokinetics simplified", url:"https://youtu.be/16wNysLC9Fs?si=GUyEDdHymiWSSvD"},
-      { label: "Fatty Acid Metabolism", url:"https://youtu.be/uYutpPY7xcw?si=OcIViUwwzDZLqNAh"},
+      { label: "Drug Metabolism", url: "https://youtu.be/qvucMHUVZA4?si=6w3bg-OtR_dZxIt6" },
+      { label: "Pharmacokinetics simplified", url: "https://youtu.be/16wNysLC9Fs?si=GUyEDdHymiWSSvD" },
+      { label: "Fatty Acid Metabolism", url: "https://youtu.be/uYutpPY7xcw?si=OcIViUwwzDZLqNAh" },
     ]
   },
   {
@@ -150,32 +150,32 @@ const SURVIVAL_KIT = [
     resources: [
       { label: "Engineering Thermodynamics I Online Course", url: "https://www.youtube.com/playlist?list=PLISIF5ACui17dQ5VbzxNu9QtMnfKb856n" },
       { label: "First Law of Thermodynamics Open Systems 1(Control Volume Analysis)", url: "https://www.youtube.com/watch?v=VBdapBeycv4&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH" },
-      { label: "First Law of Thermodynamics Open Systems 2(Enthalpy)", url: "https://www.youtube.com/watch?v=ReOaRZA2eLo&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=2"},
-      { label: "Turbines, Throttles, Nozzles, Fans, and Heaters", url: "https://www.youtube.com/watch?v=WAHa3y7NEsk&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=5"},
-      { label: "Entropy: Thermodynamics - Second Law", url:"https://www.youtube.com/watch?v=QBd2zraOe2k"}, 
-      ] 
+      { label: "First Law of Thermodynamics Open Systems 2(Enthalpy)", url: "https://www.youtube.com/watch?v=ReOaRZA2eLo&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=2" },
+      { label: "Turbines, Throttles, Nozzles, Fans, and Heaters", url: "https://www.youtube.com/watch?v=WAHa3y7NEsk&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=5" },
+      { label: "Entropy: Thermodynamics - Second Law", url: "https://www.youtube.com/watch?v=QBd2zraOe2k" },
+    ]
   },
   {
     course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
-    resources: [{ label: "Density", url:"youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
-                { label: "Fortins Barometer", url:"https://www.youtube.com/watch?v=S4pUMNdSIYk"},
-                { label: "Variation of atmospheric pressure with altitude", url:"https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p"},
-                { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url:"https://www.youtube.com/watch?v=xTAfyc06ZxQ"},
-                { label: "Bernoulli's Principle Demo: Levitated Balls", url:"https://www.youtube.com/watch?v=Ye3QPgDdJNg"},
-                { label: "Torricelli's Theorem -Explained", url:"https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU"},
-                { label: "Torricelli's Law in 2 minutes", url:"https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S"},
-                { label: "Torricelli's Theorem practice problems", url:"https://www.youtube.com/watch?v=046-DygKrhc"},
-                { label: "What is pitot tube? 3D Animation", url:"https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6"},
-                { label: "Pitot Static Tube Introduction & Example", url:"https://www.youtube.com/watch?v=VOMO7zsvHsM"},
-                { label: "Streamlines and Velocity", url:"https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_"},
-                { label: "Streamlines and Velocity 2", url:"https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn"},
-                { label: "Steady vs Unsteady Flow", url:"https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq"},
-                { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D"},
-                { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url:"https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa"},
-                { label: "Viscosity of Fluids& Velocity Gradient", url:"https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD"},
-                { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url:"https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k"},
-      
-      ]
+    resources: [{ label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
+    { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
+    { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
+    { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
+    { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
+    { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
+    { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
+    { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
+    { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
+    { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
+    { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
+    { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
+    { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
+    { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
+    { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
+    { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
+    { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
+
+    ]
   },
 ];
 
@@ -184,6 +184,45 @@ const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
 const MID_SEM_START = new Date("2026-07-06T00:00:00");
 const EXAMS_START = new Date("2026-08-17T00:00:00");
 const PORTAL_VERSION = "2.1.0";
+
+// ── Semester session calculation ─────────────────────────────────────────────
+const SEM_START = new Date("2026-05-25T00:00:00");
+
+/** Periods that contain no teaching: mid-sem break + exam period */
+const EXCLUDED_RANGES: [Date, Date][] = [
+  [new Date("2026-07-06T00:00:00"), new Date("2026-07-10T00:00:00")],
+  [new Date("2026-08-17T00:00:00"), new Date("2026-09-04T00:00:00")],
+];
+
+/** Returns true if the given date falls inside an excluded period. */
+const isExcluded = (date: Date): boolean =>
+  EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
+
+/**
+ * Counts how many teaching occurrences of a given ISO weekday (0 Sun … 6 Sat)
+ * fall between SEM_START and END_OF_SEM_DATE, excluding break/exam periods.
+ */
+const calcTotalSemesterSessions = (weekday: number): number => {
+  let count = 0;
+  const cursor = new Date(SEM_START);
+  while (cursor <= END_OF_SEM_DATE) {
+    if (cursor.getDay() === weekday && !isExcluded(new Date(cursor))) count++;
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return count;
+};
+
+/** Pre-computed totals: Mon=1 … Fri=5 */
+const SESSIONS_BY_WEEKDAY: Record<number, number> = {
+  1: calcTotalSemesterSessions(1),
+  2: calcTotalSemesterSessions(2),
+  3: calcTotalSemesterSessions(3),
+  4: calcTotalSemesterSessions(4),
+  5: calcTotalSemesterSessions(5),
+};
+
+/** Courses below this attendance % are flagged "At Risk" */
+const AT_RISK_THRESHOLD = 70;
 
 const timeToMinutes = (t: string) => {
   const [h, m] = t.split(":").map(Number);
@@ -206,8 +245,8 @@ const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
 };
 
 const AttendanceBadge = ({ pct }: { pct: number }) => {
-  const color = pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
-  const label = pct >= 75 ? "On track" : pct >= 50 ? "Keep up" : "At risk";
+  const color = pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
+  const label = pct >= AT_RISK_THRESHOLD ? "On track" : pct >= 50 ? "At Risk ⚠" : "At Risk 🚨";
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: color + "18", color }}>
       <span style={{ width: 6, height: 6, borderRadius: 3, background: color, display: "inline-block" }} /> {label}
@@ -565,7 +604,7 @@ export default function Home() {
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       const savedAnn = localStorage.getItem("bme-announcements");
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
- const savedFiles = localStorage.getItem("bme-files");
+      const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
     } // Closes the 'if (typeof window !== "undefined")' block
 
@@ -575,7 +614,7 @@ export default function Home() {
     setDaysToExams(Math.ceil((EXAMS_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
   }, []); // Closes the useEffect hook
 
- 
+
   // Timer tick
   useEffect(() => {
     if (timerActive) {
@@ -671,7 +710,7 @@ export default function Home() {
     const CHAT_ID = "8627616350";
     const time = new Date().toLocaleString("en-GB", { timeZone: "Africa/Accra", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
     const msg = `${isFirst ? "🆕" : "🔁"} *BME Portal Login*\n👤 ${name}\n🆔 ${id}\n🕐 ${time} (Ghana)\n${isFirst ? "✨ First time user" : "↩️ Returning user"}`;
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" }) }).catch(() => {});
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" }) }).catch(() => { });
   };
 
   const proceedToLogin = (id: string, adminOverride = false) => {
@@ -696,28 +735,44 @@ export default function Home() {
 
   const markAttendance = (id: string) => {
     if (attendanceMarked[id]) return;
+    // Increment the sessionsAttended counter for this class slot
     const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
     const newMarked = { ...attendanceMarked, [id]: true };
-    setAttendance(newAtt); setAttendanceMarked(newMarked);
+    setAttendance(newAtt);
+    setAttendanceMarked(newMarked);
     if (studentID !== GHOST_ID) {
       localStorage.setItem("bme-attendance", JSON.stringify(newAtt));
       localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
     }
   };
 
-  const getAttendancePct = (classId: string, total: number) => total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
+  /**
+   * Returns the attendance percentage for a class slot.
+   * `weekday` is the ISO weekday (1=Mon…5=Fri); we derive the expected
+   * total from SESSIONS_BY_WEEKDAY so it updates automatically each semester.
+   * Falls back to the legacy `totalClasses` field if weekday is absent.
+   */
+  const getAttendancePct = (classId: string, weekday?: number, legacyTotal?: number): number => {
+    const total = weekday ? (SESSIONS_BY_WEEKDAY[weekday] ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
+    return total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
+  };
+
+  /** Returns true when attendance % is below the at-risk threshold. */
+  const isAtRisk = (classId: string, weekday?: number, legacyTotal?: number): boolean =>
+    getAttendancePct(classId, weekday, legacyTotal) < AT_RISK_THRESHOLD;
   const fmtTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
   const getFirstName = (name: string) => name.split(" ")[0];
   const daysList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const todayName = daysList[new Date().getDay() - 1] || "Weekend";
   const todayClasses = TIMETABLE[todayName] || [];
   const totalCreditHours = COURSE_CREDITS.reduce((s, c) => s + c.credits, 0);
-  const avgAttPct = (() => {
+  const avgAttPct = useMemo(() => {
     const all = Object.values(TIMETABLE).flat();
     if (!all.length) return 0;
-    const sum = all.reduce((s, c) => s + getAttendancePct(c.id, c.totalClasses), 0);
+    const sum = all.reduce((s, c) => s + getAttendancePct(c.id, c.weekday), 0);
     return Math.round(sum / all.length);
-  })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attendance]);
   const focusSessionsToday = timerSessions;
 
   if (!mounted) return (
@@ -932,7 +987,7 @@ export default function Home() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
         {[
           { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: "#2d2416" },
-          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= 75 ? "On track ✓" : "Keep up ⚠", color: avgAttPct >= 75 ? "#22c55e" : "#f59e0b" },
+          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" },
           { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#8b5cf6" },
         ].map((stat) => (
           <div key={stat.label} style={{ ...S.card, padding: "14px 12px" }}>
@@ -957,7 +1012,7 @@ export default function Home() {
         ) : (
           <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
             {todayClasses.map((cls) => {
-              const pct = getAttendancePct(cls.id, cls.totalClasses);
+              const pct = getAttendancePct(cls.id, cls.weekday);
               const color = COURSE_COLORS[cls.course] || "#8b7355";
               return (
                 <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: "#faf8f4" }}>
@@ -971,7 +1026,7 @@ export default function Home() {
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#ece8e0", overflow: "hidden" }}>
                         <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
-                          style={{ height: "100%", borderRadius: 2, background: pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                          style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                       </div>
                       <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
                     </div>
@@ -1014,23 +1069,23 @@ export default function Home() {
         </div>
       </div>
 
-   
+
     </div>
   );
 
   const renderSchedule = () => {
-    const TIME_SLOTS = ["08:00","09:00","10:30","11:30","13:00","14:00","15:00","16:00"];
-    const GRID_DAYS = ["Mon","Tue","Wed","Thu","Fri"];
-    const GRID_DAY_MAP: Record<string, string> = { Mon:"Monday",Tue:"Tuesday",Wed:"Wednesday",Thu:"Thursday",Fri:"Friday" };
+    const TIME_SLOTS = ["08:00", "09:00", "10:30", "11:30", "13:00", "14:00", "15:00", "16:00"];
+    const GRID_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    const GRID_DAY_MAP: Record<string, string> = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday" };
     const GRID_STYLES: Record<string, { bg: string; text: string }> = {
-      "PHY 154":    { bg: "#E6F1FB", text: "#0C447C" },
-      "ENGL 158":   { bg: "#FFF3E0", text: "#633806" },
-      "SOC 152":    { bg: "#FBEAF0", text: "#72243E" },
-      "COE 152":    { bg: "#EAF3DE", text: "#27500A" },
-      "BME 166":    { bg: "#EEEDFE", text: "#3C3489" },
+      "PHY 154": { bg: "#E6F1FB", text: "#0C447C" },
+      "ENGL 158": { bg: "#FFF3E0", text: "#633806" },
+      "SOC 152": { bg: "#FBEAF0", text: "#72243E" },
+      "COE 152": { bg: "#EAF3DE", text: "#27500A" },
+      "BME 166": { bg: "#EEEDFE", text: "#3C3489" },
       "MATH 152 A": { bg: "#E1F5EE", text: "#085041" },
       "MATH 152 B": { bg: "#E1F5EE", text: "#085041" },
-      "ME 166":     { bg: "#FAECE7", text: "#712B13" },
+      "ME 166": { bg: "#FAECE7", text: "#712B13" },
     };
     const todayColIdx = new Date().getDay() - 1; // 0=Mon
     const getCell = (dayKey: string, slot: string) =>
@@ -1083,92 +1138,92 @@ export default function Home() {
     );
 
     return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
-        <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
-          {(["Today", "Week", "Grid"] as const).map((v) => {
-            const key = v.toLowerCase() as "today" | "week" | "grid";
-            const active = scheduleView === key;
-            return (
-              <button key={v} onClick={() => { setScheduleView(key); setShowWeekView(key === "week"); }}
-                style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? "#2d2416" : "transparent", color: active ? "#f0ebe3" : "#8b7355", transition: "all 0.15s" }}>
-                {v}
-              </button>
-            );
-          })}
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
+          <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
+            {(["Today", "Week", "Grid"] as const).map((v) => {
+              const key = v.toLowerCase() as "today" | "week" | "grid";
+              const active = scheduleView === key;
+              return (
+                <button key={v} onClick={() => { setScheduleView(key); setShowWeekView(key === "week"); }}
+                  style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? "#2d2416" : "transparent", color: active ? "#f0ebe3" : "#8b7355", transition: "all 0.15s" }}>
+                  {v}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {scheduleView === "grid" ? <GridView /> : (
-        (scheduleView === "week" ? daysList : [todayName]).map((day) => {
-          const classes = TIMETABLE[day] || [];
-          return (
-            <div key={day}>
-              {scheduleView === "week" && (
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: day === todayName ? "#2d2416" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                    {day} {day === todayName && "· Today"}
-                  </span>
-                  <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
-                </div>
-              )}
-              {classes.length === 0 ? (
-                <div style={{ padding: "12px 0", textAlign: "center" }}>
-                  <p style={{ fontSize: 12, color: "#c9b89a" }}>No classes</p>
-                </div>
-              ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {classes.map((cls) => {
-                    const pct = getAttendancePct(cls.id, cls.totalClasses);
-                    const color = COURSE_COLORS[cls.course] || "#8b7355";
-                    return (
-                      <div key={cls.id} style={{ ...S.card, padding: "14px 16px" }}>
-                        <div style={{ display: "flex", gap: 12 }}>
-                          <div style={{ width: 4, borderRadius: 2, background: color, flexShrink: 0 }} />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
-                              <div>
-                                <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{cls.course}</p>
-                                <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px" }}>{cls.lecturer}</p>
-                                <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                                  <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
-                                  <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
+        {scheduleView === "grid" ? <GridView /> : (
+          (scheduleView === "week" ? daysList : [todayName]).map((day) => {
+            const classes = TIMETABLE[day] || [];
+            return (
+              <div key={day}>
+                {scheduleView === "week" && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
+                    <span style={{ fontSize: 12, fontWeight: 700, color: day === todayName ? "#2d2416" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>
+                      {day} {day === todayName && "· Today"}
+                    </span>
+                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
+                  </div>
+                )}
+                {classes.length === 0 ? (
+                  <div style={{ padding: "12px 0", textAlign: "center" }}>
+                    <p style={{ fontSize: 12, color: "#c9b89a" }}>No classes</p>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {classes.map((cls) => {
+                      const pct = getAttendancePct(cls.id, cls.weekday);
+                      const color = COURSE_COLORS[cls.course] || "#8b7355";
+                      return (
+                        <div key={cls.id} style={{ ...S.card, padding: "14px 16px" }}>
+                          <div style={{ display: "flex", gap: 12 }}>
+                            <div style={{ width: 4, borderRadius: 2, background: color, flexShrink: 0 }} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
+                                <div>
+                                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{cls.course}</p>
+                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px" }}>{cls.lecturer}</p>
+                                  <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
+                                  </div>
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                                  <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
+                                    {cls.type}
+                                  </span>
+                                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
+                                    style={{ padding: "5px 12px", borderRadius: 10, border: `1px solid ${attendanceMarked[cls.id] ? "#bbf7d0" : "#ece8e0"}`, cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 11, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#fff", color: attendanceMarked[cls.id] ? "#16a34a" : "#6b5438" }}>
+                                    {attendanceMarked[cls.id] ? "✓ Present" : "Mark present"}
+                                  </button>
                                 </div>
                               </div>
-                              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                                <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
-                                  {cls.type}
-                                </span>
-                                <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
-                                  style={{ padding: "5px 12px", borderRadius: 10, border: `1px solid ${attendanceMarked[cls.id] ? "#bbf7d0" : "#ece8e0"}`, cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 11, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#fff", color: attendanceMarked[cls.id] ? "#16a34a" : "#6b5438" }}>
-                                  {attendanceMarked[cls.id] ? "✓ Present" : "Mark present"}
-                                </button>
-                              </div>
-                            </div>
-                            <div style={{ marginTop: 8 }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                <span style={{ fontSize: 11, color: "#a8967a" }}>{attendance[cls.id] || 0}/{cls.totalClasses} attended</span>
-                                <AttendanceBadge pct={pct} />
-                              </div>
-                              <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
-                                <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                                  style={{ height: "100%", borderRadius: 2, background: pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                              <div style={{ marginTop: 8 }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                                  <span style={{ fontSize: 11, color: "#a8967a" }}>{attendance[cls.id] || 0}/{SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} attended</span>
+                                  <AttendanceBadge pct={pct} />
+                                </div>
+                                <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
+                                  <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
+                                    style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })
-      )}
-    </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
     );
   };
 
@@ -1186,7 +1241,7 @@ export default function Home() {
           <div style={{ padding: "16px 18px 12px" }}>
             <h3 style={{ ...S.sectionTitle, marginBottom: 6 }}>Attendance</h3>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 36, fontWeight: 800, color: avgAttPct >= 75 ? "#22c55e" : "#f59e0b" }}>{avgAttPct}%</span>
+              <span style={{ fontSize: 36, fontWeight: 800, color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" }}>{avgAttPct}%</span>
               <div>
                 <p style={{ fontSize: 12, color: "#1a1208", fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
                 <AttendanceBadge pct={avgAttPct} />
@@ -1195,7 +1250,7 @@ export default function Home() {
           </div>
           <div style={{ padding: "0 16px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
             {allClasses.map((cls) => {
-              const pct = getAttendancePct(cls.id, cls.totalClasses);
+              const pct = getAttendancePct(cls.id, cls.weekday);
               const color = COURSE_COLORS[cls.course] || "#8b7355";
               return (
                 <div key={cls.id}>
@@ -1204,13 +1259,13 @@ export default function Home() {
                       <span style={{ width: 8, height: 8, borderRadius: 4, background: color, display: "inline-block" }} />
                       {cls.course}
                     </span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }}>{pct}%</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }}>{pct}%</span>
                   </div>
                   <div style={{ height: 6, borderRadius: 3, background: "#f0ebe3", overflow: "hidden" }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                      style={{ height: "100%", borderRadius: 3, background: pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                      style={{ height: "100%", borderRadius: 3, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                   </div>
-                  <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {cls.totalClasses} classes</p>
+                  <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
                 </div>
               );
             })}
@@ -1383,7 +1438,7 @@ export default function Home() {
                 { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: "#8b5cf6" },
                 { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: "#3b82f6" },
                 { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: "#f97316", badge: announcements.length },
-                { label: "Orion Hub", icon: <Star size={15} />, action: () => {}, href: "/orion", color: "#6366f1" },
+                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: "#6366f1" },
               ].map((item) => (
                 item.href ? (
                   <Link key={item.label} href={item.href}
@@ -1434,8 +1489,8 @@ export default function Home() {
             {/* Scrollable pill tabs */}
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
-             <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
+                <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
                   {React.cloneElement(tab.icon, { size: 14 })}
                   {tab.label}
                 </button>
