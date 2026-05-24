@@ -780,7 +780,7 @@ export default function StudentPortal() {
       {/* INTERACTIVE MODAL COMPONENT PORTALS */}
       <AnimatePresence>
         {showCWAModal && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 100 }} onClick={() => setShowCWAModal(false)} />}
-        {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
+        {showSurvivalKit && <SURVIVAL_KIT onClose={() => setShowSurvivalKit(false)} />}
       </AnimatePresence>
 
       {/* RESPONSIVE LAYOUT GLOBAL CORE CSS SCOPES */}
