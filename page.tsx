@@ -562,7 +562,16 @@ export default function Home() {
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
- 
+    } // Closes the 'if (typeof window !== "undefined")' block
+
+    // Restored: Semester countdown and Pun ticker
+    setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+    const punTimer = setInterval(() => setCurrentPun((p) => (p + 1) % BME_PUNS.length), 15000);
+    return () => clearInterval(punTimer);
+  }, []); // Closes the useEffect hook
+
+  // Timer tick
+  useEffect(() => {
 
   // Timer tick
   useEffect(() => {
