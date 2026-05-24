@@ -1516,7 +1516,7 @@ export default function Home() {
 {/* Copyright Footer Links */}
 <div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
 <div className="brand-line">
-<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine' : , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
+<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine'  , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
 </div>
 <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
 </div>
