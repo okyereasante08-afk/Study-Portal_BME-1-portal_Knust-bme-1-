@@ -534,7 +534,6 @@ export default function Home() {
   const [daysToEnd, setDaysToEnd] = useState(0);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [files, setFiles] = useState<any[]>([]);
-  const [currentPun, setCurrentPun] = useState(0);
   const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
