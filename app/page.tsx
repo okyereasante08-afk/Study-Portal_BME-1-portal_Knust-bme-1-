@@ -183,7 +183,14 @@ const SURVIVAL_KIT = [
 const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
 const MID_SEM_START = new Date("2026-07-06T00:00:00");
 const EXAMS_START = new Date("2026-08-17T00:00:00");
-const PORTAL_VERSION = "2.1.0";
+const PORTAL_VERSION = "2.2.0";
+
+// ── Semester 2 migration ──────────────────────────────────────────────────────
+// Bumping this key wipes all Sem 1 attendance data on first load of Sem 2.
+const SEM2_VERSION_KEY = "bme-sem-version";
+const SEM2_VERSION_VAL = "2026-S2";
+
+const MAX_ATTENDANCE_EDITS = 3; // how many times a student can change a slot's status
 
 // ── Semester session calculation ─────────────────────────────────────────────
 const SEM_START = new Date("2026-05-25T00:00:00");
@@ -574,6 +581,9 @@ export default function Home() {
   const [showSurvivalKit, setShowSurvivalKit] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
   const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
+  // Sem 2: per-slot status ("attended" | "skipped" | null) and edit-count tracking
+  const [attendanceStatus, setAttendanceStatus] = useState<{ [key: string]: "attended" | "skipped" | null }>({});
+  const [attendanceEdits, setAttendanceEdits] = useState<{ [key: string]: number }>({});
   const [daysToEnd, setDaysToEnd] = useState(0);
   const [daysToMidSem, setDaysToMidSem] = useState(0);
   const [daysToExams, setDaysToExams] = useState(0);
@@ -593,6 +603,18 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
+      // ── Sem 2 migration: wipe Sem 1 attendance data once ─────────────────
+      if (localStorage.getItem(SEM2_VERSION_KEY) !== SEM2_VERSION_VAL) {
+        // Clear all attendance keys for every student in CLASS_LIST
+        Object.keys(CLASS_LIST).forEach((id) => {
+          localStorage.removeItem(`bme-marked-${id}`);
+          localStorage.removeItem(`bme-att-status-${id}`);
+          localStorage.removeItem(`bme-att-edits-${id}`);
+        });
+        localStorage.removeItem("bme-attendance");
+        localStorage.setItem(SEM2_VERSION_KEY, SEM2_VERSION_VAL);
+      }
+
       const savedID = localStorage.getItem("bme-session-id");
       if (savedID && CLASS_LIST[savedID]) {
         setStudentID(savedID); setStudentName(CLASS_LIST[savedID]); setIsLoggedIn(true);
@@ -602,6 +624,10 @@ export default function Home() {
       if (savedAtt) setAttendance(JSON.parse(savedAtt));
       const savedMarked = localStorage.getItem(`bme-marked-${savedID}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+      const savedStatus = localStorage.getItem(`bme-att-status-${savedID}`);
+      if (savedStatus) setAttendanceStatus(JSON.parse(savedStatus));
+      const savedEdits = localStorage.getItem(`bme-att-edits-${savedID}`);
+      if (savedEdits) setAttendanceEdits(JSON.parse(savedEdits));
       const savedAnn = localStorage.getItem("bme-announcements");
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem("bme-files");
@@ -725,6 +751,10 @@ export default function Home() {
       if (adminStatus) localStorage.setItem("bme-admin-access", "true");
       const savedMarked = localStorage.getItem(`bme-marked-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+      const savedStatus = localStorage.getItem(`bme-att-status-${id}`);
+      if (savedStatus) setAttendanceStatus(JSON.parse(savedStatus));
+      const savedEdits = localStorage.getItem(`bme-att-edits-${id}`);
+      if (savedEdits) setAttendanceEdits(JSON.parse(savedEdits));
     }
   };
 
@@ -733,18 +763,43 @@ export default function Home() {
     setIsLoggedIn(false); setIsAdmin(false); setStudentID(""); setPassword(""); setAdminAccessCode(""); setLoginMode("student"); setIsFirstLogin(false); setFirstLoginStep("password");
   };
 
-  const markAttendance = (id: string) => {
-    if (attendanceMarked[id]) return;
-    // Increment the sessionsAttended counter for this class slot
-    const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
+  /**
+   * Sem 2: Records whether the student attended or skipped a class slot.
+   * Each slot can be changed up to MAX_ATTENDANCE_EDITS (3) times total.
+   * The attendance counter reflects only "attended" selections.
+   */
+  const setAttendanceChoice = (id: string, choice: "attended" | "skipped") => {
+    const edits = attendanceEdits[id] || 0;
+    if (edits >= MAX_ATTENDANCE_EDITS) return; // locked out
+
+    const prevStatus = attendanceStatus[id] ?? null;
+    const prevCount = attendance[id] || 0;
+
+    // Adjust the numeric attendance count based on transition
+    let newCount = prevCount;
+    if (choice === "attended" && prevStatus !== "attended") newCount = prevCount + 1;
+    if (choice === "skipped" && prevStatus === "attended") newCount = Math.max(0, prevCount - 1);
+
+    const newAtt = { ...attendance, [id]: newCount };
+    const newStatus = { ...attendanceStatus, [id]: choice };
     const newMarked = { ...attendanceMarked, [id]: true };
+    const newEdits = { ...attendanceEdits, [id]: edits + 1 };
+
     setAttendance(newAtt);
+    setAttendanceStatus(newStatus);
     setAttendanceMarked(newMarked);
+    setAttendanceEdits(newEdits);
+
     if (studentID !== GHOST_ID) {
       localStorage.setItem("bme-attendance", JSON.stringify(newAtt));
       localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
+      localStorage.setItem(`bme-att-status-${studentID}`, JSON.stringify(newStatus));
+      localStorage.setItem(`bme-att-edits-${studentID}`, JSON.stringify(newEdits));
     }
   };
+
+  // Legacy no-op kept so any remaining references don't break at compile time
+  const markAttendance = (id: string) => { if (!attendanceMarked[id]) setAttendanceChoice(id, "attended"); };
 
   /**
    * Returns the attendance percentage for a class slot.
@@ -1035,10 +1090,33 @@ export default function Home() {
                       <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
                     </div>
                   </div>
-                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
-                    style={{ padding: "6px 12px", borderRadius: 10, border: "none", cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 12, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#2d2416", color: attendanceMarked[cls.id] ? "#22c55e" : "#f0ebe3", flexShrink: 0, transition: "all 0.2s" }}>
-                    {attendanceMarked[cls.id] ? "✓" : "Here"}
-                  </button>
+                  {/* Sem 2 compact attendance dropdown for home tab */}
+                  {(() => {
+                    const status = attendanceStatus[cls.id] ?? null;
+                    const edits = attendanceEdits[cls.id] || 0;
+                    const locked = edits >= MAX_ATTENDANCE_EDITS;
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                        <select
+                          value={status ?? ""}
+                          disabled={locked}
+                          onChange={(e) => { const v = e.target.value as "attended" | "skipped"; if (v) setAttendanceChoice(cls.id, v); }}
+                          style={{
+                            padding: "6px 8px", borderRadius: 10, fontSize: 11, fontWeight: 700, cursor: locked ? "not-allowed" : "pointer",
+                            border: "none", outline: "none", appearance: "auto",
+                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#2d2416",
+                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#f0ebe3",
+                            opacity: locked ? 0.7 : 1, minWidth: 60,
+                          }}
+                        >
+                          <option value="" disabled style={{ background: "#fff", color: "#1a1208" }}>{status ? "Edit" : "Here?"}</option>
+                          <option value="attended" style={{ background: "#fff", color: "#16a34a" }}>✓ Here</option>
+                          <option value="skipped" style={{ background: "#fff", color: "#dc2626" }}>✗ Skip</option>
+                        </select>
+                        {status && <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>{locked ? "🔒" : `${MAX_ATTENDANCE_EDITS - edits}x`}</span>}
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })}
@@ -1200,10 +1278,39 @@ export default function Home() {
                                   <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
                                     {cls.type}
                                   </span>
-                                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
-                                    style={{ padding: "5px 12px", borderRadius: 10, border: `1px solid ${attendanceMarked[cls.id] ? "#bbf7d0" : "#ece8e0"}`, cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 11, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#fff", color: attendanceMarked[cls.id] ? "#16a34a" : "#6b5438" }}>
-                                    {attendanceMarked[cls.id] ? "✓ Present" : "Mark present"}
-                                  </button>
+                                  {/* Sem 2 attendance dropdown */}
+                                  {(() => {
+                                    const status = attendanceStatus[cls.id] ?? null;
+                                    const edits = attendanceEdits[cls.id] || 0;
+                                    const locked = edits >= MAX_ATTENDANCE_EDITS;
+                                    const editsLeft = MAX_ATTENDANCE_EDITS - edits;
+                                    return (
+                                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
+                                        <select
+                                          value={status ?? ""}
+                                          disabled={locked}
+                                          onChange={(e) => {
+                                            const val = e.target.value as "attended" | "skipped";
+                                            if (val) setAttendanceChoice(cls.id, val);
+                                          }}
+                                          style={{
+                                            padding: "5px 8px", borderRadius: 10, fontSize: 11, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer",
+                                            border: `1px solid ${status === "attended" ? "#bbf7d0" : status === "skipped" ? "#fecaca" : "#ece8e0"}`,
+                                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#fff",
+                                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#6b5438",
+                                            outline: "none", appearance: "auto", opacity: locked ? 0.75 : 1,
+                                          }}
+                                        >
+                                          <option value="" disabled>{status ? "Change" : "Mark attendance"}</option>
+                                          <option value="attended">✓ Attended</option>
+                                          <option value="skipped">✗ Skipped</option>
+                                        </select>
+                                        <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>
+                                          {locked ? "🔒 Locked" : status ? `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left` : ""}
+                                        </span>
+                                      </div>
+                                    );
+                                  })()}
                                 </div>
                               </div>
                               <div style={{ marginTop: 8 }}>
