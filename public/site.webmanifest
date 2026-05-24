@@ -1,0 +1,21 @@
+{
+  "name": "BME PORTAL",
+  "short_name": "BME",
+  "icons": [
+    {
+      "src": "/public/web-app-manifest-192x192.png?v=20260524",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/public/web-app-manifest-512x512.png?v=20260524",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#150707",
+  "display": "standalone"
+}
