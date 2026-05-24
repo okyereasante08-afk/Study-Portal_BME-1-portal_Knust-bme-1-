@@ -115,9 +115,10 @@ const TIMETABLE: { [key: string]: any[] } = {
 const SURVIVAL_KIT = [
   {
     course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
-    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" }]
+    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" }
                 { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i"},
                 { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url:"https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl"},
+                ]
   },
 
   {
@@ -131,7 +132,7 @@ const SURVIVAL_KIT = [
       { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
       { label: "Solving Diode Circuits", url:"https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh"},
       { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url:"https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL"},
-      { label: "", url:""},
+    
     ]
   },
   {
