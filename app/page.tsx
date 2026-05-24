@@ -335,93 +335,18 @@ const timeToMinutes = (timeStr: string) => {
 };
 
 // ============================================================
-// INTERACTIVE NEURAL NETWORK BACKGROUND
+// BACKGROUND — clean premium dot grid, light + dark
 // ============================================================
-const BioBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: -9999, y: -9999 });
-  const animRef = useRef<number>(0);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let W = window.innerWidth, H = window.innerHeight;
-    canvas.width = W; canvas.height = H;
-
-    const onResize = () => { W = window.innerWidth; H = window.innerHeight; canvas.width = W; canvas.height = H; };
-    window.addEventListener('resize', onResize);
-    const onMove = (e: MouseEvent) => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
-    const onTouch = (e: TouchEvent) => { if (e.touches[0]) mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('touchmove', onTouch, { passive: true });
-
-    const COUNT = Math.min(80, Math.floor((W * H) / 14000));
-    type Node = { x: number; y: number; vx: number; vy: number; r: number; pulse: number };
-    const nodes: Node[] = Array.from({ length: COUNT }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 2 + 1, pulse: Math.random() * Math.PI * 2,
-    }));
-
-    const CONNECT_DIST = 130, CURSOR_ATTRACT = 160;
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      const grad = ctx.createLinearGradient(0, 0, W, H);
-      grad.addColorStop(0, '#0a0f1c'); grad.addColorStop(0.5, '#0b1120'); grad.addColorStop(1, '#050914');
-      ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
-      const mx = mouseRef.current.x, my = mouseRef.current.y;
-
-      nodes.forEach(n => {
-        n.pulse += 0.02;
-        const dx = mx - n.x, dy = my - n.y, dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < CURSOR_ATTRACT && dist > 0) { const f = (CURSOR_ATTRACT - dist) / CURSOR_ATTRACT * 0.015; n.vx += dx/dist*f; n.vy += dy/dist*f; }
-        n.vx *= 0.98; n.vy *= 0.98;
-        const speed = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
-        if (speed > 1.5) { n.vx = n.vx/speed*1.5; n.vy = n.vy/speed*1.5; }
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < 0) { n.x = 0; n.vx *= -1; } if (n.x > W) { n.x = W; n.vx *= -1; }
-        if (n.y < 0) { n.y = 0; n.vy *= -1; } if (n.y > H) { n.y = H; n.vy *= -1; }
-      });
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y, d = Math.sqrt(dx*dx+dy*dy);
-          if (d < CONNECT_DIST) { ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.strokeStyle = `rgba(0,212,255,${(1-d/CONNECT_DIST)*0.25})`; ctx.lineWidth = 0.8; ctx.stroke(); }
-        }
-        const cdx = nodes[i].x - mx, cdy = nodes[i].y - my, cd = Math.sqrt(cdx*cdx+cdy*cdy);
-        if (cd < CURSOR_ATTRACT) { ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(mx, my); ctx.strokeStyle = `rgba(168,85,247,${(1-cd/CURSOR_ATTRACT)*0.5})`; ctx.lineWidth = 1; ctx.stroke(); }
-      }
-
-      nodes.forEach(n => {
-        const cdx = n.x-mx, cdy = n.y-my, cd = Math.sqrt(cdx*cdx+cdy*cdy), near = cd < CURSOR_ATTRACT;
-        const glow = near ? 0.9 : 0.4 + Math.sin(n.pulse)*0.15, radius = near ? n.r*1.8 : n.r;
-        const halo = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius*4);
-        halo.addColorStop(0, near ? `rgba(168,85,247,${glow*0.4})` : `rgba(0,212,255,${glow*0.2})`); halo.addColorStop(1, 'transparent');
-        ctx.beginPath(); ctx.arc(n.x, n.y, radius*4, 0, Math.PI*2); ctx.fillStyle = halo; ctx.fill();
-        ctx.beginPath(); ctx.arc(n.x, n.y, radius, 0, Math.PI*2); ctx.fillStyle = near ? `rgba(168,85,247,${glow})` : `rgba(0,212,255,${glow})`; ctx.fill();
-      });
-
-      if (mx > 0 && mx < W) {
-        ctx.beginPath(); ctx.arc(mx, my, 18, 0, Math.PI*2); ctx.strokeStyle = 'rgba(168,85,247,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI*2); ctx.fillStyle = 'rgba(168,85,247,0.6)'; ctx.fill();
-      }
-      animRef.current = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => { cancelAnimationFrame(animRef.current); window.removeEventListener('resize', onResize); window.removeEventListener('mousemove', onMove); window.removeEventListener('touchmove', onTouch); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 w-full h-full" style={{ touchAction: 'none' }} />;
-};
+const BioBackground = () => (
+  <div className="fixed inset-0 -z-10 bg-[#FAF9F6] dark:bg-[#111110]">
+    <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.07]"
+      style={{backgroundImage:'radial-gradient(circle, #1a1916 1px, transparent 1px)',backgroundSize:'28px 28px'}} />
+  </div>
+);
 
 const GlassCard = ({ children, className = "", delay = 0 }: any) => (
-  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}
-    className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[28px] shadow-2xl ${className}`}>
+  <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay }}
+    className={`bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-[20px] ${className}`}>
     {children}
   </motion.div>
 );
@@ -1185,6 +1110,24 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
 // ============================================================
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('bme-dark-mode');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = saved !== null ? saved === 'true' : prefersDark;
+    setDarkMode(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
+  }, []);
+
+  const toggleDarkMode = () => {
+    setDarkMode(d => {
+      const next = !d;
+      document.documentElement.classList.toggle('dark', next);
+      localStorage.setItem('bme-dark-mode', String(next));
+      return next;
+    });
+  };
   const [studentID, setStudentID] = useState('');
   const [password, setPassword] = useState('');
   const [isFirstLogin, setIsFirstLogin] = useState(false);
@@ -1854,7 +1797,7 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
   // DASHBOARD
   // ============================================================
   return (
-    <div className="min-h-screen text-slate-100 pb-20">
+    <div className="min-h-screen text-[#1a1916] dark:text-[#F1EFE8] pb-24">
       <BioBackground />
 
       <AnimatePresence>
@@ -1947,39 +1890,44 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
       </AnimatePresence>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 p-4">
-        <GlassCard className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center rounded-full border-white/10">
-          <div>
-            <h1 className="text-base font-bold text-white">Hello, {getFirstName(studentName)}</h1>
-            <p className="text-[9px] text-[#48cae4] font-bold uppercase tracking-widest flex items-center gap-1">
-              <Activity size={9} className="animate-pulse" /> {studentID}
-              {notificationsEnabled && <span className="ml-2 text-emerald-400">· Alerts on</span>}
-            </p>
+      <header className="sticky top-0 z-40 px-4 pt-4 pb-2">
+        <div className="max-w-5xl mx-auto bg-white/80 dark:bg-[#1C1C1A]/90 backdrop-blur-md border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl px-5 py-3 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#1a1916] dark:bg-[#F1EFE8] rounded-lg flex items-center justify-center">
+              <span className="text-[10px] font-black text-[#FAF9F6] dark:text-[#1a1916] tracking-tight">BME</span>
+            </div>
+            <div>
+              <h1 className="text-sm font-medium text-[#1a1916] dark:text-[#F1EFE8] leading-tight">Hello, {getFirstName(studentName)}</h1>
+              <p className="text-[10px] text-[#888780] dark:text-[#5F5E5A] font-medium">{studentID}</p>
+            </div>
           </div>
-          <div className="flex gap-2 flex-wrap justify-end">
-            {isAdmin && <Link href="/admin" className="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-xl text-[10px] font-bold uppercase tracking-wider border border-yellow-500/20">Admin</Link>}
-            <button onClick={() => setShowTutorial(true)} className="px-3 py-2 bg-white/5 text-white/40 rounded-xl hover:bg-white/10 transition-all border border-white/10 text-[10px] font-bold uppercase tracking-wider">Guide</button>
+          <div className="flex gap-2 items-center flex-wrap justify-end">
+            {isAdmin && <Link href="/admin" className="px-3 py-1.5 bg-[#FAEEDA] dark:bg-[#633806]/30 text-[#633806] dark:text-[#FAC775] rounded-lg text-[10px] font-medium border border-[#FAC775]/40">Admin</Link>}
+            <button onClick={() => setShowTutorial(true)} className="px-3 py-1.5 bg-[#F1EFE8] dark:bg-[#2C2C2A] text-[#5F5E5A] dark:text-[#888780] rounded-lg hover:bg-[#E8E5DF] dark:hover:bg-[#444441] transition-all text-[10px] font-medium">Guide</button>
             {!notificationsEnabled && (
-              <button onClick={requestNotifications} className="px-3 py-2 bg-emerald-500/10 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 border border-emerald-500/20">
-                <Bell size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Alerts</span>
+              <button onClick={requestNotifications} className="px-3 py-1.5 bg-[#EAF3DE] dark:bg-[#27500A]/30 text-[#3B6D11] dark:text-[#97C459] rounded-lg hover:opacity-80 transition-all flex items-center gap-1.5 border border-[#97C459]/30">
+                <Bell size={12} /><span className="text-[10px] font-medium hidden md:inline">Alerts</span>
               </button>
             )}
-            <button onClick={() => setShowWhatsNew(true)} className="px-3 py-2 bg-[#00d4ff]/10 text-[#00d4ff] rounded-xl hover:bg-[#00d4ff]/20 transition-all border border-[#00d4ff]/20 text-[10px] font-bold uppercase tracking-wider hidden md:flex items-center gap-1.5">
-              What's New
+            <button onClick={() => setShowWhatsNew(true)} className="px-3 py-1.5 bg-[#EEEDFE] dark:bg-[#3C3489]/20 text-[#534AB7] dark:text-[#AFA9EC] rounded-lg hover:opacity-80 transition-all text-[10px] font-medium hidden md:flex items-center gap-1.5 border border-[#AFA9EC]/30">
+              What's new
             </button>
-            <button onClick={() => setShowDontPanic(true)} className="px-3 py-2 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all flex items-center gap-1.5 border border-purple-500/20">
-              <Zap size={13} /><span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Panic</span>
+            <button onClick={() => setShowDontPanic(true)} className="px-3 py-1.5 bg-[#FAECE7] dark:bg-[#712B13]/20 text-[#993C1D] dark:text-[#F0997B] rounded-lg hover:opacity-80 transition-all flex items-center gap-1.5 border border-[#F0997B]/30">
+              <Zap size={12} /><span className="text-[10px] font-medium hidden md:inline">Panic</span>
             </button>
-            <button onClick={handleExportProfile} className="px-3 py-2 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500/20 transition-all border border-blue-500/20">
-              <Download size={13} />
+            <button onClick={handleExportProfile} className="px-3 py-1.5 bg-[#F1EFE8] dark:bg-[#2C2C2A] text-[#5F5E5A] dark:text-[#888780] rounded-lg hover:opacity-80 transition-all border border-[#E8E5DF] dark:border-[#444441]">
+              <Download size={12} />
             </button>
-            <label className="px-3 py-2 bg-white/5 text-white/40 rounded-xl hover:bg-white/10 transition-all cursor-pointer border border-white/10">
-              <Upload size={13} />
+            <label className="px-3 py-1.5 bg-[#F1EFE8] dark:bg-[#2C2C2A] text-[#5F5E5A] dark:text-[#888780] rounded-lg hover:opacity-80 transition-all cursor-pointer border border-[#E8E5DF] dark:border-[#444441]">
+              <Upload size={12} />
               <input type="file" accept="application/json,.json" onChange={handleImportProfile} className="hidden" />
             </label>
-            <button onClick={handleLogout} className="px-3 py-2 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-all border border-red-500/20"><LogOut size={13} /></button>
+            <button onClick={toggleDarkMode} className="px-3 py-1.5 bg-[#F1EFE8] dark:bg-[#2C2C2A] text-[#5F5E5A] dark:text-[#888780] rounded-lg hover:opacity-80 transition-all border border-[#E8E5DF] dark:border-[#444441]" aria-label="Toggle dark mode">
+              {darkMode ? <span style={{fontSize:13}}>☀</span> : <span style={{fontSize:13}}>◐</span>}
+            </button>
+            <button onClick={handleLogout} className="px-3 py-1.5 bg-[#FCEBEB] dark:bg-[#791F1F]/20 text-[#A32D2D] dark:text-[#F09595] rounded-lg hover:opacity-80 transition-all border border-[#F09595]/30"><LogOut size={12} /></button>
           </div>
-        </GlassCard>
+        </div>
       </header>
 
       {/* PWA INSTALL BANNER */}
@@ -1987,12 +1935,12 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
         {showInstallBanner && (
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="max-w-5xl mx-auto px-4 pb-2">
-            <div className="bg-[#00d4ff]/8 border border-[#00d4ff]/20 rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
+            <div className="bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <img src="/icon-72x72.png" className="w-8 h-8 rounded-xl" alt="BME Portal" />
                 <div>
-                  <p className="text-white font-bold text-xs">Install BME Portal</p>
-                  <p className="text-white/40 text-[10px]">Add to your home screen for quick access</p>
+                  <p className="text-[#1a1916] dark:text-[#F1EFE8] font-medium text-xs">Install BME Portal</p>
+                  <p className="text-[#888780] text-[10px]">Add to your home screen for quick access</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
@@ -2003,10 +1951,10 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
                     deferredPromptRef.current = null;
                   }
                   setShowInstallBanner(false);
-                }} className="px-4 py-1.5 bg-[#00d4ff] text-[#0a0f1c] rounded-lg text-[10px] font-black uppercase tracking-wider">
+                }} className="px-4 py-1.5 bg-[#1a1916] dark:bg-[#F1EFE8] text-[#FAF9F6] dark:text-[#1a1916] rounded-lg text-[10px] font-medium">
                   Install
                 </button>
-                <button onClick={() => setShowInstallBanner(false)} className="text-white/20 hover:text-white/50 transition-colors"><X size={14} /></button>
+                <button onClick={() => setShowInstallBanner(false)} className="text-[#B4B2A9] hover:text-[#888780] transition-colors"><X size={14} /></button>
               </div>
             </div>
           </motion.div>
@@ -2017,20 +1965,20 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
       <AnimatePresence>
         {nextClassInfo && (
           <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="max-w-5xl mx-auto px-4 pb-3">
-            <div className="bg-[#00d4ff]/8 border border-[#00d4ff]/20 rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
+            <div className="bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] shrink-0" />
+                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="w-1.5 h-1.5 rounded-full bg-[#1D9E75] shrink-0" />
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-white font-bold text-sm">{nextClassInfo.course}</span>
-                  <span className="text-white/30 text-xs">·</span>
-                  <span className="text-white/50 text-xs">{nextClassInfo.venue}</span>
+                  <span className="text-[#1a1916] dark:text-[#F1EFE8] font-medium text-sm">{nextClassInfo.course}</span>
+                  <span className="text-[#B4B2A9] text-xs">·</span>
+                  <span className="text-[#888780] text-xs">{nextClassInfo.venue}</span>
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-[#00d4ff] font-bold text-sm">
+                <p className="text-[#1D9E75] font-medium text-sm">
                   {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil/60)}h ${nextClassInfo.minsUntil%60}m`}
                 </p>
-                <p className="text-white/25 text-[9px] uppercase tracking-widest">{nextClassInfo.startTime}</p>
+                <p className="text-[#B4B2A9] text-[9px] uppercase tracking-widest">{nextClassInfo.startTime}</p>
               </div>
             </div>
           </motion.div>
@@ -2041,37 +1989,31 @@ ${isFirst ? '✨ First time user' : '↩️ Returning user'}`;
 
         {/* QUICK ACTIONS */}
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-green-500/8 border border-green-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-green-500/15 transition-all">
-            <MessageCircle size={18} className="text-green-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">WhatsApp</span>
+          <a href="https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" target="_blank" className="p-4 bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl flex flex-col items-center gap-2.5 hover:border-[#C0DD97] dark:hover:border-[#3B6D11] transition-all group">
+            <div className="w-8 h-8 bg-[#EAF3DE] dark:bg-[#27500A]/40 rounded-xl flex items-center justify-center"><MessageCircle size={16} className="text-[#3B6D11] dark:text-[#97C459]" /></div>
+            <span className="text-[10px] font-medium text-[#888780]">WhatsApp</span>
           </a>
-          <button onClick={() => setShowSurvivalKit(true)} className="p-4 bg-blue-500/8 border border-blue-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-blue-500/15 transition-all">
-            <BookOpen size={18} className="text-blue-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Survival Kit</span>
+          <button onClick={() => setShowSurvivalKit(true)} className="p-4 bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl flex flex-col items-center gap-2.5 hover:border-[#85B7EB] dark:hover:border-[#185FA5] transition-all group">
+            <div className="w-8 h-8 bg-[#E6F1FB] dark:bg-[#0C447C]/30 rounded-xl flex items-center justify-center"><BookOpen size={16} className="text-[#185FA5] dark:text-[#85B7EB]" /></div>
+            <span className="text-[10px] font-medium text-[#888780]">Survival Kit</span>
           </button>
-          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-[#00d4ff]/8 border border-[#00d4ff]/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-[#00d4ff]/15 transition-all">
-            <Calculator size={18} className="text-[#00d4ff]" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">CWA Calc</span>
+          <button onClick={() => setShowCWAModal(true)} className="p-4 bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl flex flex-col items-center gap-2.5 hover:border-[#FAC775] dark:hover:border-[#854F0B] transition-all group">
+            <div className="w-8 h-8 bg-[#FAEEDA] dark:bg-[#633806]/30 rounded-xl flex items-center justify-center"><Calculator size={16} className="text-[#854F0B] dark:text-[#FAC775]" /></div>
+            <span className="text-[10px] font-medium text-[#888780]">CWA Calc</span>
           </button>
-          <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-purple-500/8 border border-purple-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-purple-500/15 transition-all relative">
-            <Bell size={18} className="text-purple-400" /><span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Updates</span>
-            {announcements.length > 0 && <div className="absolute top-2 right-2 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black">{announcements.length}</div>}
+          <button onClick={() => setShowUpdatesHub(true)} className="p-4 bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl flex flex-col items-center gap-2.5 hover:border-[#AFA9EC] dark:hover:border-[#534AB7] transition-all group relative">
+            <div className="w-8 h-8 bg-[#EEEDFE] dark:bg-[#3C3489]/30 rounded-xl flex items-center justify-center"><Bell size={16} className="text-[#534AB7] dark:text-[#AFA9EC]" /></div>
+            <span className="text-[10px] font-medium text-[#888780]">Updates</span>
+            {announcements.length > 0 && <div className="absolute top-2 right-2 w-4 h-4 bg-[#E24B4A] rounded-full flex items-center justify-center text-[8px] font-medium text-white">{announcements.length}</div>}
           </button>
-          <Link href="/orion" className="p-4 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl flex flex-col items-center gap-2 hover:bg-indigo-500/15 transition-all relative">
-            <span className="text-lg">⭐</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">Orion</span>
-            <span className="absolute top-2 right-2 text-[7px] font-black uppercase tracking-wider text-indigo-400 bg-indigo-500/20 px-1.5 py-0.5 rounded-full">New</span>
+          <Link href="/orion" className="p-4 bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl flex flex-col items-center gap-2.5 hover:border-[#5DCAA5] dark:hover:border-[#0F6E56] transition-all group relative">
+            <div className="w-8 h-8 bg-[#E1F5EE] dark:bg-[#085041]/30 rounded-xl flex items-center justify-center"><span style={{fontSize:15}}>⭐</span></div>
+            <span className="text-[10px] font-medium text-[#888780]">Orion</span>
+            <span className="absolute top-2 right-2 text-[7px] font-medium text-[#0F6E56] dark:text-[#5DCAA5] bg-[#E1F5EE] dark:bg-[#085041]/40 px-1.5 py-0.5 rounded-full">New</span>
           </Link>
-          {/* 2ND SEM GLOWING BUTTON */}
-          <button
-            onClick={() => setShowSemesterEnd(true)}
-            className="p-4 rounded-2xl flex flex-col items-center gap-2 transition-all relative overflow-hidden"
-            style={{
-              background: 'rgba(0,212,255,0.06)',
-              border: '1px solid rgba(0,212,255,0.25)',
-              animation: 'sem2Glow 2.5s ease-in-out infinite',
-            }}
-          >
-            <style>{`@keyframes sem2Glow{0%,100%{box-shadow:0 0 8px rgba(0,212,255,0.2),0 0 20px rgba(0,212,255,0.05)}50%{box-shadow:0 0 16px rgba(0,212,255,0.4),0 0 40px rgba(0,212,255,0.1)}}`}</style>
-            <Zap size={18} className="text-[#00d4ff]" />
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#00d4ff]">2nd Sem</span>
+          <button onClick={() => setShowSemesterEnd(true)} className="p-4 bg-white dark:bg-[#1C1C1A] border border-[#E8E5DF] dark:border-[#2C2C2A] rounded-2xl flex flex-col items-center gap-2.5 hover:border-[#FAC775] dark:hover:border-[#854F0B] transition-all group">
+            <div className="w-8 h-8 bg-[#FAEEDA] dark:bg-[#633806]/30 rounded-xl flex items-center justify-center"><Zap size={16} className="text-[#854F0B] dark:text-[#FAC775]" /></div>
+            <span className="text-[10px] font-medium text-[#EF9F27]">2nd Sem</span>
           </button>
         </div>
 
