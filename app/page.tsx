@@ -1099,17 +1099,15 @@ export default function StudentPortal() {
       <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #ece8e0", padding: 24, maxWidth: 500 }}>
         <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700 }}>Identity Settings</h3>
         <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 24 }}>
-          <Avatar 
-            name={studentName} 
-            size={88} 
-            avatarUrl={avatarDataUrl} 
-            showUploadHint={true} 
-            onClick={() => fileInputRef.current?.click()} 
-            onRemove={() => {
-              setAvatarDataUrl("");
-              localStorage.removeItem(`avatar_${studentID}`);
-            }}
-          />
+          {/* PASTE THIS CLEAN BLOCK INSTEAD */}
+<Avatar 
+  name={studentName} 
+  avatarUrl={avatarDataUrl} 
+  size={88} 
+  showUploadHint={true} 
+  onFileSelect={handleAvatarUpload}
+  onRemove={handleAvatarRemove}
+/>
           <div>
             <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#1a1208" }}>{studentName}</h4>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8b7355" }}>Student ID Reference: #{studentID}</p>
