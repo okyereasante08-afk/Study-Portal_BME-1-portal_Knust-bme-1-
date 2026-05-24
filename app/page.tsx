@@ -797,44 +797,25 @@ export default function StudentPortal() {
     fetchUpdates();
   }, []);
 
-  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file.");
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Image file size must be less than 10MB.");
-      return;
-    }
+// PASTE THIS EXPLICITLY TYPED FILE HANDLER INSTEAD:
+const handleAvatarUpload = (file: File) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const base64String = e.target?.result as string;
+    
+    // Instantly sync state across headers, sidebars, and components
+    setAvatarDataUrl(base64String);
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        canvas.width = 200;
-        canvas.height = 200;
-        const size = Math.min(img.width, img.height);
-        const startX = (img.width - size) / 2;
-        const startY = (img.height - size) / 2;
-        ctx.drawImage(img, startX, startY, size, size, 0, 0, 200, 200);
-        const compressedB64 = canvas.toDataURL("image/jpeg", 0.82);
-        try {
-          setAvatarDataUrl(compressedB64);
-          if (studentID) localStorage.setItem(`avatar_${studentID}`, compressedB64);
-        } catch (error) {
-          console.error("Storage limit reached:", error);
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
+    // Save with error boundaries for storage quotas
+    try {
+      localStorage.setItem(`bme_avatar_${studentID}`, base64String);
+    } catch (error) {
+      console.error("Storage quota exceeded:", error);
+      alert("Storage limit hit. Your profile photo will reset upon refreshing the tab.");
+    }
   };
+  reader.readAsDataURL(file);
+};
 
   // ── 2. DERIVE AND MEMO VALUES (SAFE AFTER ALL HOOKS) ──────────────────────
   const studentName = CLASS_LIST[studentID] || "";
