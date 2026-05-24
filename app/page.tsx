@@ -233,11 +233,22 @@ const timeToMinutes = (t: string) => {
 // HELPER COMPONENTS
 // ============================================================
 
-const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
+const Avatar = ({ name, size = 36, onClick }: { name: string; size?: number; onClick?: () => void }) => {
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
   return (
     <div
-      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+      onClick={onClick}
+      title={onClick ? "Go to profile" : undefined}
+      style={{
+        width: size, height: size, borderRadius: size / 2,
+        background: "linear-gradient(135deg, #e8d5c4, #c9a87c)",
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        cursor: onClick ? "pointer" : "default",
+        transition: "transform 0.15s, box-shadow 0.15s",
+        boxShadow: onClick ? "0 0 0 2px transparent" : "none",
+      }}
+      onMouseEnter={e => { if (onClick) { (e.currentTarget as HTMLDivElement).style.transform = "scale(1.08)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 0 0 2px #c9a87c"; } }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "scale(1)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 0 0 2px transparent"; }}
     >
       <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
@@ -574,6 +585,7 @@ export default function Home() {
   const [showSurvivalKit, setShowSurvivalKit] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
   const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
+  const [nickname, setNickname] = useState<string>("");
   const [daysToEnd, setDaysToEnd] = useState(0);
   const [daysToMidSem, setDaysToMidSem] = useState(0);
   const [daysToExams, setDaysToExams] = useState(0);
@@ -602,6 +614,8 @@ export default function Home() {
       if (savedAtt) setAttendance(JSON.parse(savedAtt));
       const savedMarked = localStorage.getItem(`bme-marked-${savedID}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+      const savedNick = localStorage.getItem(`bme-nickname-${savedID}`);
+      if (savedNick) setNickname(savedNick);
       const savedAnn = localStorage.getItem("bme-announcements");
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem("bme-files");
@@ -725,6 +739,8 @@ export default function Home() {
       if (adminStatus) localStorage.setItem("bme-admin-access", "true");
       const savedMarked = localStorage.getItem(`bme-marked-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
+      const savedNick = localStorage.getItem(`bme-nickname-${id}`);
+      if (savedNick) setNickname(savedNick);
     }
   };
 
@@ -762,6 +778,8 @@ export default function Home() {
     getAttendancePct(classId, weekday, legacyTotal) < AT_RISK_THRESHOLD;
   const fmtTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
   const getFirstName = (name: string) => name.split(" ")[0];
+  /** The name shown in greetings — nickname if set, otherwise first name */
+  const displayName = nickname.trim() || getFirstName(studentName);
   const daysList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const todayName = daysList[new Date().getDay() - 1] || "Weekend";
   const todayClasses = TIMETABLE[todayName] || [];
@@ -955,7 +973,7 @@ export default function Home() {
       {/* Greeting */}
       <div style={{ paddingBottom: 4 }}>
         <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>
-          Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
+          Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {displayName}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
           {new Date().toLocaleDateString("en-GB", { weekday: "long" })} · Semester 2, Week {Math.ceil((new Date().getTime() - new Date("2026-01-12").getTime()) / (7 * 24 * 60 * 60 * 1000))}
@@ -1330,57 +1348,184 @@ export default function Home() {
     );
   };
 
-  const renderProfile = () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Profile card */}
-      <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-        <Avatar name={studentName} size={72} />
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
-        <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
-        {isAdmin && (
-          <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
-            Admin Panel →
-          </Link>
-        )}
-      </div>
+  const renderProfile = () => {
+    const [nickDraft, setNickDraft] = React.useState(nickname);
+    const [nickSaved, setNickSaved] = React.useState(false);
+    const [nickError, setNickError] = React.useState("");
 
-      {/* Actions */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {[
-          { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
-          { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei", color: "#f0fdf4" },
-        ].map((item) => (
-          <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-            style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
-            <span style={{ fontSize: 24 }}>{item.icon}</span>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{item.sub}</p>
+    const handleSaveNickname = () => {
+      const trimmed = nickDraft.trim();
+      if (trimmed.length > 0 && trimmed.length < 3) {
+        setNickError("Nickname must be at least 3 characters.");
+        return;
+      }
+      if (trimmed.length > 20) {
+        setNickError("Keep it under 20 characters.");
+        return;
+      }
+      setNickError("");
+      setNickname(trimmed);
+      if (studentID !== GHOST_ID) {
+        if (trimmed) localStorage.setItem(`bme-nickname-${studentID}`, trimmed);
+        else localStorage.removeItem(`bme-nickname-${studentID}`);
+      }
+      setNickSaved(true);
+      setTimeout(() => setNickSaved(false), 2200);
+    };
+
+    const handleClearNickname = () => {
+      setNickDraft("");
+      setNickname("");
+      setNickError("");
+      if (studentID !== GHOST_ID) localStorage.removeItem(`bme-nickname-${studentID}`);
+    };
+
+    const nicknameChanged = nickDraft.trim() !== nickname;
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+        {/* Hero profile card */}
+        <div style={{ ...S.card, padding: "28px 20px 22px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+          {/* subtle decorative gradient blob */}
+          <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: 60, background: "linear-gradient(135deg,#e8d5c420,#c9a87c30)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: -20, left: -20, width: 80, height: 80, borderRadius: 40, background: "linear-gradient(135deg,#f59e0b10,#ef444410)", pointerEvents: "none" }} />
+
+          <Avatar name={studentName} size={80} />
+
+          {/* Display name (nickname or first name) */}
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>
+            {displayName}
+            {nickname && <span style={{ marginLeft: 6, fontSize: 13, fontWeight: 500, color: "#c9a87c", verticalAlign: "middle" }}>✦</span>}
+          </h2>
+
+          {/* Full legal name, subtle */}
+          {nickname && (
+            <p style={{ fontSize: 12, color: "#c9b89a", margin: "0 0 4px", fontStyle: "italic" }}>{studentName}</p>
+          )}
+
+          <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 16px" }}>{studentID} · BME1 · Class of 2029</p>
+
+          {isAdmin && (
+            <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
+              Admin Panel →
+            </Link>
+          )}
+        </div>
+
+        {/* ── Nickname editor ───────────────────────────────── */}
+        <div style={{ ...S.card, padding: "18px 18px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <p style={{ ...S.label, margin: 0 }}>Nickname</p>
+            {nickname && (
+              <button onClick={handleClearNickname}
+                style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600, padding: "2px 0" }}>
+                Clear
+              </button>
+            )}
+          </div>
+          <p style={{ fontSize: 12, color: "#a8967a", margin: "0 0 12px" }}>
+            This is how your name appears on the home screen greeting.
+            {!nickname && " Your first name is used by default."}
+          </p>
+
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div style={{ position: "relative", flex: 1 }}>
+              <input
+                type="text"
+                value={nickDraft}
+                onChange={e => { setNickDraft(e.target.value); setNickError(""); setNickSaved(false); }}
+                onKeyDown={e => { if (e.key === "Enter") handleSaveNickname(); }}
+                placeholder={`e.g. ${getFirstName(studentName).toLowerCase()}_bme`}
+                maxLength={20}
+                style={{
+                  width: "100%", padding: "10px 40px 10px 12px", borderRadius: 12,
+                  border: `1.5px solid ${nickError ? "#fca5a5" : nickSaved ? "#86efac" : "#ece8e0"}`,
+                  fontSize: 14, color: "#1a1208", outline: "none",
+                  background: nickError ? "#fff5f5" : "#faf8f4",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  transition: "border-color 0.2s",
+                }}
+              />
+              <span style={{
+                position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+                fontSize: 10, color: "#c9b89a", fontWeight: 600,
+              }}>
+                {nickDraft.length}/20
+              </span>
             </div>
-            <ChevronRight size={16} color="#c9b89a" />
-          </a>
-        ))}
-      </div>
 
-      {/* Portal info */}
-      <div style={{ ...S.card, padding: "16px 18px" }}>
-        <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
+            <button
+              onClick={handleSaveNickname}
+              disabled={!nicknameChanged && !nickSaved}
+              style={{
+                padding: "10px 16px", borderRadius: 12, border: "none", cursor: nicknameChanged ? "pointer" : "default",
+                fontSize: 13, fontWeight: 700, flexShrink: 0, transition: "all 0.2s",
+                background: nickSaved ? "#22c55e" : nicknameChanged ? "#2d2416" : "#f0ebe3",
+                color: nickSaved ? "#fff" : nicknameChanged ? "#f0ebe3" : "#c9b89a",
+              }}>
+              {nickSaved ? "✓ Saved" : "Save"}
+            </button>
+          </div>
+
+          {nickError && (
+            <p style={{ fontSize: 12, color: "#ef4444", margin: "8px 0 0", fontWeight: 600 }}>{nickError}</p>
+          )}
+
+          {/* Live preview */}
+          {nickDraft.trim() && (
+            <div style={{ marginTop: 12, padding: "10px 14px", borderRadius: 10, background: "#f7f3ed", border: "1px dashed #e0d8cc", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: "#a8967a", fontWeight: 600 }}>Preview:</span>
+              <span style={{ fontSize: 13, color: "#1a1208", fontWeight: 700 }}>
+                Good morning, {nickDraft.trim() || getFirstName(studentName)}.
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* ── Quick links ───────────────────────────────────── */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
-            </div>
+          {[
+            { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
+            { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei", color: "#f0fdf4" },
+          ].map((item) => (
+            <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+              style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
+              <span style={{ fontSize: 22 }}>{item.icon}</span>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
+                <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{item.sub}</p>
+              </div>
+              <ChevronRight size={16} color="#c9b89a" />
+            </a>
           ))}
         </div>
-      </div>
 
-      <button onClick={handleLogout}
-        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
-        <LogOut size={16} /> Sign out
-      </button>
-    </div>
-  );
+        {/* ── About this portal ────────────────────────────── */}
+        <div style={{ ...S.card, padding: "16px 18px" }}>
+          <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {[
+              ["Version", `v${PORTAL_VERSION}`],
+              ["Semester", "2 · 2025/2026"],
+              ["Programme", "Biomedical Engineering"],
+              ["School", "KNUST, Kumasi"],
+            ].map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button onClick={handleLogout}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
+          <LogOut size={16} /> Sign out
+        </button>
+      </div>
+    );
+  };
 
   // Tab content map
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), profile: renderProfile() };
@@ -1459,9 +1604,9 @@ export default function Home() {
           {/* User card at bottom */}
           <div style={{ padding: "16px 20px 20px", borderTop: "1px solid #ece8e0" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: "#fff", border: "1px solid #ece8e0" }}>
-              <Avatar name={studentName} size={36} />
+              <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayName}</p>
                 <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{studentID}</p>
               </div>
               <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
@@ -1484,7 +1629,7 @@ export default function Home() {
                 </div>
                 <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
               </div>
-              <Avatar name={studentName} size={32} />
+              <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} />
             </div>
             {/* Scrollable pill tabs */}
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
@@ -1508,16 +1653,9 @@ export default function Home() {
           </div>
         </main>
       </div>
-{/* Copyright Footer Links */}
-<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '12px', color: '#a8967a' }}>
-  <div className="brand-line">
-    <span>Built by</span> <a className="brand" style={{ color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer">Asante Inc.</a>
-  </div>
-  <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
-</div>
 
-{/* Chatbot */}
-{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+      {/* Chatbot */}
+      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
       {/* Modals */}
       <AnimatePresence>
