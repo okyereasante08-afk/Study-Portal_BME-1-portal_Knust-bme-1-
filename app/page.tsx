@@ -729,7 +729,23 @@ const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[];
 // ============================================================
 export default function StudentPortal() {
   // ── 1. ALL HOOKS DEFINED UNCONDITIONALLY AT TOP ────────────────────────────
-  const [studentID, setStudentID] = useState<string>("");
+ const [studentID, setStudentID] = useState("");
+  const [studentName, setStudentName] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // ====== PASTE THE HOOK HERE SO THE STATE IS DEFINED BEFORE CALLING IT ======
+  useEffect(() => {
+    if (isLoggedIn && studentID) {
+      try {
+        const savedAvatar = localStorage.getItem(`bme_avatar_${studentID}`);
+        if (savedAvatar) setAvatarDataUrl(savedAvatar);
+      } catch (e) {
+        console.error("Failed to read from storage cache:", e);
+      }
+    } else if (!isLoggedIn) {
+      setAvatarDataUrl("");
+    }
+  }, [isLoggedIn, studentID]);
   const [activeTab, setActiveTab] = useState<string>("Overview");
   const [attendance, setAttendance] = useState<Record<string, number[]>>({});
   const [showCWAModal, setShowCWAModal] = useState(false);
@@ -740,20 +756,6 @@ export default function StudentPortal() {
   const [files, setFiles] = useState<any[]>([]);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [avatarDataUrl, setAvatarDataUrl] = useState<string>("");
-
-
-  useEffect(() => {
-    if (isLoggedIn && studentID) {
-      try {
-        const savedAvatar = localStorage.getItem(`bme_avatar_${studentID}`);
-        if (savedAvatar) setAvatarDataUrl(savedAvatar);
-      } catch (e) {
-        console.error("Failed to read from storage cache:", e);
-      }
-} else if (!isLoggedIn) {
-    setAvatarDataUrl(""); // Changes to empty string to keep the compiler happy
-  }
-  }, [isLoggedIn, studentID]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
