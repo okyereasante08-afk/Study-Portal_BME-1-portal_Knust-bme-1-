@@ -742,9 +742,6 @@ export default function StudentPortal() {
   const [avatarDataUrl, setAvatarDataUrl] = useState<string>("");
 
 
-  // ====== 1. AVATAR STATE & AUTO-HYDRATION HOOK ======
-  const [avatarDataUrl, setAvatarDataUrl] = useState<string | null>(null);
-
   useEffect(() => {
     if (isLoggedIn && studentID) {
       try {
@@ -923,23 +920,6 @@ const handleAvatarUpload = (file: File) => {
     }
     return null;
   }, [currentTime]);
-
-  // ====== 2. THE MISSING HANDLERS WRITTEN FOR THE COMPILER ======
-  const handleAvatarUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64String = e.target?.result as string;
-      setAvatarDataUrl(base64String);
-
-      try {
-        localStorage.setItem(`bme_avatar_${studentID}`, base64String);
-      } catch (error) {
-        console.error("Storage quota exceeded:", error);
-        alert("Storage limit hit. Your profile photo will reset upon refreshing the tab.");
-      }
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleAvatarRemove = () => {
     setAvatarDataUrl(null);
