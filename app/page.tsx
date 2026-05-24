@@ -956,7 +956,6 @@ export default function Home() {
   
         <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tangerine:wght@400;700&family=Ultra&display=swap');
-</style>
       </style>
       <div style={{ paddingBottom: 4 }}>
         <h2 style={{ fontSize: 26, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
