@@ -560,19 +560,15 @@ export default function Home() {
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
       const savedAnn = localStorage.getItem("bme-announcements");
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
-      const savedFiles = localStorage.getItem("bme-files");
+ const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
     } // Closes the 'if (typeof window !== "undefined")' block
 
-    // Restored: Semester countdown and Pun ticker
+    // Restored: Semester countdown
     setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-    const punTimer = setInterval(() => setCurrentPun((p) => (p + 1) % BME_PUNS.length), 15000);
-    return () => clearInterval(punTimer);
   }, []); // Closes the useEffect hook
 
-  // Timer tick
-  useEffect(() => {
-
+ 
   // Timer tick
   useEffect(() => {
     if (timerActive) {
@@ -1007,17 +1003,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Pun ticker */}
-      <div style={{ ...S.card, padding: "12px 16px", display: "flex", alignItems: "center", gap: 10 }}>
-        <Coffee size={14} color="#c9b89a" />
-        <AnimatePresence mode="wait">
-          <motion.p key={currentPun} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.3 }}
-            style={{ flex: 1, fontSize: 12, color: "#a8967a", fontStyle: "italic", margin: 0 }}>
-            {BME_PUNS[currentPun]}
-          </motion.p>
-        </AnimatePresence>
-        <button onClick={() => setCurrentPun((p) => (p + 1) % BME_PUNS.length)} style={{ background: "none", border: "none", cursor: "pointer", color: "#c9b89a", fontSize: 16, padding: "0 4px" }}>›</button>
-      </div>
+   
     </div>
   );
 
