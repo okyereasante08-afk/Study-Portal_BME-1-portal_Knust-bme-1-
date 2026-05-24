@@ -16,7 +16,7 @@ import {
 // ============================================================
 
 const ADMIN_IDS = ["22028883"];
-const GHOST_ID = "BME_1E219D5DDC4E";
+const GHOST_ID = "BME_BETA1";
 
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
@@ -198,7 +198,7 @@ const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
     <div
       style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
     >
-      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Instrument Serif', serif" }}>{initials}</span>
+      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
 };
@@ -712,18 +712,22 @@ export default function Home() {
   })();
   const focusSessionsToday = timerSessions;
 
-  if (!mounted) return null;
+  if (!mounted) return (
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontSize: 13, color: "#f0ebe3", fontWeight: 800 }}>BME</span>
+      </div>
+    </div>
+  );
 
   // ============================================================
   // LOGIN SCREEN
   // ============================================================
   if (!isLoggedIn) {
     return (
-      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
+      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
         <style>{`
-                <style>
-      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Ultra&display=swap');
-      </style>
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
           * { box-sizing: border-box; }
           input::placeholder { color: #c9b89a; }
           input:focus { border-color: #8b7355 !important; }
@@ -733,9 +737,9 @@ export default function Home() {
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
             <div style={{ width: 64, height: 64, borderRadius: 20, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
-              <span style={{ fontSize: 22, fontFamily: "'Instrument Serif', serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
+              <span style={{ fontSize: 22, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
             </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Instrument Serif', serif" }}>Portal Access</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
             <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
 
@@ -887,7 +891,7 @@ export default function Home() {
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Instrument Serif', serif" }}>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -1009,7 +1013,7 @@ export default function Home() {
   const renderSchedule = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Instrument Serif', serif" }}>Timetable</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
         <div style={{ display: "flex", gap: 6 }}>
           {(["Today", "This week"] as const).map((v) => (
             <button key={v} onClick={() => setShowWeekView(v === "This week")}
@@ -1094,7 +1098,7 @@ export default function Home() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Instrument Serif', serif" }}>Progress</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
           <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance & study timer</p>
         </div>
 
@@ -1189,7 +1193,7 @@ export default function Home() {
       {/* Profile card */}
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
         <Avatar name={studentName} size={72} />
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Instrument Serif', serif" }}>{studentName}</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
         {isAdmin && (
           <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
