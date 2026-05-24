@@ -144,17 +144,8 @@ const SURVIVAL_KIT = [
   },
 ];
 
-const BME_PUNS = [
-  "Ei, the trotro of knowledge has left. Were you on board?",
-  "KNUST: Knowledge Never Stops Unless Tired.",
-  "PB212 lecture at 8am? My body is here but my soul is at the hostel.",
-  "CHEM 151 assignment due tomorrow. It's 11pm. God is faithful.",
-  "If stress was creditworthy, I'd have a First Class by now.",
-  "Asante is the GOAT. No debate.",
-  "Passed Applied Electricity. My ancestors had to intervene personally.",
-];
 
-const END_OF_SEM_DATE = new Date("2026-04-07T00:00:00");
+const END_OF_SEM_DATE = new Date("2026-09-17T00:00:00");
 const PORTAL_VERSION = "2.0.0";
 
 const timeToMinutes = (t: string) => {
@@ -695,7 +686,9 @@ export default function Home() {
     return (
       <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+                <style>
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Ultra&display=swap');
+      </style>
           * { box-sizing: border-box; }
           input::placeholder { color: #c9b89a; }
           input:focus { border-color: #8b7355 !important; }
@@ -1230,7 +1223,7 @@ export default function Home() {
   return (
     <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&display=swap');;
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
         ::-webkit-scrollbar { width: 0; }
