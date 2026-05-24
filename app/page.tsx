@@ -223,77 +223,223 @@ const timeToMinutes = (t: string) => {
 // HELPER COMPONENTS
 // ============================================================
 
-const Avatar = ({
-  name, size = 36, onClick, avatarUrl, showUploadHint = false, onRemove
-}: {
-  name: string; size?: number; onClick?: () => void;
-  avatarUrl?: string; showUploadHint?: boolean; onRemove?: () => void;
+// ============================================================
+// ENHANCED AVATAR COMPONENT WITH COMPRESSION & CROP
+// ============================================================
+
+interface AvatarProps {
+  name: string;
+  size?: number;
+  avatarUrl?: string | null;
+  showUploadHint?: boolean;
+  onFileSelect?: (file: File) => void;
+  onRemove?: () => void;
+}
+
+const Avatar: React.FC<AvatarProps> = ({
+  name,
+  size = 36,
+  avatarUrl = null,
+  showUploadHint = false,
+  onFileSelect,
+  onRemove
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
-  const isClickable = !!onClick || showUploadHint;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onFileSelect) return;
+
+    // Guard 1: Reject PDFs, videos, and non-image types
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file.");
+      e.target.value = "";
+      return;
+    }
+
+    // Guard 2: Reject files greater than 3MB to prevent browser freeze during context drawing
+    if (file.size > 3 * 1024 * 1024) {
+      alert("Image is too large. Please choose an image under 10MB.");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        
+        if (!ctx) {
+          onFileSelect(file);
+          return;
+        }
+
+        // Target size: 200px square gives crisp 2x retina headroom across all viewports
+        const targetSize = 200;
+        canvas.width = targetSize;
+        canvas.height = targetSize;
+
+        // Centre-crop calculation: extract largest square region from source dimensions
+        const srcWidth = img.width;
+        const srcHeight = img.height;
+        let sx = 0, sy = 0, sWidth = srcWidth, sHeight = srcHeight;
+
+        if (srcWidth > srcHeight) {
+          sWidth = srcHeight;
+          sx = (srcWidth - srcHeight) / 2;
+        } else {
+          sHeight = srcWidth;
+          sy = (srcHeight - srcWidth) / 2;
+        }
+
+        // Draw cropped square region onto the 200x200 canvas
+        ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetSize, targetSize);
+
+        // Compress to JPEG at 82% quality (optimum visual fidelity vs minimal payload size)
+        const compressedB64 = canvas.toDataURL("image/jpeg", 0.82);
+
+        // Guard 3: Verify approximate KB payload size via standard base64-to-bytes formula
+        const approxKB = (compressedB64.length * 3) / 4 / 1024;
+        if (approxKB > 80) {
+          // Fallback compression sweep for pathological cases
+          const aggressiveB64 = canvas.toDataURL("image/jpeg", 0.60);
+          const virtualFile = dataURLtoFile(aggressiveB64, file.name);
+          onFileSelect(virtualFile);
+        } else {
+          const virtualFile = dataURLtoFile(compressedB64, file.name);
+          onFileSelect(virtualFile);
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    // Reset value so choosing the same photo after removal fires onChange cleanly
+    e.target.value = "";
+  };
+
+  // Helper conversion mechanic
+  const dataURLtoFile = (dataurl: string, filename: string): File => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: mime });
+  };
 
   return (
-    <div
-      onClick={onClick}
-      title={showUploadHint ? "Change photo" : isClickable ? "Go to profile" : undefined}
-      style={{
-        width: size, height: size, borderRadius: size / 2,
-        background: avatarUrl ? "transparent" : "linear-gradient(135deg, #e8d5c4, #c9a87c)",
-        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-        cursor: isClickable ? "pointer" : "default",
-        transition: "transform 0.15s, box-shadow 0.15s",
-        position: "relative", overflow: "visible",
-      }}
-      onMouseEnter={e => {
-        if (isClickable) e.currentTarget.style.transform = "scale(1.05)";
-        const overlay = e.currentTarget.querySelector(".avatar-overlay") as HTMLDivElement;
-        if (overlay && showUploadHint) overlay.style.opacity = "1";
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = "scale(1)";
-        const overlay = e.currentTarget.querySelector(".avatar-overlay") as HTMLDivElement;
-        if (overlay && showUploadHint) overlay.style.opacity = "0";
-      }}
+    <div 
+      style={{ position: "relative", width: size, height: size, flexShrink: 0 }}
+      className="avatar-container"
     >
-      <div style={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", position: "relative" }}>
+      <div
+        onClick={() => showUploadHint && fileInputRef.current?.click()}
+        style={{
+          width: size,
+          height: size,
+          borderRadius: "50%",
+          background: avatarUrl ? "transparent" : "linear-gradient(135deg, #e8d5c4, #c9a87c)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+          cursor: showUploadHint ? "pointer" : "default",
+          position: "relative",
+          border: avatarUrl ? "1px solid #ece8e0" : "none"
+        }}
+      >
         {avatarUrl ? (
-          <img src={avatarUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img 
+            src={avatarUrl} 
+            alt={name} 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          />
         ) : (
-          <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
+          <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>
+            {initials}
+          </span>
         )}
-        
+
+        {/* Hover Upload Overlay Trigger */}
         {showUploadHint && (
-          <div className="avatar-overlay" style={{
-            position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)",
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            opacity: 0, transition: "opacity 0.2s"
-          }}>
-            <span style={{ fontSize: size * 0.25 }}>📷</span>
-            {size >= 60 && <span style={{ fontSize: 9, color: "#fff", fontWeight: 700, marginTop: 2 }}>CHANGE</span>}
+          <div
+            className="upload-overlay"
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(45, 36, 22, 0.75)", // Uses your #2d2416 background token
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: 0,
+              transition: "opacity 0.2s ease",
+              color: "#f7f3ed"
+            }}
+          >
+            <span style={{ fontSize: size >= 88 ? "20px" : "14px" }}>📷</span>
+            {size >= 60 && (
+              <span style={{ fontSize: "9px", fontWeight: 700, marginTop: 2, letterSpacing: 0.5 }}>
+                CHANGE
+              </span>
+            )}
           </div>
         )}
       </div>
 
-      {avatarUrl && onRemove && (
+      {/* Profile Page Context Remover Pin */}
+      {avatarUrl && onRemove && size >= 88 && (
         <button
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Stop click from popping open the input panel
             onRemove();
           }}
           style={{
-            position: "absolute", bottom: 0, right: -4, width: 20, height: 20,
-            borderRadius: 10, background: "#ef4444", border: "2px solid #fff",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "#fff", fontSize: 10, fontWeight: "bold", padding: 0
+            position: "absolute",
+            bottom: 0,
+            right: -4,
+            width: 26,
+            height: 26,
+            borderRadius: "50%",
+            background: "#ef4444",
+            border: "2px solid #fff",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            fontSize: 12,
+            fontWeight: 800
           }}
         >
           ✕
         </button>
       )}
+
+      {showUploadHint && (
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+      )}
+
+      <style>{`
+        .avatar-container:hover .upload-overlay {
+          opacity: 1 !important;
+        }
+      `}</style>
     </div>
   );
 };
-
 const AttendanceBadge = ({ pct }: { pct: number }) => {
   const color = pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
   const label = pct >= AT_RISK_THRESHOLD ? "On track" : pct >= 50 ? "At Risk ⚠" : "At Risk 🚨";
