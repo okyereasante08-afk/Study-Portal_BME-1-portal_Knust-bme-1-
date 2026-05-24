@@ -606,7 +606,9 @@ export default function Home() {
   const [lofiChannel, setLofiChannel] = useState("lofi-hiphop");
   const [lofiCustomUrl, setLofiCustomUrl] = useState("");
   const [lofiShowCustom, setLofiShowCustom] = useState(false);
+  const [lofiAudioOnly, setLofiAudioOnly] = useState(true);
   const lofiIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const lofiAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -1021,7 +1023,7 @@ export default function Home() {
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tangerine:wght@400;700&family=Ultra&display=swap');
       </style>
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 26, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
+        <h2 style={{ fontSize: 36, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -1413,16 +1415,20 @@ export default function Home() {
 
   const renderFocus = () => {
     // ── Lofi stream catalogue ─────────────────────────────────────────────────
-    const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; src: string }[] = [
-      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",    src: "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&controls=1" },
-      { id: "lofi-jazz",    label: "Jazz Café",        emoji: "🎷", tag: "jazz",     src: "https://www.youtube.com/embed/HuFYqnbVbzY?autoplay=1&controls=1" },
-      { id: "lofi-jazz2",   label: "Jazz & Bossa",     emoji: "🎺", tag: "jazz",     src: "https://www.youtube.com/embed/4xDzrJKXOOY?autoplay=1&controls=1" },
-      { id: "lofi-pop",     label: "Lofi Pop Vibes",   emoji: "🌸", tag: "pop",      src: "https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&controls=1" },
-      { id: "lofi-study",   label: "Study Beats",      emoji: "📚", tag: "study",    src: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&controls=1" },
-      { id: "lofi-sleep",   label: "Sleepy Beats",     emoji: "🌙", tag: "ambient",  src: "https://www.youtube.com/embed/rUxyKA_-grg?autoplay=1&controls=1" },
-      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient",  src: "https://www.youtube.com/embed/9Q634rbsypE?autoplay=1&controls=1" },
-      { id: "lofi-rnb",     label: "R&B Lofi",         emoji: "🎶", tag: "r&b",      src: "https://www.youtube.com/embed/kgx4WGK0oNU?autoplay=1&controls=1" },
-      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",   src: "" },
+    // All preset stations use direct audio streams (no video, no data waste).
+    // type "audio" = direct mp3/aac/icecast stream played via <audio> element
+    // type "iframe" = YouTube embed (only used for custom links)
+    const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; type: "audio" | "iframe"; src: string }[] = [
+      // Lofi Girl official 24/7 radio streams (HLS/MP3)
+      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",   type: "audio", src: "https://play.streamafrica.net/lofiradio" },
+      { id: "lofi-jazz",    label: "Jazz Vibes",       emoji: "🎷", tag: "jazz",    type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
+      { id: "lofi-chill",   label: "Chillhop",         emoji: "🌿", tag: "chill",   type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
+      { id: "lofi-study",   label: "Study Radio",      emoji: "📚", tag: "study",   type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
+      { id: "lofi-sleep",   label: "Ambient Drift",    emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
+      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
+      { id: "lofi-pop",     label: "Lofi Pop",         emoji: "🌸", tag: "pop",     type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
+      { id: "lofi-rnb",     label: "R&B Soul",         emoji: "🎶", tag: "r&b",     type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
+      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",  type: "iframe", src: "" },
     ];
     const TAG_COLORS: Record<string, { bg: string; text: string }> = {
       chill:   { bg: "#e0f2fe", text: "#075985" },
@@ -1435,16 +1441,19 @@ export default function Home() {
     };
 
     const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
-    const embedSrc = lofiChannel === "custom"
-      ? (() => {
-          const u = lofiCustomUrl.trim();
-          if (!u) return "";
-          // Convert youtube watch URLs to embed
-          const ytMatch = u.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-          if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&controls=1`;
-          return u; // pass through as-is for non-YT links
-        })()
-      : activeStation.src;
+    const isCustom = lofiChannel === "custom";
+
+    // For custom links: detect if YouTube and build embed URL
+    const customEmbedSrc = (() => {
+      const u = lofiCustomUrl.trim();
+      if (!u) return "";
+      const ytMatch = u.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+      if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&controls=1&vq=tiny`;
+      return u;
+    })();
+    const customIsYT = /youtu/.test(lofiCustomUrl);
+    // Custom non-YT links are tried as raw audio src
+    const customAudioSrc = (!customIsYT && lofiCustomUrl.trim()) ? lofiCustomUrl.trim() : "";
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -1484,19 +1493,16 @@ export default function Home() {
 
             {/* Controls */}
             <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 20 }}>
-              {/* Reset */}
               <button onClick={() => { setTimerActive(false); setTimerSeconds(focusMins * 60); setTimerMode("focus"); }}
                 style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontSize: 16, color: timerActive ? "#6b5438" : "#c9b89a" }}>↺</span>
               </button>
-              {/* Play/Pause */}
               <button onClick={() => { if (!timerActive) { setTimerSeconds(timerSeconds > 0 ? timerSeconds : focusMins * 60); setTimerMode(timerMode); } setTimerActive((a) => !a); }}
                 style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
                 {timerActive
                   ? <span style={{ width: 16, height: 16, borderLeft: "5px solid #1a1208", borderRight: "5px solid #1a1208", display: "inline-block" }} />
                   : <Play size={20} color="#f0ebe3" fill="#f0ebe3" />}
               </button>
-              {/* Skip to break/focus */}
               <button onClick={() => { const next = timerMode === "focus" ? "break" : "focus"; setTimerMode(next); setTimerSeconds(next === "break" ? Math.round(focusMins / 5) * 60 : focusMins * 60); if (next === "focus") setTimerSessions(s => s + 1); }}
                 style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 700 }}>⏭</span>
@@ -1526,14 +1532,13 @@ export default function Home() {
         {/* ── LOFI PLAYER CARD ──────────────────────────────────────────────── */}
         <div style={S.card}>
           {/* Header row */}
-          <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ padding: "16px 18px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
               <h3 style={{ ...S.sectionTitle, margin: "0 0 2px" }}>Lofi Mode</h3>
               <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>
-                {lofiPlaying ? `▶ Playing — ${activeStation.label}` : "Pick a station and press play"}
+                {lofiPlaying ? `▶ ${activeStation.label}` : "Pick a station and press play"}
               </p>
             </div>
-            {/* Big play/stop toggle */}
             <button
               onClick={() => setLofiPlaying(p => !p)}
               style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
@@ -1542,6 +1547,34 @@ export default function Home() {
                 boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
               {lofiPlaying ? "⏹ Stop" : "▶ Play"}
             </button>
+          </div>
+
+          {/* Audio-only + Volume row */}
+          <div style={{ padding: "0 18px 12px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            {/* Audio-only toggle */}
+            <button
+              onClick={() => setLofiAudioOnly(v => !v)}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, border: `1px solid ${lofiAudioOnly ? "#2d2416" : "#ece8e0"}`, background: lofiAudioOnly ? "#2d2416" : "#fff", cursor: "pointer", transition: "all 0.15s" }}>
+              <span style={{ fontSize: 13 }}>{lofiAudioOnly ? "🎵" : "🎬"}</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: lofiAudioOnly ? "#f0ebe3" : "#8b7355" }}>
+                {lofiAudioOnly ? "Audio only" : "Show video"}
+              </span>
+            </button>
+            <span style={{ fontSize: 10, color: "#c9b89a", flex: 1 }}>
+              {lofiAudioOnly ? "Saves data · No video rendered" : isCustom && customIsYT ? "Lowest quality (tiny)" : ""}
+            </span>
+            {/* Volume */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 12 }}>🔈</span>
+              <input type="range" min={0} max={1} step={0.05} value={lofiVolume}
+                onChange={e => {
+                  const v = parseFloat(e.target.value);
+                  setLofiVolume(v);
+                  if (lofiAudioRef.current) lofiAudioRef.current.volume = v;
+                }}
+                style={{ width: 70, accentColor: "#2d2416", cursor: "pointer", height: 4 }} />
+              <span style={{ fontSize: 12 }}>🔊</span>
+            </div>
           </div>
 
           {/* Station grid */}
@@ -1587,7 +1620,7 @@ export default function Home() {
               <span style={{ fontSize: 20 }}>🔗</span>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: 0 }}>Custom Link</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>YouTube, podcast, or any stream</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>YouTube, podcast, or any stream URL</p>
               </div>
             </button>
             {(lofiChannel === "custom" || lofiShowCustom) && (
@@ -1608,26 +1641,76 @@ export default function Home() {
             )}
           </div>
 
-          {/* Embedded player — hidden iframe approach, shows when playing */}
-          {lofiPlaying && embedSrc && (
-            <div style={{ padding: "0 14px 14px" }}>
-              <div style={{ borderRadius: 14, overflow: "hidden", border: "1px solid #ece8e0", position: "relative" }}>
+          {/* ── AUDIO ENGINE ── */}
+          {/* Preset stations: invisible <audio> element, no video whatsoever */}
+          {lofiPlaying && !isCustom && (
+            <div style={{ padding: "0 14px 16px" }}>
+              <audio
+                key={activeStation.src}
+                ref={lofiAudioRef}
+                src={activeStation.src}
+                autoPlay
+                controls
+                style={{ width: "100%", height: 40, borderRadius: 10, accentColor: "#2d2416" }}
+                onVolumeChange={e => setLofiVolume((e.target as HTMLAudioElement).volume)}
+              />
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
+                🎵 Audio only · No video · Low data usage
+              </p>
+            </div>
+          )}
+
+          {/* Custom non-YT URL: try as audio stream */}
+          {lofiPlaying && isCustom && customAudioSrc && (
+            <div style={{ padding: "0 14px 16px" }}>
+              <audio
+                key={customAudioSrc}
+                ref={lofiAudioRef}
+                src={customAudioSrc}
+                autoPlay
+                controls
+                style={{ width: "100%", height: 40, borderRadius: 10 }}
+              />
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
+                🎵 Streaming as audio · If silent, try a direct .mp3 link
+              </p>
+            </div>
+          )}
+
+          {/* Custom YouTube URL: iframe, collapsed when audio-only */}
+          {lofiPlaying && isCustom && customIsYT && customEmbedSrc && (
+            <div style={{ padding: "0 14px 16px" }}>
+              {/* Iframe always in DOM when playing so audio continues; height collapses in audio-only mode */}
+              <div style={{
+                borderRadius: 14, overflow: "hidden", border: lofiAudioOnly ? "none" : "1px solid #ece8e0",
+                height: lofiAudioOnly ? 0 : "auto", transition: "height 0.3s"
+              }}>
                 <iframe
                   ref={lofiIframeRef}
-                  key={embedSrc} // remount on src change to force autoplay
-                  src={embedSrc}
+                  key={customEmbedSrc}
+                  src={customEmbedSrc}
                   width="100%"
-                  height="180"
+                  height={lofiAudioOnly ? "1" : "180"}
                   frameBorder="0"
                   allow="autoplay; encrypted-media"
                   allowFullScreen
-                  style={{ display: "block", background: "#000" }}
-                  title="Lofi Stream"
+                  style={{ display: "block", background: "#000", visibility: lofiAudioOnly ? "hidden" : "visible" }}
+                  title="Custom Stream"
                 />
               </div>
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
-                Audio continues while you switch tabs · Allow autoplay if prompted
-              </p>
+              {lofiAudioOnly
+                ? <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0", textAlign: "center" }}>🎵 Video hidden · Lowest quality · Audio-only mode on</p>
+                : <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>
+              }
+            </div>
+          )}
+
+          {/* No src warning for custom */}
+          {lofiPlaying && isCustom && !customEmbedSrc && !customAudioSrc && (
+            <div style={{ padding: "0 14px 16px" }}>
+              <div style={{ padding: "12px 14px", borderRadius: 12, background: "#fffbeb", border: "1px solid #fef3c7" }}>
+                <p style={{ fontSize: 12, color: "#92400e", margin: 0, textAlign: "center" }}>Paste a URL above and tap Load to start streaming</p>
+              </div>
             </div>
           )}
         </div>
