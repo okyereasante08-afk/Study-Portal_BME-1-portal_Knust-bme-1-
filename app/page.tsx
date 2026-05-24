@@ -750,9 +750,9 @@ export default function StudentPortal() {
       } catch (e) {
         console.error("Failed to read from storage cache:", e);
       }
-    } else if (!isLoggedIn) {
-      setAvatarDataUrl(null);
-    }
+} else if (!isLoggedIn) {
+    setAvatarDataUrl(""); // Changes to empty string to keep the compiler happy
+  }
   }, [isLoggedIn, studentID]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
