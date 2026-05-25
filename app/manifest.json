@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "BME 1 PORTAL",
+  "short_name": "BME 1",
   "icons": [
     {
       "src": "/public/web-app-manifest-192x192.png",
