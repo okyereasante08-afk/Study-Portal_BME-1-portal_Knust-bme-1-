@@ -198,12 +198,12 @@ const TIMETABLE: { [key: string]: any[] } = {
 const SURVIVAL_KIT = [
   {
     course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
-    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
-    { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
-    { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
+    resources: [
+      { label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
+      { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
+      { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
     ]
   },
-
   {
     course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
     resources: [
@@ -215,7 +215,6 @@ const SURVIVAL_KIT = [
       { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
       { label: "Solving Diode Circuits", url: "https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh" },
       { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url: "https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL" },
-
     ]
   },
   {
@@ -240,58 +239,46 @@ const SURVIVAL_KIT = [
   },
   {
     course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
-    resources: [{ label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
-    { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
-    { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
-    { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
-    { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
-    { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
-    { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
-    { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
-    { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
-    { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
-    { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
-    { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
-    { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
-    { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
-    { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
-    { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
-    { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
-
+    resources: [
+      { label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
+      { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
+      { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
+      { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
+      { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
+      { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
+      { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
+      { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
+      { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
+      { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
+      { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
+      { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
+      { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
+      { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
+      { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
+      { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
+      { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
     ]
   },
 ];
-
 
 const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
 const MID_SEM_START = new Date("2026-07-06T00:00:00");
 const EXAMS_START = new Date("2026-08-17T00:00:00");
 const PORTAL_VERSION = "2.2.0";
 
-// ── Semester 2 migration ──────────────────────────────────────────────────────
-// Bumping this key wipes all Sem 1 attendance data on first load of Sem 2.
 const SEM2_VERSION_KEY = "bme-sem-version";
 const SEM2_VERSION_VAL = "2026-S2";
-
-const MAX_ATTENDANCE_EDITS = 3; // how many times a student can change a slot's status
-
-// ── Semester session calculation ─────────────────────────────────────────────
+const MAX_ATTENDANCE_EDITS = 3;
 const SEM_START = new Date("2026-05-25T00:00:00");
 
-/** Periods that contain no teaching: mid-sem break + exam period */
 const EXCLUDED_RANGES: [Date, Date][] = [
   [new Date("2026-07-06T00:00:00"), new Date("2026-07-10T00:00:00")],
   [new Date("2026-08-17T00:00:00"), new Date("2026-09-04T00:00:00")],
 ];
 
-/** Returns true if the given date falls inside an excluded period. */
 const isExcluded = (date: Date): boolean =>
   EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
 
-/**
- * Counts how many teaching occurrences of a given ISO weekday (0 Sun … 6 Sat)
- * fall between SEM_START and END_OF_SEM_DATE, excluding break/exam periods.
- */
 const calcTotalSemesterSessions = (weekday: number): number => {
   let count = 0;
   const cursor = new Date(SEM_START);
@@ -302,7 +289,6 @@ const calcTotalSemesterSessions = (weekday: number): number => {
   return count;
 };
 
-/** Pre-computed totals: Mon=1 … Fri=5 */
 const SESSIONS_BY_WEEKDAY: Record<number, number> = {
   1: calcTotalSemesterSessions(1),
   2: calcTotalSemesterSessions(2),
@@ -311,7 +297,6 @@ const SESSIONS_BY_WEEKDAY: Record<number, number> = {
   5: calcTotalSemesterSessions(5),
 };
 
-/** Courses below this attendance % are flagged "At Risk" */
 const AT_RISK_THRESHOLD = 70;
 
 const timeToMinutes = (t: string) => {
@@ -368,10 +353,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
       if (!dragging.current) return;
-      setPos({
-        x: offset.current.x - e.clientX,
-        y: offset.current.y - e.clientY,
-      });
+      setPos({ x: offset.current.x - e.clientX, y: offset.current.y - e.clientY });
     };
     const onMouseUp = () => { dragging.current = false; };
     const onTouchMove = (e: TouchEvent) => {
@@ -380,7 +362,6 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
       setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
     };
     const onTouchEnd = () => { dragging.current = false; };
-
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("touchmove", onTouchMove);
@@ -425,15 +406,8 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
     <>
       <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
         <button
-          onMouseDown={(e) => {
-            dragging.current = true;
-            offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y };
-          }}
-          onTouchStart={(e) => {
-            const t = e.touches[0];
-            dragging.current = true;
-            offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y };
-          }}
+          onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; }}
+          onTouchStart={(e) => { const t = e.touches[0]; dragging.current = true; offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y }; }}
           onClick={() => setOpen((o) => !o)}
           data-chatbot-toggle="true"
           style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
@@ -444,7 +418,6 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
           <span style={{ position: "absolute", top: -4, right: -4, background: "#f59e0b", color: "#fff", fontSize: 8, fontWeight: 800, padding: "2px 5px", borderRadius: 10, letterSpacing: 0.5 }}>BETA</span>
         )}
       </div>
-
       <AnimatePresence>
         {open && (
           <motion.div
@@ -701,7 +674,6 @@ function HomeInner() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Dashboard state
   const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "focus" | "profile">("home");
   const [showWeekView, setShowWeekView] = useState(false);
   const [scheduleView, setScheduleView] = useState<"today" | "week" | "grid">("today");
@@ -710,7 +682,6 @@ function HomeInner() {
   const [showSurvivalKit, setShowSurvivalKit] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
   const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
-  // Sem 2: per-slot status ("attended" | "skipped" | null) and edit-count tracking
   const [attendanceStatus, setAttendanceStatus] = useState<{ [key: string]: "attended" | "skipped" | null }>({});
   const [attendanceEdits, setAttendanceEdits] = useState<{ [key: string]: number }>({});
   const [daysToEnd, setDaysToEnd] = useState(0);
@@ -721,7 +692,6 @@ function HomeInner() {
   const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Timer state
   const [timerActive, setTimerActive] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(25 * 60);
   const [timerMode, setTimerMode] = useState<"focus" | "break">("focus");
@@ -729,7 +699,6 @@ function HomeInner() {
   const [focusMins, setFocusMins] = useState(25);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Lofi player state
   const [lofiPlaying, setLofiPlaying] = useState(false);
   const [lofiVolume, setLofiVolume] = useState(0.6);
   const [lofiChannel, setLofiChannel] = useState("lofi-hiphop");
@@ -742,9 +711,7 @@ function HomeInner() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      // ── Sem 2 migration: wipe Sem 1 attendance data once ─────────────────
       if (localStorage.getItem(SEM2_VERSION_KEY) !== SEM2_VERSION_VAL) {
-        // Clear all attendance keys for every student in CLASS_LIST
         Object.keys(CLASS_LIST).forEach((id) => {
           localStorage.removeItem(`bme-marked-${id}`);
           localStorage.removeItem(`bme-att-status-${id}`);
@@ -753,7 +720,6 @@ function HomeInner() {
         localStorage.removeItem("bme-attendance");
         localStorage.setItem(SEM2_VERSION_KEY, SEM2_VERSION_VAL);
       }
-
       const savedID = localStorage.getItem("bme-session-id");
       if (savedID && CLASS_LIST[savedID]) {
         setStudentID(savedID); setStudentName(CLASS_LIST[savedID]); setIsLoggedIn(true);
@@ -771,16 +737,12 @@ function HomeInner() {
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
-    } // Closes the 'if (typeof window !== "undefined")' block
-
-    // Restored: Semester countdown
+    }
     setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     setDaysToMidSem(Math.ceil((MID_SEM_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     setDaysToExams(Math.ceil((EXAMS_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-  }, []); // Closes the useEffect hook
+  }, []);
 
-
-  // Timer tick
   useEffect(() => {
     if (timerActive) {
       timerRef.current = setInterval(() => {
@@ -807,7 +769,6 @@ function HomeInner() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [timerActive, focusMins]);
 
-  // Next class
   useEffect(() => {
     const compute = () => {
       const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -902,33 +863,22 @@ function HomeInner() {
     setIsLoggedIn(false); setIsAdmin(false); setStudentID(""); setPassword(""); setAdminAccessCode(""); setLoginMode("student"); setIsFirstLogin(false); setFirstLoginStep("password");
   };
 
-  /**
-   * Sem 2: Records whether the student attended or skipped a class slot.
-   * Each slot can be changed up to MAX_ATTENDANCE_EDITS (3) times total.
-   * The attendance counter reflects only "attended" selections.
-   */
   const setAttendanceChoice = (id: string, choice: "attended" | "skipped") => {
     const edits = attendanceEdits[id] || 0;
-    if (edits >= MAX_ATTENDANCE_EDITS) return; // locked out
-
+    if (edits >= MAX_ATTENDANCE_EDITS) return;
     const prevStatus = attendanceStatus[id] ?? null;
     const prevCount = attendance[id] || 0;
-
-    // Adjust the numeric attendance count based on transition
     let newCount = prevCount;
     if (choice === "attended" && prevStatus !== "attended") newCount = prevCount + 1;
     if (choice === "skipped" && prevStatus === "attended") newCount = Math.max(0, prevCount - 1);
-
     const newAtt = { ...attendance, [id]: newCount };
     const newStatus = { ...attendanceStatus, [id]: choice };
     const newMarked = { ...attendanceMarked, [id]: true };
     const newEdits = { ...attendanceEdits, [id]: edits + 1 };
-
     setAttendance(newAtt);
     setAttendanceStatus(newStatus);
     setAttendanceMarked(newMarked);
     setAttendanceEdits(newEdits);
-
     if (studentID !== GHOST_ID) {
       localStorage.setItem("bme-attendance", JSON.stringify(newAtt));
       localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
@@ -937,23 +887,16 @@ function HomeInner() {
     }
   };
 
-  // Legacy no-op kept so any remaining references don't break at compile time
   const markAttendance = (id: string) => { if (!attendanceMarked[id]) setAttendanceChoice(id, "attended"); };
 
-  /**
-   * Returns the attendance percentage for a class slot.
-   * `weekday` is the ISO weekday (1=Mon…5=Fri); we derive the expected
-   * total from SESSIONS_BY_WEEKDAY so it updates automatically each semester.
-   * Falls back to the legacy `totalClasses` field if weekday is absent.
-   */
   const getAttendancePct = (classId: string, weekday?: number, legacyTotal?: number): number => {
     const total = weekday ? (SESSIONS_BY_WEEKDAY[weekday] ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
     return total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
   };
 
-  /** Returns true when attendance % is below the at-risk threshold. */
   const isAtRisk = (classId: string, weekday?: number, legacyTotal?: number): boolean =>
     getAttendancePct(classId, weekday, legacyTotal) < AT_RISK_THRESHOLD;
+
   const fmtTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
   const getFirstName = (name: string) => name.split(" ")[0];
   const daysList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -991,17 +934,15 @@ function HomeInner() {
           @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         `}</style>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 380, animation: "fadeUp 0.4s ease" }}>
-          {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
-           <div style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
-  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-</div>
+            <div style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+              <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
             <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
             <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
 
           <div style={{ background: "#fff", borderRadius: 24, padding: 24, boxShadow: "0 4px 32px rgba(0,0,0,0.06)", border: "1px solid #ece8e0" }}>
-            {/* Tab toggle */}
             {!showReset && (
               <div style={{ display: "flex", gap: 6, padding: 4, background: "#f7f3ed", borderRadius: 14, marginBottom: 20 }}>
                 {(["student", "admin"] as const).map((m) => (
@@ -1013,7 +954,6 @@ function HomeInner() {
               </div>
             )}
 
-            {/* Forgot password */}
             {showReset ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -1142,14 +1082,9 @@ function HomeInner() {
     sectionTitle: { fontSize: 15, fontWeight: 800, color: theme.textPrimary, margin: "0 0 14px", fontFamily: theme.fontHeading },
   };
 
-  // Render the selected tab's content
   const renderHome = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
-  
-        <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
-      </style>
       <div style={{ paddingBottom: 4 }}>
         <h2 style={{ fontSize: 36, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
@@ -1228,7 +1163,6 @@ function HomeInner() {
                       <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
                     </div>
                   </div>
-                  {/* Sem 2 compact attendance dropdown for home tab */}
                   {(() => {
                     const status = attendanceStatus[cls.id] ?? null;
                     const edits = attendanceEdits[cls.id] || 0;
@@ -1287,9 +1221,31 @@ function HomeInner() {
             </button>
           ))}
         </div>
+
+        {/* Slides — full-width card below the 2x2 grid */}
+        <a
+          href="https://drive.google.com/drive/folders/1Es-zeNtSEYnxcgjknbubkIkGrLSqHB1Y?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#e8f5e9", textDecoration: "none" }}
+        >
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+            <svg width="22" height="20" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+              <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+              <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+              <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
+              <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+              <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+              <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+            </svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#1b5e20", margin: "0 0 2px" }}>Class Slides</p>
+            <p style={{ fontSize: 11, color: "#388e3c", margin: 0 }}>Class presentations · Google Drive</p>
+          </div>
+          <ExternalLink size={14} color="#388e3c" />
+        </a>
       </div>
-
-
     </div>
   );
 
@@ -1307,7 +1263,7 @@ function HomeInner() {
       "MATH 152 B": { bg: "#E1F5EE", text: "#085041" },
       "ME 166": { bg: "#FAECE7", text: "#712B13" },
     };
-    const todayColIdx = new Date().getDay() - 1; // 0=Mon
+    const todayColIdx = new Date().getDay() - 1;
     const getCell = (dayKey: string, slot: string) =>
       (TIMETABLE[GRID_DAY_MAP[dayKey]] || []).find((c) => c.time.startsWith(slot)) || null;
 
@@ -1416,7 +1372,6 @@ function HomeInner() {
                                   <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
                                     {cls.type}
                                   </span>
-                                  {/* Sem 2 attendance dropdown */}
                                   {(() => {
                                     const status = attendanceStatus[cls.id] ?? null;
                                     const edits = attendanceEdits[cls.id] || 0;
@@ -1427,10 +1382,7 @@ function HomeInner() {
                                         <select
                                           value={status ?? ""}
                                           disabled={locked}
-                                          onChange={(e) => {
-                                            const val = e.target.value as "attended" | "skipped";
-                                            if (val) setAttendanceChoice(cls.id, val);
-                                          }}
+                                          onChange={(e) => { const val = e.target.value as "attended" | "skipped"; if (val) setAttendanceChoice(cls.id, val); }}
                                           style={{
                                             padding: "5px 8px", borderRadius: 10, fontSize: 11, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer",
                                             border: `1px solid ${status === "attended" ? "#bbf7d0" : status === "skipped" ? "#fecaca" : "#ece8e0"}`,
@@ -1444,7 +1396,7 @@ function HomeInner() {
                                           <option value="skipped">✗ Skipped</option>
                                         </select>
                                         <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>
-                                          {locked ? "🔒" : status ? `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left` : ""}
+                                          {locked ? "🔒 Locked" : status ? `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left` : ""}
                                         </span>
                                       </div>
                                     );
@@ -1484,8 +1436,6 @@ function HomeInner() {
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
           <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance overview</p>
         </div>
-
-        {/* Attendance summary */}
         <div style={S.card}>
           <div style={{ padding: "16px 18px 12px" }}>
             <h3 style={{ ...S.sectionTitle, marginBottom: 6 }}>Attendance</h3>
@@ -1520,8 +1470,6 @@ function HomeInner() {
             })}
           </div>
         </div>
-
-        {/* Semester milestones */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
             { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
@@ -1542,12 +1490,7 @@ function HomeInner() {
   };
 
   const renderFocus = () => {
-    // ── Lofi stream catalogue ─────────────────────────────────────────────────
-    // All preset stations use direct audio streams (no video, no data waste).
-    // type "audio" = direct mp3/aac/icecast stream played via <audio> element
-    // type "iframe" = YouTube embed (only used for custom links)
     const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; type: "audio" | "iframe"; src: string }[] = [
-      // Lofi Girl official 24/7 radio streams (HLS/MP3)
       { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",   type: "audio", src: "https://play.streamafrica.net/lofiradio" },
       { id: "lofi-jazz",    label: "Jazz Vibes",       emoji: "🎷", tag: "jazz",    type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
       { id: "lofi-chill",   label: "Chillhop",         emoji: "🌿", tag: "chill",   type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
@@ -1571,7 +1514,6 @@ function HomeInner() {
     const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
     const isCustom = lofiChannel === "custom";
 
-    // For custom links: detect if YouTube and build embed URL
     const customEmbedSrc = (() => {
       const u = lofiCustomUrl.trim();
       if (!u) return "";
@@ -1580,21 +1522,17 @@ function HomeInner() {
       return u;
     })();
     const customIsYT = /youtu/.test(lofiCustomUrl);
-    // Custom non-YT links are tried as raw audio src
     const customAudioSrc = (!customIsYT && lofiCustomUrl.trim()) ? lofiCustomUrl.trim() : "";
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        {/* Header */}
         <div style={{ paddingBottom: 4 }}>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Focus Studio</h2>
           <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Timer · Lofi · Deep work</p>
         </div>
 
-        {/* ── TIMER CARD ─────────────────────────────────────────────────── */}
         <div style={{ ...S.card, background: timerActive && timerMode === "focus" ? "#1e1810" : timerActive && timerMode === "break" ? "#052e16" : "#fff", transition: "background 0.6s ease" }}>
           <div style={{ padding: "20px 20px 18px" }}>
-            {/* Mode label */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 {timerActive && (
@@ -1610,16 +1548,12 @@ function HomeInner() {
                 {timerSessions} sessions today
               </span>
             </div>
-
-            {/* Clock face */}
             <div style={{ textAlign: "center", marginBottom: 20 }}>
               <p style={{ fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
                 color: timerActive ? (timerMode === "focus" ? "#f0ebe3" : "#86efac") : "#1a1208" }}>
                 {fmtTime(timerSeconds)}
               </p>
             </div>
-
-            {/* Controls */}
             <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 20 }}>
               <button onClick={() => { setTimerActive(false); setTimerSeconds(focusMins * 60); setTimerMode("focus"); }}
                 style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1636,8 +1570,6 @@ function HomeInner() {
                 <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 700 }}>⏭</span>
               </button>
             </div>
-
-            {/* Duration slider */}
             <div style={{ padding: "14px 0 0", borderTop: `1px solid ${timerActive ? "#2a2010" : "#f0ebe3"}` }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: timerActive ? "#6b5438" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>Focus duration</span>
@@ -1657,9 +1589,7 @@ function HomeInner() {
           </div>
         </div>
 
-        {/* ── LOFI PLAYER CARD ──────────────────────────────────────────────── */}
         <div style={S.card}>
-          {/* Header row */}
           <div style={{ padding: "16px 18px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
               <h3 style={{ ...S.sectionTitle, margin: "0 0 2px" }}>Lofi Mode</h3>
@@ -1667,21 +1597,15 @@ function HomeInner() {
                 {lofiPlaying ? `▶ ${activeStation.label}` : "Pick a station and press play"}
               </p>
             </div>
-            <button
-              onClick={() => setLofiPlaying(p => !p)}
+            <button onClick={() => setLofiPlaying(p => !p)}
               style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                background: lofiPlaying ? "#fef2f2" : "#2d2416",
-                color: lofiPlaying ? "#ef4444" : "#f0ebe3",
+                background: lofiPlaying ? "#fef2f2" : "#2d2416", color: lofiPlaying ? "#ef4444" : "#f0ebe3",
                 boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
               {lofiPlaying ? "⏹ Stop" : "▶ Play"}
             </button>
           </div>
-
-          {/* Audio-only + Volume row */}
           <div style={{ padding: "0 18px 12px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            {/* Audio-only toggle */}
-            <button
-              onClick={() => setLofiAudioOnly(v => !v)}
+            <button onClick={() => setLofiAudioOnly(v => !v)}
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, border: `1px solid ${lofiAudioOnly ? "#2d2416" : "#ece8e0"}`, background: lofiAudioOnly ? "#2d2416" : "#fff", cursor: "pointer", transition: "all 0.15s" }}>
               <span style={{ fontSize: 13 }}>{lofiAudioOnly ? "🎵" : "🎬"}</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: lofiAudioOnly ? "#f0ebe3" : "#8b7355" }}>
@@ -1691,33 +1615,24 @@ function HomeInner() {
             <span style={{ fontSize: 10, color: "#c9b89a", flex: 1 }}>
               {lofiAudioOnly ? "Saves data · No video rendered" : isCustom && customIsYT ? "Lowest quality (tiny)" : ""}
             </span>
-            {/* Volume */}
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ fontSize: 12 }}>🔈</span>
               <input type="range" min={0} max={1} step={0.05} value={lofiVolume}
-                onChange={e => {
-                  const v = parseFloat(e.target.value);
-                  setLofiVolume(v);
-                  if (lofiAudioRef.current) lofiAudioRef.current.volume = v;
-                }}
+                onChange={e => { const v = parseFloat(e.target.value); setLofiVolume(v); if (lofiAudioRef.current) lofiAudioRef.current.volume = v; }}
                 style={{ width: 70, accentColor: "#2d2416", cursor: "pointer", height: 4 }} />
               <span style={{ fontSize: 12 }}>🔊</span>
             </div>
           </div>
-
-          {/* Station grid */}
           <div style={{ padding: "0 14px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {LOFI_STATIONS.filter(s => s.id !== "custom").map(station => {
               const active = lofiChannel === station.id;
               const tagStyle = TAG_COLORS[station.tag] ?? TAG_COLORS.custom;
               return (
-                <button key={station.id}
-                  onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
+                <button key={station.id} onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
                   style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
                     border: active ? "2px solid #2d2416" : "1.5px solid #ece8e0",
                     background: active ? "#faf6f0" : "#fff",
-                    boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none",
-                    transition: "all 0.15s" }}>
+                    boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none", transition: "all 0.15s" }}>
                   <span style={{ fontSize: 22, lineHeight: 1 }}>{station.emoji}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
@@ -1737,11 +1652,8 @@ function HomeInner() {
               );
             })}
           </div>
-
-          {/* Custom link row */}
           <div style={{ padding: "0 14px 14px" }}>
-            <button
-              onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
+            <button onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
               style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
                 border: lofiChannel === "custom" ? "2px solid #2d2416" : "1.5px dashed #d4c7b4",
                 background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s" }}>
@@ -1753,87 +1665,42 @@ function HomeInner() {
             </button>
             {(lofiChannel === "custom" || lofiShowCustom) && (
               <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-                <input
-                  type="text"
-                  placeholder="Paste YouTube or stream URL…"
-                  value={lofiCustomUrl}
+                <input type="text" placeholder="Paste YouTube or stream URL…" value={lofiCustomUrl}
                   onChange={e => setLofiCustomUrl(e.target.value)}
-                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 12, outline: "none", color: "#1a1208", background: "#fff" }}
-                />
-                <button
-                  onClick={() => { setLofiChannel("custom"); if (lofiCustomUrl.trim()) setLofiPlaying(true); }}
+                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 12, outline: "none", color: "#1a1208", background: "#fff" }} />
+                <button onClick={() => { setLofiChannel("custom"); if (lofiCustomUrl.trim()) setLofiPlaying(true); }}
                   style={{ padding: "10px 16px", borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
                   Load
                 </button>
               </div>
             )}
           </div>
-
-          {/* ── AUDIO ENGINE ── */}
-          {/* Preset stations: invisible <audio> element, no video whatsoever */}
           {lofiPlaying && !isCustom && (
             <div style={{ padding: "0 14px 16px" }}>
-              <audio
-                key={activeStation.src}
-                ref={lofiAudioRef}
-                src={activeStation.src}
-                autoPlay
-                controls
+              <audio key={activeStation.src} ref={lofiAudioRef} src={activeStation.src} autoPlay controls
                 style={{ width: "100%", height: 40, borderRadius: 10, accentColor: "#2d2416" }}
-                onVolumeChange={e => setLofiVolume((e.target as HTMLAudioElement).volume)}
-              />
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
-                🎵 Audio only · No video · Low data usage
-              </p>
+                onVolumeChange={e => setLofiVolume((e.target as HTMLAudioElement).volume)} />
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>🎵 Audio only · No video · Low data usage</p>
             </div>
           )}
-
-          {/* Custom non-YT URL: try as audio stream */}
           {lofiPlaying && isCustom && customAudioSrc && (
             <div style={{ padding: "0 14px 16px" }}>
-              <audio
-                key={customAudioSrc}
-                ref={lofiAudioRef}
-                src={customAudioSrc}
-                autoPlay
-                controls
-                style={{ width: "100%", height: 40, borderRadius: 10 }}
-              />
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
-                🎵 Streaming as audio · If silent, try a direct .mp3 link
-              </p>
+              <audio key={customAudioSrc} ref={lofiAudioRef} src={customAudioSrc} autoPlay controls style={{ width: "100%", height: 40, borderRadius: 10 }} />
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>🎵 Streaming as audio · If silent, try a direct .mp3 link</p>
             </div>
           )}
-
-          {/* Custom YouTube URL: iframe, collapsed when audio-only */}
           {lofiPlaying && isCustom && customIsYT && customEmbedSrc && (
             <div style={{ padding: "0 14px 16px" }}>
-              {/* Iframe always in DOM when playing so audio continues; height collapses in audio-only mode */}
-              <div style={{
-                borderRadius: 14, overflow: "hidden", border: lofiAudioOnly ? "none" : "1px solid #ece8e0",
-                height: lofiAudioOnly ? 0 : "auto", transition: "height 0.3s"
-              }}>
-                <iframe
-                  ref={lofiIframeRef}
-                  key={customEmbedSrc}
-                  src={customEmbedSrc}
-                  width="100%"
-                  height={lofiAudioOnly ? "1" : "180"}
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                  style={{ display: "block", background: "#000", visibility: lofiAudioOnly ? "hidden" : "visible" }}
-                  title="Custom Stream"
-                />
+              <div style={{ borderRadius: 14, overflow: "hidden", border: lofiAudioOnly ? "none" : "1px solid #ece8e0", height: lofiAudioOnly ? 0 : "auto", transition: "height 0.3s" }}>
+                <iframe ref={lofiIframeRef} key={customEmbedSrc} src={customEmbedSrc} width="100%" height={lofiAudioOnly ? "1" : "180"}
+                  frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen
+                  style={{ display: "block", background: "#000", visibility: lofiAudioOnly ? "hidden" : "visible" }} title="Custom Stream" />
               </div>
               {lofiAudioOnly
                 ? <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0", textAlign: "center" }}>🎵 Video hidden · Lowest quality · Audio-only mode on</p>
-                : <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>
-              }
+                : <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>}
             </div>
           )}
-
-          {/* No src warning for custom */}
           {lofiPlaying && isCustom && !customEmbedSrc && !customAudioSrc && (
             <div style={{ padding: "0 14px 16px" }}>
               <div style={{ padding: "12px 14px", borderRadius: 12, background: "#fffbeb", border: "1px solid #fef3c7" }}>
@@ -1843,7 +1710,6 @@ function HomeInner() {
           )}
         </div>
 
-        {/* ── SEMESTER MILESTONES ────────────────────────────────────────────── */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
             { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
@@ -1865,7 +1731,6 @@ function HomeInner() {
 
   const renderProfile = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Profile card */}
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
         <Avatar name={studentName} size={72} />
         <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
@@ -1876,8 +1741,6 @@ function HomeInner() {
           </Link>
         )}
       </div>
-
-      {/* Actions */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {[
           { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
@@ -1894,8 +1757,6 @@ function HomeInner() {
           </a>
         ))}
       </div>
-
-      {/* Theme picker */}
       <div style={{ ...S.card, padding: "16px 18px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
           <Palette size={15} color={theme.accent} />
@@ -1937,8 +1798,6 @@ function HomeInner() {
           </div>
         )}
       </div>
-
-      {/* Portal info */}
       <div style={{ ...S.card, padding: "16px 18px" }}>
         <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1950,7 +1809,6 @@ function HomeInner() {
           ))}
         </div>
       </div>
-
       <button onClick={handleLogout}
         style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
         <LogOut size={16} /> Sign out
@@ -1958,7 +1816,6 @@ function HomeInner() {
     </div>
   );
 
-  // Tab content map
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
   const tabs = [
     { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
@@ -1970,7 +1827,8 @@ function HomeInner() {
 
   return (
     <div style={{ minHeight: "100vh", background: theme.pageBg, fontFamily: theme.fontBody }}>
-      
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: ${theme.pageBg}; transition: background 0.3s ease; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
@@ -1979,54 +1837,22 @@ function HomeInner() {
         .syne { font-family: 'Syne', sans-serif !important; }
       `}</style>
 
-              {/* Slides — full-width card */}
-        <a href="https://drive.google.com/drive/folders/1Es-zeNtSEYnxcgjknbubkIkGrLSqHB1Y?usp=sharing"
-          target="_blank" rel="noopener noreferrer"
-          style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#e8f5e9", textDecoration: "none", position: "relative" }}>
-          {/* Google Drive logo SVG */}
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <svg width="22" height="20" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
-              <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
-              <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
-              <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
-              <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
-              <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
-              <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
-            </svg>
-          </div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>Slides</p>
-            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>Class presentations · Google Drive</p>
-          </div>
-          <ExternalLink size={14} color="#a8967a" />
-        </a>
-      </div>
-
-
-    </div>
-  );
-
-
-      {/* Full-bleed flex layout */}
       <div style={{ display: "flex", minHeight: "100vh" }}>
 
         {/* DESKTOP SIDEBAR */}
         <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: `1px solid ${theme.border}`, background: theme.sidebarBg, position: "sticky", top: 0, height: "100vh" }}
           className="desktop-sidebar">
-          {/* Logo */}
           <div style={{ padding: "0 20px 28px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-<div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden" }}>
-  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-</div>
+              <div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden" }}>
+                <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </div>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>BME1 Portal</p>
                 <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>KNUST · Semester 2</p>
               </div>
             </div>
           </div>
-
-          {/* Nav */}
           <nav style={{ flex: 1, padding: "0 12px" }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
             {tabs.map((tab) => (
@@ -2036,8 +1862,6 @@ function HomeInner() {
                 {tab.label}
               </button>
             ))}
-
-            {/* Extra links in sidebar */}
             <div style={{ marginTop: 20, borderTop: `1px solid ${theme.border}`, paddingTop: 16 }}>
               <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
               {[
@@ -2061,8 +1885,6 @@ function HomeInner() {
               ))}
             </div>
           </nav>
-
-          {/* User card at bottom */}
           <div style={{ padding: "16px 20px 20px", borderTop: `1px solid ${theme.border}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: theme.cardBg, border: `1px solid ${theme.border}` }}>
               <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} />
@@ -2077,22 +1899,19 @@ function HomeInner() {
           </div>
         </aside>
 
-        {/* MAIN CONTENT — full width, scrolls independently */}
+        {/* MAIN CONTENT */}
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
-
           {/* Mobile top header */}
           <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50, background: theme.pageBg, borderBottom: `1px solid ${theme.border}`, padding: "0 16px" }}>
-            {/* Top row: logo + avatar */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                 <div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
-  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-</div>
+                  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </div>
                 <span style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, fontFamily: theme.fontHeading }}>BME Portal</span>
               </div>
               <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} />
             </div>
-            {/* Scrollable pill tabs */}
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
@@ -2104,7 +1923,6 @@ function HomeInner() {
             </div>
           </div>
 
-          {/* Page content with generous desktop padding */}
           <div style={{ flex: 1, padding: "24px 20px 40px" }} className="content-area">
             <AnimatePresence mode="wait">
               <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
@@ -2115,26 +1933,22 @@ function HomeInner() {
         </main>
       </div>
 
-{/* Copyright Footer Links */}
-<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
-<div className="brand-line">
-<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine'  , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
-</div>
-<div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
-</div>
+      {/* Copyright Footer */}
+      <div style={{ textAlign: "center", padding: "16px 0", fontSize: "20px", color: "#a8967a" }}>
+        <div className="brand-line">
+          <span>Built by</span> <a className="brand" style={{ fontFamily: "Tangerine", color: "#2d2416", fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
+        </div>
+        <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
+      </div>
 
+      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
-{/* Chatbot */}
-{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
-
-      {/* Modals */}
       <AnimatePresence>
         {showCWAModal && <CWAModal onClose={() => setShowCWAModal(false)} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
         {showUpdatesHub && <UpdatesModal announcements={announcements} files={files} onClose={() => setShowUpdatesHub(false)} />}
       </AnimatePresence>
 
-      {/* Responsive CSS */}
       <style>{`
         .desktop-sidebar { display: none !important; }
         .mobile-header { display: block !important; }
