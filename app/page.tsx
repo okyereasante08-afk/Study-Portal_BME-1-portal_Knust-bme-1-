@@ -309,16 +309,20 @@ const timeToMinutes = (t: string) => {
 // HELPER COMPONENTS
 // ============================================================
 
-const Avatar = ({ name, size = 36, onClick }: { name: string; size?: number; onClick?: () => void }) => {
+const Avatar = ({ name, size = 36, onClick, photoUrl }: { name: string; size?: number; onClick?: () => void; photoUrl?: string | null }) => {
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+  if (photoUrl) {
+    return (
+      <img src={photoUrl} alt={name} onClick={onClick}
+        title={onClick ? "Go to profile" : undefined}
+        style={{ width: size, height: size, borderRadius: size / 2, objectFit: "cover", cursor: onClick ? "pointer" : "default", border: "2px solid #e8d5c4", flexShrink: 0 }} />
+    );
+  }
   return (
-    <div
-      onClick={onClick}
-      title={onClick ? "Go to profile" : undefined}
+    <div onClick={onClick} title={onClick ? "Go to profile" : undefined}
       style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: onClick ? "pointer" : "default", transition: "opacity 0.15s" }}
       onMouseEnter={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "0.8"; }}
-      onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}
-    >
+      onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}>
       <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
@@ -674,6 +678,7 @@ function HomeInner() {
   const [adminAccessCode, setAdminAccessCode] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "focus" | "profile">("home");
   const [showWeekView, setShowWeekView] = useState(false);
@@ -725,6 +730,7 @@ function HomeInner() {
       if (savedID && CLASS_LIST[savedID]) {
         setStudentID(savedID); setStudentName(CLASS_LIST[savedID]); setIsLoggedIn(true);
         setIsAdmin(ADMIN_IDS.includes(savedID) || localStorage.getItem("bme-admin-access") === "true");
+        setAvatarUrl(localStorage.getItem(`bme-avatar-${savedID}`) ?? null);
       }
       const savedAtt = localStorage.getItem("bme-attendance");
       if (savedAtt) setAttendance(JSON.parse(savedAtt));
@@ -1733,8 +1739,11 @@ function HomeInner() {
   const renderProfile = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-        <PhotoUpload storageKey={`bme-avatar-${studentID}`} fallbackName={studentName} />
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
+      <PhotoUpload
+  storageKey={`bme-avatar-${studentID}`}
+  fallbackName={studentName}
+  onSave={({ dataUrl }) => setAvatarUrl(dataUrl)}
+  onRemove={() => setAvatarUrl(null)} />
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
         {isAdmin && (
           <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
@@ -1888,7 +1897,7 @@ function HomeInner() {
           </nav>
           <div style={{ padding: "16px 20px 20px", borderTop: `1px solid ${theme.border}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: theme.cardBg, border: `1px solid ${theme.border}` }}>
-              <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} />
+              <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} photoUrl={avatarUrl} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 700, color: theme.textPrimary, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
                 <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, fontStyle: "italic" }}>{studentID}</p>
@@ -1911,7 +1920,7 @@ function HomeInner() {
                 </div>
                 <span style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, fontFamily: theme.fontHeading }}>BME Portal</span>
               </div>
-              <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} />
+             <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} photoUrl={avatarUrl} />
             </div>
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
