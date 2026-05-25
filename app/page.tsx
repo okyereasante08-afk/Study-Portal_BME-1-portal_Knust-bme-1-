@@ -1827,30 +1827,42 @@ function HomeInner() {
     fontSize: 13,
     fontWeight: 700,
     cursor: "pointer",
-    fontFamily: "'Montserrat', sans-serif"
+    fontFamily: "'Montserrat', sans-serif",
   }}
 >
   View Guide
 </button>
 
-<div
-    key={k}
-    style={{ display: "flex", justifyContent: "space-between" }}
-  >
-    <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
-    <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>
-      {v}
-    </span>
-  </div>
-))}
-        </div>
-      </div>
-      <button onClick={handleLogout}
-        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
-        <LogOut size={16} /> Sign out
-      </button>
-    </div>
-  );
+{Object.entries(someObject).map(([k, v]) => (
+
+
+</div>
+</div>
+
+<button
+  onClick={() => {
+    localStorage.removeItem("bme-onboarded");
+    setShowTutorial(true);
+  }}
+  style={{
+    marginTop: 12,
+    width: "100%",
+    padding: "10px 0",
+    borderRadius: 12,
+    border: "1.5px solid #ece8e0",
+    background: "#fff",
+    color: "#2d2416",
+    fontSize: 13,
+    fontWeight: 700,
+    cursor: "pointer",
+    fontFamily: "'Montserrat', sans-serif",
+  }}
+>
+  ✦ View Guide
+</button>
+
+</div>
+);
 
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
   const tabs = [
