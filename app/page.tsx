@@ -366,17 +366,15 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
       const t = e.touches[0];
       setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
     };
-    const onTouchEnd = () => { dragging.current = false; };
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("touchmove", onTouchMove);
-    window.addEventListener("touchend", onTouchEnd);
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-    };
+   const onTouchEnd = () => { dragging.current = false; };
+window.addEventListener("mousemove", onMouseMove);
+window.addEventListener("mouseup", onMouseUp);
+window.addEventListener("touchend", onTouchEnd);
+return () => {
+  window.removeEventListener("mousemove", onMouseMove);
+  window.removeEventListener("mouseup", onMouseUp);
+  window.removeEventListener("touchend", onTouchEnd);
+};
   }, []);
 
   useEffect(() => {
@@ -411,9 +409,8 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
     <>
       <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
         <button
-          onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; }}
-          onTouchStart={(e) => { const t = e.touches[0]; dragging.current = true; offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y }; }}
-          onClick={() => setOpen((o) => !o)}
+         onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; (e.currentTarget as HTMLButtonElement).dataset.startX = String(e.clientX); (e.currentTarget as HTMLButtonElement).dataset.startY = String(e.clientY); }}
+onClick={(e) => { const dx = e.clientX - Number((e.currentTarget as HTMLButtonElement).dataset.startX); const dy = e.clientY - Number((e.currentTarget as HTMLButtonElement).dataset.startY); if (Math.abs(dx) < 5 && Math.abs(dy) < 5) setOpen((o) => !o); }}
           data-chatbot-toggle="true"
           style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
