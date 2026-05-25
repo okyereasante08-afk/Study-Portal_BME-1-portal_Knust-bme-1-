@@ -1850,15 +1850,21 @@ function HomeInner() {
         <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: `1px solid ${theme.border}`, background: theme.sidebarBg, position: "sticky", top: 0, height: "100vh" }}
           className="desktop-sidebar">
           <div style={{ padding: "0 20px 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-              <div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden" }}>
-                <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </div>
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>BME1 Portal</p>
-                <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>KNUST · Semester 2</p>
-              </div>
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+  <button
+    onClick={() => { if (window.confirm("Sign out of BME Portal?")) handleLogout(); }}
+    title="Sign out"
+    style={{ display: "flex", alignItems: "center", gap: 11, background: "none", border: "none", cursor: "pointer", padding: 0, textAlign: "left" }}
+  >
+    <div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden", flexShrink: 0 }}>
+      <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    </div>
+    <div>
+      <p style={{ fontSize: 14, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>BME1 Portal</p>
+      <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>KNUST · Semester 2</p>
+    </div>
+  </button>
+</div>
           </div>
           <nav style={{ flex: 1, padding: "0 12px" }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
