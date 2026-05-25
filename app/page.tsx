@@ -164,15 +164,15 @@ const COURSE_CREDITS = [
 ];
 
 const COURSE_COLORS: Record<string, string> = {
-  "SOC 152": "#22c55e",
-  "COE 152": "#f59e0b",
-  "BME 166": "#3b82f6",
-  "MATH 152": "#8b5cf6",
-  "MATH 152 A": "#8b5cf6",
-  "MATH 152 B": "#8b5cf6",
-  "PHY 154": "#06b6d4",
-  "ME 166": "#f97316",
-  "ENGL 158": "#ec4899",
+  "SOC 152": "#8b7355",
+  "COE 152": "#8b7355",
+  "BME 166": "#8b7355",
+  "MATH 152": "#8b7355",
+  "MATH 152 A": "#8b7355",
+  "MATH 152 B": "#8b7355",
+  "PHY 154": "#8b7355",
+  "ME 166": "#8b7355",
+  "ENGL 158": "#8b7355",
 };
 
 const TIMETABLE: { [key: string]: any[] } = {
@@ -846,7 +846,8 @@ function HomeInner() {
   };
 
   const proceedToLogin = (id: string, adminOverride = false) => {
-    setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true); if (!localStorage.getItem("bme-onboarded")) setShowTutorial(true);
+    setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
+    if (typeof window !== "undefined" && localStorage.getItem("bme-guide-disabled") !== "true") setShowTutorial(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
     if (id === GHOST_ID) { setAttendance({}); setAttendanceMarked({}); return; }
@@ -1092,7 +1093,7 @@ function HomeInner() {
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 36, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
+        <h2 style={{ fontSize: 36, fontWeight: 700, color: "#2d2416", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -1125,8 +1126,8 @@ function HomeInner() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
         {[
           { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: "#2d2416" },
-          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" },
-          { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#8b5cf6" },
+          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: "#2d2416" },
+          { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#2d2416" },
         ].map((stat) => (
           <div key={stat.label} style={{ ...S.card, padding: "14px 12px" }}>
             <p style={{ fontSize: 24, fontWeight: 800, color: stat.color, margin: "0 0 2px", lineHeight: 1 }}>{stat.value}</p>
@@ -1154,20 +1155,13 @@ function HomeInner() {
               const color = COURSE_COLORS[cls.course] || "#8b7355";
               return (
                 <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: "#faf8f4" }}>
-                  <div style={{ width: 4, height: 48, borderRadius: 2, background: color, flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
                       <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: 0 }}>{cls.course}</p>
                       <span style={{ fontSize: 11, color: "#a8967a" }}>{cls.time.split(" - ")[0]}</span>
                     </div>
-                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 6px" }}>{cls.venue} · {cls.lecturer}</p>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#ece8e0", overflow: "hidden" }}>
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
-                          style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
-                      </div>
-                      <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
-                    </div>
+                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 4px" }}>{cls.venue} · {cls.lecturer}</p>
+                    <span style={{ fontSize: 11, color: "#a8967a" }}>{pct}%</span>
                   </div>
                   {(() => {
                     const status = attendanceStatus[cls.id] ?? null;
@@ -1207,10 +1201,10 @@ function HomeInner() {
         <p style={{ ...S.label, marginBottom: 10 }}>Quick actions</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[
-            { icon: <Calculator size={20} color="#8b5cf6" />, label: "CWA calc", sub: "Project your grade", bg: "#f5f3ff", action: () => setShowCWAModal(true) },
-            { icon: <BookOpen size={20} color="#3b82f6" />, label: "Survival kit", sub: "Course resources", bg: "#eff6ff", action: () => setShowSurvivalKit(true) },
-            { icon: <Zap size={20} color="#f59e0b" />, label: "Focus Studio", sub: "Timer · Lofi · Deep work", bg: "#fffbeb", action: () => setActiveTab("focus") },
-            { icon: <Bell size={20} color="#f97316" />, label: "Updates", sub: "Announcements", bg: "#fff7ed", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
+            { icon: <Calculator size={20} color="#2d2416" />, label: "CWA calc", sub: "Project your grade", bg: "#faf8f4", action: () => setShowCWAModal(true) },
+            { icon: <BookOpen size={20} color="#2d2416" />, label: "Survival kit", sub: "Course resources", bg: "#faf8f4", action: () => setShowSurvivalKit(true) },
+            { icon: <Zap size={20} color="#2d2416" />, label: "Focus Studio", sub: "Timer · Lofi · Deep work", bg: "#faf8f4", action: () => setActiveTab("focus") },
+            { icon: <Bell size={20} color="#2d2416" />, label: "Updates", sub: "Announcements", bg: "#faf8f4", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
           ].map((item) => (
             <button key={item.label} onClick={item.action}
               style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: item.bg, border: "none", cursor: "pointer", textAlign: "left", position: "relative" }}>
@@ -1233,7 +1227,7 @@ function HomeInner() {
           href="https://drive.google.com/drive/folders/1Es-zeNtSEYnxcgjknbubkIkGrLSqHB1Y?usp=sharing"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#e8f5e9", textDecoration: "none" }}
+          style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#faf8f4", textDecoration: "none" }}
         >
           <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
             <svg width="22" height="20" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
@@ -1246,10 +1240,10 @@ function HomeInner() {
             </svg>
           </div>
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#1b5e20", margin: "0 0 2px" }}>Class Slides</p>
-            <p style={{ fontSize: 11, color: "#388e3c", margin: 0 }}>Class presentations · Google Drive</p>
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>Class Slides</p>
+            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>Class presentations · Google Drive</p>
           </div>
-          <ExternalLink size={14} color="#388e3c" />
+          <ExternalLink size={14} color="#8b7355" />
         </a>
       </div>
     </div>
@@ -1446,7 +1440,7 @@ function HomeInner() {
           <div style={{ padding: "16px 18px 12px" }}>
             <h3 style={{ ...S.sectionTitle, marginBottom: 6 }}>Attendance</h3>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 36, fontWeight: 800, color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" }}>{avgAttPct}%</span>
+              <span style={{ fontSize: 36, fontWeight: 800, color: "#2d2416" }}>{avgAttPct}%</span>
               <div>
                 <p style={{ fontSize: 12, color: "#1a1208", fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
                 <AttendanceBadge pct={avgAttPct} />
@@ -1464,11 +1458,11 @@ function HomeInner() {
                       <span style={{ width: 8, height: 8, borderRadius: 4, background: color, display: "inline-block" }} />
                       {cls.course}
                     </span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }}>{pct}%</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#2d2416" }}>{pct}%</span>
                   </div>
                   <div style={{ height: 6, borderRadius: 3, background: "#f0ebe3", overflow: "hidden" }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                      style={{ height: "100%", borderRadius: 3, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                      style={{ height: "100%", borderRadius: 3, background: "#2d2416" }} />
                   </div>
                   <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
                 </div>
@@ -1478,12 +1472,12 @@ function HomeInner() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
-            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
-            { label: "Exams", sub: "Aug 17", days: daysToExams, color: "#ef4444" },
-            { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
+            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem },
+            { label: "Exams", sub: "Aug 17", days: daysToExams },
+            { label: "End of sem", sub: "Sep 4", days: daysToEnd },
           ].map((m) => (
             <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: "#2d2416", margin: "0 0 2px", lineHeight: 1 }}>
                 {m.days <= 0 ? "✓" : m.days}
               </p>
               <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
@@ -1718,12 +1712,12 @@ function HomeInner() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
-            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
-            { label: "Exams", sub: "Aug 17", days: daysToExams, color: "#ef4444" },
-            { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
+            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem },
+            { label: "Exams", sub: "Aug 17", days: daysToExams },
+            { label: "End of sem", sub: "Sep 4", days: daysToEnd },
           ].map((m) => (
             <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: "#2d2416", margin: "0 0 2px", lineHeight: 1 }}>
                 {m.days <= 0 ? "✓" : m.days}
               </p>
               <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
@@ -1806,27 +1800,49 @@ function HomeInner() {
             </div>
           </div>
         )}
-        <button
-          onClick={() => {
-            localStorage.removeItem("bme-onboarded");
-            setShowTutorial(true);
-          }}
-          style={{
-            marginTop: 12,
-            width: "100%",
-            padding: "10px 0",
-            borderRadius: 12,
-            border: "1.5px solid #ece8e0",
-            background: "#fff",
-            color: "#2d2416",
-            fontSize: 13,
-            fontWeight: 700,
-            cursor: "pointer",
-            fontFamily: "'Montserrat', sans-serif",
-          }}
-        >
-          View Guide
-        </button>
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          <button
+            onClick={() => setShowTutorial(true)}
+            style={{
+              width: "100%",
+              padding: "10px 0",
+              borderRadius: 12,
+              border: `1.5px solid ${theme.border}`,
+              background: theme.cardBg,
+              color: theme.textPrimary,
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: theme.fontBody,
+            }}
+          >
+            View Guide
+          </button>
+          <button
+            onClick={() => {
+              const cur = localStorage.getItem("bme-guide-disabled") === "true";
+              localStorage.setItem("bme-guide-disabled", cur ? "false" : "true");
+              // force re-render via a dummy state toggle
+              setShowTutorial(false);
+            }}
+            style={{
+              width: "100%",
+              padding: "10px 0",
+              borderRadius: 12,
+              border: `1.5px solid ${theme.border}`,
+              background: theme.pageBg,
+              color: theme.textMuted,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: theme.fontBody,
+            }}
+          >
+            {typeof window !== "undefined" && localStorage.getItem("bme-guide-disabled") === "true"
+              ? "Enable guide on login"
+              : "Disable guide on login"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -1885,10 +1901,10 @@ function HomeInner() {
             <div style={{ marginTop: 20, borderTop: `1px solid ${theme.border}`, paddingTop: 16 }}>
               <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
               {[
-                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: "#8b5cf6" },
-                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: "#3b82f6" },
-                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: "#f97316", badge: announcements.length },
-                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: "#6366f1" },
+                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: theme.textMuted },
+                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: theme.textMuted },
+                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: theme.textMuted, badge: announcements.length },
+                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: theme.textMuted },
               ].map((item) => (
                 item.href ? (
                   <Link key={item.label} href={item.href}
@@ -1956,7 +1972,7 @@ function HomeInner() {
       <OnboardingTutorial
         show={showTutorial}
         studentName={studentName}
-        onFinish={() => { localStorage.setItem("bme-onboarded", "true"); setShowTutorial(false); }}
+        onFinish={() => setShowTutorial(false)}
         onNavigate={(tab) => setActiveTab(tab as any)}
       />
 
