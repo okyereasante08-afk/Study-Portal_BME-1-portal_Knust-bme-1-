@@ -1,443 +1,377 @@
 "use client";
 
-/**
- * OnboardingTutorial.tsx
- * ─────────────────────────────────────────────────────────────────────────────
- * First-login spotlight tutorial for the KNUST BME1 Portal.
- *
- * HOW IT WORKS
- * ─────────────
- * - Shows automatically on first login (checks localStorage "bme-onboarded")
- * - Dark overlay with a circular spotlight that animates between UI targets
- * - 6 steps, each with a card anchored near the spotlight
- * - Skip or finish → sets "bme-onboarded" = "true" in localStorage
- * - Replay: call with `show={true}` from Profile tab's Guide button
- *
- * USAGE in page.tsx
- * ──────────────────
- * 1. Import at the top:
- *    import OnboardingTutorial from "./components/OnboardingTutorial";
- *
- * 2. Add state (near your other useState calls, line ~675):
- *    const [showTutorial, setShowTutorial] = useState(false);
- *
- * 3. Trigger on login — inside proceedToLogin() after setIsLoggedIn(true):
- *    const seen = localStorage.getItem("bme-onboarded");
- *    if (!seen) setShowTutorial(true);
- *
- * 4. Add the component just before the closing </div> of the dashboard
- *    (right before the Copyright Footer, around line ~1948):
- *    <OnboardingTutorial
- *      show={showTutorial}
- *      studentName={studentName}
- *      onFinish={() => setShowTutorial(false)}
- *      onReplay={() => setShowTutorial(true)}
- *    />
- *
- * 5. In renderProfile(), inside the "About this portal" card, add a Guide button:
- *    <button onClick={() => { localStorage.removeItem("bme-onboarded"); setShowTutorial(true); }}
- *      style={{ marginTop: 12, width: "100%", padding: "10px 0", borderRadius: 12, border: "1.5px solid #ece8e0",
- *               background: "#fff", color: "#2d2416", fontSize: 13, fontWeight: 700, cursor: "pointer",
- *               fontFamily: "'Montserrat', sans-serif" }}>
- *      ✦ View Guide
- *    </button>
- */
-
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Home, Calendar, BarChart2, Zap, User,
+  ChevronRight, ChevronLeft, X, Sparkles,
+  CheckCircle, BookOpen, Bell, Coffee, Palette,
+} from "lucide-react";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── Types ────────────────────────────────────────────────────────────────────
 interface Step {
-  id: string;
+  tab: string | null;          // null = no navigation (welcome / finish)
+  icon: React.ReactNode;
   emoji: string;
   title: string;
   body: string;
-  /** CSS selector of the element to spotlight. null = center screen (welcome/farewell) */
-  target: string | null;
-  /** Which side of the spotlight the card appears on */
-  cardSide: "bottom" | "top" | "right" | "left" | "center";
+  highlight?: string;          // small pill label
 }
 
-interface OnboardingTutorialProps {
+interface Props {
   show: boolean;
   studentName: string;
   onFinish: () => void;
-  onReplay?: () => void;
+  onNavigate: (tab: string) => void;
 }
 
-interface SpotlightRect {
-  cx: number;
-  cy: number;
-  r: number;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Steps
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── Steps ────────────────────────────────────────────────────────────────────
 const STEPS: Step[] = [
   {
-    id: "welcome",
+    tab: null,
+    icon: <Sparkles size={28} />,
     emoji: "👋",
     title: "Welcome to BME Portal",
-    body: "Your personal academic companion for KNUST Biomedical Engineering Year 1. This quick tour takes 30 seconds.",
-    target: null,
-    cardSide: "center",
+    body: "Your all-in-one academic companion for BME1 at KNUST. This quick tour will show you everything — takes about 60 seconds.",
+    highlight: "Let's go",
   },
   {
-    id: "home",
+    tab: "home",
+    icon: <Home size={22} />,
     emoji: "🏠",
     title: "Home",
-    body: "See your next class, mark attendance, check credit hours and quick links — everything at a glance.",
-    target: "[data-tab='home']",
-    cardSide: "right",
+    body: "Your daily dashboard. See today's classes, upcoming deadlines, class announcements, and quick-access tools — all in one glance.",
+    highlight: "Home tab",
   },
   {
-    id: "timetable",
+    tab: "schedule",
+    icon: <Calendar size={22} />,
     emoji: "📅",
     title: "Timetable",
-    body: "View your full week in a clean grid. Today's column is always highlighted so you never miss a class.",
-    target: "[data-tab='schedule']",
-    cardSide: "right",
+    body: "View today's lectures, browse the weekly grid, and never miss a class. Tap a day to see what's on.",
+    highlight: "Timetable tab",
   },
   {
-    id: "progress",
+    tab: "progress",
+    icon: <BarChart2 size={22} />,
     emoji: "📊",
     title: "Progress",
-    body: "Track your CWA, attendance percentage per course, and see who is at risk of falling below 70%.",
-    target: "[data-tab='progress']",
-    cardSide: "right",
+    body: "Track your attendance, CWA, and academic milestones. See where you stand and what needs attention.",
+    highlight: "Progress tab",
   },
   {
-    id: "focus",
+    tab: "focus",
+    icon: <Zap size={22} />,
     emoji: "⚡",
-    title: "Focus Studio",
-    body: "Pomodoro timer with lofi radio built in. Deep work mode turns the timer card dark so you stay locked in.",
-    target: "[data-tab='focus']",
-    cardSide: "right",
+    title: "Focus Mode",
+    body: "Pomodoro timer, lo-fi music, and a distraction-free study environment. Stay in the zone when it counts.",
+    highlight: "Focus tab",
   },
   {
-    id: "chatbot",
-    emoji: "💬",
-    title: "BME Assistant",
-    body: "Your AI study buddy. Ask about your timetable, CWA projections, or anything BME-related. Tap the chat bubble anytime.",
-    target: "[data-chatbot-toggle='true']",
-    cardSide: "top",
+    tab: "profile",
+    icon: <User size={22} />,
+    emoji: "🎨",
+    title: "Profile & Settings",
+    body: "Upload your photo, switch between themes (Warm, Dark, Mono, Custom), and manage your account.",
+    highlight: "Profile tab",
   },
   {
-    id: "done",
-    emoji: "✦",
+    tab: null,
+    icon: <CheckCircle size={28} />,
+    emoji: "🎉",
     title: "You're all set!",
-    body: "Replay this guide anytime from Profile → About → View Guide. Now go ace Semester 2.",
-    target: null,
-    cardSide: "center",
+    body: "Explore freely. You can replay this guide anytime from the Profile tab → Settings → View Guide.",
+    highlight: "Done",
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function OnboardingTutorial({ show, studentName, onFinish, onNavigate }: Props) {
+  const [step, setStep] = useState(0);
+  const [leaving, setLeaving] = useState(false);
 
-function getSpotlight(target: string | null): SpotlightRect {
-  if (!target) {
-    return { cx: window.innerWidth / 2, cy: window.innerHeight / 2, r: 0 };
-  }
-  const el = document.querySelector(target);
-  if (!el) {
-    return { cx: window.innerWidth / 2, cy: window.innerHeight / 2, r: 0 };
-  }
-  const rect = el.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  const r = Math.max(rect.width, rect.height) / 2 + 28;
-  return { cx, cy, r };
-}
-
-function cardPosition(
-  spot: SpotlightRect,
-  side: Step["cardSide"],
-  cardW: number,
-  cardH: number
-): { top: number; left: number } {
-  const pad = 20;
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-
-  if (side === "center") {
-    return {
-      top: vh / 2 - cardH / 2,
-      left: vw / 2 - cardW / 2,
-    };
-  }
-  if (side === "right") {
-    return {
-      top: Math.min(Math.max(spot.cy - cardH / 2, pad), vh - cardH - pad),
-      left: Math.min(spot.cx + spot.r + 16, vw - cardW - pad),
-    };
-  }
-  if (side === "left") {
-    return {
-      top: Math.min(Math.max(spot.cy - cardH / 2, pad), vh - cardH - pad),
-      left: Math.max(spot.cx - spot.r - cardW - 16, pad),
-    };
-  }
-  if (side === "top") {
-    return {
-      top: Math.max(spot.cy - spot.r - cardH - 16, pad),
-      left: Math.min(Math.max(spot.cx - cardW / 2, pad), vw - cardW - pad),
-    };
-  }
-  // bottom
-  return {
-    top: Math.min(spot.cy + spot.r + 16, vh - cardH - pad),
-    left: Math.min(Math.max(spot.cx - cardW / 2, pad), vw - cardW - pad),
-  };
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Component
-// ─────────────────────────────────────────────────────────────────────────────
-
-const CARD_W = 300;
-const CARD_H = 200; // rough estimate for positioning
-
-export default function OnboardingTutorial({
-  show,
-  studentName,
-  onFinish,
-}: OnboardingTutorialProps) {
-  const [stepIdx, setStepIdx] = useState(0);
-  const [spot, setSpot] = useState<SpotlightRect>({ cx: 0, cy: 0, r: 0 });
-  const [cardPos, setCardPos] = useState({ top: 0, left: 0 });
-  const [ready, setReady] = useState(false);
-
-  const step = STEPS[stepIdx];
-  const isLast = stepIdx === STEPS.length - 1;
-  const isFirst = stepIdx === 0;
-
-  const computeLayout = useCallback(() => {
-    const s = getSpotlight(step.target);
-    setSpot(s);
-    setCardPos(cardPosition(s, step.cardSide, CARD_W, CARD_H));
-  }, [step]);
-
-  // Recompute on step change and window resize
+  // Reset to step 0 whenever the tutorial is (re)opened
   useEffect(() => {
-    if (!show) return;
-    setReady(false);
-    const t = setTimeout(() => {
-      computeLayout();
-      setReady(true);
-    }, 80);
-    return () => clearTimeout(t);
-  }, [show, stepIdx, computeLayout]);
-
-  useEffect(() => {
-    if (!show) return;
-    window.addEventListener("resize", computeLayout);
-    return () => window.removeEventListener("resize", computeLayout);
-  }, [show, computeLayout]);
-
-  // Reset step when reopened
-  useEffect(() => {
-    if (show) setStepIdx(0);
+    if (show) setStep(0);
   }, [show]);
 
-  const finish = () => {
-    localStorage.setItem("bme-onboarded", "true");
-    onFinish();
-  };
+  // Navigate to the tab of the current step
+  useEffect(() => {
+    if (!show) return;
+    const tab = STEPS[step]?.tab;
+    if (tab) onNavigate(tab);
+  }, [step, show]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const next = () => {
-    if (isLast) { finish(); return; }
-    setStepIdx((i) => i + 1);
-  };
+  const handleFinish = useCallback(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("bme-onboarded", "true");
+    }
+    setLeaving(true);
+    setTimeout(() => {
+      setLeaving(false);
+      onFinish();
+    }, 300);
+  }, [onFinish]);
 
-  const prev = () => setStepIdx((i) => Math.max(0, i - 1));
+  const next = useCallback(() => {
+    if (step < STEPS.length - 1) setStep((s) => s + 1);
+    else handleFinish();
+  }, [step, handleFinish]);
 
-  if (!show) return null;
+  const prev = useCallback(() => {
+    if (step > 0) setStep((s) => s - 1);
+  }, [step]);
 
-  // SVG clip path id
-  const clipId = "bme-tutorial-clip";
+  // Keyboard navigation
+  useEffect(() => {
+    if (!show) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "Enter") next();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "Escape") handleFinish();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [show, next, prev, handleFinish]);
 
-  // Spotlight radius — 0 for center steps (no target)
-  const spotR = step.target ? spot.r : 0;
+  const current = STEPS[step];
+  const isFirst = step === 0;
+  const isLast = step === STEPS.length - 1;
+  const progress = ((step) / (STEPS.length - 1)) * 100;
 
-  const firstName = studentName.split(" ")[0];
+  const firstName = studentName ? studentName.split(" ")[0] : "there";
 
   return (
     <AnimatePresence>
-      {show && (
+      {show && !leaving && (
         <>
-          {/* ── Dark overlay with spotlight cutout ── */}
+          {/* ── Backdrop ── */}
           <motion.div
-            key="overlay"
+            key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            onClick={handleFinish}
             style={{
               position: "fixed",
               inset: 0,
-              zIndex: 9000,
-              pointerEvents: ready ? "auto" : "none",
+              background: "rgba(10, 8, 5, 0.55)",
+              backdropFilter: "blur(6px)",
+              WebkitBackdropFilter: "blur(6px)",
+              zIndex: 9998,
             }}
-            onClick={(e) => {
-              // clicking outside the card advances step
-              if ((e.target as HTMLElement).closest("[data-tutorial-card]")) return;
-              next();
+          />
+
+          {/* ── Card ── */}
+          <motion.div
+            key={`card-${step}`}
+            initial={{ opacity: 0, y: 28, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 340, damping: 28 }}
+            style={{
+              position: "fixed",
+              bottom: "clamp(16px, 4vw, 40px)",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "min(92vw, 420px)",
+              zIndex: 9999,
+              /* Glass */
+              background: "rgba(255, 251, 240, 0.72)",
+              backdropFilter: "blur(24px) saturate(180%)",
+              WebkitBackdropFilter: "blur(24px) saturate(180%)",
+              borderRadius: 24,
+              border: "1px solid rgba(255, 251, 240, 0.55)",
+              boxShadow:
+                "0 8px 40px rgba(45, 36, 22, 0.18), 0 2px 8px rgba(45, 36, 22, 0.10), inset 0 1px 0 rgba(255,255,255,0.7)",
+              overflow: "hidden",
+              fontFamily: "'Montserrat', sans-serif",
             }}
           >
-            {ready && (
-              <svg
-                width="100%"
-                height="100%"
-                style={{ position: "absolute", inset: 0 }}
-              >
-                <defs>
-                  <mask id={clipId}>
-                    <rect width="100%" height="100%" fill="white" />
-                    {spotR > 0 && (
-                      <circle cx={spot.cx} cy={spot.cy} r={spotR} fill="black" />
-                    )}
-                  </mask>
-                </defs>
-                <rect
-                  width="100%"
-                  height="100%"
-                  fill="rgba(26, 18, 8, 0.82)"
-                  mask={`url(#${clipId})`}
-                  style={{ backdropFilter: "blur(2px)" }}
-                />
-                {/* spotlight ring */}
-                {spotR > 0 && (
-                  <circle
-                    cx={spot.cx}
-                    cy={spot.cy}
-                    r={spotR + 2}
-                    fill="none"
-                    stroke="rgba(240,235,227,0.25)"
-                    strokeWidth="1.5"
-                  />
-                )}
-              </svg>
-            )}
-          </motion.div>
+            {/* Progress bar */}
+            <div style={{ height: 3, background: "rgba(45,36,22,0.10)", position: "relative" }}>
+              <motion.div
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+                style={{
+                  height: "100%",
+                  background: "linear-gradient(90deg, #2d2416, #8b6f3e)",
+                  borderRadius: 2,
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                }}
+              />
+            </div>
 
-          {/* ── Tutorial card ── */}
-          {ready && (
-            <motion.div
-              key={`card-${stepIdx}`}
-              data-tutorial-card="true"
-              initial={{ opacity: 0, y: 10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.97 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              style={{
-                position: "fixed",
-                top: cardPos.top,
-                left: cardPos.left,
-                width: CARD_W,
-                zIndex: 9100,
-                background: "#ffffff",
-                borderRadius: 20,
-                boxShadow: "0 24px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(236,232,224,0.8)",
-                overflow: "hidden",
-                fontFamily: "'Montserrat', sans-serif",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Card top accent bar */}
-              <div style={{ height: 4, background: "linear-gradient(90deg, #2d2416, #8b7355, #c9a87c)" }} />
-
-              <div style={{ padding: "20px 20px 16px" }}>
-                {/* Step indicator */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                  <div style={{ display: "flex", gap: 5 }}>
-                    {STEPS.map((_, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          width: i === stepIdx ? 18 : 6,
-                          height: 6,
-                          borderRadius: 3,
-                          background: i === stepIdx ? "#2d2416" : i < stepIdx ? "#c9a87c" : "#ece8e0",
-                          transition: "all 0.25s ease",
-                        }}
-                      />
-                    ))}
-                  </div>
+            {/* Top row */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px 0" }}>
+              {/* Step dots */}
+              <div style={{ display: "flex", gap: 5 }}>
+                {STEPS.map((_, i) => (
                   <button
-                    onClick={finish}
-                    style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#a8967a", fontWeight: 600, padding: 0, fontFamily: "'Montserrat', sans-serif" }}
-                  >
-                    Skip
-                  </button>
-                </div>
-
-                {/* Emoji */}
-                <div style={{ fontSize: 32, marginBottom: 10, lineHeight: 1 }}>{step.emoji}</div>
-
-                {/* Title */}
-                <p style={{ fontSize: 16, fontWeight: 800, color: "#1a1208", margin: "0 0 7px", fontFamily: "'Syne', sans-serif", lineHeight: 1.2 }}>
-                  {step.id === "welcome"
-                    ? `Hey ${firstName} 👋`
-                    : step.id === "done"
-                    ? step.title
-                    : step.title}
-                </p>
-
-                {/* Body */}
-                <p style={{ fontSize: 13, color: "#6b5438", margin: "0 0 18px", lineHeight: 1.55 }}>
-                  {step.body}
-                </p>
-
-                {/* Actions */}
-                <div style={{ display: "flex", gap: 8 }}>
-                  {!isFirst && (
-                    <button
-                      onClick={prev}
-                      style={{
-                        flex: 1,
-                        padding: "9px 0",
-                        borderRadius: 12,
-                        border: "1.5px solid #ece8e0",
-                        background: "#fff",
-                        color: "#8b7355",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        fontFamily: "'Montserrat', sans-serif",
-                      }}
-                    >
-                      ← Back
-                    </button>
-                  )}
-                  <button
-                    onClick={next}
+                    key={i}
+                    onClick={() => setStep(i)}
                     style={{
-                      flex: 2,
-                      padding: "9px 0",
-                      borderRadius: 12,
+                      width: i === step ? 18 : 6,
+                      height: 6,
+                      borderRadius: 3,
+                      background: i === step ? "#2d2416" : "rgba(45,36,22,0.2)",
                       border: "none",
-                      background: "#2d2416",
-                      color: "#f0ebe3",
-                      fontSize: 13,
-                      fontWeight: 700,
                       cursor: "pointer",
-                      fontFamily: "'Montserrat', sans-serif",
-                      boxShadow: "0 4px 14px rgba(45,36,22,0.22)",
+                      padding: 0,
+                      transition: "all 0.25s",
                     }}
-                  >
-                    {isLast ? "Let's go ✦" : isFirst ? "Start tour →" : "Next →"}
-                  </button>
-                </div>
+                  />
+                ))}
               </div>
-            </motion.div>
-          )}
+              {/* Close */}
+              <button
+                onClick={handleFinish}
+                style={{
+                  background: "rgba(45,36,22,0.08)",
+                  border: "none",
+                  borderRadius: 10,
+                  width: 28,
+                  height: 28,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#2d2416",
+                  flexShrink: 0,
+                }}
+              >
+                <X size={14} strokeWidth={2.5} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: "18px 22px 20px" }}>
+              {/* Emoji + pill */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <span style={{ fontSize: 30, lineHeight: 1 }}>{current.emoji}</span>
+                {current.highlight && (
+                  <span style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    padding: "3px 9px",
+                    borderRadius: 20,
+                    background: "rgba(45,36,22,0.10)",
+                    color: "#2d2416",
+                  }}>
+                    {current.highlight}
+                  </span>
+                )}
+              </div>
+
+              {/* Title */}
+              <h2 style={{
+                fontSize: "clamp(17px, 4.5vw, 20px)",
+                fontWeight: 800,
+                color: "#1a1208",
+                fontFamily: "'Syne', sans-serif",
+                margin: "0 0 8px",
+                lineHeight: 1.2,
+              }}>
+                {isFirst ? `Hey, ${firstName}! 👋` : current.title}
+              </h2>
+
+              {/* Body text */}
+              <p style={{
+                fontSize: "clamp(13px, 3.5vw, 14px)",
+                color: "#5a4a30",
+                margin: 0,
+                lineHeight: 1.6,
+              }}>
+                {current.body}
+              </p>
+            </div>
+
+            {/* Footer nav */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 22px 20px",
+              gap: 10,
+            }}>
+              {/* Back */}
+              <button
+                onClick={prev}
+                disabled={isFirst}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "9px 14px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(45,36,22,0.15)",
+                  background: isFirst ? "transparent" : "rgba(255,255,255,0.5)",
+                  color: isFirst ? "transparent" : "#2d2416",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: isFirst ? "default" : "pointer",
+                  fontFamily: "'Montserrat', sans-serif",
+                  transition: "all 0.15s",
+                  pointerEvents: isFirst ? "none" : "auto",
+                }}
+              >
+                <ChevronLeft size={14} strokeWidth={2.5} />
+                Back
+              </button>
+
+              {/* Skip / step counter */}
+              {!isLast ? (
+                <button
+                  onClick={handleFinish}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    fontSize: 12,
+                    color: "rgba(45,36,22,0.4)",
+                    cursor: "pointer",
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 500,
+                    padding: "4px 6px",
+                  }}
+                >
+                  Skip tour
+                </button>
+              ) : (
+                <span style={{ fontSize: 12, color: "rgba(45,36,22,0.35)", fontWeight: 500 }}>
+                  {step + 1} / {STEPS.length}
+                </span>
+              )}
+
+              {/* Next / Finish */}
+              <button
+                onClick={next}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "9px 18px",
+                  borderRadius: 12,
+                  border: "none",
+                  background: "#2d2416",
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontFamily: "'Montserrat', sans-serif",
+                  boxShadow: "0 2px 8px rgba(45,36,22,0.25)",
+                  transition: "all 0.15s",
+                }}
+              >
+                {isLast ? "Let's go!" : "Next"}
+                {!isLast && <ChevronRight size={14} strokeWidth={2.5} />}
+              </button>
+            </div>
+          </motion.div>
         </>
       )}
     </AnimatePresence>
