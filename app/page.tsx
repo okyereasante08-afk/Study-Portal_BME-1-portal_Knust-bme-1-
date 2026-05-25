@@ -29,60 +29,60 @@ interface ThemeTokens {
 
 const THEMES: Record<ThemeKey, ThemeTokens> = {
   light: {
-    pageBg: "rgb(255,251,240)", sidebarBg: "rgb(255,255,250)", cardBg: "#ffffff", inputBg: "#ffffff",
-    pillActiveBg: "#2d2416", pillInactiveBg: "#ffffff", headerBg: "rgb(255,251,240)", userCardBg: "#ffffff",
-    border: "rgb(225,221,210)", borderStrong: "#d4c9b8",
-    textPrimary: "#111111", textSecondary: "rgb(25,6,12)", textMuted: "#888888", textInverse: "#ffffff",
-    accent: "#2d2416", accentText: "#ffffff",
-    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "rgb(25,6,12)",
-    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
+    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
+    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
+    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
+    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
+    accent:"#2d2416",accentText:"#ffffff",
+    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
+    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
   dark: {
-    pageBg: "#0f0f0f", sidebarBg: "#161616", cardBg: "#1e1e1e", inputBg: "#252525",
-    pillActiveBg: "#ffffff", pillInactiveBg: "#252525", headerBg: "#0f0f0f", userCardBg: "#252525",
-    border: "#2a2a2a", borderStrong: "#3a3a3a",
-    textPrimary: "#ffffff", textSecondary: "#b8a99a", textMuted: "#6b5e52", textInverse: "#0f0f0f",
-    accent: "#ffffff", accentText: "#111111",
-    navActiveBg: "#2a2a2a", navActiveText: "#ffffff", navInactiveText: "#6b5e52",
-    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
+    pageBg:"#0f0f0f",sidebarBg:"#161616",cardBg:"#1e1e1e",inputBg:"#252525",
+    pillActiveBg:"#ffffff",pillInactiveBg:"#252525",headerBg:"#0f0f0f",userCardBg:"#252525",
+    border:"#2a2a2a",borderStrong:"#3a3a3a",
+    textPrimary:"#ffffff",textSecondary:"#b8a99a",textMuted:"#6b5e52",textInverse:"#0f0f0f",
+    accent:"#ffffff",accentText:"#111111",
+    navActiveBg:"#2a2a2a",navActiveText:"#ffffff",navInactiveText:"#6b5e52",
+    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
   mono: {
-    pageBg: "#ffffff", sidebarBg: "#fafafa", cardBg: "#ffffff", inputBg: "#ffffff",
-    pillActiveBg: "#111111", pillInactiveBg: "#ffffff", headerBg: "#ffffff", userCardBg: "#ffffff",
-    border: "#e5e5e5", borderStrong: "#cccccc",
-    textPrimary: "#111111", textSecondary: "#444444", textMuted: "#999999", textInverse: "#ffffff",
-    accent: "#111111", accentText: "#ffffff",
-    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "#999999",
-    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
+    pageBg:"#ffffff",sidebarBg:"#fafafa",cardBg:"#ffffff",inputBg:"#ffffff",
+    pillActiveBg:"#111111",pillInactiveBg:"#ffffff",headerBg:"#ffffff",userCardBg:"#ffffff",
+    border:"#e5e5e5",borderStrong:"#cccccc",
+    textPrimary:"#111111",textSecondary:"#444444",textMuted:"#999999",textInverse:"#ffffff",
+    accent:"#111111",accentText:"#ffffff",
+    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#999999",
+    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
   custom: {
-    pageBg: "rgb(255,251,240)", sidebarBg: "rgb(255,255,250)", cardBg: "#ffffff", inputBg: "#ffffff",
-    pillActiveBg: "#2d2416", pillInactiveBg: "#ffffff", headerBg: "rgb(255,251,240)", userCardBg: "#ffffff",
-    border: "rgb(225,221,210)", borderStrong: "#d4c9b8",
-    textPrimary: "#111111", textSecondary: "rgb(25,6,12)", textMuted: "#888888", textInverse: "#ffffff",
-    accent: "#2d2416", accentText: "#ffffff",
-    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "rgb(25,6,12)",
-    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
+    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
+    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
+    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
+    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
+    accent:"#2d2416",accentText:"#ffffff",
+    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
+    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
 };
 
 function buildCustomTheme(accent: string): ThemeTokens {
-  const r = parseInt(accent.slice(1, 3), 16), g = parseInt(accent.slice(3, 5), 16), b = parseInt(accent.slice(5, 7), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  const accentText = brightness > 140 ? "#111111" : "#ffffff";
-  const tint = (add: number, v: number) => Math.min(255, v + add);
-  const pageBg = `rgb(${tint(210, r)},${tint(215, g)},${tint(218, b)})`;
-  const sidebarBg = `rgb(${tint(220, r)},${tint(225, g)},${tint(228, b)})`;
-  const border = `rgb(${tint(180, r)},${tint(185, g)},${tint(188, b)})`;
-  const textSecondary = `rgb(${Math.max(0, r - 20)},${Math.max(0, g - 30)},${Math.max(0, b - 10)})`;
+  const r=parseInt(accent.slice(1,3),16),g=parseInt(accent.slice(3,5),16),b=parseInt(accent.slice(5,7),16);
+  const brightness=(r*299+g*587+b*114)/1000;
+  const accentText=brightness>140?"#111111":"#ffffff";
+  const tint=(add:number,v:number)=>Math.min(255,v+add);
+  const pageBg=`rgb(${tint(210,r)},${tint(215,g)},${tint(218,b)})`;
+  const sidebarBg=`rgb(${tint(220,r)},${tint(225,g)},${tint(228,b)})`;
+  const border=`rgb(${tint(180,r)},${tint(185,g)},${tint(188,b)})`;
+  const textSecondary=`rgb(${Math.max(0,r-20)},${Math.max(0,g-30)},${Math.max(0,b-10)})`;
   return {
-    pageBg, sidebarBg, cardBg: "#ffffff", inputBg: "#ffffff",
-    pillActiveBg: accent, pillInactiveBg: "#ffffff", headerBg: pageBg, userCardBg: "#ffffff",
-    border, borderStrong: border,
-    textPrimary: "#111111", textSecondary, textMuted: "#888888", textInverse: accentText,
-    accent, accentText,
-    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "#888888",
-    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
+    pageBg,sidebarBg,cardBg:"#ffffff",inputBg:"#ffffff",
+    pillActiveBg:accent,pillInactiveBg:"#ffffff",headerBg:pageBg,userCardBg:"#ffffff",
+    border,borderStrong:border,
+    textPrimary:"#111111",textSecondary,textMuted:"#888888",textInverse:accentText,
+    accent,accentText,
+    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#888888",
+    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   };
 }
 
@@ -90,10 +90,9 @@ const ThemeContext = createContext<{
   theme: ThemeTokens; themeKey: ThemeKey;
   setThemeKey: (k: ThemeKey) => void;
   customAccent: string; setCustomAccent: (c: string) => void;
-}>({ theme: THEMES.light, themeKey: "light", setThemeKey: () => { }, customAccent: "#2d2416", setCustomAccent: () => { } });
+}>({ theme:THEMES.light,themeKey:"light",setThemeKey:()=>{},customAccent:"#2d2416",setCustomAccent:()=>{} });
 
 const useTheme = () => useContext(ThemeContext);
-
 
 // ============================================================
 // DATA
@@ -325,7 +324,6 @@ const timeToMinutes = (t: string) => {
 // ============================================================
 
 const Avatar = ({ name, size = 36, onClick }: { name: string; size?: number; onClick?: () => void }) => {
-  const { theme } = useTheme();
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
   return (
     <div
@@ -335,7 +333,7 @@ const Avatar = ({ name, size = 36, onClick }: { name: string; size?: number; onC
       onMouseEnter={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "0.8"; }}
       onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}
     >
-      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: theme.fontHeading }}>{initials}</span>
+      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
 };
@@ -354,7 +352,6 @@ const AttendanceBadge = ({ pct }: { pct: number }) => {
 // AI CHATBOT
 // ============================================================
 const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
-  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
     { role: "assistant", content: `Hey ${studentName.split(" ")[0]} 👋 I'm your BME assistant. I know your timetable and can help with CWA calculations. What do you need?` }
@@ -364,14 +361,17 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [pos, setPos] = useState({ x: 16, y: 88 });
+  const [pos, setPos] = useState({ x: 24, y: 24 });
   const dragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
       if (!dragging.current) return;
-      setPos({ x: offset.current.x - e.clientX, y: offset.current.y - e.clientY });
+      setPos({
+        x: offset.current.x - e.clientX,
+        y: offset.current.y - e.clientY,
+      });
     };
     const onMouseUp = () => { dragging.current = false; };
     const onTouchMove = (e: TouchEvent) => {
@@ -380,6 +380,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
       setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
     };
     const onTouchEnd = () => { dragging.current = false; };
+
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("touchmove", onTouchMove);
@@ -424,14 +425,20 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
     <>
       <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
         <button
-          onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; }}
-          onTouchStart={(e) => { const t = e.touches[0]; dragging.current = true; offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y }; }}
+          onMouseDown={(e) => {
+            dragging.current = true;
+            offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y };
+          }}
+          onTouchStart={(e) => {
+            const t = e.touches[0];
+            dragging.current = true;
+            offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y };
+          }}
           onClick={() => setOpen((o) => !o)}
           data-chatbot-toggle="true"
-          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? theme.accentText : theme.accent, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
+          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
-          {open ? <X size={18} color={theme.textSecondary} /> : <MessageSquare size={20} color={theme.accentText} />}
-
+          {open ? <X size={18} color="#8b7355" /> : <MessageSquare size={20} color="#f0ebe3" />}
         </button>
         {!open && (
           <span style={{ position: "absolute", top: -4, right: -4, background: "#f59e0b", color: "#fff", fontSize: 8, fontWeight: 800, padding: "2px 5px", borderRadius: 10, letterSpacing: 0.5 }}>BETA</span>
@@ -445,16 +452,15 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            style={{ position: "fixed", bottom: 152, right: 12, zIndex: 70, width: "min(370px, calc(100vw - 24px))", borderRadius: 20, background: theme.cardBg, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", overflow: "hidden", border: `1px solid ${theme.border}` }}
+            style={{ position: "fixed", bottom: 152, right: 12, zIndex: 70, width: "min(370px, calc(100vw - 24px))", borderRadius: 20, background: "#fff", boxShadow: "0 20px 60px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid #ece8e0" }}
           >
             <div style={{ padding: "14px 18px", borderBottom: "1px solid #f0ebe3", display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 16, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MessageSquare size={14} color={theme.textSecondary} />
-
+              <div style={{ width: 32, height: 32, borderRadius: 16, background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <MessageSquare size={14} color="#8b7355" />
               </div>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>BME Assistant</p>
-                <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>Powered by Groq · Beta</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0 }}>BME Assistant</p>
+                <p style={{ fontSize: 10, color: "#a8967a", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>Powered by Groq · Beta</p>
               </div>
               <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5 }}>
                 <div style={{ width: 6, height: 6, borderRadius: 3, background: "#22c55e" }} />
@@ -464,14 +470,14 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
             <div style={{ height: 260, overflowY: "auto", padding: "14px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
               {messages.map((msg, i) => (
                 <div key={i} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
-                  <div style={{ maxWidth: "82%", padding: "10px 14px", borderRadius: msg.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", fontSize: 13, lineHeight: 1.5, background: msg.role === "user" ? theme.accent : theme.pageBg, color: msg.role === "user" ? theme.accentText : "#3d2e1a" }}>
+                  <div style={{ maxWidth: "82%", padding: "10px 14px", borderRadius: msg.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", fontSize: 13, lineHeight: 1.5, background: msg.role === "user" ? "#2d2416" : "#f7f3ed", color: msg.role === "user" ? "#f0ebe3" : "#3d2e1a" }}>
                     {msg.content}
                   </div>
                 </div>
               ))}
               {loading && (
                 <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                  <div style={{ background: theme.pageBg, padding: "10px 14px", borderRadius: "16px 16px 16px 4px", display: "flex", gap: 4 }}>
+                  <div style={{ background: "#f7f3ed", padding: "10px 14px", borderRadius: "16px 16px 16px 4px", display: "flex", gap: 4 }}>
                     {[0, 150, 300].map((d) => (
                       <div key={d} style={{ width: 7, height: 7, borderRadius: 3.5, background: "#c9a87c", animation: "bounce 1.2s infinite", animationDelay: `${d}ms` }} />
                     ))}
@@ -484,7 +490,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
               <div style={{ padding: "0 14px 10px", display: "flex", gap: 6, flexWrap: "wrap" }}>
                 {["Today's timetable", "Calculate CWA", "What's next?"].map((s) => (
                   <button key={s} onClick={() => { setInput(s); setTimeout(() => inputRef.current?.focus(), 50); }}
-                    style={{ fontSize: 11, padding: "5px 10px", borderRadius: 12, border: `1px solid ${theme.border}`, background: theme.sidebarBg, color: theme.textSecondary, cursor: "pointer", fontWeight: 500 }}>
+                    style={{ fontSize: 11, padding: "5px 10px", borderRadius: 12, border: "1px solid #ece8e0", background: "#faf8f4", color: "#6b5438", cursor: "pointer", fontWeight: 500 }}>
                     {s}
                   </button>
                 ))}
@@ -493,10 +499,10 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
             <div style={{ padding: "10px 14px", borderTop: "1px solid #f0ebe3", display: "flex", gap: 8 }}>
               <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask anything…"
-                style={{ flex: 1, padding: "9px 12px", borderRadius: 12, border: `1px solid ${theme.border}`, background: theme.sidebarBg, fontSize: 13, outline: "none", color: theme.textPrimary }} />
+                style={{ flex: 1, padding: "9px 12px", borderRadius: 12, border: "1px solid #ece8e0", background: "#faf8f4", fontSize: 13, outline: "none", color: "#1a1208" }} />
               <button onClick={sendMessage} disabled={!input.trim() || loading}
-                style={{ width: 38, height: 38, borderRadius: 12, border: "none", background: theme.accent, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", opacity: !input.trim() || loading ? 0.4 : 1 }}>
-                <Send size={15} color={theme.accentText} />
+                style={{ width: 38, height: 38, borderRadius: 12, border: "none", background: "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", opacity: !input.trim() || loading ? 0.4 : 1 }}>
+                <Send size={15} color="#f0ebe3" />
               </button>
             </div>
           </motion.div>
@@ -510,7 +516,6 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
 // SURVIVAL KIT MODAL
 // ============================================================
 const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
-  const { theme } = useTheme();
   const [expanded, setExpanded] = useState<string | null>(null);
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -518,39 +523,39 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
       onClick={onClose}>
       <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
-        style={{ background: theme.cardBg, borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        style={{ background: "#fff", borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
           <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>📚 Survival Kit</h2>
-            <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Curated resources for every course</p>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>📚 Survival Kit</h2>
+            <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Curated resources for every course</p>
           </div>
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color={theme.textSecondary} />
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <X size={14} color="#8b7355" />
           </button>
         </div>
         <div style={{ overflowY: "auto", padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
           {SURVIVAL_KIT.map((kit) => (
-            <div key={kit.course} style={{ borderRadius: 14, border: `1px solid ${theme.border}`, overflow: "hidden" }}>
+            <div key={kit.course} style={{ borderRadius: 14, border: "1px solid #ece8e0", overflow: "hidden" }}>
               <button onClick={() => setExpanded(expanded === kit.course ? null : kit.course)}
-                style={{ width: "100%", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: theme.sidebarBg, border: "none", cursor: "pointer", textAlign: "left" }}>
+                style={{ width: "100%", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#faf8f4", border: "none", cursor: "pointer", textAlign: "left" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 4, background: kit.color, display: "inline-block" }} />
-                  <span style={{ fontSize: 14, fontWeight: 600, color: theme.textPrimary }}>{kit.course}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "#1a1208" }}>{kit.course}</span>
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 11, color: theme.textMuted }}>{kit.resources.length} links</span>
-                  <ChevronRight size={14} color={theme.textMuted} style={{ transform: expanded === kit.course ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
+                  <span style={{ fontSize: 11, color: "#a8967a" }}>{kit.resources.length} links</span>
+                  <ChevronRight size={14} color="#a8967a" style={{ transform: expanded === kit.course ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
                 </span>
               </button>
               {expanded === kit.course && (
                 <div style={{ padding: "8px 16px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
                   {kit.resources.map((r, i) => (
                     <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
-                      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: 10, background: theme.cardBg, border: "1px solid #f0ebe3", textDecoration: "none" }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: theme.textPrimary }}>
+                      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: 10, background: "#fff", border: "1px solid #f0ebe3", textDecoration: "none" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#3d2e1a" }}>
                         <Play size={11} color="#ef4444" fill="#ef4444" /> {r.label}
                       </span>
-                      <ExternalLink size={11} color={theme.textMuted} />
+                      <ExternalLink size={11} color="#c9b89a" />
                     </a>
                   ))}
                 </div>
@@ -567,7 +572,6 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
 // CWA MODAL
 // ============================================================
 const CWAModal = ({ onClose }: { onClose: () => void }) => {
-  const { theme } = useTheme();
   const [marks, setMarks] = useState<Record<string, string>>({});
   const [cwa, setCwa] = useState<number | null>(null);
 
@@ -583,38 +587,38 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
       onClick={onClose}>
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        style={{ background: theme.cardBg, borderRadius: 24, width: "100%", maxWidth: 400, overflow: "hidden" }}>
+        style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 400, overflow: "hidden" }}>
         <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
           <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>CWA Calculator</h2>
-            <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Enter scores to project your CWA</p>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>CWA Calculator</h2>
+            <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Enter scores to project your CWA</p>
           </div>
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color={theme.textSecondary} />
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <X size={14} color="#8b7355" />
           </button>
         </div>
         <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, maxHeight: "45vh", overflowY: "auto" }}>
           {COURSE_CREDITS.map((c) => (
-            <div key={c.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: theme.sidebarBg, border: "1px solid #f0ebe3" }}>
+            <div key={c.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #f0ebe3" }}>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{c.code}</p>
-                <p style={{ fontSize: 11, color: theme.textMuted, margin: "1px 0 0", fontStyle: "italic" }}>{c.name} · {c.credits} cr</p>
+                <p style={{ fontSize: 13, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>{c.code}</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0", fontStyle: "italic" }}>{c.name} · {c.credits} cr</p>
               </div>
               <input type="number" placeholder="—" min={0} max={100}
                 onChange={(e) => { const v = Math.min(100, Math.max(0, parseInt(e.target.value) || 0)); setMarks({ ...marks, [c.code]: v.toString() }); e.target.value = v.toString(); }}
-                style={{ width: 56, padding: "6px 8px", borderRadius: 10, border: `1px solid ${theme.border}`, textAlign: "center", fontSize: 14, fontWeight: 700, color: theme.textPrimary, outline: "none", background: theme.cardBg }} />
+                style={{ width: 56, padding: "6px 8px", borderRadius: 10, border: "1px solid #ece8e0", textAlign: "center", fontSize: 14, fontWeight: 700, color: "#3d2e1a", outline: "none", background: "#fff" }} />
             </div>
           ))}
         </div>
         {cwa !== null && (
-          <div style={{ margin: "0 16px", padding: "14px 18px", borderRadius: 14, background: theme.sidebarBg, border: `1px solid ${theme.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 13, color: theme.textSecondary, fontWeight: 700, fontStyle: "italic" }}>Projected CWA</span>
+          <div style={{ margin: "0 16px", padding: "14px 18px", borderRadius: 14, background: "#faf8f4", border: "1px solid #ece8e0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 700, fontStyle: "italic" }}>Projected CWA</span>
             <span style={{ fontSize: 32, fontWeight: 800, color: cwa >= 70 ? "#22c55e" : cwa >= 60 ? "#f59e0b" : "#ef4444" }}>{cwa}</span>
           </div>
         )}
         <div style={{ padding: "14px 16px 20px" }}>
           <button onClick={calculate}
-            style={{ width: "100%", padding: "13px", borderRadius: 14, border: "none", background: theme.accent, color: theme.accentText, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+            style={{ width: "100%", padding: "13px", borderRadius: 14, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
             Calculate
           </button>
         </div>
@@ -626,51 +630,48 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
 // ============================================================
 // UPDATES MODAL
 // ============================================================
-const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => {
-  const { theme } = useTheme();
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
-      onClick={onClose}>
-      <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
-        onClick={(e) => e.stopPropagation()}
-        style={{ background: theme.cardBg, borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
-          <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>Updates</h2>
-            <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Announcements & shared files</p>
+const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+    style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
+    onClick={onClose}>
+    <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
+      onClick={(e) => e.stopPropagation()}
+      style={{ background: "#fff", borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
+        <div>
+          <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>Updates</h2>
+          <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Announcements & shared files</p>
+        </div>
+        <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <X size={14} color="#8b7355" />
+        </button>
+      </div>
+      <div style={{ overflowY: "auto", padding: "14px 16px" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Announcements</p>
+        {announcements.length === 0 ? (
+          <p style={{ fontSize: 13, color: "#c9b89a", textAlign: "center", padding: "24px 0" }}>No announcements yet.</p>
+        ) : announcements.map((a: any) => (
+          <div key={a.id} style={{ padding: "12px 14px", borderRadius: 12, borderLeft: `3px solid ${a.type === "urgent" ? "#ef4444" : "#3b82f6"}`, background: a.type === "urgent" ? "#fef2f2" : "#eff6ff", marginBottom: 8 }}>
+            <p style={{ fontSize: 13, color: "#1a1208", margin: "0 0 3px" }}>{a.text}</p>
+            <p style={{ fontSize: 10, color: "#a8967a", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{a.date}</p>
           </div>
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color={theme.textSecondary} />
-          </button>
-        </div>
-        <div style={{ overflowY: "auto", padding: "14px 16px" }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Announcements</p>
-          {announcements.length === 0 ? (
-            <p style={{ fontSize: 13, color: theme.textMuted, textAlign: "center", padding: "24px 0" }}>No announcements yet.</p>
-          ) : announcements.map((a: any) => (
-            <div key={a.id} style={{ padding: "12px 14px", borderRadius: 12, borderLeft: `3px solid ${a.type === "urgent" ? "#ef4444" : "#3b82f6"}`, background: a.type === "urgent" ? "#fef2f2" : "#eff6ff", marginBottom: 8 }}>
-              <p style={{ fontSize: 13, color: theme.textPrimary, margin: "0 0 3px" }}>{a.text}</p>
-              <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{a.date}</p>
-            </div>
-          ))}
-          {files.length > 0 && (
-            <>
-              <p style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, margin: "16px 0 8px" }}>Shared Files</p>
-              {files.map((f: any) => (
-                <div key={f.id} style={{ padding: "12px 14px", borderRadius: 12, background: theme.sidebarBg, border: `1px solid ${theme.border}`, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: theme.textPrimary, margin: 0 }}>{f.course}</p>
-                  <a href={f.url} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: 12, fontWeight: 600, color: theme.textSecondary, padding: "5px 12px", borderRadius: 8, background: theme.accentText, textDecoration: "none" }}>Open</a>
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-      </motion.div>
+        ))}
+        {files.length > 0 && (
+          <>
+            <p style={{ fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase", letterSpacing: 1, margin: "16px 0 8px" }}>Shared Files</p>
+            {files.map((f: any) => (
+              <div key={f.id} style={{ padding: "12px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #ece8e0", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#1a1208", margin: 0 }}>{f.course}</p>
+                <a href={f.url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: 12, fontWeight: 600, color: "#8b7355", padding: "5px 12px", borderRadius: 8, background: "#f0ebe3", textDecoration: "none" }}>Open</a>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
     </motion.div>
-  );
-};
+  </motion.div>
+);
 
 // ============================================================
 // MAIN COMPONENT
@@ -985,27 +986,27 @@ function HomeInner() {
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
           * { box-sizing: border-box; }
-          input::placeholder { color: ${theme.textMuted}; }
+          input::placeholder { color: #c9b89a; }
           input:focus { border-color: ${theme.accent} !important; }
           @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         `}</style>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 380, animation: "fadeUp 0.4s ease" }}>
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ width: 64, height: 64, borderRadius: 20, background: theme.accent, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
-              <span style={{ fontSize: 22, fontFamily: theme.fontHeading, color: theme.accentText, letterSpacing: 1 }}>BME</span>
-            </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: theme.textPrimary, margin: "0 0 4px", fontFamily: theme.fontHeading }}>Portal Access</h1>
-            <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>KNUST BME1 · Semester 2</p>
+           <div style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</div>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
+            <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
 
-          <div style={{ background: theme.cardBg, borderRadius: 24, padding: 24, boxShadow: "0 4px 32px rgba(0,0,0,0.06)", border: `1px solid ${theme.border}` }}>
+          <div style={{ background: "#fff", borderRadius: 24, padding: 24, boxShadow: "0 4px 32px rgba(0,0,0,0.06)", border: "1px solid #ece8e0" }}>
             {/* Tab toggle */}
             {!showReset && (
-              <div style={{ display: "flex", gap: 6, padding: 4, background: theme.pageBg, borderRadius: 14, marginBottom: 20 }}>
+              <div style={{ display: "flex", gap: 6, padding: 4, background: "#f7f3ed", borderRadius: 14, marginBottom: 20 }}>
                 {(["student", "admin"] as const).map((m) => (
                   <button key={m} onClick={() => { setLoginMode(m); setLoginError(""); setStudentID(""); setPassword(""); setIsFirstLogin(false); }}
-                    style={{ flex: 1, padding: "8px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, transition: "all 0.2s", background: loginMode === m ? (m === "admin" ? "#ef4444" : theme.accent) : "transparent", color: loginMode === m ? theme.accentText : theme.textSecondary, textTransform: "capitalize" }}>
+                    style={{ flex: 1, padding: "8px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, transition: "all 0.2s", background: loginMode === m ? (m === "admin" ? "#ef4444" : "#2d2416") : "transparent", color: loginMode === m ? "#fff" : "#8b7355", textTransform: "capitalize" }}>
                     {m}
                   </button>
                 ))}
@@ -1017,8 +1018,8 @@ function HomeInner() {
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                   <button onClick={() => { setShowReset(false); setResetStep("verify"); setResetError(""); setResetSuccess(false); }}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: theme.textSecondary, fontSize: 13, padding: 0 }}>← Back</button>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>Reset Password</p>
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#8b7355", fontSize: 13, padding: 0 }}>← Back</button>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: 0 }}>Reset Password</p>
                 </div>
                 {resetSuccess ? (
                   <div style={{ padding: 16, borderRadius: 12, background: "#f0fdf4", border: "1px solid #bbf7d0", textAlign: "center" }}>
@@ -1029,17 +1030,17 @@ function HomeInner() {
                     {resetStep === "verify" ? (
                       <>
                         <input type="text" placeholder="Student ID" value={resetID} onChange={(e) => setResetID(e.target.value)}
-                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
                         <input type="text" placeholder="Mother's first name (security answer)" value={resetAnswer} onChange={(e) => setResetAnswer(e.target.value)}
-                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
                       </>
                     ) : (
                       <input type="password" placeholder="New password (min 4 chars)" value={resetNewPw} onChange={(e) => setResetNewPw(e.target.value)}
-                        style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                        style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
                     )}
                     {resetError && <p style={{ color: "#ef4444", fontSize: 12, margin: 0, textAlign: "center" }}>{resetError}</p>}
                     <button onClick={handleReset}
-                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: theme.accent, color: theme.accentText, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
                       {resetStep === "verify" ? "Verify" : "Set New Password"}
                     </button>
                   </>
@@ -1051,19 +1052,19 @@ function HomeInner() {
                   <>
                     {isFirstLogin && (
                       <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
-                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: theme.accent }} />
-                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: firstLoginStep === "security" ? theme.accent : theme.border }} />
+                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: "#2d2416" }} />
+                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: firstLoginStep === "security" ? "#2d2416" : "#ece8e0" }} />
                       </div>
                     )}
                     <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)}
-                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary, background: isFirstLogin ? theme.pageBg : "#fff" }} />
+                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208", background: isFirstLogin ? "#f7f3ed" : "#fff" }} />
 
                     {!isFirstLogin && typeof window !== "undefined" && localStorage.getItem(`pw-${studentID}`) && (
                       <div style={{ position: "relative" }}>
                         <input type={showPw ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus
-                          style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                          style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
                         <button type="button" onClick={() => setShowPw((s) => !s)}
-                          style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: theme.textSecondary, fontWeight: 600 }}>
+                          style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#8b7355", fontWeight: 600 }}>
                           {showPw ? "Hide" : "Show"}
                         </button>
                       </div>
@@ -1073,12 +1074,12 @@ function HomeInner() {
                       <>
                         <div style={{ position: "relative" }}>
                           <input type={showPw ? "text" : "password"} placeholder="Create password (min 4 chars)" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus
-                            style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
-                          <button type="button" onClick={() => setShowPw((s) => !s)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: theme.textSecondary, fontWeight: 600 }}>{showPw ? "Hide" : "Show"}</button>
+                            style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
+                          <button type="button" onClick={() => setShowPw((s) => !s)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#8b7355", fontWeight: 600 }}>{showPw ? "Hide" : "Show"}</button>
                         </div>
                         <div style={{ position: "relative" }}>
                           <input type={showPw ? "text" : "password"} placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                            style={{ width: "100%", padding: "12px 36px 12px 14px", borderRadius: 12, border: `1px solid ${confirmPassword && confirmPassword !== password ? "#ef4444" : confirmPassword && confirmPassword === password ? "#22c55e" : theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                            style={{ width: "100%", padding: "12px 36px 12px 14px", borderRadius: 12, border: `1px solid ${confirmPassword && confirmPassword !== password ? "#ef4444" : confirmPassword && confirmPassword === password ? "#22c55e" : "#ece8e0"}`, fontSize: 14, outline: "none", color: "#1a1208" }} />
                           {confirmPassword && <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: confirmPassword === password ? "#22c55e" : "#ef4444" }}>{confirmPassword === password ? "✓" : "✗"}</span>}
                         </div>
                         <div style={{ padding: "10px 12px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7" }}>
@@ -1094,21 +1095,21 @@ function HomeInner() {
                           <p style={{ fontSize: 12, color: "#0c4a6e", margin: 0 }}>What is your mother's first name?</p>
                         </div>
                         <input type="text" placeholder="Your answer" value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} autoFocus
-                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
                       </>
                     )}
 
                     <button type="submit"
-                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: theme.accent, color: theme.accentText, fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
+                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
                       {!isFirstLogin ? "Continue" : firstLoginStep === "password" ? "Next →" : "Finish Setup"}
                     </button>
                     {isFirstLogin && (
                       <button type="button" onClick={() => { if (firstLoginStep === "security") { setFirstLoginStep("password"); setLoginError(""); } else { setIsFirstLogin(false); setLoginError(""); } }}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: theme.textMuted, padding: "4px 0", textAlign: "center" }}>Back</button>
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#a8967a", padding: "4px 0", textAlign: "center" }}>Back</button>
                     )}
                     {!isFirstLogin && (
                       <button type="button" onClick={() => setShowReset(true)}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: theme.textMuted, padding: "2px 0", textAlign: "center" }}>Forgot password?</button>
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#a8967a", padding: "2px 0", textAlign: "center" }}>Forgot password?</button>
                     )}
                   </>
                 ) : (
@@ -1117,7 +1118,7 @@ function HomeInner() {
                       <p style={{ fontSize: 12, fontWeight: 700, color: "#991b1b", margin: 0 }}>Restricted Access</p>
                     </div>
                     <input type="password" placeholder="Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} autoFocus
-                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #fecaca", fontSize: 14, outline: "none", color: theme.textPrimary }} />
+                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #fecaca", fontSize: 14, outline: "none", color: "#1a1208" }} />
                     <button type="submit" style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#ef4444", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Unlock</button>
                   </>
                 )}
@@ -1126,7 +1127,7 @@ function HomeInner() {
             )}
           </div>
 
-          <p style={{ textAlign: "center", fontSize: 11, color: theme.textMuted, marginTop: 20 }}>KNUST BME1 · Class of 2029 · v{PORTAL_VERSION}</p>
+          <p style={{ textAlign: "center", fontSize: 11, color: "#c9b89a", marginTop: 20 }}>KNUST BME1 · Class of 2029 · v{PORTAL_VERSION}</p>
         </motion.div>
       </div>
     );
@@ -1136,7 +1137,6 @@ function HomeInner() {
   // DASHBOARD
   // ============================================================
   const S = {
-    // Shared styles object
     card: { background: theme.cardBg, borderRadius: 20, border: `1px solid ${theme.border}`, overflow: "hidden" } as React.CSSProperties,
     label: { fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase" as const, letterSpacing: 0.8, fontFamily: theme.fontBody },
     sectionTitle: { fontSize: 15, fontWeight: 800, color: theme.textPrimary, margin: "0 0 14px", fontFamily: theme.fontHeading },
@@ -1146,15 +1146,15 @@ function HomeInner() {
   const renderHome = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
-
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+  
+        <style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
       </style>
       <div style={{ paddingBottom: 4 }}>
         <h2 style={{ fontSize: 36, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
-        <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>
+        <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
           {new Date().toLocaleDateString("en-GB", { weekday: "long" })} · Semester 2, Week {Math.ceil((new Date().getTime() - new Date("2026-01-12").getTime()) / (7 * 24 * 60 * 60 * 1000))}
         </p>
       </div>
@@ -1162,20 +1162,20 @@ function HomeInner() {
       {/* Next class alert */}
       {nextClassInfo && (
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-          style={{ ...S.card, background: theme.accent, border: "none", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          style={{ ...S.card, background: "#2d2416", border: "none", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}
               style={{ width: 8, height: 8, borderRadius: 4, background: "#f59e0b" }} />
             <div>
-              <p style={{ fontSize: 14, fontWeight: 800, color: theme.accentText, margin: "0 0 1px", fontFamily: theme.fontHeading }}>{nextClassInfo.course}</p>
-              <p style={{ fontSize: 12, color: theme.textMuted, margin: 0, fontStyle: "italic" }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
+              <p style={{ fontSize: 14, fontWeight: 800, color: "#f0ebe3", margin: "0 0 1px", fontFamily: "'Syne', sans-serif" }}>{nextClassInfo.course}</p>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0, fontStyle: "italic" }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontSize: 18, fontWeight: 800, color: "#f59e0b", margin: "0 0 1px" }}>
               {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil / 60)}h ${nextClassInfo.minsUntil % 60}m`}
             </p>
-            <p style={{ fontSize: 10, color: theme.textSecondary, margin: 0, textTransform: "uppercase", letterSpacing: 0.5, fontStyle: "italic", fontWeight: 600 }}>until class</p>
+            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5, fontStyle: "italic", fontWeight: 600 }}>until class</p>
           </div>
         </motion.div>
       )}
@@ -1183,14 +1183,14 @@ function HomeInner() {
       {/* Stats row */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
         {[
-          { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: theme.accent },
+          { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: "#2d2416" },
           { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" },
           { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#8b5cf6" },
         ].map((stat) => (
           <div key={stat.label} style={{ ...S.card, padding: "14px 12px" }}>
             <p style={{ fontSize: 24, fontWeight: 800, color: stat.color, margin: "0 0 2px", lineHeight: 1 }}>{stat.value}</p>
             <p style={{ ...S.label, margin: "0 0 3px" }}>{stat.label}</p>
-            <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>{stat.sub}</p>
+            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -1200,11 +1200,11 @@ function HomeInner() {
         <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h3 style={S.sectionTitle}>Today's classes</h3>
           <button onClick={() => setActiveTab("schedule")}
-            style={{ fontSize: 12, color: theme.textSecondary, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>View week →</button>
+            style={{ fontSize: 12, color: "#8b7355", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>View week →</button>
         </div>
         {todayClasses.length === 0 ? (
           <div style={{ padding: "20px 18px", textAlign: "center" }}>
-            <p style={{ fontSize: 13, color: theme.textMuted }}>No classes today 🎉</p>
+            <p style={{ fontSize: 13, color: "#c9b89a" }}>No classes today 🎉</p>
           </div>
         ) : (
           <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1212,20 +1212,20 @@ function HomeInner() {
               const pct = getAttendancePct(cls.id, cls.weekday);
               const color = COURSE_COLORS[cls.course] || "#8b7355";
               return (
-                <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: theme.sidebarBg }}>
+                <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: "#faf8f4" }}>
                   <div style={{ width: 4, height: 48, borderRadius: 2, background: color, flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
-                      <p style={{ fontSize: 14, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>{cls.course}</p>
-                      <span style={{ fontSize: 11, color: theme.textMuted }}>{cls.time.split(" - ")[0]}</span>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: 0 }}>{cls.course}</p>
+                      <span style={{ fontSize: 11, color: "#a8967a" }}>{cls.time.split(" - ")[0]}</span>
                     </div>
-                    <p style={{ fontSize: 12, color: theme.textSecondary, margin: "0 0 6px" }}>{cls.venue} · {cls.lecturer}</p>
+                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 6px" }}>{cls.venue} · {cls.lecturer}</p>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ flex: 1, height: 4, borderRadius: 2, background: theme.border, overflow: "hidden" }}>
+                      <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#ece8e0", overflow: "hidden" }}>
                         <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
                           style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                       </div>
-                      <span style={{ fontSize: 10, color: theme.textMuted, flexShrink: 0 }}>{pct}%</span>
+                      <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
                     </div>
                   </div>
                   {/* Sem 2 compact attendance dropdown for home tab */}
@@ -1242,16 +1242,16 @@ function HomeInner() {
                           style={{
                             padding: "6px 8px", borderRadius: 10, fontSize: 11, fontWeight: 700, cursor: locked ? "not-allowed" : "pointer",
                             border: "none", outline: "none", appearance: "auto",
-                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : theme.accent,
-                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : theme.accentText,
+                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#2d2416",
+                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#f0ebe3",
                             opacity: locked ? 0.7 : 1, minWidth: 60,
                           }}
                         >
-                          <option value="" disabled style={{ background: theme.cardBg, color: theme.textPrimary }}>{status ? "Edit" : "Here?"}</option>
-                          <option value="attended" style={{ background: theme.cardBg, color: "#16a34a" }}>✓ Here</option>
-                          <option value="skipped" style={{ background: theme.cardBg, color: "#dc2626" }}>✗ Skip</option>
+                          <option value="" disabled style={{ background: "#fff", color: "#1a1208" }}>{status ? "Edit" : "Here?"}</option>
+                          <option value="attended" style={{ background: "#fff", color: "#16a34a" }}>✓ Here</option>
+                          <option value="skipped" style={{ background: "#fff", color: "#dc2626" }}>✗ Skip</option>
                         </select>
-                        {status && <span style={{ fontSize: 9, color: locked ? "#ef4444" : theme.textMuted, fontWeight: 600 }}>{locked ? "🔒" : `${MAX_ATTENDANCE_EDITS - edits}x`}</span>}
+                        {status && <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>{locked ? "🔒" : `${MAX_ATTENDANCE_EDITS - edits}x`}</span>}
                       </div>
                     );
                   })()}
@@ -1279,7 +1279,7 @@ function HomeInner() {
               </div>
               <div>
                 <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
-                <p style={{ fontSize: 11, color: "#8b7355", margin: 0 }}>{item.sub}</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{item.sub}</p>
               </div>
               {item.badge && item.badge > 0 ? (
                 <span style={{ position: "absolute", top: 10, right: 10, width: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{item.badge}</span>
@@ -1312,13 +1312,13 @@ function HomeInner() {
       (TIMETABLE[GRID_DAY_MAP[dayKey]] || []).find((c) => c.time.startsWith(slot)) || null;
 
     const GridView = () => (
-      <div style={{ overflowX: "auto", borderRadius: 16, border: `1px solid ${theme.border}` }}>
+      <div style={{ overflowX: "auto", borderRadius: 16, border: "1px solid #ece8e0" }}>
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480 }}>
           <thead>
             <tr>
-              <th style={{ padding: "8px 10px", background: theme.sidebarBg, borderBottom: `1px solid ${theme.border}`, borderRight: `1px solid ${theme.border}`, color: theme.textMuted, fontWeight: 600, fontSize: 11, textAlign: "left", width: 52 }}>Time</th>
+              <th style={{ padding: "8px 10px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: "#a8967a", fontWeight: 600, fontSize: 11, textAlign: "left", width: 52 }}>Time</th>
               {GRID_DAYS.map((d, i) => (
-                <th key={d} style={{ padding: "8px 6px", background: theme.sidebarBg, borderBottom: `1px solid ${theme.border}`, borderRight: `1px solid ${theme.border}`, color: i === todayColIdx ? theme.accent : theme.textMuted, fontWeight: i === todayColIdx ? 800 : 600, fontSize: 12, textAlign: "center" }}>
+                <th key={d} style={{ padding: "8px 6px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: i === todayColIdx ? "#2d2416" : "#a8967a", fontWeight: i === todayColIdx ? 800 : 600, fontSize: 12, textAlign: "center" }}>
                   {d}{i === todayColIdx && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", verticalAlign: "middle", marginLeft: 3 }} />}
                 </th>
               ))}
@@ -1327,12 +1327,12 @@ function HomeInner() {
           <tbody>
             {TIME_SLOTS.map((slot) => (
               <tr key={slot}>
-                <td style={{ padding: "4px 8px", borderBottom: "1px solid #f0ebe3", borderRight: `1px solid ${theme.border}`, color: theme.textMuted, fontSize: 10, fontWeight: 600, background: theme.sidebarBg, whiteSpace: "nowrap", verticalAlign: "middle" }}>{slot}</td>
+                <td style={{ padding: "4px 8px", borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", color: "#a8967a", fontSize: 10, fontWeight: 600, background: "#faf8f4", whiteSpace: "nowrap", verticalAlign: "middle" }}>{slot}</td>
                 {GRID_DAYS.map((d) => {
                   const cls = getCell(d, slot);
-                  const st = cls ? (GRID_STYLES[cls.course] || { bg: theme.pageBg, text: theme.textSecondary }) : null;
+                  const st = cls ? (GRID_STYLES[cls.course] || { bg: "#f7f3ed", text: "#6b5438" }) : null;
                   return (
-                    <td key={d} style={{ padding: 4, borderBottom: "1px solid #f0ebe3", borderRight: `1px solid ${theme.border}`, height: 50, verticalAlign: "top", background: cls ? st!.bg : "transparent" }}>
+                    <td key={d} style={{ padding: 4, borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", height: 50, verticalAlign: "top", background: cls ? st!.bg : "transparent" }}>
                       {cls && (
                         <div style={{ padding: "4px 6px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                           <span style={{ fontSize: 11, fontWeight: 700, color: st!.text, lineHeight: 1.2 }}>{cls.course}</span>
@@ -1346,9 +1346,9 @@ function HomeInner() {
             ))}
           </tbody>
         </table>
-        <div style={{ padding: "10px 14px", borderTop: `1px solid ${theme.border}`, display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ padding: "10px 14px", borderTop: "1px solid #ece8e0", display: "flex", flexWrap: "wrap", gap: 8 }}>
           {Object.entries(GRID_STYLES).filter(([k]) => !k.includes(" B")).map(([code, st]) => (
-            <span key={code} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: theme.textSecondary }}>
+            <span key={code} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: "#6b5438" }}>
               <span style={{ width: 8, height: 8, borderRadius: 2, background: st.text, display: "inline-block", opacity: 0.75 }} />
               {code.replace(" A", "")}
             </span>
@@ -1360,14 +1360,14 @@ function HomeInner() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>Timetable</h2>
-          <div style={{ display: "flex", gap: 4, background: theme.accentText, padding: 4, borderRadius: 14 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
+          <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
             {(["Today", "Week", "Grid"] as const).map((v) => {
               const key = v.toLowerCase() as "today" | "week" | "grid";
               const active = scheduleView === key;
               return (
                 <button key={v} onClick={() => { setScheduleView(key); setShowWeekView(key === "week"); }}
-                  style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? theme.accent : "transparent", color: active ? theme.accentText : theme.textSecondary, transition: "all 0.15s" }}>
+                  style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? "#2d2416" : "transparent", color: active ? "#f0ebe3" : "#8b7355", transition: "all 0.15s" }}>
                   {v}
                 </button>
               );
@@ -1382,16 +1382,16 @@ function HomeInner() {
               <div key={day}>
                 {scheduleView === "week" && (
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <div style={{ height: 1, flex: 1, background: theme.border }} />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: day === todayName ? theme.accent : theme.textMuted, textTransform: "uppercase", letterSpacing: 0.8 }}>
+                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
+                    <span style={{ fontSize: 12, fontWeight: 700, color: day === todayName ? "#2d2416" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>
                       {day} {day === todayName && "· Today"}
                     </span>
-                    <div style={{ height: 1, flex: 1, background: theme.border }} />
+                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
                   </div>
                 )}
                 {classes.length === 0 ? (
                   <div style={{ padding: "12px 0", textAlign: "center" }}>
-                    <p style={{ fontSize: 12, color: theme.textMuted }}>No classes</p>
+                    <p style={{ fontSize: 12, color: "#c9b89a" }}>No classes</p>
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1405,11 +1405,11 @@ function HomeInner() {
                             <div style={{ flex: 1 }}>
                               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
                                 <div>
-                                  <p style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, margin: "0 0 2px", fontFamily: theme.fontHeading }}>{cls.course}</p>
-                                  <p style={{ fontSize: 12, color: theme.textSecondary, margin: "0 0 2px", fontStyle: "italic" }}>{cls.lecturer}</p>
+                                  <p style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>{cls.course}</p>
+                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px", fontStyle: "italic" }}>{cls.lecturer}</p>
                                   <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: theme.textMuted }}><Clock size={10} color={theme.textMuted} /> {cls.time}</span>
-                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: theme.textMuted }}><MapPin size={10} color={theme.textMuted} /> {cls.venue}</span>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
                                   </div>
                                 </div>
                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
@@ -1433,9 +1433,9 @@ function HomeInner() {
                                           }}
                                           style={{
                                             padding: "5px 8px", borderRadius: 10, fontSize: 11, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer",
-                                            border: `1px solid ${status === "attended" ? "#bbf7d0" : status === "skipped" ? "#fecaca" : theme.border}`,
+                                            border: `1px solid ${status === "attended" ? "#bbf7d0" : status === "skipped" ? "#fecaca" : "#ece8e0"}`,
                                             background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#fff",
-                                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : theme.textSecondary,
+                                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#6b5438",
                                             outline: "none", appearance: "auto", opacity: locked ? 0.75 : 1,
                                           }}
                                         >
@@ -1443,7 +1443,7 @@ function HomeInner() {
                                           <option value="attended">✓ Attended</option>
                                           <option value="skipped">✗ Skipped</option>
                                         </select>
-                                        <span style={{ fontSize: 9, color: locked ? "#ef4444" : theme.textMuted, fontWeight: 600 }}>
+                                        <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>
                                           {locked ? "🔒 Locked" : status ? `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left` : ""}
                                         </span>
                                       </div>
@@ -1453,10 +1453,10 @@ function HomeInner() {
                               </div>
                               <div style={{ marginTop: 8 }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                  <span style={{ fontSize: 11, color: theme.textMuted }}>{attendance[cls.id] || 0}/{SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} attended</span>
+                                  <span style={{ fontSize: 11, color: "#a8967a" }}>{attendance[cls.id] || 0}/{SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} attended</span>
                                   <AttendanceBadge pct={pct} />
                                 </div>
-                                <div style={{ height: 4, borderRadius: 2, background: theme.accentText, overflow: "hidden" }}>
+                                <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
                                   <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
                                     style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                                 </div>
@@ -1481,8 +1481,8 @@ function HomeInner() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.textPrimary, margin: "0 0 2px", fontFamily: theme.fontHeading }}>Progress</h2>
-          <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>Attendance overview</p>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
+          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance overview</p>
         </div>
 
         {/* Attendance summary */}
@@ -1492,7 +1492,7 @@ function HomeInner() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ fontSize: 36, fontWeight: 800, color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" }}>{avgAttPct}%</span>
               <div>
-                <p style={{ fontSize: 12, color: theme.textPrimary, fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
+                <p style={{ fontSize: 12, color: "#1a1208", fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
                 <AttendanceBadge pct={avgAttPct} />
               </div>
             </div>
@@ -1504,17 +1504,17 @@ function HomeInner() {
               return (
                 <div key={cls.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: theme.textPrimary }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#1a1208" }}>
                       <span style={{ width: 8, height: 8, borderRadius: 4, background: color, display: "inline-block" }} />
                       {cls.course}
                     </span>
                     <span style={{ fontSize: 12, fontWeight: 700, color: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }}>{pct}%</span>
                   </div>
-                  <div style={{ height: 6, borderRadius: 3, background: theme.accentText, overflow: "hidden" }}>
+                  <div style={{ height: 6, borderRadius: 3, background: "#f0ebe3", overflow: "hidden" }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
                       style={{ height: "100%", borderRadius: 3, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                   </div>
-                  <p style={{ fontSize: 10, color: theme.textMuted, margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
+                  <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
                 </div>
               );
             })}
@@ -1529,11 +1529,11 @@ function HomeInner() {
             { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
           ].map((m) => (
             <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? theme.textMuted : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
                 {m.days <= 0 ? "✓" : m.days}
               </p>
               <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
-              <p style={{ fontSize: 10, color: theme.textMuted, margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
+              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
             </div>
           ))}
         </div>
@@ -1548,24 +1548,24 @@ function HomeInner() {
     // type "iframe" = YouTube embed (only used for custom links)
     const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; type: "audio" | "iframe"; src: string }[] = [
       // Lofi Girl official 24/7 radio streams (HLS/MP3)
-      { id: "lofi-hiphop", label: "Lofi Hip-Hop", emoji: "🎧", tag: "chill", type: "audio", src: "https://play.streamafrica.net/lofiradio" },
-      { id: "lofi-jazz", label: "Jazz Vibes", emoji: "🎷", tag: "jazz", type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
-      { id: "lofi-chill", label: "Chillhop", emoji: "🌿", tag: "chill", type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
-      { id: "lofi-study", label: "Study Radio", emoji: "📚", tag: "study", type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
-      { id: "lofi-sleep", label: "Ambient Drift", emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
-      { id: "lofi-piano", label: "Solo Piano", emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
-      { id: "lofi-pop", label: "Lofi Pop", emoji: "🌸", tag: "pop", type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
-      { id: "lofi-rnb", label: "R&B Soul", emoji: "🎶", tag: "r&b", type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
-      { id: "custom", label: "Custom Link", emoji: "🔗", tag: "custom", type: "iframe", src: "" },
+      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",   type: "audio", src: "https://play.streamafrica.net/lofiradio" },
+      { id: "lofi-jazz",    label: "Jazz Vibes",       emoji: "🎷", tag: "jazz",    type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
+      { id: "lofi-chill",   label: "Chillhop",         emoji: "🌿", tag: "chill",   type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
+      { id: "lofi-study",   label: "Study Radio",      emoji: "📚", tag: "study",   type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
+      { id: "lofi-sleep",   label: "Ambient Drift",    emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
+      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
+      { id: "lofi-pop",     label: "Lofi Pop",         emoji: "🌸", tag: "pop",     type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
+      { id: "lofi-rnb",     label: "R&B Soul",         emoji: "🎶", tag: "r&b",     type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
+      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",  type: "iframe", src: "" },
     ];
     const TAG_COLORS: Record<string, { bg: string; text: string }> = {
-      chill: { bg: "#e0f2fe", text: "#075985" },
-      jazz: { bg: "#fef9c3", text: "#78350f" },
-      pop: { bg: "#fce7f3", text: "#831843" },
-      study: { bg: "#dcfce7", text: "#14532d" },
+      chill:   { bg: "#e0f2fe", text: "#075985" },
+      jazz:    { bg: "#fef9c3", text: "#78350f" },
+      pop:     { bg: "#fce7f3", text: "#831843" },
+      study:   { bg: "#dcfce7", text: "#14532d" },
       ambient: { bg: "#ede9fe", text: "#4c1d95" },
-      "r&b": { bg: "#ffedd5", text: "#7c2d12" },
-      custom: { bg: "#f1f5f9", text: "#334155" },
+      "r&b":   { bg: "#ffedd5", text: "#7c2d12" },
+      custom:  { bg: "#f1f5f9", text: "#334155" },
     };
 
     const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
@@ -1587,8 +1587,8 @@ function HomeInner() {
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {/* Header */}
         <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.textPrimary, margin: "0 0 2px", fontFamily: theme.fontHeading }}>Focus Studio</h2>
-          <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>Timer · Lofi · Deep work</p>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Focus Studio</h2>
+          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Timer · Lofi · Deep work</p>
         </div>
 
         {/* ── TIMER CARD ─────────────────────────────────────────────────── */}
@@ -1601,24 +1601,20 @@ function HomeInner() {
                   <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.4 }}
                     style={{ width: 7, height: 7, borderRadius: "50%", background: timerMode === "focus" ? "#f59e0b" : "#22c55e" }} />
                 )}
-                <span style={{
-                  fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
-                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : theme.textMuted, fontFamily: theme.fontHeading
-                }}>
+                <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
+                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : "#a8967a", fontFamily: "'Syne', sans-serif" }}>
                   {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
                 </span>
               </div>
-              <span style={{ fontSize: 11, color: timerActive ? theme.textSecondary : theme.textMuted, fontWeight: 600 }}>
+              <span style={{ fontSize: 11, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 600 }}>
                 {timerSessions} sessions today
               </span>
             </div>
 
             {/* Clock face */}
             <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <p style={{
-                fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
-                color: timerActive ? (timerMode === "focus" ? theme.accentText : "#86efac") : theme.textPrimary
-              }}>
+              <p style={{ fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
+                color: timerActive ? (timerMode === "focus" ? "#f0ebe3" : "#86efac") : "#1a1208" }}>
                 {fmtTime(timerSeconds)}
               </p>
             </div>
@@ -1626,26 +1622,26 @@ function HomeInner() {
             {/* Controls */}
             <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 20 }}>
               <button onClick={() => { setTimerActive(false); setTimerSeconds(focusMins * 60); setTimerMode("focus"); }}
-                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : theme.border}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 16, color: timerActive ? theme.textSecondary : theme.textMuted }}>↺</span>
+                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 16, color: timerActive ? "#6b5438" : "#c9b89a" }}>↺</span>
               </button>
               <button onClick={() => { if (!timerActive) { setTimerSeconds(timerSeconds > 0 ? timerSeconds : focusMins * 60); setTimerMode(timerMode); } setTimerActive((a) => !a); }}
-                style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : theme.accent, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
+                style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
                 {timerActive
                   ? <span style={{ width: 16, height: 16, borderLeft: "5px solid #1a1208", borderRight: "5px solid #1a1208", display: "inline-block" }} />
-                  : <Play size={20} color={theme.accentText} fill={theme.accentText} />}
+                  : <Play size={20} color="#f0ebe3" fill="#f0ebe3" />}
               </button>
               <button onClick={() => { const next = timerMode === "focus" ? "break" : "focus"; setTimerMode(next); setTimerSeconds(next === "break" ? Math.round(focusMins / 5) * 60 : focusMins * 60); if (next === "focus") setTimerSessions(s => s + 1); }}
-                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : theme.border}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 13, color: timerActive ? theme.textSecondary : theme.textMuted, fontWeight: 700 }}>⏭</span>
+                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 700 }}>⏭</span>
               </button>
             </div>
 
             {/* Duration slider */}
-            <div style={{ padding: "14px 0 0", borderTop: `1px solid ${timerActive ? "#2a2010" : theme.accentText}` }}>
+            <div style={{ padding: "14px 0 0", borderTop: `1px solid ${timerActive ? "#2a2010" : "#f0ebe3"}` }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: timerActive ? theme.textSecondary : theme.textMuted, textTransform: "uppercase", letterSpacing: 0.8 }}>Focus duration</span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: timerActive ? theme.accentText : theme.accent }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: timerActive ? "#6b5438" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>Focus duration</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: timerActive ? "#f0ebe3" : "#2d2416" }}>
                   {focusMins >= 60 ? `${Math.floor(focusMins / 60)}h${focusMins % 60 > 0 ? ` ${focusMins % 60}m` : ""}` : `${focusMins}m`}
                 </span>
               </div>
@@ -1654,7 +1650,7 @@ function HomeInner() {
                 style={{ width: "100%", accentColor: "#f59e0b", cursor: "pointer", height: 5, borderRadius: 3 }} />
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
                 {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => (
-                  <span key={l} style={{ fontSize: 9, color: timerActive ? "#4a3a28" : theme.textMuted }}>{l}</span>
+                  <span key={l} style={{ fontSize: 9, color: timerActive ? "#4a3a28" : "#c9b89a" }}>{l}</span>
                 ))}
               </div>
             </div>
@@ -1667,18 +1663,16 @@ function HomeInner() {
           <div style={{ padding: "16px 18px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
               <h3 style={{ ...S.sectionTitle, margin: "0 0 2px" }}>Lofi Mode</h3>
-              <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>
                 {lofiPlaying ? `▶ ${activeStation.label}` : "Pick a station and press play"}
               </p>
             </div>
             <button
               onClick={() => setLofiPlaying(p => !p)}
-              style={{
-                padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                background: lofiPlaying ? "#fef2f2" : theme.accent,
-                color: lofiPlaying ? "#ef4444" : theme.accentText,
-                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s"
-              }}>
+              style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
+                background: lofiPlaying ? "#fef2f2" : "#2d2416",
+                color: lofiPlaying ? "#ef4444" : "#f0ebe3",
+                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
               {lofiPlaying ? "⏹ Stop" : "▶ Play"}
             </button>
           </div>
@@ -1688,13 +1682,13 @@ function HomeInner() {
             {/* Audio-only toggle */}
             <button
               onClick={() => setLofiAudioOnly(v => !v)}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, border: `1px solid ${lofiAudioOnly ? theme.accent : theme.border}`, background: lofiAudioOnly ? theme.accent : "#fff", cursor: "pointer", transition: "all 0.15s" }}>
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, border: `1px solid ${lofiAudioOnly ? "#2d2416" : "#ece8e0"}`, background: lofiAudioOnly ? "#2d2416" : "#fff", cursor: "pointer", transition: "all 0.15s" }}>
               <span style={{ fontSize: 13 }}>{lofiAudioOnly ? "🎵" : "🎬"}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: lofiAudioOnly ? theme.accentText : theme.textSecondary }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: lofiAudioOnly ? "#f0ebe3" : "#8b7355" }}>
                 {lofiAudioOnly ? "Audio only" : "Show video"}
               </span>
             </button>
-            <span style={{ fontSize: 10, color: theme.textMuted, flex: 1 }}>
+            <span style={{ fontSize: 10, color: "#c9b89a", flex: 1 }}>
               {lofiAudioOnly ? "Saves data · No video rendered" : isCustom && customIsYT ? "Lowest quality (tiny)" : ""}
             </span>
             {/* Volume */}
@@ -1706,7 +1700,7 @@ function HomeInner() {
                   setLofiVolume(v);
                   if (lofiAudioRef.current) lofiAudioRef.current.volume = v;
                 }}
-                style={{ width: 70, accentColor: theme.accent, cursor: "pointer", height: 4 }} />
+                style={{ width: 70, accentColor: "#2d2416", cursor: "pointer", height: 4 }} />
               <span style={{ fontSize: 12 }}>🔊</span>
             </div>
           </div>
@@ -1719,16 +1713,14 @@ function HomeInner() {
               return (
                 <button key={station.id}
                   onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
+                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
                     border: active ? "2px solid #2d2416" : "1.5px solid #ece8e0",
                     background: active ? "#faf6f0" : "#fff",
                     boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none",
-                    transition: "all 0.15s"
-                  }}>
+                    transition: "all 0.15s" }}>
                   <span style={{ fontSize: 22, lineHeight: 1 }}>{station.emoji}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: theme.textPrimary, margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
                     <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 6, ...tagStyle }}>{station.tag}</span>
                   </div>
                   {active && lofiPlaying && (
@@ -1737,7 +1729,7 @@ function HomeInner() {
                         <motion.div key={i}
                           animate={{ height: ["40%", "100%", "40%"] }}
                           transition={{ repeat: Infinity, duration: 0.7, delay: i * 0.15, ease: "easeInOut" }}
-                          style={{ width: 3, background: theme.accent, borderRadius: 2 }} />
+                          style={{ width: 3, background: "#2d2416", borderRadius: 2 }} />
                       ))}
                     </div>
                   )}
@@ -1750,15 +1742,13 @@ function HomeInner() {
           <div style={{ padding: "0 14px 14px" }}>
             <button
               onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
-              style={{
-                width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
+              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
                 border: lofiChannel === "custom" ? "2px solid #2d2416" : "1.5px dashed #d4c7b4",
-                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s"
-              }}>
+                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s" }}>
               <span style={{ fontSize: 20 }}>🔗</span>
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>Custom Link</p>
-                <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>YouTube, podcast, or any stream URL</p>
+                <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: 0 }}>Custom Link</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>YouTube, podcast, or any stream URL</p>
               </div>
             </button>
             {(lofiChannel === "custom" || lofiShowCustom) && (
@@ -1768,11 +1758,11 @@ function HomeInner() {
                   placeholder="Paste YouTube or stream URL…"
                   value={lofiCustomUrl}
                   onChange={e => setLofiCustomUrl(e.target.value)}
-                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: `1px solid ${theme.border}`, fontSize: 12, outline: "none", color: theme.textPrimary, background: theme.cardBg }}
+                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 12, outline: "none", color: "#1a1208", background: "#fff" }}
                 />
                 <button
                   onClick={() => { setLofiChannel("custom"); if (lofiCustomUrl.trim()) setLofiPlaying(true); }}
-                  style={{ padding: "10px 16px", borderRadius: 12, border: "none", background: theme.accent, color: theme.accentText, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+                  style={{ padding: "10px 16px", borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
                   Load
                 </button>
               </div>
@@ -1789,10 +1779,10 @@ function HomeInner() {
                 src={activeStation.src}
                 autoPlay
                 controls
-                style={{ width: "100%", height: 40, borderRadius: 10, accentColor: theme.accent }}
+                style={{ width: "100%", height: 40, borderRadius: 10, accentColor: "#2d2416" }}
                 onVolumeChange={e => setLofiVolume((e.target as HTMLAudioElement).volume)}
               />
-              <p style={{ fontSize: 10, color: theme.textMuted, margin: "6px 0 0", textAlign: "center" }}>
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
                 🎵 Audio only · No video · Low data usage
               </p>
             </div>
@@ -1809,7 +1799,7 @@ function HomeInner() {
                 controls
                 style={{ width: "100%", height: 40, borderRadius: 10 }}
               />
-              <p style={{ fontSize: 10, color: theme.textMuted, margin: "6px 0 0", textAlign: "center" }}>
+              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>
                 🎵 Streaming as audio · If silent, try a direct .mp3 link
               </p>
             </div>
@@ -1837,8 +1827,8 @@ function HomeInner() {
                 />
               </div>
               {lofiAudioOnly
-                ? <p style={{ fontSize: 10, color: theme.textMuted, margin: "4px 0 0", textAlign: "center" }}>🎵 Video hidden · Lowest quality · Audio-only mode on</p>
-                : <p style={{ fontSize: 10, color: theme.textMuted, margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>
+                ? <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0", textAlign: "center" }}>🎵 Video hidden · Lowest quality · Audio-only mode on</p>
+                : <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>
               }
             </div>
           )}
@@ -1861,11 +1851,11 @@ function HomeInner() {
             { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
           ].map((m) => (
             <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? theme.textMuted : m.color, margin: "0 0 2px", lineHeight: 1 }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
                 {m.days <= 0 ? "✓" : m.days}
               </p>
               <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
-              <p style={{ fontSize: 10, color: theme.textMuted, margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
+              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
             </div>
           ))}
         </div>
@@ -1873,119 +1863,100 @@ function HomeInner() {
     );
   };
 
-  const renderProfile = () => {
-    const PRESET_THEMES: { key: ThemeKey; label: string; icon: string; desc: string }[] = [
-      { key: "light", label: "Warm Light", icon: "☀️", desc: "Default warm parchment" },
-      { key: "dark", label: "Dark", icon: "🌙", desc: "Deep black, easy on eyes" },
-      { key: "mono", label: "Mono", icon: "⬛", desc: "Pure black & white" },
-      { key: "custom", label: "Custom", icon: "🎨", desc: "Pick your own accent" },
-    ];
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        {/* Profile card */}
-        <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-          <Avatar name={studentName} size={72} />
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: theme.textPrimary, margin: "14px 0 2px", fontFamily: theme.fontHeading }}>{studentName}</h2>
-          <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
-          {isAdmin && (
-            <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
-              Admin Panel →
-            </Link>
-          )}
-        </div>
+  const renderProfile = () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Profile card */}
+      <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
+        <Avatar name={studentName} size={72} />
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
+        <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
+        {isAdmin && (
+          <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
+            Admin Panel →
+          </Link>
+        )}
+      </div>
 
-        {/* ── THEME PICKER ─────────────────────────────────────────────────────── */}
-        <div style={{ ...S.card, padding: "18px 18px 20px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <Palette size={15} color={theme.accent} />
-            <p style={{ ...S.label, margin: 0 }}>Appearance</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {PRESET_THEMES.map((preset) => {
-              const active = themeKey === preset.key;
-              return (
-                <button key={preset.key} onClick={() => setThemeKey(preset.key)}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 10, padding: "12px 14px",
-                    borderRadius: 14, border: active ? `2px solid ${theme.accent}` : `1px solid ${theme.border}`,
-                    background: active ? theme.accent : theme.cardBg,
-                    cursor: "pointer", textAlign: "left", transition: "all 0.18s",
-                  }}>
-                  <span style={{ fontSize: 20, lineHeight: 1 }}>{preset.icon}</span>
-                  <div>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: active ? theme.accentText : theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{preset.label}</p>
-                    <p style={{ fontSize: 10, color: active ? theme.accentText : theme.textMuted, margin: 0, opacity: 0.8 }}>{preset.desc}</p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Custom accent colour picker */}
-          {themeKey === "custom" && (
-            <div style={{ marginTop: 14, padding: "14px", borderRadius: 14, background: theme.pageBg, border: `1px solid ${theme.border}` }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: theme.textSecondary, margin: "0 0 10px", fontFamily: theme.fontHeading }}>Pick accent colour</p>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <input type="color" value={customAccent}
-                  onChange={(e) => setCustomAccent(e.target.value)}
-                  style={{ width: 44, height: 44, borderRadius: 10, border: "none", cursor: "pointer", padding: 2, background: "transparent" }} />
-                <div style={{ flex: 1 }}>
-                  <input type="text" value={customAccent}
-                    onChange={(e) => { if (/^#[0-9a-fA-F]{0,6}$/.test(e.target.value)) setCustomAccent(e.target.value); }}
-                    style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${theme.border}`, fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: theme.textPrimary, background: theme.cardBg, outline: "none" }} />
-                </div>
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: customAccent, flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }} />
-              </div>
-              {/* Quick swatches */}
-              <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
-                {["#2d2416", "#1a1a2e", "#0f3460", "#16213e", "#533483", "#05445e", "#1b4332", "#7b2d8b", "#c0392b", "#e67e22", "#27ae60", "#2980b9"].map(swatch => (
-                  <button key={swatch} onClick={() => setCustomAccent(swatch)}
-                    style={{ width: 26, height: 26, borderRadius: 8, background: swatch, border: customAccent === swatch ? "2px solid " + theme.textPrimary : "2px solid transparent", cursor: "pointer", padding: 0, transition: "transform 0.1s" }}
-                    title={swatch} />
-                ))}
-              </div>
+      {/* Actions */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {[
+          { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
+          { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei", color: "#f0fdf4" },
+        ].map((item) => (
+          <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+            style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
+            <span style={{ fontSize: 24 }}>{item.icon}</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{item.sub}</p>
             </div>
-          )}
-        </div>
+            <ChevronRight size={16} color="#c9b89a" />
+          </a>
+        ))}
+      </div>
 
-        {/* Actions */}
+      {/* Theme picker */}
+      <div style={{ ...S.card, padding: "16px 18px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <Palette size={15} color={theme.accent} />
+          <p style={{ ...S.label, margin: 0 }}>Appearance</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+          {([
+            { key: "light", label: "Warm Light", desc: "Default warm tone", swatch: "#2d2416" },
+            { key: "dark",  label: "Dark",       desc: "Easy on the eyes",  swatch: "#ffffff" },
+            { key: "mono",  label: "Mono",        desc: "Clean & minimal",   swatch: "#111111" },
+            { key: "custom",label: "Custom",      desc: "Pick your colour",  swatch: customAccent },
+          ] as { key: ThemeKey; label: string; desc: string; swatch: string }[]).map((preset) => {
+            const active = themeKey === preset.key;
+            return (
+              <button key={preset.key} onClick={() => setThemeKey(preset.key)}
+                style={{ padding: "10px 12px", borderRadius: 14, border: active ? `2px solid ${theme.accent}` : `1px solid ${theme.border}`,
+                  background: active ? theme.accent : theme.cardBg, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: active ? theme.accentText : theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{preset.label}</p>
+                <p style={{ fontSize: 10, color: active ? theme.accentText : theme.textMuted, margin: 0, opacity: 0.8 }}>{preset.desc}</p>
+              </button>
+            );
+          })}
+        </div>
+        {themeKey === "custom" && (
+          <div style={{ padding: "14px", borderRadius: 14, background: theme.pageBg, border: `1px solid ${theme.border}` }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: theme.textSecondary, margin: "0 0 10px", fontFamily: theme.fontHeading }}>Pick accent colour</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <input type="color" value={customAccent} onChange={e => setCustomAccent(e.target.value)}
+                style={{ width: 36, height: 36, borderRadius: 8, border: "none", cursor: "pointer", padding: 2 }} />
+              <input type="text" value={customAccent} onChange={e => { if (/^#[0-9a-fA-F]{0,6}$/.test(e.target.value)) setCustomAccent(e.target.value); }}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${theme.border}`, fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: theme.textPrimary, background: theme.cardBg, outline: "none" }} />
+            </div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {["#2d2416","#1e3a5f","#1a3320","#4a1942","#7c2d12","#1e293b","#065f46","#701a75"].map(swatch => (
+                <button key={swatch} onClick={() => setCustomAccent(swatch)}
+                  style={{ width: 26, height: 26, borderRadius: 8, background: swatch, border: customAccent === swatch ? `2px solid ${theme.textPrimary}` : "2px solid transparent", cursor: "pointer", padding: 0, transition: "transform 0.1s" }} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Portal info */}
+      <div style={{ ...S.card, padding: "16px 18px" }}>
+        <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {[
-            { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion" },
-            { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" },
-          ].map((item) => (
-            <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-              style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
-              <span style={{ fontSize: 24 }}>{item.icon}</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 14, fontWeight: 700, color: theme.textPrimary, margin: "0 0 2px" }}>{item.label}</p>
-                <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>{item.sub}</p>
-              </div>
-              <ChevronRight size={16} color={theme.textMuted} />
-            </a>
+          {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
+            </div>
           ))}
         </div>
-
-        {/* Portal info */}
-        <div style={{ ...S.card, padding: "16px 18px" }}>
-          <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
-              <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 13, color: theme.textMuted }}>{k}</span>
-                <span style={{ fontSize: 13, fontWeight: 600, color: theme.textPrimary }}>{v}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <button onClick={handleLogout}
-          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
-          <LogOut size={16} /> Sign out
-        </button>
       </div>
-    );
-  };
+
+      <button onClick={handleLogout}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
+        <LogOut size={16} /> Sign out
+      </button>
+    </div>
+  );
 
   // Tab content map
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
@@ -2005,8 +1976,8 @@ function HomeInner() {
         body { background: ${theme.pageBg}; transition: background 0.3s ease; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
         ::-webkit-scrollbar { width: 0; }
-        .syne { font-family: 'Syne', sans-serif !important; }
         input::placeholder { color: ${theme.textMuted}; }
+        .syne { font-family: 'Syne', sans-serif !important; }
       `}</style>
 
       {/* Full-bleed flex layout */}
@@ -2018,9 +1989,9 @@ function HomeInner() {
           {/* Logo */}
           <div style={{ padding: "0 20px 28px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: theme.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 14, fontFamily: theme.fontHeading, color: theme.accentText, fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
-              </div>
+<div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden" }}>
+  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</div>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>BME1 Portal</p>
                 <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>KNUST · Semester 2</p>
@@ -2087,9 +2058,9 @@ function HomeInner() {
             {/* Top row: logo + avatar */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 9, background: theme.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 10, fontFamily: theme.fontHeading, color: theme.accentText, fontWeight: 800 }}>BME</span>
-                </div>
+                <div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</div>
                 <span style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, fontFamily: theme.fontHeading }}>BME Portal</span>
               </div>
               <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} />
@@ -2098,7 +2069,7 @@ function HomeInner() {
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: theme.fontBody, background: activeTab === tab.id ? theme.accent : "#fff", color: activeTab === tab.id ? theme.accentText : theme.textSecondary, boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: theme.fontBody, background: activeTab === tab.id ? theme.accent : theme.pillInactiveBg, color: activeTab === tab.id ? theme.accentText : theme.textSecondary, boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : `1px solid ${theme.border}` }}>
                   {React.cloneElement(tab.icon, { size: 14 })}
                   {tab.label}
                 </button>
@@ -2117,17 +2088,17 @@ function HomeInner() {
         </main>
       </div>
 
-      {/* Copyright Footer Links */}
-      <div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
-        <div className="brand-line">
-          <span>Built by</span> <a className="brand" style={{ fontFamily: 'Tangerine', color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
-        </div>
-        <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
-      </div>
+{/* Copyright Footer Links */}
+<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
+<div className="brand-line">
+<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine'  , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
+</div>
+<div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
+</div>
 
 
-      {/* Chatbot */}
-      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+{/* Chatbot */}
+{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
       {/* Modals */}
       <AnimatePresence>
@@ -2161,7 +2132,6 @@ export default function Home() {
   const [themeKey, setThemeKeyState] = useState<ThemeKey>("light");
   const [customAccent, setCustomAccentState] = useState("#2d2416");
 
-  // Persist theme to localStorage
   useEffect(() => {
     const saved = localStorage.getItem("bme-theme");
     const savedAccent = localStorage.getItem("bme-custom-accent");
