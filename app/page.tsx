@@ -868,9 +868,9 @@ export default function Home() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 380, animation: "fadeUp 0.4s ease" }}>
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ width: 64, height: 64, borderRadius: 20, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
-              <span style={{ fontSize: 22, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
-            </div>
+           <div style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</div>
             <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
             <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
@@ -1820,9 +1820,9 @@ export default function Home() {
           {/* Logo */}
           <div style={{ padding: "0 20px 28px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 14, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
-              </div>
+<div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</div>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>BME1 Portal</p>
                 <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>KNUST · Semester 2</p>
@@ -1889,9 +1889,9 @@ export default function Home() {
             {/* Top row: logo + avatar */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 9, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 10, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800 }}>BME</span>
-                </div>
+                <div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+</div>
                 <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
               </div>
               <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} />
