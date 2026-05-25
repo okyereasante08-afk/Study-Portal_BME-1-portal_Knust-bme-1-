@@ -1805,32 +1805,31 @@ function HomeInner() {
               ))}
             </div>
           </div>
-))}
-</div>
-
-<button
-  onClick={() => {
-    localStorage.removeItem("bme-onboarded");
-    setShowTutorial(true);
-  }}
-  style={{
-    marginTop: 12,
-    width: "100%",
-    padding: "10px 0",
-    borderRadius: 12,
-    border: "1.5px solid #ece8e0",
-    background: "#fff",
-    color: "#2d2416",
-    fontSize: 13,
-    fontWeight: 700,
-    cursor: "pointer",
-    fontFamily: "'Montserrat', sans-serif",
-  }}
->
-  View Guide
-</button>
-
-
+        )}
+        <button
+          onClick={() => {
+            localStorage.removeItem("bme-onboarded");
+            setShowTutorial(true);
+          }}
+          style={{
+            marginTop: 12,
+            width: "100%",
+            padding: "10px 0",
+            borderRadius: 12,
+            border: "1.5px solid #ece8e0",
+            background: "#fff",
+            color: "#2d2416",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: "'Montserrat', sans-serif",
+          }}
+        >
+          View Guide
+        </button>
+      </div>
+    </div>
+  );
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
   const tabs = [
     { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
@@ -1953,11 +1952,6 @@ function HomeInner() {
           </div>
         </main>
       </div>
-      
-      data-tab="home"
-      data-tab="schedule"
-      data-tab="progress"
-      data-tab="focus"
 
       <OnboardingTutorial
   show={showTutorial}
