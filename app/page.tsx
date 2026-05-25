@@ -29,21 +29,21 @@ interface ThemeTokens {
 
 const THEMES: Record<ThemeKey, ThemeTokens> = {
   light: {
-    pageBg:theme.pageBg,sidebarBg:theme.sidebarBg,cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:theme.accent,pillInactiveBg:"#ffffff",headerBg:theme.pageBg,userCardBg:"#ffffff",
-    border:theme.border,borderStrong:"#d4c9b8",
-    textPrimary:theme.textPrimary,textSecondary:theme.textSecondary,textMuted:theme.textMuted,textInverse:theme.accentText,
-    accent:theme.accent,accentText:theme.accentText,
-    navActiveBg:"#ffffff",navActiveText:theme.textPrimary,navInactiveText:theme.textSecondary,
+    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
+    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
+    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
+    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
+    accent:"#2d2416",accentText:"#ffffff",
+    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
     fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
   dark: {
     pageBg:"#0f0f0f",sidebarBg:"#161616",cardBg:"#1e1e1e",inputBg:"#252525",
-    pillActiveBg:theme.accentText,pillInactiveBg:"#252525",headerBg:"#0f0f0f",userCardBg:"#252525",
+    pillActiveBg:"#ffffff",pillInactiveBg:"#252525",headerBg:"#0f0f0f",userCardBg:"#252525",
     border:"#2a2a2a",borderStrong:"#3a3a3a",
-    textPrimary:theme.accentText,textSecondary:"#b8a99a",textMuted:"#6b5e52",textInverse:"#0f0f0f",
-    accent:theme.accentText,accentText:theme.textPrimary,
-    navActiveBg:"#2a2a2a",navActiveText:theme.accentText,navInactiveText:"#6b5e52",
+    textPrimary:"#ffffff",textSecondary:"#b8a99a",textMuted:"#6b5e52",textInverse:"#0f0f0f",
+    accent:"#ffffff",accentText:"#111111",
+    navActiveBg:"#2a2a2a",navActiveText:"#ffffff",navInactiveText:"#6b5e52",
     fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
   mono: {
@@ -56,12 +56,12 @@ const THEMES: Record<ThemeKey, ThemeTokens> = {
     fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
   custom: {
-    pageBg:theme.pageBg,sidebarBg:theme.sidebarBg,cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:theme.accent,pillInactiveBg:"#ffffff",headerBg:theme.pageBg,userCardBg:"#ffffff",
-    border:theme.border,borderStrong:"#d4c9b8",
-    textPrimary:theme.textPrimary,textSecondary:theme.textSecondary,textMuted:theme.textMuted,textInverse:theme.accentText,
-    accent:theme.accent,accentText:theme.accentText,
-    navActiveBg:"#ffffff",navActiveText:theme.textPrimary,navInactiveText:theme.textSecondary,
+    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
+    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
+    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
+    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
+    accent:"#2d2416",accentText:"#ffffff",
+    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
     fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
   },
 };
@@ -2112,7 +2112,7 @@ function HomeInner() {
 // ============================================================
 export default function Home() {
   const [themeKey, setThemeKeyState] = useState<ThemeKey>("light");
-  const [customAccent, setCustomAccentState] = useState(theme.accent);
+  const [customAccent, setCustomAccentState] = useState("#2d2416");
 
   // Persist theme to localStorage
   useEffect(() => {
