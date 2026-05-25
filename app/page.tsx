@@ -1830,7 +1830,7 @@ function HomeInner() {
     fontFamily: "'Montserrat', sans-serif",
   }}
 >
-  ✦ View Guide
+  View Guide
 </button>
 
 >
