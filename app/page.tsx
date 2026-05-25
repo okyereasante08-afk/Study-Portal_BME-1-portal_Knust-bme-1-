@@ -1834,8 +1834,6 @@ function HomeInner() {
 </button>
 
 >
-  ✦ View Guide
-</button>
 
 </div>
 );
