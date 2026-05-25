@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import PhotoUpload from "@/components/PhotoUpload";
 import Link from "next/link";
 import {
   Calculator, MessageCircle, BookOpen, Bell, LogOut, Activity,
@@ -1732,7 +1733,7 @@ function HomeInner() {
   const renderProfile = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-        <Avatar name={studentName} size={72} />
+        <PhotoUpload storageKey={`bme-avatar-${studentID}`} fallbackName={studentName} />
         <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
         {isAdmin && (
