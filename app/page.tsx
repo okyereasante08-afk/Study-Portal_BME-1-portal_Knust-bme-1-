@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo, createContext, useContext 
 import { motion, AnimatePresence } from "framer-motion";
 import PhotoUpload from "./components/PhotoUpload";
 import Link from "next/link";
+import OnboardingTutorial from "./components/OnboardingTutorial";
 import {
   Calculator, MessageCircle, BookOpen, Bell, LogOut, Activity,
   Download, Upload, CheckCircle, Send, Zap, Coffee, Laugh,
@@ -675,6 +676,7 @@ function HomeInner() {
   const [adminAccessCode, setAdminAccessCode] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "focus" | "profile">("home");
@@ -844,7 +846,7 @@ function HomeInner() {
   };
 
   const proceedToLogin = (id: string, adminOverride = false) => {
-    setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
+    setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true); if (!localStorage.getItem("bme-onboarded")) setShowTutorial(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
     if (id === GHOST_ID) { setAttendance({}); setAttendanceMarked({}); return; }
@@ -1809,7 +1811,12 @@ function HomeInner() {
         <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+      <button
+  onClick={() => { localStorage.removeItem("bme-onboarded"); setShowTutorial(true); }}
+  style={{ marginTop: 12, width: "100%", padding: "10px 0", borderRadius: 12, border: "1.5px solid #ece8e0", background: "#fff", color: "#2d2416", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" }}>
+  ⚕️|⚙️ View Guide
+</button>     
+      <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
               <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
             </div>
@@ -1945,6 +1952,17 @@ function HomeInner() {
           </div>
         </main>
       </div>
+      
+      data-tab="home"
+      data-tab="schedule"
+      data-tab="progress"
+      data-tab="focus"
+
+      <OnboardingTutorial
+  show={showTutorial}
+  studentName={studentName}
+  onFinish={() => setShowTutorial(false)}
+/>
 
       {/* Copyright Footer */}
       <div style={{ textAlign: "center", padding: "16px 0", fontSize: "20px", color: "#a8967a" }}>
