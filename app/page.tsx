@@ -1811,14 +1811,13 @@ function HomeInner() {
         <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
-   <button>
-  <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
-    <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
-    <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
-  </div>
+<button>
+  onClick={() => { localStorage.removeItem("bme-onboarded"); setShowTutorial(true); }}
+  style={{ marginTop: 12, width: "100%", padding: "10px 0", borderRadius: 12, border: "1.5px solid #ece8e0", background: "#fff", color: "#2d2416", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" }}>
+   View Guide
 </button>
 
-      <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+    <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
               <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
             </div>
