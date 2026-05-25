@@ -1930,7 +1930,7 @@ export default function Home() {
             {/* Top row: logo + avatar */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <div style={{ width: 30, height: 20, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
+                <div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
   <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 </div>
                 <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
