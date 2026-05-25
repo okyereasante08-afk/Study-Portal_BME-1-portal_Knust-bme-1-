@@ -1805,12 +1805,9 @@ function HomeInner() {
               ))}
             </div>
           </div>
-        )}
-      </div>
-      <div style={{ ...S.card, padding: "16px 18px" }}>
-        <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
+))}
+</div>
+
 <button
   onClick={() => {
     localStorage.removeItem("bme-onboarded");
@@ -1832,6 +1829,7 @@ function HomeInner() {
 >
   View Guide
 </button>
+
 
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
   const tabs = [
