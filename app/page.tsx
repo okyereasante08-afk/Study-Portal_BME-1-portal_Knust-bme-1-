@@ -150,7 +150,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
   "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
-  "BME_BETA1": "Beta Tester",
+  "BME_BETA1": "Beta Tester", "BETA_2-": "Asante Inc.",
 };
 
 const COURSE_CREDITS = [
