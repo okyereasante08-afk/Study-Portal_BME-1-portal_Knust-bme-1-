@@ -1833,12 +1833,16 @@ function HomeInner() {
   View Guide
 </button>
 
-<div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+<div
+    key={k}
+    style={{ display: "flex", justifyContent: "space-between" }}
+  >
     <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
-    <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
-</div>
-
-          ))}
+    <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>
+      {v}
+    </span>
+  </div>
+))}
         </div>
       </div>
       <button onClick={handleLogout}
