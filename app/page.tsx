@@ -29,60 +29,60 @@ interface ThemeTokens {
 
 const THEMES: Record<ThemeKey, ThemeTokens> = {
   light: {
-    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
-    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
-    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
-    accent:"#2d2416",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
+    pageBg: "rgb(255,251,240)", sidebarBg: "rgb(255,255,250)", cardBg: "#ffffff", inputBg: "#ffffff",
+    pillActiveBg: "#2d2416", pillInactiveBg: "#ffffff", headerBg: "rgb(255,251,240)", userCardBg: "#ffffff",
+    border: "rgb(225,221,210)", borderStrong: "#d4c9b8",
+    textPrimary: "#111111", textSecondary: "rgb(25,6,12)", textMuted: "#888888", textInverse: "#ffffff",
+    accent: "#2d2416", accentText: "#ffffff",
+    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "rgb(25,6,12)",
+    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
   },
   dark: {
-    pageBg:"#0f0f0f",sidebarBg:"#161616",cardBg:"#1e1e1e",inputBg:"#252525",
-    pillActiveBg:"#ffffff",pillInactiveBg:"#252525",headerBg:"#0f0f0f",userCardBg:"#252525",
-    border:"#2a2a2a",borderStrong:"#3a3a3a",
-    textPrimary:"#ffffff",textSecondary:"#b8a99a",textMuted:"#6b5e52",textInverse:"#0f0f0f",
-    accent:"#ffffff",accentText:"#111111",
-    navActiveBg:"#2a2a2a",navActiveText:"#ffffff",navInactiveText:"#6b5e52",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
+    pageBg: "#0f0f0f", sidebarBg: "#161616", cardBg: "#1e1e1e", inputBg: "#252525",
+    pillActiveBg: "#ffffff", pillInactiveBg: "#252525", headerBg: "#0f0f0f", userCardBg: "#252525",
+    border: "#2a2a2a", borderStrong: "#3a3a3a",
+    textPrimary: "#ffffff", textSecondary: "#b8a99a", textMuted: "#6b5e52", textInverse: "#0f0f0f",
+    accent: "#ffffff", accentText: "#111111",
+    navActiveBg: "#2a2a2a", navActiveText: "#ffffff", navInactiveText: "#6b5e52",
+    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
   },
   mono: {
-    pageBg:"#ffffff",sidebarBg:"#fafafa",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#111111",pillInactiveBg:"#ffffff",headerBg:"#ffffff",userCardBg:"#ffffff",
-    border:"#e5e5e5",borderStrong:"#cccccc",
-    textPrimary:"#111111",textSecondary:"#444444",textMuted:"#999999",textInverse:"#ffffff",
-    accent:"#111111",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#999999",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
+    pageBg: "#ffffff", sidebarBg: "#fafafa", cardBg: "#ffffff", inputBg: "#ffffff",
+    pillActiveBg: "#111111", pillInactiveBg: "#ffffff", headerBg: "#ffffff", userCardBg: "#ffffff",
+    border: "#e5e5e5", borderStrong: "#cccccc",
+    textPrimary: "#111111", textSecondary: "#444444", textMuted: "#999999", textInverse: "#ffffff",
+    accent: "#111111", accentText: "#ffffff",
+    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "#999999",
+    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
   },
   custom: {
-    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
-    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
-    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
-    accent:"#2d2416",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
+    pageBg: "rgb(255,251,240)", sidebarBg: "rgb(255,255,250)", cardBg: "#ffffff", inputBg: "#ffffff",
+    pillActiveBg: "#2d2416", pillInactiveBg: "#ffffff", headerBg: "rgb(255,251,240)", userCardBg: "#ffffff",
+    border: "rgb(225,221,210)", borderStrong: "#d4c9b8",
+    textPrimary: "#111111", textSecondary: "rgb(25,6,12)", textMuted: "#888888", textInverse: "#ffffff",
+    accent: "#2d2416", accentText: "#ffffff",
+    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "rgb(25,6,12)",
+    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
   },
 };
 
 function buildCustomTheme(accent: string): ThemeTokens {
-  const r=parseInt(accent.slice(1,3),16),g=parseInt(accent.slice(3,5),16),b=parseInt(accent.slice(5,7),16);
-  const brightness=(r*299+g*587+b*114)/1000;
-  const accentText=brightness>140?"#111111":"#ffffff";
-  const tint=(add:number,v:number)=>Math.min(255,v+add);
-  const pageBg=`rgb(${tint(210,r)},${tint(215,g)},${tint(218,b)})`;
-  const sidebarBg=`rgb(${tint(220,r)},${tint(225,g)},${tint(228,b)})`;
-  const border=`rgb(${tint(180,r)},${tint(185,g)},${tint(188,b)})`;
-  const textSecondary=`rgb(${Math.max(0,r-20)},${Math.max(0,g-30)},${Math.max(0,b-10)})`;
+  const r = parseInt(accent.slice(1, 3), 16), g = parseInt(accent.slice(3, 5), 16), b = parseInt(accent.slice(5, 7), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  const accentText = brightness > 140 ? "#111111" : "#ffffff";
+  const tint = (add: number, v: number) => Math.min(255, v + add);
+  const pageBg = `rgb(${tint(210, r)},${tint(215, g)},${tint(218, b)})`;
+  const sidebarBg = `rgb(${tint(220, r)},${tint(225, g)},${tint(228, b)})`;
+  const border = `rgb(${tint(180, r)},${tint(185, g)},${tint(188, b)})`;
+  const textSecondary = `rgb(${Math.max(0, r - 20)},${Math.max(0, g - 30)},${Math.max(0, b - 10)})`;
   return {
-    pageBg,sidebarBg,cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:accent,pillInactiveBg:"#ffffff",headerBg:pageBg,userCardBg:"#ffffff",
-    border,borderStrong:border,
-    textPrimary:"#111111",textSecondary,textMuted:"#888888",textInverse:accentText,
-    accent,accentText,
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#888888",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
+    pageBg, sidebarBg, cardBg: "#ffffff", inputBg: "#ffffff",
+    pillActiveBg: accent, pillInactiveBg: "#ffffff", headerBg: pageBg, userCardBg: "#ffffff",
+    border, borderStrong: border,
+    textPrimary: "#111111", textSecondary, textMuted: "#888888", textInverse: accentText,
+    accent, accentText,
+    navActiveBg: "#ffffff", navActiveText: "#111111", navInactiveText: "#888888",
+    fontBody: "'Montserrat', sans-serif", fontHeading: "'Syne', sans-serif",
   };
 }
 
@@ -90,7 +90,7 @@ const ThemeContext = createContext<{
   theme: ThemeTokens; themeKey: ThemeKey;
   setThemeKey: (k: ThemeKey) => void;
   customAccent: string; setCustomAccent: (c: string) => void;
-}>({ theme:THEMES.light,themeKey:"light",setThemeKey:()=>{},customAccent:"#2d2416",setCustomAccent:()=>{} });
+}>({ theme: THEMES.light, themeKey: "light", setThemeKey: () => { }, customAccent: "#2d2416", setCustomAccent: () => { } });
 
 const useTheme = () => useContext(ThemeContext);
 
@@ -364,6 +364,34 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [pos, setPos] = useState({ x: 16, y: 88 });
+  const dragging = useRef(false);
+  const offset = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (!dragging.current) return;
+      setPos({ x: offset.current.x - e.clientX, y: offset.current.y - e.clientY });
+    };
+    const onMouseUp = () => { dragging.current = false; };
+    const onTouchMove = (e: TouchEvent) => {
+      if (!dragging.current) return;
+      const t = e.touches[0];
+      setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
+    };
+    const onTouchEnd = () => { dragging.current = false; };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("touchmove", onTouchMove);
+    window.addEventListener("touchend", onTouchEnd);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
+
   useEffect(() => {
     if (open) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -394,13 +422,15 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
 
   return (
     <>
-      <div style={{ position: "fixed", bottom: 88, right: 16, zIndex: 70 }}>
+      <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
         <button
+          onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; }}
+          onTouchStart={(e) => { const t = e.touches[0]; dragging.current = true; offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y }; }}
           onClick={() => setOpen((o) => !o)}
           data-chatbot-toggle="true"
-          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: open ? theme.accentText : theme.accent, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
+          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? theme.accentText : theme.accent, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
-        {open ? <X size={18} color={theme.textSecondary} /> : <MessageSquare size={20} color={theme.accentText} />}
+          {open ? <X size={18} color={theme.textSecondary} /> : <MessageSquare size={20} color={theme.accentText} />}
 
         </button>
         {!open && (
@@ -419,7 +449,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
           >
             <div style={{ padding: "14px 18px", borderBottom: "1px solid #f0ebe3", display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 32, height: 32, borderRadius: 16, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <MessageSquare size={14} color={theme.textSecondary} />
+                <MessageSquare size={14} color={theme.textSecondary} />
 
               </div>
               <div>
@@ -599,46 +629,46 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
 const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => {
   const { theme } = useTheme();
   return (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-    style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
-    onClick={onClose}>
-    <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
-      onClick={(e) => e.stopPropagation()}
-      style={{ background: theme.cardBg, borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
-        <div>
-          <h2 style={{ fontSize: 17, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>Updates</h2>
-          <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Announcements & shared files</p>
-        </div>
-        <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-          <X size={14} color={theme.textSecondary} />
-        </button>
-      </div>
-      <div style={{ overflowY: "auto", padding: "14px 16px" }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Announcements</p>
-        {announcements.length === 0 ? (
-          <p style={{ fontSize: 13, color: theme.textMuted, textAlign: "center", padding: "24px 0" }}>No announcements yet.</p>
-        ) : announcements.map((a: any) => (
-          <div key={a.id} style={{ padding: "12px 14px", borderRadius: 12, borderLeft: `3px solid ${a.type === "urgent" ? "#ef4444" : "#3b82f6"}`, background: a.type === "urgent" ? "#fef2f2" : "#eff6ff", marginBottom: 8 }}>
-            <p style={{ fontSize: 13, color: theme.textPrimary, margin: "0 0 3px" }}>{a.text}</p>
-            <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{a.date}</p>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
+      onClick={onClose}>
+      <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: theme.cardBg, borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
+          <div>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>Updates</h2>
+            <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Announcements & shared files</p>
           </div>
-        ))}
-        {files.length > 0 && (
-          <>
-            <p style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, margin: "16px 0 8px" }}>Shared Files</p>
-            {files.map((f: any) => (
-              <div key={f.id} style={{ padding: "12px 14px", borderRadius: 12, background: theme.sidebarBg, border: `1px solid ${theme.border}`, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <p style={{ fontSize: 13, fontWeight: 600, color: theme.textPrimary, margin: 0 }}>{f.course}</p>
-                <a href={f.url} target="_blank" rel="noopener noreferrer"
-                  style={{ fontSize: 12, fontWeight: 600, color: theme.textSecondary, padding: "5px 12px", borderRadius: 8, background: theme.accentText, textDecoration: "none" }}>Open</a>
-              </div>
-            ))}
-          </>
-        )}
-      </div>
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <X size={14} color={theme.textSecondary} />
+          </button>
+        </div>
+        <div style={{ overflowY: "auto", padding: "14px 16px" }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Announcements</p>
+          {announcements.length === 0 ? (
+            <p style={{ fontSize: 13, color: theme.textMuted, textAlign: "center", padding: "24px 0" }}>No announcements yet.</p>
+          ) : announcements.map((a: any) => (
+            <div key={a.id} style={{ padding: "12px 14px", borderRadius: 12, borderLeft: `3px solid ${a.type === "urgent" ? "#ef4444" : "#3b82f6"}`, background: a.type === "urgent" ? "#fef2f2" : "#eff6ff", marginBottom: 8 }}>
+              <p style={{ fontSize: 13, color: theme.textPrimary, margin: "0 0 3px" }}>{a.text}</p>
+              <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{a.date}</p>
+            </div>
+          ))}
+          {files.length > 0 && (
+            <>
+              <p style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, margin: "16px 0 8px" }}>Shared Files</p>
+              {files.map((f: any) => (
+                <div key={f.id} style={{ padding: "12px 14px", borderRadius: 12, background: theme.sidebarBg, border: `1px solid ${theme.border}`, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: theme.textPrimary, margin: 0 }}>{f.course}</p>
+                  <a href={f.url} target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: 12, fontWeight: 600, color: theme.textSecondary, padding: "5px 12px", borderRadius: 8, background: theme.accentText, textDecoration: "none" }}>Open</a>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      </motion.div>
     </motion.div>
-  </motion.div>
   );
 };
 
@@ -1116,9 +1146,9 @@ function HomeInner() {
   const renderHome = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
-  
-        <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
       </style>
       <div style={{ paddingBottom: 4 }}>
         <h2 style={{ fontSize: 36, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
@@ -1244,12 +1274,12 @@ function HomeInner() {
           ].map((item) => (
             <button key={item.label} onClick={item.action}
               style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: item.bg, border: "none", cursor: "pointer", textAlign: "left", position: "relative" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: theme.cardBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
                 {item.icon}
               </div>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: theme.textPrimary, margin: "0 0 2px" }}>{item.label}</p>
-                <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>{item.sub}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
+                <p style={{ fontSize: 11, color: "#8b7355", margin: 0 }}>{item.sub}</p>
               </div>
               {item.badge && item.badge > 0 ? (
                 <span style={{ position: "absolute", top: 10, right: 10, width: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{item.badge}</span>
@@ -1518,24 +1548,24 @@ function HomeInner() {
     // type "iframe" = YouTube embed (only used for custom links)
     const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; type: "audio" | "iframe"; src: string }[] = [
       // Lofi Girl official 24/7 radio streams (HLS/MP3)
-      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",   type: "audio", src: "https://play.streamafrica.net/lofiradio" },
-      { id: "lofi-jazz",    label: "Jazz Vibes",       emoji: "🎷", tag: "jazz",    type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
-      { id: "lofi-chill",   label: "Chillhop",         emoji: "🌿", tag: "chill",   type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
-      { id: "lofi-study",   label: "Study Radio",      emoji: "📚", tag: "study",   type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
-      { id: "lofi-sleep",   label: "Ambient Drift",    emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
-      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
-      { id: "lofi-pop",     label: "Lofi Pop",         emoji: "🌸", tag: "pop",     type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
-      { id: "lofi-rnb",     label: "R&B Soul",         emoji: "🎶", tag: "r&b",     type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
-      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",  type: "iframe", src: "" },
+      { id: "lofi-hiphop", label: "Lofi Hip-Hop", emoji: "🎧", tag: "chill", type: "audio", src: "https://play.streamafrica.net/lofiradio" },
+      { id: "lofi-jazz", label: "Jazz Vibes", emoji: "🎷", tag: "jazz", type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
+      { id: "lofi-chill", label: "Chillhop", emoji: "🌿", tag: "chill", type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
+      { id: "lofi-study", label: "Study Radio", emoji: "📚", tag: "study", type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
+      { id: "lofi-sleep", label: "Ambient Drift", emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
+      { id: "lofi-piano", label: "Solo Piano", emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
+      { id: "lofi-pop", label: "Lofi Pop", emoji: "🌸", tag: "pop", type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
+      { id: "lofi-rnb", label: "R&B Soul", emoji: "🎶", tag: "r&b", type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
+      { id: "custom", label: "Custom Link", emoji: "🔗", tag: "custom", type: "iframe", src: "" },
     ];
     const TAG_COLORS: Record<string, { bg: string; text: string }> = {
-      chill:   { bg: "#e0f2fe", text: "#075985" },
-      jazz:    { bg: "#fef9c3", text: "#78350f" },
-      pop:     { bg: "#fce7f3", text: "#831843" },
-      study:   { bg: "#dcfce7", text: "#14532d" },
+      chill: { bg: "#e0f2fe", text: "#075985" },
+      jazz: { bg: "#fef9c3", text: "#78350f" },
+      pop: { bg: "#fce7f3", text: "#831843" },
+      study: { bg: "#dcfce7", text: "#14532d" },
       ambient: { bg: "#ede9fe", text: "#4c1d95" },
-      "r&b":   { bg: "#ffedd5", text: "#7c2d12" },
-      custom:  { bg: "#f1f5f9", text: "#334155" },
+      "r&b": { bg: "#ffedd5", text: "#7c2d12" },
+      custom: { bg: "#f1f5f9", text: "#334155" },
     };
 
     const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
@@ -1571,8 +1601,10 @@ function HomeInner() {
                   <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.4 }}
                     style={{ width: 7, height: 7, borderRadius: "50%", background: timerMode === "focus" ? "#f59e0b" : "#22c55e" }} />
                 )}
-                <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
-                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : theme.textMuted, fontFamily: theme.fontHeading }}>
+                <span style={{
+                  fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
+                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : theme.textMuted, fontFamily: theme.fontHeading
+                }}>
                   {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
                 </span>
               </div>
@@ -1583,8 +1615,10 @@ function HomeInner() {
 
             {/* Clock face */}
             <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <p style={{ fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
-                color: timerActive ? (timerMode === "focus" ? theme.accentText : "#86efac") : theme.textPrimary }}>
+              <p style={{
+                fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
+                color: timerActive ? (timerMode === "focus" ? theme.accentText : "#86efac") : theme.textPrimary
+              }}>
                 {fmtTime(timerSeconds)}
               </p>
             </div>
@@ -1639,10 +1673,12 @@ function HomeInner() {
             </div>
             <button
               onClick={() => setLofiPlaying(p => !p)}
-              style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
+              style={{
+                padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
                 background: lofiPlaying ? "#fef2f2" : theme.accent,
                 color: lofiPlaying ? "#ef4444" : theme.accentText,
-                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
+                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s"
+              }}>
               {lofiPlaying ? "⏹ Stop" : "▶ Play"}
             </button>
           </div>
@@ -1683,11 +1719,13 @@ function HomeInner() {
               return (
                 <button key={station.id}
                   onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
                     border: active ? "2px solid #2d2416" : "1.5px solid #ece8e0",
                     background: active ? "#faf6f0" : "#fff",
                     boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none",
-                    transition: "all 0.15s" }}>
+                    transition: "all 0.15s"
+                  }}>
                   <span style={{ fontSize: 22, lineHeight: 1 }}>{station.emoji}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 12, fontWeight: 700, color: theme.textPrimary, margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
@@ -1712,9 +1750,11 @@ function HomeInner() {
           <div style={{ padding: "0 14px 14px" }}>
             <button
               onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
-              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
+              style={{
+                width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
                 border: lofiChannel === "custom" ? "2px solid #2d2416" : "1.5px dashed #d4c7b4",
-                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s" }}>
+                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s"
+              }}>
               <span style={{ fontSize: 20 }}>🔗</span>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 12, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>Custom Link</p>
@@ -1836,114 +1876,114 @@ function HomeInner() {
   const renderProfile = () => {
     const PRESET_THEMES: { key: ThemeKey; label: string; icon: string; desc: string }[] = [
       { key: "light", label: "Warm Light", icon: "☀️", desc: "Default warm parchment" },
-      { key: "dark",  label: "Dark",       icon: "🌙", desc: "Deep black, easy on eyes" },
-      { key: "mono",  label: "Mono",       icon: "⬛", desc: "Pure black & white" },
-      { key: "custom",label: "Custom",     icon: "🎨", desc: "Pick your own accent" },
+      { key: "dark", label: "Dark", icon: "🌙", desc: "Deep black, easy on eyes" },
+      { key: "mono", label: "Mono", icon: "⬛", desc: "Pure black & white" },
+      { key: "custom", label: "Custom", icon: "🎨", desc: "Pick your own accent" },
     ];
     return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Profile card */}
-      <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-        <Avatar name={studentName} size={72} />
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: theme.textPrimary, margin: "14px 0 2px", fontFamily: theme.fontHeading }}>{studentName}</h2>
-        <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
-        {isAdmin && (
-          <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
-            Admin Panel →
-          </Link>
-        )}
-      </div>
-
-      {/* ── THEME PICKER ─────────────────────────────────────────────────────── */}
-      <div style={{ ...S.card, padding: "18px 18px 20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <Palette size={15} color={theme.accent} />
-          <p style={{ ...S.label, margin: 0 }}>Appearance</p>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-          {PRESET_THEMES.map((preset) => {
-            const active = themeKey === preset.key;
-            return (
-              <button key={preset.key} onClick={() => setThemeKey(preset.key)}
-                style={{
-                  display: "flex", alignItems: "center", gap: 10, padding: "12px 14px",
-                  borderRadius: 14, border: active ? `2px solid ${theme.accent}` : `1px solid ${theme.border}`,
-                  background: active ? theme.accent : theme.cardBg,
-                  cursor: "pointer", textAlign: "left", transition: "all 0.18s",
-                }}>
-                <span style={{ fontSize: 20, lineHeight: 1 }}>{preset.icon}</span>
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: active ? theme.accentText : theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{preset.label}</p>
-                  <p style={{ fontSize: 10, color: active ? theme.accentText : theme.textMuted, margin: 0, opacity: 0.8 }}>{preset.desc}</p>
-                </div>
-              </button>
-            );
-          })}
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Profile card */}
+        <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
+          <Avatar name={studentName} size={72} />
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: theme.textPrimary, margin: "14px 0 2px", fontFamily: theme.fontHeading }}>{studentName}</h2>
+          <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
+          {isAdmin && (
+            <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
+              Admin Panel →
+            </Link>
+          )}
         </div>
 
-        {/* Custom accent colour picker */}
-        {themeKey === "custom" && (
-          <div style={{ marginTop: 14, padding: "14px", borderRadius: 14, background: theme.pageBg, border: `1px solid ${theme.border}` }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: theme.textSecondary, margin: "0 0 10px", fontFamily: theme.fontHeading }}>Pick accent colour</p>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <input type="color" value={customAccent}
-                onChange={(e) => setCustomAccent(e.target.value)}
-                style={{ width: 44, height: 44, borderRadius: 10, border: "none", cursor: "pointer", padding: 2, background: "transparent" }} />
-              <div style={{ flex: 1 }}>
-                <input type="text" value={customAccent}
-                  onChange={(e) => { if (/^#[0-9a-fA-F]{0,6}$/.test(e.target.value)) setCustomAccent(e.target.value); }}
-                  style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${theme.border}`, fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: theme.textPrimary, background: theme.cardBg, outline: "none" }} />
-              </div>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: customAccent, flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }} />
-            </div>
-            {/* Quick swatches */}
-            <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
-              {["#2d2416","#1a1a2e","#0f3460","#16213e","#533483","#05445e","#1b4332","#7b2d8b","#c0392b","#e67e22","#27ae60","#2980b9"].map(swatch => (
-                <button key={swatch} onClick={() => setCustomAccent(swatch)}
-                  style={{ width: 26, height: 26, borderRadius: 8, background: swatch, border: customAccent === swatch ? "2px solid " + theme.textPrimary : "2px solid transparent", cursor: "pointer", padding: 0, transition: "transform 0.1s" }}
-                  title={swatch} />
-              ))}
-            </div>
+        {/* ── THEME PICKER ─────────────────────────────────────────────────────── */}
+        <div style={{ ...S.card, padding: "18px 18px 20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+            <Palette size={15} color={theme.accent} />
+            <p style={{ ...S.label, margin: 0 }}>Appearance</p>
           </div>
-        )}
-      </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {PRESET_THEMES.map((preset) => {
+              const active = themeKey === preset.key;
+              return (
+                <button key={preset.key} onClick={() => setThemeKey(preset.key)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10, padding: "12px 14px",
+                    borderRadius: 14, border: active ? `2px solid ${theme.accent}` : `1px solid ${theme.border}`,
+                    background: active ? theme.accent : theme.cardBg,
+                    cursor: "pointer", textAlign: "left", transition: "all 0.18s",
+                  }}>
+                  <span style={{ fontSize: 20, lineHeight: 1 }}>{preset.icon}</span>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: active ? theme.accentText : theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{preset.label}</p>
+                    <p style={{ fontSize: 10, color: active ? theme.accentText : theme.textMuted, margin: 0, opacity: 0.8 }}>{preset.desc}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-      {/* Actions */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {[
-          { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion" },
-          { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" },
-        ].map((item) => (
-          <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-            style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
-            <span style={{ fontSize: 24 }}>{item.icon}</span>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: theme.textPrimary, margin: "0 0 2px" }}>{item.label}</p>
-              <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>{item.sub}</p>
+          {/* Custom accent colour picker */}
+          {themeKey === "custom" && (
+            <div style={{ marginTop: 14, padding: "14px", borderRadius: 14, background: theme.pageBg, border: `1px solid ${theme.border}` }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: theme.textSecondary, margin: "0 0 10px", fontFamily: theme.fontHeading }}>Pick accent colour</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <input type="color" value={customAccent}
+                  onChange={(e) => setCustomAccent(e.target.value)}
+                  style={{ width: 44, height: 44, borderRadius: 10, border: "none", cursor: "pointer", padding: 2, background: "transparent" }} />
+                <div style={{ flex: 1 }}>
+                  <input type="text" value={customAccent}
+                    onChange={(e) => { if (/^#[0-9a-fA-F]{0,6}$/.test(e.target.value)) setCustomAccent(e.target.value); }}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${theme.border}`, fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: theme.textPrimary, background: theme.cardBg, outline: "none" }} />
+                </div>
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: customAccent, flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }} />
+              </div>
+              {/* Quick swatches */}
+              <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
+                {["#2d2416", "#1a1a2e", "#0f3460", "#16213e", "#533483", "#05445e", "#1b4332", "#7b2d8b", "#c0392b", "#e67e22", "#27ae60", "#2980b9"].map(swatch => (
+                  <button key={swatch} onClick={() => setCustomAccent(swatch)}
+                    style={{ width: 26, height: 26, borderRadius: 8, background: swatch, border: customAccent === swatch ? "2px solid " + theme.textPrimary : "2px solid transparent", cursor: "pointer", padding: 0, transition: "transform 0.1s" }}
+                    title={swatch} />
+                ))}
+              </div>
             </div>
-            <ChevronRight size={16} color={theme.textMuted} />
-          </a>
-        ))}
-      </div>
+          )}
+        </div>
 
-      {/* Portal info */}
-      <div style={{ ...S.card, padding: "16px 18px" }}>
-        <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
+        {/* Actions */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 13, color: theme.textMuted }}>{k}</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: theme.textPrimary }}>{v}</span>
-            </div>
+          {[
+            { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion" },
+            { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei" },
+          ].map((item) => (
+            <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+              style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
+              <span style={{ fontSize: 24 }}>{item.icon}</span>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: theme.textPrimary, margin: "0 0 2px" }}>{item.label}</p>
+                <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>{item.sub}</p>
+              </div>
+              <ChevronRight size={16} color={theme.textMuted} />
+            </a>
           ))}
         </div>
-      </div>
 
-      <button onClick={handleLogout}
-        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
-        <LogOut size={16} /> Sign out
-      </button>
-    </div>
+        {/* Portal info */}
+        <div style={{ ...S.card, padding: "16px 18px" }}>
+          <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 13, color: theme.textMuted }}>{k}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: theme.textPrimary }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button onClick={handleLogout}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
+          <LogOut size={16} /> Sign out
+        </button>
+      </div>
     );
   };
 
@@ -2077,17 +2117,17 @@ function HomeInner() {
         </main>
       </div>
 
-{/* Copyright Footer Links */}
-<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
-<div className="brand-line">
-<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine'  , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
-</div>
-<div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
-</div>
+      {/* Copyright Footer Links */}
+      <div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
+        <div className="brand-line">
+          <span>Built by</span> <a className="brand" style={{ fontFamily: 'Tangerine', color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
+        </div>
+        <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
+      </div>
 
 
-{/* Chatbot */}
-{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+      {/* Chatbot */}
+      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
       {/* Modals */}
       <AnimatePresence>
