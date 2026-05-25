@@ -398,7 +398,8 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
           data-chatbot-toggle="true"
           style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: open ? theme.accentText : theme.accent, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
-          {open ? <X size={18} color=theme.textSecondary /> : <MessageSquare size={20} color=theme.accentText />}
+        {open ? <X size={18} color={theme.textSecondary} /> : <MessageSquare size={20} color={theme.accentText} />}
+
         </button>
         {!open && (
           <span style={{ position: "absolute", top: -4, right: -4, background: "#f59e0b", color: "#fff", fontSize: 8, fontWeight: 800, padding: "2px 5px", borderRadius: 10, letterSpacing: 0.5 }}>BETA</span>
