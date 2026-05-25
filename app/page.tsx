@@ -150,7 +150,7 @@ const CLASS_LIST: { [id: string]: string } = {
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
   "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
-  "BME_BETA1": "Beta Tester", "BETA_2-": "Asante Inc.",
+  "BME_BETA1": "Beta Tester",
 };
 
 const COURSE_CREDITS = [
@@ -1954,10 +1954,11 @@ function HomeInner() {
       </div>
 
       <OnboardingTutorial
-  show={showTutorial}
-  studentName={studentName}
-  onFinish={() => setShowTutorial(false)}
-/>
+        show={showTutorial}
+        studentName={studentName}
+        onFinish={() => { localStorage.setItem("bme-onboarded", "true"); setShowTutorial(false); }}
+        onNavigate={(tab) => setActiveTab(tab as any)}
+      />
 
       {/* Copyright Footer */}
       <div style={{ textAlign: "center", padding: "16px 0", fontSize: "20px", color: "#a8967a" }}>
