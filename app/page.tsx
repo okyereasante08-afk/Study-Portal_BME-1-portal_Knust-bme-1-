@@ -268,37 +268,6 @@ const AttendanceBadge = ({ pct }: { pct: number }) => {
 // ============================================================
 // AI CHATBOT
 // ============================================================
-const [pos, setPos] = useState({ x: 24, y: 24 });
-const dragging = useRef(false);
-const offset = useRef({ x: 0, y: 0 });
-
-const onMouseDown = (e: React.MouseEvent) => {
-  dragging.current = true;
-  offset.current = {
-    x: e.clientX + pos.x,
-    y: e.clientY + pos.y,
-  };
-};
-
-const onMouseMove = (e: MouseEvent) => {
-  if (!dragging.current) return;
-  setPos({
-    x: offset.current.x - e.clientX,
-    y: offset.current.y - e.clientY,
-  });
-};
-
-const onMouseUp = () => { dragging.current = false; };
-
-useEffect(() => {
-  
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("mouseup", onMouseUp);
-  return () => {
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
-  };
-}, []);
 const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
@@ -309,21 +278,45 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [pos, setPos] = useState({ x: 24, y: 24 });
+  const dragging = useRef(false);
+  const offset = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (!dragging.current) return;
+      setPos({
+        x: offset.current.x - e.clientX,
+        y: offset.current.y - e.clientY,
+      });
+    };
+    const onMouseUp = () => { dragging.current = false; };
+    const onTouchMove = (e: TouchEvent) => {
+      if (!dragging.current) return;
+      const t = e.touches[0];
+      setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
+    };
+    const onTouchEnd = () => { dragging.current = false; };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("touchmove", onTouchMove);
+    window.addEventListener("touchend", onTouchEnd);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
+
   useEffect(() => {
     if (open) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [messages, open]);
-const onTouchMove = (e: TouchEvent) => {
-  if (!dragging.current) return;
-  const t = e.touches[0];
-  setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
-};
-const onTouchEnd = () => { dragging.current = false; };
-window.addEventListener("touchmove", onTouchMove);
-window.addEventListener("touchend", onTouchEnd);
-// and remove them in the cleanup
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
     const userMsg = input.trim();
@@ -347,17 +340,20 @@ window.addEventListener("touchend", onTouchEnd);
 
   return (
     <>
-      <div style={{position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
+      <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
         <button
-          onMouseDown={onMouseDown} 
-                  onTouchStart={(e) => {
-          const t = e.touches[0];
-          dragging.current = true;
-          offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y };
-        }}
+          onMouseDown={(e) => {
+            dragging.current = true;
+            offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y };
+          }}
+          onTouchStart={(e) => {
+            const t = e.touches[0];
+            dragging.current = true;
+            offset.current = { x: t.clientX + pos.x, y: t.clientY + pos.y };
+          }}
           onClick={() => setOpen((o) => !o)}
           data-chatbot-toggle="true"
-          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
+          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
           {open ? <X size={18} color="#8b7355" /> : <MessageSquare size={20} color="#f0ebe3" />}
         </button>
