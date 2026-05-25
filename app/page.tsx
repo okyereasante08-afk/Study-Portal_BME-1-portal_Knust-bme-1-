@@ -1833,11 +1833,6 @@ function HomeInner() {
   View Guide
 </button>
 
->
-
-</div>
-);
-
   const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
   const tabs = [
     { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
