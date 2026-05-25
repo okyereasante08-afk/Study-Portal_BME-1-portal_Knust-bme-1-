@@ -240,20 +240,24 @@ const timeToMinutes = (t: string) => {
 // HELPER COMPONENTS
 // ============================================================
 
-const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
+const Avatar = ({ name, size = 36, onClick }: { name: string; size?: number; onClick?: () => void }) => {
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
   return (
     <div
-      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+      onClick={onClick}
+      title={onClick ? "Go to profile" : undefined}
+      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: onClick ? "pointer" : "default", transition: "opacity 0.15s" }}
+      onMouseEnter={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "0.8"; }}
+      onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}
     >
-      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Space Grotesk', sans-serif" }}>{initials}</span>
+      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
 };
 
 const AttendanceBadge = ({ pct }: { pct: number }) => {
   const color = pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
-  const label = pct >= AT_RISK_THRESHOLD ? "On track" : pct >= 50 ? "At Risk ⚠" : "At Risk 🚨";
+  const label = pct >= AT_RISK_THRESHOLD ? "On track" : pct >= 50 ? <><em><strong>At Risk ⚠</strong></em></> : <><em><strong>At Risk 🚨</strong></em></>;
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: color + "18", color }}>
       <span style={{ width: 6, height: 6, borderRadius: 3, background: color, display: "inline-block" }} /> {label}
@@ -473,8 +477,8 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
           {COURSE_CREDITS.map((c) => (
             <div key={c.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #f0ebe3" }}>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0 }}>{c.code}</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0" }}>{c.name} · {c.credits} cr</p>
+                <p style={{ fontSize: 13, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>{c.code}</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0", fontStyle: "italic" }}>{c.name} · {c.credits} cr</p>
               </div>
               <input type="number" placeholder="—" min={0} max={100}
                 onChange={(e) => { const v = Math.min(100, Math.max(0, parseInt(e.target.value) || 0)); setMarks({ ...marks, [c.code]: v.toString() }); e.target.value = v.toString(); }}
@@ -484,7 +488,7 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
         </div>
         {cwa !== null && (
           <div style={{ margin: "0 16px", padding: "14px 18px", borderRadius: 14, background: "#faf8f4", border: "1px solid #ece8e0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 600 }}>Projected CWA</span>
+            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 700, fontStyle: "italic" }}>Projected CWA</span>
             <span style={{ fontSize: 32, fontWeight: 800, color: cwa >= 70 ? "#22c55e" : cwa >= 60 ? "#f59e0b" : "#ef4444" }}>{cwa}</span>
           </div>
         )}
@@ -853,9 +857,9 @@ export default function Home() {
   // ============================================================
   if (!isLoggedIn) {
     return (
-      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Instrument Sans', -apple-system, sans-serif" }}>
+      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Montserrat', -apple-system, sans-serif" }}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
           * { box-sizing: border-box; }
           input::placeholder { color: #c9b89a; }
           input:focus { border-color: #8b7355 !important; }
@@ -865,9 +869,9 @@ export default function Home() {
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
             <div style={{ width: 64, height: 64, borderRadius: 20, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
-              <span style={{ fontSize: 22, fontFamily: "'Space Grotesk', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
+              <span style={{ fontSize: 22, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
             </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Space Grotesk', sans-serif" }}>Portal Access</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
             <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
 
@@ -1010,8 +1014,8 @@ export default function Home() {
   const S = {
     // Shared styles object
     card: { background: "#fff", borderRadius: 20, border: "1px solid #ece8e0", overflow: "hidden" } as React.CSSProperties,
-    label: { fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase" as const, letterSpacing: 0.8 },
-    sectionTitle: { fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 14px" },
+    label: { fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase" as const, letterSpacing: 0.8, fontFamily: "'Montserrat', sans-serif" },
+    sectionTitle: { fontSize: 15, fontWeight: 800, color: "#1a1208", margin: "0 0 14px", fontFamily: "'Syne', sans-serif" },
   };
 
   // Render the selected tab's content
@@ -1020,10 +1024,10 @@ export default function Home() {
       {/* Greeting */}
   
         <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
       </style>
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 38, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
+        <h2 style={{ fontSize: 36, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -1039,15 +1043,15 @@ export default function Home() {
             <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}
               style={{ width: 8, height: 8, borderRadius: 4, background: "#f59e0b" }} />
             <div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#f0ebe3", margin: "0 0 1px" }}>{nextClassInfo.course}</p>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
+              <p style={{ fontSize: 14, fontWeight: 800, color: "#f0ebe3", margin: "0 0 1px", fontFamily: "'Syne', sans-serif" }}>{nextClassInfo.course}</p>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0, fontStyle: "italic" }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontSize: 18, fontWeight: 800, color: "#f59e0b", margin: "0 0 1px" }}>
               {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil / 60)}h ${nextClassInfo.minsUntil % 60}m`}
             </p>
-            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>until class</p>
+            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5, fontStyle: "italic", fontWeight: 600 }}>until class</p>
           </div>
         </motion.div>
       )}
@@ -1232,7 +1236,7 @@ export default function Home() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Space Grotesk', sans-serif" }}>Timetable</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
           <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
             {(["Today", "Week", "Grid"] as const).map((v) => {
               const key = v.toLowerCase() as "today" | "week" | "grid";
@@ -1277,8 +1281,8 @@ export default function Home() {
                             <div style={{ flex: 1 }}>
                               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
                                 <div>
-                                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{cls.course}</p>
-                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px" }}>{cls.lecturer}</p>
+                                  <p style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>{cls.course}</p>
+                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px", fontStyle: "italic" }}>{cls.lecturer}</p>
                                   <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                                     <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
                                     <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
@@ -1353,7 +1357,7 @@ export default function Home() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Space Grotesk', sans-serif" }}>Progress</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
           <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance overview</p>
         </div>
 
@@ -1459,7 +1463,7 @@ export default function Home() {
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {/* Header */}
         <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Space Grotesk', sans-serif" }}>Focus Studio</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Focus Studio</h2>
           <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Timer · Lofi · Deep work</p>
         </div>
 
@@ -1473,8 +1477,8 @@ export default function Home() {
                   <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.4 }}
                     style={{ width: 7, height: 7, borderRadius: "50%", background: timerMode === "focus" ? "#f59e0b" : "#22c55e" }} />
                 )}
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase",
-                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : "#a8967a" }}>
+                <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
+                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : "#a8967a", fontFamily: "'Syne', sans-serif" }}>
                   {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
                 </span>
               </div>
@@ -1740,7 +1744,7 @@ export default function Home() {
       {/* Profile card */}
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
         <Avatar name={studentName} size={72} />
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Space Grotesk', sans-serif" }}>{studentName}</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
         {isAdmin && (
           <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
@@ -1798,13 +1802,13 @@ export default function Home() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Instrument Sans', -apple-system, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Montserrat', -apple-system, sans-serif" }}>
       <style>{`
-       @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
         ::-webkit-scrollbar { width: 0; }
-        .syne { font-family: 'Space Grotesk', sans-serif !important; }
+        .syne { font-family: 'Syne', sans-serif !important; }
       `}</style>
 
       {/* Full-bleed flex layout */}
@@ -1817,10 +1821,10 @@ export default function Home() {
           <div style={{ padding: "0 20px 28px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
               <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 14, fontFamily: "'Space Grotesk', sans-serif", color: "#f0ebe3", fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
+                <span style={{ fontSize: 14, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
               </div>
               <div>
-                <p style={{ fontSize: 14, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Space Grotesk', sans-serif" }}>BME1 Portal</p>
+                <p style={{ fontSize: 14, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>BME1 Portal</p>
                 <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>KNUST · Semester 2</p>
               </div>
             </div>
@@ -1831,7 +1835,7 @@ export default function Home() {
             <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
             {tabs.map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? "#1a1208" : "#8b7355", fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: "'Instrument Sans', sans-serif", boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
+                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? "#1a1208" : "#8b7355", fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: "'Montserrat', sans-serif", boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
                 <span style={{ opacity: activeTab === tab.id ? 1 : 0.55, color: activeTab === tab.id ? "#2d2416" : "#a8967a" }}>{tab.icon}</span>
                 {tab.label}
               </button>
@@ -1853,7 +1857,7 @@ export default function Home() {
                   </Link>
                 ) : (
                   <button key={item.label} onClick={item.action}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: "#6b5438", fontSize: 13, fontWeight: 500, fontFamily: "'Instrument Sans', sans-serif", textAlign: "left", marginBottom: 2, position: "relative" }}>
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: "#6b5438", fontSize: 13, fontWeight: 500, fontFamily: "'Montserrat', sans-serif", textAlign: "left", marginBottom: 2, position: "relative" }}>
                     <span style={{ color: item.color }}>{item.icon}</span>{item.label}
                     {item.badge && item.badge > 0 ? <span style={{ marginLeft: "auto", minWidth: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>{item.badge}</span> : null}
                   </button>
@@ -1865,10 +1869,10 @@ export default function Home() {
           {/* User card at bottom */}
           <div style={{ padding: "16px 20px 20px", borderTop: "1px solid #ece8e0" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: "#fff", border: "1px solid #ece8e0" }}>
-              <Avatar name={studentName} size={36} />
+              <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
-                <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{studentID}</p>
+                <p style={{ fontSize: 10, color: "#a8967a", margin: 0, fontStyle: "italic" }}>{studentID}</p>
               </div>
               <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
                 <LogOut size={15} color="#c9b89a" />
@@ -1886,17 +1890,17 @@ export default function Home() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                 <div style={{ width: 30, height: 30, borderRadius: 9, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 10, fontFamily: "'Space Grotesk', sans-serif", color: "#f0ebe3", fontWeight: 800 }}>BME</span>
+                  <span style={{ fontSize: 10, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800 }}>BME</span>
                 </div>
-                <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Space Grotesk', sans-serif" }}>BME Portal</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
               </div>
-              <Avatar name={studentName} size={32} />
+              <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} />
             </div>
             {/* Scrollable pill tabs */}
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Instrument Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
                   {React.cloneElement(tab.icon, { size: 14 })}
                   {tab.label}
                 </button>
