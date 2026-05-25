@@ -1830,33 +1830,9 @@ function HomeInner() {
     fontFamily: "'Montserrat', sans-serif",
   }}
 >
-  View Guide
+  ✦ View Guide
 </button>
 
-{Object.entries(someObject).map(([k, v]) => (
-
-
-</div>
-</div>
-
-<button
-  onClick={() => {
-    localStorage.removeItem("bme-onboarded");
-    setShowTutorial(true);
-  }}
-  style={{
-    marginTop: 12,
-    width: "100%",
-    padding: "10px 0",
-    borderRadius: 12,
-    border: "1.5px solid #ece8e0",
-    background: "#fff",
-    color: "#2d2416",
-    fontSize: 13,
-    fontWeight: 700,
-    cursor: "pointer",
-    fontFamily: "'Montserrat', sans-serif",
-  }}
 >
   ✦ View Guide
 </button>
