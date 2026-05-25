@@ -464,7 +464,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
                 style={{ flex: 1, padding: "9px 12px", borderRadius: 12, border: `1px solid ${theme.border}`, background: theme.sidebarBg, fontSize: 13, outline: "none", color: theme.textPrimary }} />
               <button onClick={sendMessage} disabled={!input.trim() || loading}
                 style={{ width: 38, height: 38, borderRadius: 12, border: "none", background: theme.accent, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", opacity: !input.trim() || loading ? 0.4 : 1 }}>
-                <Send size={15} color=theme.accentText />
+                <Send size={15} color={theme.accentText} />
               </button>
             </div>
           </motion.div>
@@ -492,7 +492,7 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
             <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Curated resources for every course</p>
           </div>
           <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color=theme.textSecondary />
+            <X size={14} color={theme.textSecondary} />
           </button>
         </div>
         <div style={{ overflowY: "auto", padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
