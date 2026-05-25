@@ -155,13 +155,10 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
                 width: "100%",
                 maxWidth: 400,
                 /* glass */
-                background: "rgba(255,251,240,0.88)",
-                backdropFilter: "blur(32px) saturate(180%)",
-                WebkitBackdropFilter: "blur(32px) saturate(180%)",
+                background: "rgb(255,251,240)",
                 borderRadius: 24,
-                border: "1px solid rgba(255,255,255,0.65)",
-                boxShadow:
-                  "0 24px 64px rgba(45,36,22,0.22), 0 4px 16px rgba(45,36,22,0.10), inset 0 1px 0 rgba(255,255,255,0.8)",
+                border: "1px solid rgb(225,221,210)",
+                boxShadow: "0 24px 64px rgba(45,36,22,0.18), 0 4px 16px rgba(45,36,22,0.08)",
                 overflow: "hidden",
                 fontFamily: "'Montserrat', sans-serif",
               }}
