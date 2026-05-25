@@ -1,2042 +1,301 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PhotoUpload from "./components/PhotoUpload";
-import Link from "next/link";
-import OnboardingTutorial from "./components/OnboardingTutorial";
-import {
-  Calculator, MessageCircle, BookOpen, Bell, LogOut, Activity,
-  Download, Upload, CheckCircle, Send, Zap, Coffee, Laugh,
-  Play, ChevronRight, X, ExternalLink, MessageSquare, Home as HomeIcon,
-  Calendar, BarChart2, User, Menu, ChevronDown, Clock, MapPin,
-  TrendingUp, AlertCircle, FileText, Star, Palette, Sun, Moon
-} from "lucide-react";
+import { ChevronRight, ChevronLeft, X } from "lucide-react";
 
-// ============================================================
-// THEME SYSTEM
-// ============================================================
-
-type ThemeKey = "light" | "dark" | "mono" | "custom";
-
-interface ThemeTokens {
-  pageBg: string; sidebarBg: string; cardBg: string; inputBg: string;
-  pillActiveBg: string; pillInactiveBg: string; headerBg: string; userCardBg: string;
-  border: string; borderStrong: string;
-  textPrimary: string; textSecondary: string; textMuted: string; textInverse: string;
-  accent: string; accentText: string;
-  navActiveBg: string; navActiveText: string; navInactiveText: string;
-  fontBody: string; fontHeading: string;
+interface Step {
+  tab: string | null;
+  emoji: string;
+  title: string;
+  body: string;
+  highlight: string;
 }
 
-const THEMES: Record<ThemeKey, ThemeTokens> = {
-  light: {
-    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
-    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
-    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
-    accent:"#2d2416",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-  dark: {
-    pageBg:"#0f0f0f",sidebarBg:"#161616",cardBg:"#1e1e1e",inputBg:"#252525",
-    pillActiveBg:"#ffffff",pillInactiveBg:"#252525",headerBg:"#0f0f0f",userCardBg:"#252525",
-    border:"#2a2a2a",borderStrong:"#3a3a3a",
-    textPrimary:"#ffffff",textSecondary:"#b8a99a",textMuted:"#6b5e52",textInverse:"#0f0f0f",
-    accent:"#ffffff",accentText:"#111111",
-    navActiveBg:"#2a2a2a",navActiveText:"#ffffff",navInactiveText:"#6b5e52",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-  mono: {
-    pageBg:"#ffffff",sidebarBg:"#fafafa",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#111111",pillInactiveBg:"#ffffff",headerBg:"#ffffff",userCardBg:"#ffffff",
-    border:"#e5e5e5",borderStrong:"#cccccc",
-    textPrimary:"#111111",textSecondary:"#444444",textMuted:"#999999",textInverse:"#ffffff",
-    accent:"#111111",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#999999",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-  custom: {
-    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
-    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
-    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
-    accent:"#2d2416",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-};
-
-function buildCustomTheme(accent: string): ThemeTokens {
-  const r=parseInt(accent.slice(1,3),16),g=parseInt(accent.slice(3,5),16),b=parseInt(accent.slice(5,7),16);
-  const brightness=(r*299+g*587+b*114)/1000;
-  const accentText=brightness>140?"#111111":"#ffffff";
-  const tint=(add:number,v:number)=>Math.min(255,v+add);
-  const pageBg=`rgb(${tint(210,r)},${tint(215,g)},${tint(218,b)})`;
-  const sidebarBg=`rgb(${tint(220,r)},${tint(225,g)},${tint(228,b)})`;
-  const border=`rgb(${tint(180,r)},${tint(185,g)},${tint(188,b)})`;
-  const textSecondary=`rgb(${Math.max(0,r-20)},${Math.max(0,g-30)},${Math.max(0,b-10)})`;
-  return {
-    pageBg,sidebarBg,cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:accent,pillInactiveBg:"#ffffff",headerBg:pageBg,userCardBg:"#ffffff",
-    border,borderStrong:border,
-    textPrimary:"#111111",textSecondary,textMuted:"#888888",textInverse:accentText,
-    accent,accentText,
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#888888",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  };
+interface Props {
+  show: boolean;
+  studentName: string;
+  onFinish: () => void;
+  onNavigate: (tab: string) => void;
 }
 
-const ThemeContext = createContext<{
-  theme: ThemeTokens; themeKey: ThemeKey;
-  setThemeKey: (k: ThemeKey) => void;
-  customAccent: string; setCustomAccent: (c: string) => void;
-}>({ theme:THEMES.light,themeKey:"light",setThemeKey:()=>{},customAccent:"#2d2416",setCustomAccent:()=>{} });
-
-const useTheme = () => useContext(ThemeContext);
-
-// ============================================================
-// DATA
-// ============================================================
-
-const ADMIN_IDS = ["22028883"];
-const GHOST_ID = "BME_BETA1";
-
-const CLASS_LIST: { [id: string]: string } = {
-  "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
-  "21949701": "Adelaide Selorm Afi Dzimadzor", "21948324": "Adjei Pomaa Cresta", "21875208": "Adjoa Kwansema Eshun",
-  "22245585": "Adune Dasha Bagase", "22337376": "Adwoa Abrafi Adjei", "21931395": "Afia Serwaa Kwarteng Amaning",
-  "22416594": "Afriyie Jeanefel Owusu", "22331047": "Agyarko-Nyamekye Max Abankwa", "21787360": "Agyei Chrislla Birago",
-  "22208586": "Ahenkorah Emmanuella Kyei", "21947631": "Albert Affum Opare", "21938073": "Amankwaah Beatrice Sarpong Akosua",
-  "22312345": "Amoaba Keren-Happuch Winvel", "22341588": "Amoah-Owusu Cecil Williams", "21888854": "AMPOFO Abena Gyamfia",
-  "22048359": "Ampofo Nana Yaw Kwegya", "22561241": "Ampomah Daniel", "22547391": "Amuzu Richmond Kwame",
-  "22259193": "Ankomah Maxi-Priest", "22277904": "Anlaagmen Pearl Nuonta", "22341786": "Annan Nora Odokai",
-  "22166367": "Appiah Roberta Achiaa", "22082053": "Asante Emmanuella Twumasiwaa", "22028883": "Asante Kwaku Okyere",
-  "21716259": "Asare Godfred", "22129935": "Awurakua Akomea-Dankyi", "21893253": "Ayiku Richmond Lartey",
-  "22224514": "Baaba Nyarko Assabil", "21760006": "Baffoe Renia Gyan", "22077735": "Baiden Abdul Ghaffar Benyi",
-  "22315225": "Bezalel Addy Bamflo", "21809851": "Blessing Dadzie", "22178256": "Blessing Pokuaa",
-  "21795884": "Boadu Kelvin Kwabena", "21854625": "Boakye Justice Ofori", "21840594": "Boakye Nana Akosua Agyeiwaa",
-  "22504820": "Boatemaa-Ayim Nana Akua", "21902739": "Boateng Yiedie Akyaa", "21976026": "Caleb Adjei Mensah",
-  "22247538": "Carlis Appiah-Sarkodie", "21822251": "Christabel Dadzie", "22300069": "Christian Amoah",
-  "22541775": "Daniel Kwabena Affum", "22200510": "Darko Lisa Ampem", "22208865": "Darlington Mawuena Anyomi",
-  "22698331": "David Adjei", "22313191": "Davies Mawuli Kamsey", "22108018": "Deborah Adjei Acquah",
-  "21763979": "Dennis Gyebi", "21837887": "Doma-Her Skylar Sungbawiere", "22544637": "Dzansi Virginia Makafui",
-  "21974352": "Ekow Amoah Benyi-Acquah", "22215957": "Elizabeth Tetebea Agyemang", "22046739": "Ernest Nimako-Boateng",
-  "21797396": "Esi Asor Hemaa Aboagye", "22048114": "Fieve Brain Delanyo", "22430218": "Frimpong Precious Antwowaah",
-  "21983696": "Frimpong Wilhelmina", "22514233": "Fudzie Kelvin Delali", "22328187": "Fuseini Ibtihaaj Gaida",
-  "21841024": "Fynn Emmanuella Esi", "21946146": "Gifty Asantewaa Adoma", "22190892": "Grace Armoo",
-  "21969430": "Hammond Kevin Nii Obli", "22010557": "Israelna Ama Yeboah", "21995972": "James Adjei Mensah",
-  "21896223": "Maya", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
-  "22429815": "Keren Naa Klorkor Quaye", "21904638": "Keziah Deborah Wilson", "22645870": "Koramah Mercy",
-  "22243432": "Kusi Constance Abrafi", "21882887": "Lakeisha Lord-Mensah", "22083170": "Laura Naa Tiokor Amartey",
-  "22127161": "Lawrencia Awuah Adobea", "21949982": "Lisa Timbilla Azasumah", "22331976": "Maame Ama Tiwaa Ofori-Agyeman",
-  "21859658": "Marfo Isaac", "21795451": "Mary Achiaa Sarpong", "22333045": "Mawaddatu Abdul Rashid",
-  "22565526": "Michael Fiifi Djan", "22051165": "Naa Teley Ayorkor Quaye", "21885234": "Nadia Stoner-Darku",
-  "21877955": "Nana Adwoa Gyamfua Hyeaman", "22334053": "Nana Ekua Serwah Ampomah", "22213391": "Nana Frimpong Desu",
-  "21974163": "Narh Otabil Mensah", "21889745": "Nina Osman Mustapha", "22408944": "Nyamador Kenneth Selorm",
-  "22429220": "NYANTAKYI Pascal", "22052236": "Obeng Antoinette Maame Adjoa Antwiwaa", "21913089": "Obiri-Yeboah Vanessa",
-  "22472240": "Odame Daniel", "21694679": "Oduro John Luther Kweku", "22364718": "Oduro Prince Peasah",
-  "22440821": "Ofori Ayimwaah Nana Akua", "21989933": "Okai Eugene Kobina", "22042804": "OKYNE Adjetey Godson",
-  "22086375": "OLIVIA Nhyira Dwomoh", "21783110": "Opoku Gospel Kwame", "22030735": "Oppong Badu Andrea",
-  "22332966": "Paula Sedinam Foriwa Apawu", "22011457": "Pearl Maame Nyarko Ofori-Ameyaw", "22003933": "Raudatu Deishini Mohammed Awal",
-  "22218511": "Roxann Ankobea-Kokroe", "21919326": "Sarfo Vannessa Adams", "22538085": "Sarkodie Raymond",
-  "21008757": "Sarpong Abena Adutwumwaa", "22648542": "Segbefia Jake Etse", "22435656": "Segbenya Edem",
-  "21914691": "Sekyi Kelvin Asiedu", "22065297": "Serwaa Afia Opoku Agyemang", "21756237": "Serwaa Nana Adoma",
-  "21873633": "Shanti Abena Thanki", "22086004": "Somuah Herbert Koranteng", "22551945": "Stacey Shenchu Kimbi",
-  "22462485": "Stephan Kofi Ewenam Zewuze", "22399422": "Stephen Kofi Apemah-Baah", "22646382": "Stephen Nana Boamah",
-  "22042354": "Sumani Anis Wonta", "21910531": "TAHIRU Akor Munziru", "22272601": "Takyi Timothy",
-  "22677767": "Taufiq Nassara Sadiq", "22336160": "Tetteh Daniel Nii Awuley", "21830521": "Tibu Seth",
-  "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
-  "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
-  "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
-  "BME_BETA1": "Beta Tester",
-};
-
-const COURSE_CREDITS = [
-  { code: "MATH 152", name: "Calculus", credits: 4 },
-  { code: "COE 152", name: "Basic Electronics", credits: 3 },
-  { code: "BME 166", name: "Biochemistry", credits: 3 },
-  { code: "PHY 154", name: "Properties of Matter", credits: 3 },
-  { code: "ME 166", name: "Applied Thermodynamics", credits: 2 },
-  { code: "ENGL 158", name: "Comm. Skills II", credits: 2 },
-  { code: "SOC 152", name: "Sociology", credits: 2 },
-];
-
-const COURSE_COLORS: Record<string, string> = {
-  "SOC 152": "#8b7355",
-  "COE 152": "#8b7355",
-  "BME 166": "#8b7355",
-  "MATH 152": "#8b7355",
-  "MATH 152 A": "#8b7355",
-  "MATH 152 B": "#8b7355",
-  "PHY 154": "#8b7355",
-  "ME 166": "#8b7355",
-  "ENGL 158": "#8b7355",
-};
-
-const TIMETABLE: { [key: string]: any[] } = {
-  Monday: [
-    { id: "m1", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", weekday: 1 },
-    { id: "m2", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", weekday: 1 },
-  ],
-  Tuesday: [
-    { id: "t1", time: "08:00 - 09:55", course: "SOC 152", venue: "PB012", lecturer: "O. K. J. R. Kwabena", type: "Lecture", weekday: 2 },
-    { id: "t2", time: "10:30 - 12:25", course: "COE 152", venue: "PB020", lecturer: "D. A. Addo", type: "Lecture", weekday: 2 },
-    { id: "t3", time: "13:00 - 14:55", course: "BME 166", venue: "PB020", lecturer: "C. Apprey", type: "Lecture", weekday: 2 },
-  ],
-  Wednesday: [
-    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-GF", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
-  ],
-  Thursday: [
-    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-FF1", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
-  ],
-  Friday: [
-    { id: "f1", time: "08:00 - 09:55", course: "ME 166", venue: "NEB-FF2", lecturer: "K. O. Amoabeng", type: "Lecture", weekday: 5 },
-    { id: "f2", time: "10:30 - 11:25", course: "COE 152", venue: "Lab", lecturer: "D. A. Addo", type: "Lab", weekday: 5 },
-  ],
-};
-
-const SURVIVAL_KIT = [
+const STEPS: Step[] = [
   {
-    course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
-    resources: [
-      { label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
-      { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
-      { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
-    ]
+    tab: null,
+    emoji: "👋",
+    title: "Welcome to BME Portal",
+    body: "Your all-in-one academic companion for BME1 at KNUST. This quick tour will show you everything — takes about 60 seconds.",
+    highlight: "Intro",
   },
   {
-    course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
-    resources: [
-      { label: "Basic Electronics-KNUST(Maths Hub GH)", url: "https://www.youtube.com/playlist?list=PLldc0i2lkatVFhbnQRS-dOcI6xRdTJ0Lm" },
-      { label: "SemiConductors", url: "https://youtu.be/ErcH_OuCaNY?si=woPM9OXzL6NrihZe" },
-      { label: "Half-Wave Rectification", url: "https://youtu.be/CpcJxhFnmMo?si=8l5HO3BrsVDO3fgk" },
-      { label: "Full-Wave Rectification", url: "https://youtu.be/quyqtaKIr78?si=pMMeyYYVmKqkhHGg" },
-      { label: "Full-Wave Rectification (Demonstration)", url: "https://youtu.be/dNi_T0P5TLk?si=spqbtmaZ8CEkZyWk" },
-      { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
-      { label: "Solving Diode Circuits", url: "https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh" },
-      { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url: "https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL" },
-    ]
+    tab: "home",
+    emoji: "🏠",
+    title: "Home",
+    body: "Your daily dashboard. See today's classes, upcoming deadlines, announcements, and quick-access tools — all in one glance.",
+    highlight: "Home",
   },
   {
-    course: "BME 166 — Biochemistry", color: "#f59e0b", emoji: "⚕️",
-    resources: [
-      { label: "Biochemistry (Ninja Nerd) Playlist ", url: "https://www.youtube.com/playlist?list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
-      { label: "Metabolism (Ninja Nerd) Playlist", url: "https://www.youtube.com/watch?v=4eLjRcHnMCk&list=PLTF9h-T1TcJhcNo9M1VFXz6rMKT6CM_wd" },
-      { label: "Drug Metabolism", url: "https://youtu.be/qvucMHUVZA4?si=6w3bg-OtR_dZxIt6" },
-      { label: "Pharmacokinetics simplified", url: "https://youtu.be/16wNysLC9Fs?si=GUyEDdHymiWSSvD" },
-      { label: "Fatty Acid Metabolism", url: "https://youtu.be/uYutpPY7xcw?si=OcIViUwwzDZLqNAh" },
-    ]
+    tab: "schedule",
+    emoji: "📅",
+    title: "Timetable",
+    body: "View today's lectures, browse the full weekly grid, and never miss a class.",
+    highlight: "Timetable",
   },
   {
-    course: "ME 166 — Applied thermodynamics", color: "#22c55e", emoji: "⚙️",
-    resources: [
-      { label: "Engineering Thermodynamics I Online Course", url: "https://www.youtube.com/playlist?list=PLISIF5ACui17dQ5VbzxNu9QtMnfKb856n" },
-      { label: "First Law of Thermodynamics Open Systems 1(Control Volume Analysis)", url: "https://www.youtube.com/watch?v=VBdapBeycv4&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH" },
-      { label: "First Law of Thermodynamics Open Systems 2(Enthalpy)", url: "https://www.youtube.com/watch?v=ReOaRZA2eLo&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=2" },
-      { label: "Turbines, Throttles, Nozzles, Fans, and Heaters", url: "https://www.youtube.com/watch?v=WAHa3y7NEsk&list=PLKnQ46F19QdhH1ykna30gNoHBr_bJjGBH&index=5" },
-      { label: "Entropy: Thermodynamics - Second Law", url: "https://www.youtube.com/watch?v=QBd2zraOe2k" },
-    ]
+    tab: "progress",
+    emoji: "📊",
+    title: "Progress",
+    body: "Track your attendance, CWA, and academic milestones. See where you stand and what needs attention.",
+    highlight: "Progress",
   },
   {
-    course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
-    resources: [
-      { label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
-      { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
-      { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
-      { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
-      { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
-      { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
-      { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
-      { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
-      { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
-      { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
-      { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
-      { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
-      { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
-      { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
-      { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
-      { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
-      { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
-    ]
+    tab: "focus",
+    emoji: "⚡",
+    title: "Focus Mode",
+    body: "Pomodoro timer, lo-fi music, and a distraction-free study environment. Stay in the zone.",
+    highlight: "Focus",
+  },
+  {
+    tab: "profile",
+    emoji: "🎨",
+    title: "Profile & Settings",
+    body: "Upload your photo, switch themes, and manage your account. You can also disable this guide from appearing on login.",
+    highlight: "Profile",
+  },
+  {
+    tab: null,
+    emoji: "🎉",
+    title: "You're all set!",
+    body: "Explore freely. Replay this guide anytime from Profile → Appearance → View Guide.",
+    highlight: "Done",
   },
 ];
 
-const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
-const MID_SEM_START = new Date("2026-07-06T00:00:00");
-const EXAMS_START = new Date("2026-08-17T00:00:00");
-const PORTAL_VERSION = "2.2.0";
+export default function OnboardingTutorial({ show, studentName, onFinish, onNavigate }: Props) {
+  const [step, setStep] = useState(0);
 
-const SEM2_VERSION_KEY = "bme-sem-version";
-const SEM2_VERSION_VAL = "2026-S2";
-const MAX_ATTENDANCE_EDITS = 3;
-const SEM_START = new Date("2026-05-25T00:00:00");
-
-const EXCLUDED_RANGES: [Date, Date][] = [
-  [new Date("2026-07-06T00:00:00"), new Date("2026-07-10T00:00:00")],
-  [new Date("2026-08-17T00:00:00"), new Date("2026-09-04T00:00:00")],
-];
-
-const isExcluded = (date: Date): boolean =>
-  EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
-
-const calcTotalSemesterSessions = (weekday: number): number => {
-  let count = 0;
-  const cursor = new Date(SEM_START);
-  while (cursor <= END_OF_SEM_DATE) {
-    if (cursor.getDay() === weekday && !isExcluded(new Date(cursor))) count++;
-    cursor.setDate(cursor.getDate() + 1);
-  }
-  return count;
-};
-
-const SESSIONS_BY_WEEKDAY: Record<number, number> = {
-  1: calcTotalSemesterSessions(1),
-  2: calcTotalSemesterSessions(2),
-  3: calcTotalSemesterSessions(3),
-  4: calcTotalSemesterSessions(4),
-  5: calcTotalSemesterSessions(5),
-};
-
-const AT_RISK_THRESHOLD = 70;
-
-const timeToMinutes = (t: string) => {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-};
-
-// ============================================================
-// HELPER COMPONENTS
-// ============================================================
-
-const Avatar = ({ name, size = 36, onClick, photoUrl }: { name: string; size?: number; onClick?: () => void; photoUrl?: string | null }) => {
-  const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
-  if (photoUrl) {
-    return (
-      <img src={photoUrl} alt={name} onClick={onClick}
-        title={onClick ? "Go to profile" : undefined}
-        style={{ width: size, height: size, borderRadius: size / 2, objectFit: "cover", cursor: onClick ? "pointer" : "default", border: "2px solid #e8d5c4", flexShrink: 0 }} />
-    );
-  }
-  return (
-    <div onClick={onClick} title={onClick ? "Go to profile" : undefined}
-      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: onClick ? "pointer" : "default", transition: "opacity 0.15s" }}
-      onMouseEnter={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "0.8"; }}
-      onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}>
-      <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
-    </div>
-  );
-};
-
-const AttendanceBadge = ({ pct }: { pct: number }) => {
-  const color = pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
-  const label = pct >= AT_RISK_THRESHOLD ? "On track" : pct >= 50 ? <><em><strong>At Risk ⚠</strong></em></> : <><em><strong>At Risk 🚨</strong></em></>;
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: color + "18", color }}>
-      <span style={{ width: 6, height: 6, borderRadius: 3, background: color, display: "inline-block" }} /> {label}
-    </span>
-  );
-};
-
-// ============================================================
-// AI CHATBOT
-// ============================================================
-const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
-  const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
-    { role: "assistant", content: `Hey ${studentName.split(" ")[0]} 👋 I'm your BME assistant. I know your timetable and can help with CWA calculations. What do you need?` }
-  ]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const [pos, setPos] = useState({ x: 24, y: 24 });
-  const dragging = useRef(false);
-  const offset = useRef({ x: 0, y: 0 });
+  useEffect(() => { if (show) setStep(0); }, [show]);
 
   useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      if (!dragging.current) return;
-      setPos({ x: offset.current.x - e.clientX, y: offset.current.y - e.clientY });
-    };
-    const onMouseUp = () => { dragging.current = false; };
-    const onTouchMove = (e: TouchEvent) => {
-      if (!dragging.current) return;
-      const t = e.touches[0];
-      setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
-    };
-   const onTouchEnd = () => { dragging.current = false; };
-window.addEventListener("mousemove", onMouseMove);
-window.addEventListener("mouseup", onMouseUp);
-window.addEventListener("touchend", onTouchEnd);
-return () => {
-  window.removeEventListener("mousemove", onMouseMove);
-  window.removeEventListener("mouseup", onMouseUp);
-  window.removeEventListener("touchend", onTouchEnd);
-};
-  }, []);
+    if (!show) return;
+    const tab = STEPS[step]?.tab;
+    if (tab) onNavigate(tab);
+  }, [step, show]); // eslint-disable-line
+
+  const handleFinish = useCallback(() => onFinish(), [onFinish]);
+
+  const next = useCallback(() => {
+    if (step < STEPS.length - 1) setStep(s => s + 1);
+    else handleFinish();
+  }, [step, handleFinish]);
+
+  const prev = useCallback(() => {
+    if (step > 0) setStep(s => s - 1);
+  }, [step]);
 
   useEffect(() => {
-    if (open) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, [messages, open]);
+    if (!show) return;
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "Enter") next();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "Escape") handleFinish();
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [show, next, prev, handleFinish]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return;
-    const userMsg = input.trim();
-    setInput("");
-    setMessages((m) => [...m, { role: "user", content: userMsg }]);
-    setLoading(true);
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMsg }].map((m) => ({ role: m.role, content: m.content })), studentName, studentID }),
-      });
-      if (!response.ok) throw new Error("API error");
-      const data = await response.json();
-      setMessages((m) => [...m, { role: "assistant", content: data.reply || "Something went wrong." }]);
-    } catch {
-      setMessages((m) => [...m, { role: "assistant", content: "Could not reach the server. Check your connection." }]);
-    }
-    setLoading(false);
-  };
+  const current = STEPS[step];
+  const isFirst = step === 0;
+  const isLast = step === STEPS.length - 1;
+  const progress = (step / (STEPS.length - 1)) * 100;
+  const firstName = studentName ? studentName.split(" ")[0] : "there";
 
   return (
-    <>
-      <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
-        <button
-         onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; (e.currentTarget as HTMLButtonElement).dataset.startX = String(e.clientX); (e.currentTarget as HTMLButtonElement).dataset.startY = String(e.clientY); }}
-onClick={(e) => { const dx = e.clientX - Number((e.currentTarget as HTMLButtonElement).dataset.startX); const dy = e.clientY - Number((e.currentTarget as HTMLButtonElement).dataset.startY); if (Math.abs(dx) < 5 && Math.abs(dy) < 5) setOpen((o) => !o); }}
-          data-chatbot-toggle="true"
-          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
-        >
-          {open ? <X size={18} color="#8b7355" /> : <MessageSquare size={20} color="#f0ebe3" />}
-        </button>
-        {!open && (
-          <span style={{ position: "absolute", top: -4, right: -4, background: "#f59e0b", color: "#fff", fontSize: 8, fontWeight: 800, padding: "2px 5px", borderRadius: 10, letterSpacing: 0.5 }}>BETA</span>
-        )}
-      </div>
-      <AnimatePresence>
-        {open && (
+    <AnimatePresence>
+      {show && (
+        <>
+          {/* ── Backdrop ── */}
           <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            style={{ position: "fixed", bottom: 152, right: 12, zIndex: 70, width: "min(370px, calc(100vw - 24px))", borderRadius: 20, background: "#fff", boxShadow: "0 20px 60px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid #ece8e0" }}
-          >
-            <div style={{ padding: "14px 18px", borderBottom: "1px solid #f0ebe3", display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 16, background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MessageSquare size={14} color="#8b7355" />
-              </div>
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0 }}>BME Assistant</p>
-                <p style={{ fontSize: 10, color: "#a8967a", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>Powered by Groq · Beta</p>
-              </div>
-              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{ width: 6, height: 6, borderRadius: 3, background: "#22c55e" }} />
-                <span style={{ fontSize: 10, color: "#22c55e" }}>Online</span>
-              </div>
-            </div>
-            <div style={{ height: 260, overflowY: "auto", padding: "14px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
-              {messages.map((msg, i) => (
-                <div key={i} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
-                  <div style={{ maxWidth: "82%", padding: "10px 14px", borderRadius: msg.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", fontSize: 13, lineHeight: 1.5, background: msg.role === "user" ? "#2d2416" : "#f7f3ed", color: msg.role === "user" ? "#f0ebe3" : "#3d2e1a" }}>
-                    {msg.content}
-                  </div>
-                </div>
-              ))}
-              {loading && (
-                <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                  <div style={{ background: "#f7f3ed", padding: "10px 14px", borderRadius: "16px 16px 16px 4px", display: "flex", gap: 4 }}>
-                    {[0, 150, 300].map((d) => (
-                      <div key={d} style={{ width: 7, height: 7, borderRadius: 3.5, background: "#c9a87c", animation: "bounce 1.2s infinite", animationDelay: `${d}ms` }} />
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-            {messages.length === 1 && (
-              <div style={{ padding: "0 14px 10px", display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {["Today's timetable", "Calculate CWA", "What's next?"].map((s) => (
-                  <button key={s} onClick={() => { setInput(s); setTimeout(() => inputRef.current?.focus(), 50); }}
-                    style={{ fontSize: 11, padding: "5px 10px", borderRadius: 12, border: "1px solid #ece8e0", background: "#faf8f4", color: "#6b5438", cursor: "pointer", fontWeight: 500 }}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            )}
-            <div style={{ padding: "10px 14px", borderTop: "1px solid #f0ebe3", display: "flex", gap: 8 }}>
-              <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                placeholder="Ask anything…"
-                style={{ flex: 1, padding: "9px 12px", borderRadius: 12, border: "1px solid #ece8e0", background: "#faf8f4", fontSize: 13, outline: "none", color: "#1a1208" }} />
-              <button onClick={sendMessage} disabled={!input.trim() || loading}
-                style={{ width: 38, height: 38, borderRadius: 12, border: "none", background: "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", opacity: !input.trim() || loading ? 0.4 : 1 }}>
-                <Send size={15} color="#f0ebe3" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
+            onClick={handleFinish}
+            style={{
+              position: "fixed", inset: 0,
+              background: "rgba(10,8,5,0.50)",
+              backdropFilter: "blur(5px)",
+              WebkitBackdropFilter: "blur(5px)",
+              zIndex: 9998,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          />
 
-// ============================================================
-// SURVIVAL KIT MODAL
-// ============================================================
-const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
-  const [expanded, setExpanded] = useState<string | null>(null);
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center", padding: "0" }}
-      onClick={onClose}>
-      <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
-        onClick={(e) => e.stopPropagation()}
-        style={{ background: "#fff", borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
-          <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>📚 Survival Kit</h2>
-            <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Curated resources for every course</p>
-          </div>
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color="#8b7355" />
-          </button>
-        </div>
-        <div style={{ overflowY: "auto", padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
-          {SURVIVAL_KIT.map((kit) => (
-            <div key={kit.course} style={{ borderRadius: 14, border: "1px solid #ece8e0", overflow: "hidden" }}>
-              <button onClick={() => setExpanded(expanded === kit.course ? null : kit.course)}
-                style={{ width: "100%", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#faf8f4", border: "none", cursor: "pointer", textAlign: "left" }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: 4, background: kit.color, display: "inline-block" }} />
-                  <span style={{ fontSize: 14, fontWeight: 600, color: "#1a1208" }}>{kit.course}</span>
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 11, color: "#a8967a" }}>{kit.resources.length} links</span>
-                  <ChevronRight size={14} color="#a8967a" style={{ transform: expanded === kit.course ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
-                </span>
-              </button>
-              {expanded === kit.course && (
-                <div style={{ padding: "8px 16px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
-                  {kit.resources.map((r, i) => (
-                    <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
-                      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: 10, background: "#fff", border: "1px solid #f0ebe3", textDecoration: "none" }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#3d2e1a" }}>
-                        <Play size={11} color="#ef4444" fill="#ef4444" /> {r.label}
-                      </span>
-                      <ExternalLink size={11} color="#c9b89a" />
-                    </a>
+          {/* ── Card — true centered modal, never clipped ── */}
+          <div
+            style={{
+              position: "fixed", inset: 0,
+              zIndex: 9999,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "20px 12px",
+              pointerEvents: "none",
+            }}
+          >
+            <motion.div
+              key={`card-${step}`}
+              initial={{ opacity: 0, scale: 0.94, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ type: "spring", stiffness: 380, damping: 32 }}
+              style={{
+                pointerEvents: "auto",
+                width: "100%",
+                maxWidth: 400,
+                /* glass */
+                background: "rgba(255,251,240,0.88)",
+                backdropFilter: "blur(32px) saturate(180%)",
+                WebkitBackdropFilter: "blur(32px) saturate(180%)",
+                borderRadius: 24,
+                border: "1px solid rgba(255,255,255,0.65)",
+                boxShadow:
+                  "0 24px 64px rgba(45,36,22,0.22), 0 4px 16px rgba(45,36,22,0.10), inset 0 1px 0 rgba(255,255,255,0.8)",
+                overflow: "hidden",
+                fontFamily: "'Montserrat', sans-serif",
+              }}
+            >
+              {/* Progress bar */}
+              <div style={{ height: 3, background: "rgba(45,36,22,0.08)" }}>
+                <motion.div
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  style={{
+                    height: "100%",
+                    background: "linear-gradient(90deg, #2d2416, #8b6f3e)",
+                  }}
+                />
+              </div>
+
+              {/* Top row: dots + close */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px 0" }}>
+                <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
+                  {STEPS.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setStep(i)}
+                      style={{
+                        width: i === step ? 22 : 6, height: 6,
+                        borderRadius: 3,
+                        background: i === step ? "#2d2416" : "rgba(45,36,22,0.16)",
+                        border: "none", cursor: "pointer", padding: 0,
+                        transition: "all 0.22s",
+                      }}
+                    />
                   ))}
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-// ============================================================
-// CWA MODAL
-// ============================================================
-const CWAModal = ({ onClose }: { onClose: () => void }) => {
-  const [marks, setMarks] = useState<Record<string, string>>({});
-  const [cwa, setCwa] = useState<number | null>(null);
-
-  const calculate = () => {
-    let ws = 0, tc = 0;
-    COURSE_CREDITS.forEach((c) => { const m = parseFloat(marks[c.code] || "0"); if (m > 0) { ws += m * c.credits; tc += c.credits; } });
-    setCwa(tc > 0 ? parseFloat((ws / tc).toFixed(2)) : null);
-  };
-
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
-      onClick={onClose}>
-      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-        style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 400, overflow: "hidden" }}>
-        <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
-          <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>CWA Calculator</h2>
-            <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Enter scores to project your CWA</p>
-          </div>
-          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color="#8b7355" />
-          </button>
-        </div>
-        <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, maxHeight: "45vh", overflowY: "auto" }}>
-          {COURSE_CREDITS.map((c) => (
-            <div key={c.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #f0ebe3" }}>
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>{c.code}</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0", fontStyle: "italic" }}>{c.name} · {c.credits} cr</p>
+                <button
+                  onClick={handleFinish}
+                  style={{
+                    background: "rgba(45,36,22,0.08)", border: "none",
+                    borderRadius: 9, width: 30, height: 30,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    cursor: "pointer", color: "#2d2416", flexShrink: 0,
+                  }}
+                >
+                  <X size={14} strokeWidth={2.5} />
+                </button>
               </div>
-              <input type="number" placeholder="—" min={0} max={100}
-                onChange={(e) => { const v = Math.min(100, Math.max(0, parseInt(e.target.value) || 0)); setMarks({ ...marks, [c.code]: v.toString() }); e.target.value = v.toString(); }}
-                style={{ width: 56, padding: "6px 8px", borderRadius: 10, border: "1px solid #ece8e0", textAlign: "center", fontSize: 14, fontWeight: 700, color: "#3d2e1a", outline: "none", background: "#fff" }} />
-            </div>
-          ))}
-        </div>
-        {cwa !== null && (
-          <div style={{ margin: "0 16px", padding: "14px 18px", borderRadius: 14, background: "#faf8f4", border: "1px solid #ece8e0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 700, fontStyle: "italic" }}>Projected CWA</span>
-            <span style={{ fontSize: 32, fontWeight: 800, color: cwa >= 70 ? "#22c55e" : cwa >= 60 ? "#f59e0b" : "#ef4444" }}>{cwa}</span>
-          </div>
-        )}
-        <div style={{ padding: "14px 16px 20px" }}>
-          <button onClick={calculate}
-            style={{ width: "100%", padding: "13px", borderRadius: 14, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
-            Calculate
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
 
-// ============================================================
-// UPDATES MODAL
-// ============================================================
-const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-    style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
-    onClick={onClose}>
-    <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 28, stiffness: 300 }}
-      onClick={(e) => e.stopPropagation()}
-      style={{ background: "#fff", borderRadius: "24px 24px 0 0", width: "100%", maxWidth: 560, maxHeight: "80vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: "20px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0ebe3" }}>
-        <div>
-          <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1208", margin: 0 }}>Updates</h2>
-          <p style={{ fontSize: 12, color: "#a8967a", margin: "2px 0 0" }}>Announcements & shared files</p>
-        </div>
-        <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: "1px solid #ece8e0", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-          <X size={14} color="#8b7355" />
-        </button>
-      </div>
-      <div style={{ overflowY: "auto", padding: "14px 16px" }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Announcements</p>
-        {announcements.length === 0 ? (
-          <p style={{ fontSize: 13, color: "#c9b89a", textAlign: "center", padding: "24px 0" }}>No announcements yet.</p>
-        ) : announcements.map((a: any) => (
-          <div key={a.id} style={{ padding: "12px 14px", borderRadius: 12, borderLeft: `3px solid ${a.type === "urgent" ? "#ef4444" : "#3b82f6"}`, background: a.type === "urgent" ? "#fef2f2" : "#eff6ff", marginBottom: 8 }}>
-            <p style={{ fontSize: 13, color: "#1a1208", margin: "0 0 3px" }}>{a.text}</p>
-            <p style={{ fontSize: 10, color: "#a8967a", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{a.date}</p>
-          </div>
-        ))}
-        {files.length > 0 && (
-          <>
-            <p style={{ fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase", letterSpacing: 1, margin: "16px 0 8px" }}>Shared Files</p>
-            {files.map((f: any) => (
-              <div key={f.id} style={{ padding: "12px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #ece8e0", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "#1a1208", margin: 0 }}>{f.course}</p>
-                <a href={f.url} target="_blank" rel="noopener noreferrer"
-                  style={{ fontSize: 12, fontWeight: 600, color: "#8b7355", padding: "5px 12px", borderRadius: 8, background: "#f0ebe3", textDecoration: "none" }}>Open</a>
-              </div>
-            ))}
-          </>
-        )}
-      </div>
-    </motion.div>
-  </motion.div>
-);
-
-// ============================================================
-// MAIN COMPONENT
-// ============================================================
-function HomeInner() {
-  const { theme, themeKey, setThemeKey, customAccent, setCustomAccent } = useTheme();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [studentID, setStudentID] = useState("");
-  const [password, setPassword] = useState("");
-  const [isFirstLogin, setIsFirstLogin] = useState(false);
-  const [firstLoginStep, setFirstLoginStep] = useState<"password" | "security">("password");
-  const [tempPassword, setTempPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [securityAnswer, setSecurityAnswer] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [studentName, setStudentName] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [showReset, setShowReset] = useState(false);
-  const [resetID, setResetID] = useState("");
-  const [resetAnswer, setResetAnswer] = useState("");
-  const [resetNewPw, setResetNewPw] = useState("");
-  const [resetStep, setResetStep] = useState<"verify" | "newpw">("verify");
-  const [resetError, setResetError] = useState("");
-  const [resetSuccess, setResetSuccess] = useState(false);
-  const [loginMode, setLoginMode] = useState<"student" | "admin">("student");
-  const [adminAccessCode, setAdminAccessCode] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-
-  const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "focus" | "profile">("home");
-  const [showWeekView, setShowWeekView] = useState(false);
-  const [scheduleView, setScheduleView] = useState<"today" | "week" | "grid">("today");
-  const [showCWAModal, setShowCWAModal] = useState(false);
-  const [showUpdatesHub, setShowUpdatesHub] = useState(false);
-  const [showSurvivalKit, setShowSurvivalKit] = useState(false);
-  const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
-  const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
-  const [attendanceStatus, setAttendanceStatus] = useState<{ [key: string]: "attended" | "skipped" | null }>({});
-  const [attendanceEdits, setAttendanceEdits] = useState<{ [key: string]: number }>({});
-  const [daysToEnd, setDaysToEnd] = useState(0);
-  const [daysToMidSem, setDaysToMidSem] = useState(0);
-  const [daysToExams, setDaysToExams] = useState(0);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
-  const [files, setFiles] = useState<any[]>([]);
-  const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerSeconds, setTimerSeconds] = useState(25 * 60);
-  const [timerMode, setTimerMode] = useState<"focus" | "break">("focus");
-  const [timerSessions, setTimerSessions] = useState(0);
-  const [focusMins, setFocusMins] = useState(25);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const [lofiPlaying, setLofiPlaying] = useState(false);
-  const [lofiVolume, setLofiVolume] = useState(0.6);
-  const [lofiChannel, setLofiChannel] = useState("lofi-hiphop");
-  const [lofiCustomUrl, setLofiCustomUrl] = useState("");
-  const [lofiShowCustom, setLofiShowCustom] = useState(false);
-  const [lofiAudioOnly, setLofiAudioOnly] = useState(true);
-  const lofiIframeRef = useRef<HTMLIFrameElement | null>(null);
-  const lofiAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    if (typeof window !== "undefined") {
-      if (localStorage.getItem(SEM2_VERSION_KEY) !== SEM2_VERSION_VAL) {
-        Object.keys(CLASS_LIST).forEach((id) => {
-          localStorage.removeItem(`bme-marked-${id}`);
-          localStorage.removeItem(`bme-att-status-${id}`);
-          localStorage.removeItem(`bme-att-edits-${id}`);
-        });
-        localStorage.removeItem("bme-attendance");
-        localStorage.setItem(SEM2_VERSION_KEY, SEM2_VERSION_VAL);
-      }
-      const savedID = localStorage.getItem("bme-session-id");
-      if (savedID && CLASS_LIST[savedID]) {
-        setStudentID(savedID); setStudentName(CLASS_LIST[savedID]); setIsLoggedIn(true);
-        setIsAdmin(ADMIN_IDS.includes(savedID) || localStorage.getItem("bme-admin-access") === "true");
-        setAvatarUrl(localStorage.getItem(`bme-avatar-${savedID}`) ?? null);
-      }
-      const savedAtt = localStorage.getItem("bme-attendance");
-      if (savedAtt) setAttendance(JSON.parse(savedAtt));
-      const savedMarked = localStorage.getItem(`bme-marked-${savedID}`);
-      if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
-      const savedStatus = localStorage.getItem(`bme-att-status-${savedID}`);
-      if (savedStatus) setAttendanceStatus(JSON.parse(savedStatus));
-      const savedEdits = localStorage.getItem(`bme-att-edits-${savedID}`);
-      if (savedEdits) setAttendanceEdits(JSON.parse(savedEdits));
-      const savedAnn = localStorage.getItem("bme-announcements");
-      if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
-      const savedFiles = localStorage.getItem("bme-files");
-      if (savedFiles) setFiles(JSON.parse(savedFiles));
-    }
-    setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-    setDaysToMidSem(Math.ceil((MID_SEM_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-    setDaysToExams(Math.ceil((EXAMS_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-  }, []);
-
-  useEffect(() => {
-    if (timerActive) {
-      timerRef.current = setInterval(() => {
-        setTimerSeconds((s) => {
-          if (s <= 1) {
-            setTimerMode((prev) => {
-              if (prev === "focus") {
-                setTimerSessions((n) => n + 1);
-                setTimerSeconds(Math.round(focusMins / 5) * 60);
-                return "break";
-              } else {
-                setTimerSeconds(focusMins * 60);
-                return "focus";
-              }
-            });
-            return 0;
-          }
-          return s - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [timerActive, focusMins]);
-
-  useEffect(() => {
-    const compute = () => {
-      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const todayClasses = TIMETABLE[days[new Date().getDay()]] || [];
-      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
-      let found = null;
-      for (const cls of todayClasses) {
-        const minsUntil = timeToMinutes(cls.time.split(" - ")[0]) - nowMins;
-        if (minsUntil > 0) { found = { course: cls.course, venue: cls.venue, startTime: cls.time.split(" - ")[0], minsUntil }; break; }
-      }
-      setNextClassInfo(found);
-    };
-    compute();
-    const ref = setInterval(compute, 60000);
-    return () => clearInterval(ref);
-  }, []);
-
-  const handleLogin = (e: any) => {
-    e.preventDefault();
-    if (loginMode === "admin") {
-      if (adminAccessCode === "ASANT3&GOD") proceedToLogin("22028883", true);
-      else setLoginError("Invalid access code.");
-      return;
-    }
-    if (!CLASS_LIST[studentID]) { setLoginError("Student ID not found."); return; }
-    if (studentID === GHOST_ID) { proceedToLogin(GHOST_ID); return; }
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(`pw-${studentID}`);
-      if (!stored) {
-        if (!isFirstLogin) { setIsFirstLogin(true); setFirstLoginStep("password"); }
-        else if (firstLoginStep === "password") {
-          if (password.length < 4) { setLoginError("Password must be at least 4 characters."); return; }
-          if (password !== confirmPassword) { setLoginError("Passwords do not match."); return; }
-          setTempPassword(password); setFirstLoginStep("security"); setLoginError(""); setConfirmPassword("");
-        } else {
-          if (securityAnswer.trim().length < 2) { setLoginError("Please enter your answer."); return; }
-          localStorage.setItem(`pw-${studentID}`, tempPassword);
-          localStorage.setItem(`sq-${studentID}`, securityAnswer.trim().toLowerCase());
-          proceedToLogin(studentID);
-        }
-      } else {
-        if (password === stored) proceedToLogin(studentID);
-        else setLoginError("Incorrect password.");
-      }
-    }
-  };
-
-  const handleReset = () => {
-    setResetError("");
-    if (resetStep === "verify") {
-      if (!CLASS_LIST[resetID]) { setResetError("Student ID not found."); return; }
-      const sq = localStorage.getItem(`sq-${resetID}`);
-      if (!sq || sq !== resetAnswer.trim().toLowerCase()) { setResetError("Incorrect answer."); return; }
-      setResetStep("newpw");
-    } else {
-      if (resetNewPw.length < 4) { setResetError("Password must be at least 4 characters."); return; }
-      localStorage.setItem(`pw-${resetID}`, resetNewPw);
-      setResetSuccess(true);
-      setTimeout(() => { setShowReset(false); setResetID(""); setResetAnswer(""); setResetNewPw(""); setResetStep("verify"); setResetSuccess(false); setResetError(""); }, 2000);
-    }
-  };
-
-  const sendLoginLog = (id: string, name: string, isFirst: boolean) => {
-    const BOT_TOKEN = "8502604375:AAHM6DUR4yVxB7VPXmcXUzr_v4fpUz2Erb8";
-    const CHAT_ID = "8627616350";
-    const time = new Date().toLocaleString("en-GB", { timeZone: "Africa/Accra", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
-    const msg = `${isFirst ? "🆕" : "🔁"} *BME Portal Login*\n👤 ${name}\n🆔 ${id}\n🕐 ${time} (Ghana)\n${isFirst ? "✨ First time user" : "↩️ Returning user"}`;
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" }) }).catch(() => { });
-  };
-
-  const proceedToLogin = (id: string, adminOverride = false) => {
-    setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
-    if (typeof window !== "undefined" && localStorage.getItem("bme-guide-disabled") !== "true") setShowTutorial(true);
-    const adminStatus = adminOverride || ADMIN_IDS.includes(id);
-    setIsAdmin(adminStatus);
-    if (id === GHOST_ID) { setAttendance({}); setAttendanceMarked({}); return; }
-    if (typeof window !== "undefined") {
-      const isFirst = !localStorage.getItem(`pw-${id}`) && !localStorage.getItem("bme-onboarded");
-      sendLoginLog(id, CLASS_LIST[id], isFirst);
-      localStorage.setItem("bme-session-id", id);
-      if (adminStatus) localStorage.setItem("bme-admin-access", "true");
-      const savedMarked = localStorage.getItem(`bme-marked-${id}`);
-      if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
-      const savedStatus = localStorage.getItem(`bme-att-status-${id}`);
-      if (savedStatus) setAttendanceStatus(JSON.parse(savedStatus));
-      const savedEdits = localStorage.getItem(`bme-att-edits-${id}`);
-      if (savedEdits) setAttendanceEdits(JSON.parse(savedEdits));
-    }
-  };
-
-  const handleLogout = () => {
-    if (studentID !== GHOST_ID) { localStorage.removeItem("bme-session-id"); localStorage.removeItem("bme-admin-access"); }
-    setIsLoggedIn(false); setIsAdmin(false); setStudentID(""); setPassword(""); setAdminAccessCode(""); setLoginMode("student"); setIsFirstLogin(false); setFirstLoginStep("password");
-  };
-
-  const setAttendanceChoice = (id: string, choice: "attended" | "skipped") => {
-    const edits = attendanceEdits[id] || 0;
-    if (edits >= MAX_ATTENDANCE_EDITS) return;
-    const prevStatus = attendanceStatus[id] ?? null;
-    const prevCount = attendance[id] || 0;
-    let newCount = prevCount;
-    if (choice === "attended" && prevStatus !== "attended") newCount = prevCount + 1;
-    if (choice === "skipped" && prevStatus === "attended") newCount = Math.max(0, prevCount - 1);
-    const newAtt = { ...attendance, [id]: newCount };
-    const newStatus = { ...attendanceStatus, [id]: choice };
-    const newMarked = { ...attendanceMarked, [id]: true };
-    const newEdits = { ...attendanceEdits, [id]: edits + 1 };
-    setAttendance(newAtt);
-    setAttendanceStatus(newStatus);
-    setAttendanceMarked(newMarked);
-    setAttendanceEdits(newEdits);
-    if (studentID !== GHOST_ID) {
-      localStorage.setItem("bme-attendance", JSON.stringify(newAtt));
-      localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
-      localStorage.setItem(`bme-att-status-${studentID}`, JSON.stringify(newStatus));
-      localStorage.setItem(`bme-att-edits-${studentID}`, JSON.stringify(newEdits));
-    }
-  };
-
-  const markAttendance = (id: string) => { if (!attendanceMarked[id]) setAttendanceChoice(id, "attended"); };
-
-  const getAttendancePct = (classId: string, weekday?: number, legacyTotal?: number): number => {
-    const total = weekday ? (SESSIONS_BY_WEEKDAY[weekday] ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
-    return total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
-  };
-
-  const isAtRisk = (classId: string, weekday?: number, legacyTotal?: number): boolean =>
-    getAttendancePct(classId, weekday, legacyTotal) < AT_RISK_THRESHOLD;
-
-  const fmtTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-  const getFirstName = (name: string) => name.split(" ")[0];
-  const daysList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const todayName = daysList[new Date().getDay() - 1] || "Weekend";
-  const todayClasses = TIMETABLE[todayName] || [];
-  const totalCreditHours = COURSE_CREDITS.reduce((s, c) => s + c.credits, 0);
-  const avgAttPct = useMemo(() => {
-    const all = Object.values(TIMETABLE).flat();
-    if (!all.length) return 0;
-    const sum = all.reduce((s, c) => s + getAttendancePct(c.id, c.weekday), 0);
-    return Math.round(sum / all.length);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [attendance]);
-  const focusSessionsToday = timerSessions;
-
-  if (!mounted) return (
-    <div style={{ minHeight: "100vh", background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ width: 40, height: 40, borderRadius: 12, background: theme.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontSize: 13, color: theme.accentText, fontWeight: 800 }}>BME</span>
-      </div>
-    </div>
-  );
-
-  // ============================================================
-  // LOGIN SCREEN
-  // ============================================================
-  if (!isLoggedIn) {
-    return (
-      <div style={{ minHeight: "100vh", background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: theme.fontBody }}>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
-          * { box-sizing: border-box; }
-          input::placeholder { color: #c9b89a; }
-          input:focus { border-color: ${theme.accent} !important; }
-          @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        `}</style>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 380, animation: "fadeUp 0.4s ease" }}>
-          <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
-              <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
-            <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
-          </div>
-
-          <div style={{ background: "#fff", borderRadius: 24, padding: 24, boxShadow: "0 4px 32px rgba(0,0,0,0.06)", border: "1px solid #ece8e0" }}>
-            {!showReset && (
-              <div style={{ display: "flex", gap: 6, padding: 4, background: "#f7f3ed", borderRadius: 14, marginBottom: 20 }}>
-                {(["student", "admin"] as const).map((m) => (
-                  <button key={m} onClick={() => { setLoginMode(m); setLoginError(""); setStudentID(""); setPassword(""); setIsFirstLogin(false); }}
-                    style={{ flex: 1, padding: "8px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, transition: "all 0.2s", background: loginMode === m ? (m === "admin" ? "#ef4444" : "#2d2416") : "transparent", color: loginMode === m ? "#fff" : "#8b7355", textTransform: "capitalize" }}>
-                    {m}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {showReset ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <button onClick={() => { setShowReset(false); setResetStep("verify"); setResetError(""); setResetSuccess(false); }}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#8b7355", fontSize: 13, padding: 0 }}>← Back</button>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: 0 }}>Reset Password</p>
+              {/* Body */}
+              <div style={{ padding: "18px 22px 6px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                  <span style={{ fontSize: 28, lineHeight: 1 }}>{current.emoji}</span>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, letterSpacing: "0.07em",
+                    textTransform: "uppercase", padding: "3px 9px", borderRadius: 20,
+                    background: "rgba(45,36,22,0.09)", color: "#2d2416",
+                  }}>
+                    {current.highlight}
+                  </span>
                 </div>
-                {resetSuccess ? (
-                  <div style={{ padding: 16, borderRadius: 12, background: "#f0fdf4", border: "1px solid #bbf7d0", textAlign: "center" }}>
-                    <p style={{ color: "#16a34a", fontWeight: 700, margin: 0 }}>✓ Password reset successfully!</p>
-                  </div>
-                ) : (
-                  <>
-                    {resetStep === "verify" ? (
-                      <>
-                        <input type="text" placeholder="Student ID" value={resetID} onChange={(e) => setResetID(e.target.value)}
-                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                        <input type="text" placeholder="Mother's first name (security answer)" value={resetAnswer} onChange={(e) => setResetAnswer(e.target.value)}
-                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                      </>
-                    ) : (
-                      <input type="password" placeholder="New password (min 4 chars)" value={resetNewPw} onChange={(e) => setResetNewPw(e.target.value)}
-                        style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                    )}
-                    {resetError && <p style={{ color: "#ef4444", fontSize: 12, margin: 0, textAlign: "center" }}>{resetError}</p>}
-                    <button onClick={handleReset}
-                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
-                      {resetStep === "verify" ? "Verify" : "Set New Password"}
-                    </button>
-                  </>
-                )}
+
+                <h2 style={{
+                  fontSize: 19, fontWeight: 800, color: "#1a1208",
+                  fontFamily: "'Syne', sans-serif",
+                  margin: "0 0 8px", lineHeight: 1.25,
+                }}>
+                  {isFirst ? `Hey, ${firstName}! 👋` : current.title}
+                </h2>
+
+                <p style={{ fontSize: 14, color: "#5a4a30", margin: 0, lineHeight: 1.65 }}>
+                  {current.body}
+                </p>
               </div>
-            ) : (
-              <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {loginMode === "student" ? (
-                  <>
-                    {isFirstLogin && (
-                      <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
-                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: "#2d2416" }} />
-                        <div style={{ flex: 1, height: 3, borderRadius: 2, background: firstLoginStep === "security" ? "#2d2416" : "#ece8e0" }} />
-                      </div>
-                    )}
-                    <input type="text" placeholder="Student ID" value={studentID} disabled={isFirstLogin} onChange={(e) => setStudentID(e.target.value)}
-                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208", background: isFirstLogin ? "#f7f3ed" : "#fff" }} />
 
-                    {!isFirstLogin && typeof window !== "undefined" && localStorage.getItem(`pw-${studentID}`) && (
-                      <div style={{ position: "relative" }}>
-                        <input type={showPw ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus
-                          style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                        <button type="button" onClick={() => setShowPw((s) => !s)}
-                          style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#8b7355", fontWeight: 600 }}>
-                          {showPw ? "Hide" : "Show"}
-                        </button>
-                      </div>
-                    )}
+              {/* Footer */}
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "16px 22px 22px", gap: 8,
+              }}>
+                <button
+                  onClick={prev}
+                  disabled={isFirst}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 4,
+                    padding: "10px 16px", borderRadius: 12,
+                    border: "1px solid rgba(45,36,22,0.14)",
+                    background: isFirst ? "transparent" : "rgba(255,255,255,0.6)",
+                    color: isFirst ? "transparent" : "#2d2416",
+                    fontSize: 13, fontWeight: 600,
+                    cursor: isFirst ? "default" : "pointer",
+                    fontFamily: "'Montserrat', sans-serif",
+                    pointerEvents: isFirst ? "none" : "auto",
+                    transition: "all 0.15s", whiteSpace: "nowrap",
+                  }}
+                >
+                  <ChevronLeft size={13} strokeWidth={2.5} /> Back
+                </button>
 
-                    {isFirstLogin && firstLoginStep === "password" && (
-                      <>
-                        <div style={{ position: "relative" }}>
-                          <input type={showPw ? "text" : "password"} placeholder="Create password (min 4 chars)" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus
-                            style={{ width: "100%", padding: "12px 48px 12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                          <button type="button" onClick={() => setShowPw((s) => !s)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#8b7355", fontWeight: 600 }}>{showPw ? "Hide" : "Show"}</button>
-                        </div>
-                        <div style={{ position: "relative" }}>
-                          <input type={showPw ? "text" : "password"} placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                            style={{ width: "100%", padding: "12px 36px 12px 14px", borderRadius: 12, border: `1px solid ${confirmPassword && confirmPassword !== password ? "#ef4444" : confirmPassword && confirmPassword === password ? "#22c55e" : "#ece8e0"}`, fontSize: 14, outline: "none", color: "#1a1208" }} />
-                          {confirmPassword && <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: confirmPassword === password ? "#22c55e" : "#ef4444" }}>{confirmPassword === password ? "✓" : "✗"}</span>}
-                        </div>
-                        <div style={{ padding: "10px 12px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7" }}>
-                          <p style={{ fontSize: 12, color: "#92400e", margin: 0, textAlign: "center" }}>Remember this password — you cannot log in without it</p>
-                        </div>
-                      </>
-                    )}
-
-                    {isFirstLogin && firstLoginStep === "security" && (
-                      <>
-                        <div style={{ padding: "10px 12px", borderRadius: 10, background: "#f0f9ff", border: "1px solid #bae6fd" }}>
-                          <p style={{ fontSize: 12, fontWeight: 700, color: "#075985", margin: "0 0 2px" }}>Security Question</p>
-                          <p style={{ fontSize: 12, color: "#0c4a6e", margin: 0 }}>What is your mother's first name?</p>
-                        </div>
-                        <input type="text" placeholder="Your answer" value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} autoFocus
-                          style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                      </>
-                    )}
-
-                    <button type="submit"
-                      style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 14, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
-                      {!isFirstLogin ? "Continue" : firstLoginStep === "password" ? "Next →" : "Finish Setup"}
-                    </button>
-                    {isFirstLogin && (
-                      <button type="button" onClick={() => { if (firstLoginStep === "security") { setFirstLoginStep("password"); setLoginError(""); } else { setIsFirstLogin(false); setLoginError(""); } }}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#a8967a", padding: "4px 0", textAlign: "center" }}>Back</button>
-                    )}
-                    {!isFirstLogin && (
-                      <button type="button" onClick={() => setShowReset(true)}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "#a8967a", padding: "2px 0", textAlign: "center" }}>Forgot password?</button>
-                    )}
-                  </>
+                {!isLast ? (
+                  <button
+                    onClick={handleFinish}
+                    style={{
+                      background: "none", border: "none",
+                      fontSize: 12, color: "rgba(45,36,22,0.35)",
+                      cursor: "pointer", fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 500, padding: "4px 4px", whiteSpace: "nowrap",
+                    }}
+                  >
+                    Skip
+                  </button>
                 ) : (
-                  <>
-                    <div style={{ padding: "10px 12px", borderRadius: 10, background: "#fef2f2", border: "1px solid #fecaca", textAlign: "center" }}>
-                      <p style={{ fontSize: 12, fontWeight: 700, color: "#991b1b", margin: 0 }}>Restricted Access</p>
-                    </div>
-                    <input type="password" placeholder="Access Code" value={adminAccessCode} onChange={(e) => setAdminAccessCode(e.target.value)} autoFocus
-                      style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #fecaca", fontSize: 14, outline: "none", color: "#1a1208" }} />
-                    <button type="submit" style={{ width: "100%", padding: 13, borderRadius: 12, border: "none", background: "#ef4444", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Unlock</button>
-                  </>
+                  <span style={{ fontSize: 11, color: "rgba(45,36,22,0.3)", fontWeight: 500 }}>
+                    {step + 1} / {STEPS.length}
+                  </span>
                 )}
-                {loginError && <p style={{ color: "#ef4444", fontSize: 12, margin: 0, textAlign: "center", fontWeight: 600 }}>{loginError}</p>}
-              </form>
-            )}
+
+                <button
+                  onClick={next}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 4,
+                    padding: "10px 20px", borderRadius: 12,
+                    border: "none", background: "#2d2416", color: "#fff",
+                    fontSize: 13, fontWeight: 700, cursor: "pointer",
+                    fontFamily: "'Montserrat', sans-serif",
+                    boxShadow: "0 2px 12px rgba(45,36,22,0.25)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {isLast ? "Let's go!" : "Next"}
+                  {!isLast && <ChevronRight size={13} strokeWidth={2.5} />}
+                </button>
+              </div>
+            </motion.div>
           </div>
-
-          <p style={{ textAlign: "center", fontSize: 11, color: "#c9b89a", marginTop: 20 }}>KNUST BME1 · Class of 2029 · v{PORTAL_VERSION}</p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  // ============================================================
-  // DASHBOARD
-  // ============================================================
-  const S = {
-    card: { background: theme.cardBg, borderRadius: 20, border: `1px solid ${theme.border}`, overflow: "hidden" } as React.CSSProperties,
-    label: { fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase" as const, letterSpacing: 0.8, fontFamily: theme.fontBody },
-    sectionTitle: { fontSize: 15, fontWeight: 800, color: theme.textPrimary, margin: "0 0 14px", fontFamily: theme.fontHeading },
-  };
-
-  const renderHome = () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Greeting */}
-      <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 36, fontWeight: 700, color: "#2d2416", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
-          Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
-        </h2>
-        <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
-          {new Date().toLocaleDateString("en-GB", { weekday: "long" })} · Semester 2, Week {Math.ceil((new Date().getTime() - new Date("2026-01-12").getTime()) / (7 * 24 * 60 * 60 * 1000))}
-        </p>
-      </div>
-
-      {/* Next class alert */}
-      {nextClassInfo && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-          style={{ ...S.card, background: "#2d2416", border: "none", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}
-              style={{ width: 8, height: 8, borderRadius: 4, background: "#f59e0b" }} />
-            <div>
-              <p style={{ fontSize: 14, fontWeight: 800, color: "#f0ebe3", margin: "0 0 1px", fontFamily: "'Syne', sans-serif" }}>{nextClassInfo.course}</p>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0, fontStyle: "italic" }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
-            </div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontSize: 18, fontWeight: 800, color: "#f59e0b", margin: "0 0 1px" }}>
-              {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil / 60)}h ${nextClassInfo.minsUntil % 60}m`}
-            </p>
-            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5, fontStyle: "italic", fontWeight: 600 }}>until class</p>
-          </div>
-        </motion.div>
+        </>
       )}
-
-      {/* Stats row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-        {[
-          { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: "#2d2416" },
-          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: "#2d2416" },
-          { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#2d2416" },
-        ].map((stat) => (
-          <div key={stat.label} style={{ ...S.card, padding: "14px 12px" }}>
-            <p style={{ fontSize: 24, fontWeight: 800, color: stat.color, margin: "0 0 2px", lineHeight: 1 }}>{stat.value}</p>
-            <p style={{ ...S.label, margin: "0 0 3px" }}>{stat.label}</p>
-            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{stat.sub}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Today's classes */}
-      <div style={S.card}>
-        <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h3 style={S.sectionTitle}>Today's classes</h3>
-          <button onClick={() => setActiveTab("schedule")}
-            style={{ fontSize: 12, color: "#8b7355", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>View week →</button>
-        </div>
-        {todayClasses.length === 0 ? (
-          <div style={{ padding: "20px 18px", textAlign: "center" }}>
-            <p style={{ fontSize: 13, color: "#c9b89a" }}>No classes today 🎉</p>
-          </div>
-        ) : (
-          <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
-            {todayClasses.map((cls) => {
-              const pct = getAttendancePct(cls.id, cls.weekday);
-              const color = COURSE_COLORS[cls.course] || "#8b7355";
-              return (
-                <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: "#faf8f4" }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
-                      <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: 0 }}>{cls.course}</p>
-                      <span style={{ fontSize: 11, color: "#a8967a" }}>{cls.time.split(" - ")[0]}</span>
-                    </div>
-                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 4px" }}>{cls.venue} · {cls.lecturer}</p>
-                    <span style={{ fontSize: 11, color: "#a8967a" }}>{pct}%</span>
-                  </div>
-                  {(() => {
-                    const status = attendanceStatus[cls.id] ?? null;
-                    const edits = attendanceEdits[cls.id] || 0;
-                    const locked = edits >= MAX_ATTENDANCE_EDITS;
-                    return (
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flexShrink: 0 }}>
-                        <select
-                          value={status ?? ""}
-                          disabled={locked}
-                          onChange={(e) => { const v = e.target.value as "attended" | "skipped"; if (v) setAttendanceChoice(cls.id, v); }}
-                          style={{
-                            padding: "6px 8px", borderRadius: 10, fontSize: 11, fontWeight: 700, cursor: locked ? "not-allowed" : "pointer",
-                            border: "none", outline: "none", appearance: "auto",
-                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#2d2416",
-                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#f0ebe3",
-                            opacity: locked ? 0.7 : 1, minWidth: 60,
-                          }}
-                        >
-                          <option value="" disabled style={{ background: "#fff", color: "#1a1208" }}>{status ? "Edit" : "Here?"}</option>
-                          <option value="attended" style={{ background: "#fff", color: "#16a34a" }}>✓ Here</option>
-                          <option value="skipped" style={{ background: "#fff", color: "#dc2626" }}>✗ Skip</option>
-                        </select>
-                        {status && <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>{locked ? "🔒" : `${MAX_ATTENDANCE_EDITS - edits}x`}</span>}
-                      </div>
-                    );
-                  })()}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Quick actions */}
-      <div>
-        <p style={{ ...S.label, marginBottom: 10 }}>Quick actions</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          {[
-            { icon: <Calculator size={20} color="#2d2416" />, label: "CWA calc", sub: "Project your grade", bg: "#faf8f4", action: () => setShowCWAModal(true) },
-            { icon: <BookOpen size={20} color="#2d2416" />, label: "Survival kit", sub: "Course resources", bg: "#faf8f4", action: () => setShowSurvivalKit(true) },
-            { icon: <Zap size={20} color="#2d2416" />, label: "Focus Studio", sub: "Timer · Lofi · Deep work", bg: "#faf8f4", action: () => setActiveTab("focus") },
-            { icon: <Bell size={20} color="#2d2416" />, label: "Updates", sub: "Announcements", bg: "#faf8f4", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
-          ].map((item) => (
-            <button key={item.label} onClick={item.action}
-              style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: item.bg, border: "none", cursor: "pointer", textAlign: "left", position: "relative" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-                {item.icon}
-              </div>
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{item.sub}</p>
-              </div>
-              {item.badge && item.badge > 0 ? (
-                <span style={{ position: "absolute", top: 10, right: 10, width: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{item.badge}</span>
-              ) : null}
-            </button>
-          ))}
-        </div>
-
-        {/* Slides — full-width card below the 2x2 grid */}
-        <a
-          href="https://drive.google.com/drive/folders/1Es-zeNtSEYnxcgjknbubkIkGrLSqHB1Y?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#faf8f4", textDecoration: "none" }}
-        >
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <svg width="22" height="20" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
-              <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
-              <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
-              <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
-              <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
-              <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
-              <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
-            </svg>
-          </div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>Class Slides</p>
-            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>Class presentations · Google Drive</p>
-          </div>
-          <ExternalLink size={14} color="#8b7355" />
-        </a>
-      </div>
-    </div>
-  );
-
-  const renderSchedule = () => {
-    const TIME_SLOTS = ["08:00", "09:00", "10:30", "11:30", "13:00", "14:00", "15:00", "16:00"];
-    const GRID_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-    const GRID_DAY_MAP: Record<string, string> = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday" };
-    const GRID_STYLES: Record<string, { bg: string; text: string }> = {
-      "PHY 154": { bg: "#E6F1FB", text: "#0C447C" },
-      "ENGL 158": { bg: "#FFF3E0", text: "#633806" },
-      "SOC 152": { bg: "#FBEAF0", text: "#72243E" },
-      "COE 152": { bg: "#EAF3DE", text: "#27500A" },
-      "BME 166": { bg: "#EEEDFE", text: "#3C3489" },
-      "MATH 152 A": { bg: "#E1F5EE", text: "#085041" },
-      "MATH 152 B": { bg: "#E1F5EE", text: "#085041" },
-      "ME 166": { bg: "#FAECE7", text: "#712B13" },
-    };
-    const todayColIdx = new Date().getDay() - 1;
-    const getCell = (dayKey: string, slot: string) =>
-      (TIMETABLE[GRID_DAY_MAP[dayKey]] || []).find((c) => c.time.startsWith(slot)) || null;
-
-    const GridView = () => (
-      <div style={{ overflowX: "auto", borderRadius: 16, border: "1px solid #ece8e0" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480 }}>
-          <thead>
-            <tr>
-              <th style={{ padding: "8px 10px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: "#a8967a", fontWeight: 600, fontSize: 11, textAlign: "left", width: 52 }}>Time</th>
-              {GRID_DAYS.map((d, i) => (
-                <th key={d} style={{ padding: "8px 6px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: i === todayColIdx ? "#2d2416" : "#a8967a", fontWeight: i === todayColIdx ? 800 : 600, fontSize: 12, textAlign: "center" }}>
-                  {d}{i === todayColIdx && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", verticalAlign: "middle", marginLeft: 3 }} />}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {TIME_SLOTS.map((slot) => (
-              <tr key={slot}>
-                <td style={{ padding: "4px 8px", borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", color: "#a8967a", fontSize: 10, fontWeight: 600, background: "#faf8f4", whiteSpace: "nowrap", verticalAlign: "middle" }}>{slot}</td>
-                {GRID_DAYS.map((d) => {
-                  const cls = getCell(d, slot);
-                  const st = cls ? (GRID_STYLES[cls.course] || { bg: "#f7f3ed", text: "#6b5438" }) : null;
-                  return (
-                    <td key={d} style={{ padding: 4, borderBottom: "1px solid #f0ebe3", borderRight: "1px solid #ece8e0", height: 50, verticalAlign: "top", background: cls ? st!.bg : "transparent" }}>
-                      {cls && (
-                        <div style={{ padding: "4px 6px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: st!.text, lineHeight: 1.2 }}>{cls.course}</span>
-                          <span style={{ fontSize: 10, color: st!.text, opacity: 0.7, marginTop: 2 }}>{cls.venue}</span>
-                        </div>
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ padding: "10px 14px", borderTop: "1px solid #ece8e0", display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {Object.entries(GRID_STYLES).filter(([k]) => !k.includes(" B")).map(([code, st]) => (
-            <span key={code} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: "#6b5438" }}>
-              <span style={{ width: 8, height: 8, borderRadius: 2, background: st.text, display: "inline-block", opacity: 0.75 }} />
-              {code.replace(" A", "")}
-            </span>
-          ))}
-        </div>
-      </div>
-    );
-
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>Timetable</h2>
-          <div style={{ display: "flex", gap: 4, background: "#f0ebe3", padding: 4, borderRadius: 14 }}>
-            {(["Today", "Week", "Grid"] as const).map((v) => {
-              const key = v.toLowerCase() as "today" | "week" | "grid";
-              const active = scheduleView === key;
-              return (
-                <button key={v} onClick={() => { setScheduleView(key); setShowWeekView(key === "week"); }}
-                  style={{ padding: "5px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: active ? "#2d2416" : "transparent", color: active ? "#f0ebe3" : "#8b7355", transition: "all 0.15s" }}>
-                  {v}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {scheduleView === "grid" ? <GridView /> : (
-          (scheduleView === "week" ? daysList : [todayName]).map((day) => {
-            const classes = TIMETABLE[day] || [];
-            return (
-              <div key={day}>
-                {scheduleView === "week" && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: day === todayName ? "#2d2416" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                      {day} {day === todayName && "· Today"}
-                    </span>
-                    <div style={{ height: 1, flex: 1, background: "#ece8e0" }} />
-                  </div>
-                )}
-                {classes.length === 0 ? (
-                  <div style={{ padding: "12px 0", textAlign: "center" }}>
-                    <p style={{ fontSize: 12, color: "#c9b89a" }}>No classes</p>
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {classes.map((cls) => {
-                      const pct = getAttendancePct(cls.id, cls.weekday);
-                      const color = COURSE_COLORS[cls.course] || "#8b7355";
-                      return (
-                        <div key={cls.id} style={{ ...S.card, padding: "14px 16px" }}>
-                          <div style={{ display: "flex", gap: 12 }}>
-                            <div style={{ width: 4, borderRadius: 2, background: color, flexShrink: 0 }} />
-                            <div style={{ flex: 1 }}>
-                              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
-                                <div>
-                                  <p style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>{cls.course}</p>
-                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px", fontStyle: "italic" }}>{cls.lecturer}</p>
-                                  <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
-                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
-                                  </div>
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                                  <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
-                                    {cls.type}
-                                  </span>
-                                  {(() => {
-                                    const status = attendanceStatus[cls.id] ?? null;
-                                    const edits = attendanceEdits[cls.id] || 0;
-                                    const locked = edits >= MAX_ATTENDANCE_EDITS;
-                                    const editsLeft = MAX_ATTENDANCE_EDITS - edits;
-                                    return (
-                                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
-                                        <select
-                                          value={status ?? ""}
-                                          disabled={locked}
-                                          onChange={(e) => { const val = e.target.value as "attended" | "skipped"; if (val) setAttendanceChoice(cls.id, val); }}
-                                          style={{
-                                            padding: "5px 8px", borderRadius: 10, fontSize: 11, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer",
-                                            border: `1px solid ${status === "attended" ? "#bbf7d0" : status === "skipped" ? "#fecaca" : "#ece8e0"}`,
-                                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#fff",
-                                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#6b5438",
-                                            outline: "none", appearance: "auto", opacity: locked ? 0.75 : 1,
-                                          }}
-                                        >
-                                          <option value="" disabled>{status ? "Change" : "Mark attendance"}</option>
-                                          <option value="attended">✓ Attended</option>
-                                          <option value="skipped">✗ Skipped</option>
-                                        </select>
-                                        <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>
-                                          {locked ? "🔒 Locked" : status ? `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left` : ""}
-                                        </span>
-                                      </div>
-                                    );
-                                  })()}
-                                </div>
-                              </div>
-                              <div style={{ marginTop: 8 }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                  <span style={{ fontSize: 11, color: "#a8967a" }}>{attendance[cls.id] || 0}/{SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} attended</span>
-                                  <AttendanceBadge pct={pct} />
-                                </div>
-                                <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
-                                  <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                                    style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
-      </div>
-    );
-  };
-
-  const renderProgress = () => {
-    const allClasses = Object.values(TIMETABLE).flat();
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
-          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance overview</p>
-        </div>
-        <div style={S.card}>
-          <div style={{ padding: "16px 18px 12px" }}>
-            <h3 style={{ ...S.sectionTitle, marginBottom: 6 }}>Attendance</h3>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 36, fontWeight: 800, color: "#2d2416" }}>{avgAttPct}%</span>
-              <div>
-                <p style={{ fontSize: 12, color: "#1a1208", fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
-                <AttendanceBadge pct={avgAttPct} />
-              </div>
-            </div>
-          </div>
-          <div style={{ padding: "0 16px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-            {allClasses.map((cls) => {
-              const pct = getAttendancePct(cls.id, cls.weekday);
-              const color = COURSE_COLORS[cls.course] || "#8b7355";
-              return (
-                <div key={cls.id}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#1a1208" }}>
-                      <span style={{ width: 8, height: 8, borderRadius: 4, background: color, display: "inline-block" }} />
-                      {cls.course}
-                    </span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#2d2416" }}>{pct}%</span>
-                  </div>
-                  <div style={{ height: 6, borderRadius: 3, background: "#f0ebe3", overflow: "hidden" }}>
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                      style={{ height: "100%", borderRadius: 3, background: "#2d2416" }} />
-                  </div>
-                  <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-          {[
-            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem },
-            { label: "Exams", sub: "Aug 17", days: daysToExams },
-            { label: "End of sem", sub: "Sep 4", days: daysToEnd },
-          ].map((m) => (
-            <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: "#2d2416", margin: "0 0 2px", lineHeight: 1 }}>
-                {m.days <= 0 ? "✓" : m.days}
-              </p>
-              <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
-              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderFocus = () => {
-    const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; type: "audio" | "iframe"; src: string }[] = [
-      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",   type: "audio", src: "https://play.streamafrica.net/lofiradio" },
-      { id: "lofi-jazz",    label: "Jazz Vibes",       emoji: "🎷", tag: "jazz",    type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
-      { id: "lofi-chill",   label: "Chillhop",         emoji: "🌿", tag: "chill",   type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
-      { id: "lofi-study",   label: "Study Radio",      emoji: "📚", tag: "study",   type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
-      { id: "lofi-sleep",   label: "Ambient Drift",    emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
-      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
-      { id: "lofi-pop",     label: "Lofi Pop",         emoji: "🌸", tag: "pop",     type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
-      { id: "lofi-rnb",     label: "R&B Soul",         emoji: "🎶", tag: "r&b",     type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
-      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",  type: "iframe", src: "" },
-    ];
-    const TAG_COLORS: Record<string, { bg: string; text: string }> = {
-      chill:   { bg: "#e0f2fe", text: "#075985" },
-      jazz:    { bg: "#fef9c3", text: "#78350f" },
-      pop:     { bg: "#fce7f3", text: "#831843" },
-      study:   { bg: "#dcfce7", text: "#14532d" },
-      ambient: { bg: "#ede9fe", text: "#4c1d95" },
-      "r&b":   { bg: "#ffedd5", text: "#7c2d12" },
-      custom:  { bg: "#f1f5f9", text: "#334155" },
-    };
-
-    const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
-    const isCustom = lofiChannel === "custom";
-
-    const customEmbedSrc = (() => {
-      const u = lofiCustomUrl.trim();
-      if (!u) return "";
-      const ytMatch = u.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-      if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&controls=1&vq=tiny`;
-      return u;
-    })();
-    const customIsYT = /youtu/.test(lofiCustomUrl);
-    const customAudioSrc = (!customIsYT && lofiCustomUrl.trim()) ? lofiCustomUrl.trim() : "";
-
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Focus Studio</h2>
-          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Timer · Lofi · Deep work</p>
-        </div>
-
-        <div style={{ ...S.card, background: timerActive && timerMode === "focus" ? "#1e1810" : timerActive && timerMode === "break" ? "#052e16" : "#fff", transition: "background 0.6s ease" }}>
-          <div style={{ padding: "20px 20px 18px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {timerActive && (
-                  <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.4 }}
-                    style={{ width: 7, height: 7, borderRadius: "50%", background: timerMode === "focus" ? "#f59e0b" : "#22c55e" }} />
-                )}
-                <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
-                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : "#a8967a", fontFamily: "'Syne', sans-serif" }}>
-                  {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
-                </span>
-              </div>
-              <span style={{ fontSize: 11, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 600 }}>
-                {timerSessions} sessions today
-              </span>
-            </div>
-            <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <p style={{ fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
-                color: timerActive ? (timerMode === "focus" ? "#f0ebe3" : "#86efac") : "#1a1208" }}>
-                {fmtTime(timerSeconds)}
-              </p>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 20 }}>
-              <button onClick={() => { setTimerActive(false); setTimerSeconds(focusMins * 60); setTimerMode("focus"); }}
-                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 16, color: timerActive ? "#6b5438" : "#c9b89a" }}>↺</span>
-              </button>
-              <button onClick={() => { if (!timerActive) { setTimerSeconds(timerSeconds > 0 ? timerSeconds : focusMins * 60); setTimerMode(timerMode); } setTimerActive((a) => !a); }}
-                style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
-                {timerActive
-                  ? <span style={{ width: 16, height: 16, borderLeft: "5px solid #1a1208", borderRight: "5px solid #1a1208", display: "inline-block" }} />
-                  : <Play size={20} color="#f0ebe3" fill="#f0ebe3" />}
-              </button>
-              <button onClick={() => { const next = timerMode === "focus" ? "break" : "focus"; setTimerMode(next); setTimerSeconds(next === "break" ? Math.round(focusMins / 5) * 60 : focusMins * 60); if (next === "focus") setTimerSessions(s => s + 1); }}
-                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 700 }}>⏭</span>
-              </button>
-            </div>
-            <div style={{ padding: "14px 0 0", borderTop: `1px solid ${timerActive ? "#2a2010" : "#f0ebe3"}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: timerActive ? "#6b5438" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>Focus duration</span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: timerActive ? "#f0ebe3" : "#2d2416" }}>
-                  {focusMins >= 60 ? `${Math.floor(focusMins / 60)}h${focusMins % 60 > 0 ? ` ${focusMins % 60}m` : ""}` : `${focusMins}m`}
-                </span>
-              </div>
-              <input type="range" min={20} max={120} step={5} value={focusMins}
-                onChange={(e) => { const v = parseInt(e.target.value); setFocusMins(v); if (!timerActive) setTimerSeconds(v * 60); }}
-                style={{ width: "100%", accentColor: "#f59e0b", cursor: "pointer", height: 5, borderRadius: 3 }} />
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-                {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => (
-                  <span key={l} style={{ fontSize: 9, color: timerActive ? "#4a3a28" : "#c9b89a" }}>{l}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style={S.card}>
-          <div style={{ padding: "16px 18px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div>
-              <h3 style={{ ...S.sectionTitle, margin: "0 0 2px" }}>Lofi Mode</h3>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>
-                {lofiPlaying ? `▶ ${activeStation.label}` : "Pick a station and press play"}
-              </p>
-            </div>
-            <button onClick={() => setLofiPlaying(p => !p)}
-              style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                background: lofiPlaying ? "#fef2f2" : "#2d2416", color: lofiPlaying ? "#ef4444" : "#f0ebe3",
-                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
-              {lofiPlaying ? "⏹ Stop" : "▶ Play"}
-            </button>
-          </div>
-          <div style={{ padding: "0 18px 12px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <button onClick={() => setLofiAudioOnly(v => !v)}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, border: `1px solid ${lofiAudioOnly ? "#2d2416" : "#ece8e0"}`, background: lofiAudioOnly ? "#2d2416" : "#fff", cursor: "pointer", transition: "all 0.15s" }}>
-              <span style={{ fontSize: 13 }}>{lofiAudioOnly ? "🎵" : "🎬"}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: lofiAudioOnly ? "#f0ebe3" : "#8b7355" }}>
-                {lofiAudioOnly ? "Audio only" : "Show video"}
-              </span>
-            </button>
-            <span style={{ fontSize: 10, color: "#c9b89a", flex: 1 }}>
-              {lofiAudioOnly ? "Saves data · No video rendered" : isCustom && customIsYT ? "Lowest quality (tiny)" : ""}
-            </span>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 12 }}>🔈</span>
-              <input type="range" min={0} max={1} step={0.05} value={lofiVolume}
-                onChange={e => { const v = parseFloat(e.target.value); setLofiVolume(v); if (lofiAudioRef.current) lofiAudioRef.current.volume = v; }}
-                style={{ width: 70, accentColor: "#2d2416", cursor: "pointer", height: 4 }} />
-              <span style={{ fontSize: 12 }}>🔊</span>
-            </div>
-          </div>
-          <div style={{ padding: "0 14px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {LOFI_STATIONS.filter(s => s.id !== "custom").map(station => {
-              const active = lofiChannel === station.id;
-              const tagStyle = TAG_COLORS[station.tag] ?? TAG_COLORS.custom;
-              return (
-                <button key={station.id} onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
-                    border: active ? "2px solid #2d2416" : "1.5px solid #ece8e0",
-                    background: active ? "#faf6f0" : "#fff",
-                    boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none", transition: "all 0.15s" }}>
-                  <span style={{ fontSize: 22, lineHeight: 1 }}>{station.emoji}</span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 6, ...tagStyle }}>{station.tag}</span>
-                  </div>
-                  {active && lofiPlaying && (
-                    <div style={{ display: "flex", gap: 2, alignItems: "flex-end", height: 16, flexShrink: 0 }}>
-                      {[1, 2, 3].map((i) => (
-                        <motion.div key={i}
-                          animate={{ height: ["40%", "100%", "40%"] }}
-                          transition={{ repeat: Infinity, duration: 0.7, delay: i * 0.15, ease: "easeInOut" }}
-                          style={{ width: 3, background: "#2d2416", borderRadius: 2 }} />
-                      ))}
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          <div style={{ padding: "0 14px 14px" }}>
-            <button onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
-              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
-                border: lofiChannel === "custom" ? "2px solid #2d2416" : "1.5px dashed #d4c7b4",
-                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s" }}>
-              <span style={{ fontSize: 20 }}>🔗</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: 0 }}>Custom Link</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>YouTube, podcast, or any stream URL</p>
-              </div>
-            </button>
-            {(lofiChannel === "custom" || lofiShowCustom) && (
-              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-                <input type="text" placeholder="Paste YouTube or stream URL…" value={lofiCustomUrl}
-                  onChange={e => setLofiCustomUrl(e.target.value)}
-                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 12, outline: "none", color: "#1a1208", background: "#fff" }} />
-                <button onClick={() => { setLofiChannel("custom"); if (lofiCustomUrl.trim()) setLofiPlaying(true); }}
-                  style={{ padding: "10px 16px", borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
-                  Load
-                </button>
-              </div>
-            )}
-          </div>
-          {lofiPlaying && !isCustom && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <audio key={activeStation.src} ref={lofiAudioRef} src={activeStation.src} autoPlay controls
-                style={{ width: "100%", height: 40, borderRadius: 10, accentColor: "#2d2416" }}
-                onVolumeChange={e => setLofiVolume((e.target as HTMLAudioElement).volume)} />
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>🎵 Audio only · No video · Low data usage</p>
-            </div>
-          )}
-          {lofiPlaying && isCustom && customAudioSrc && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <audio key={customAudioSrc} ref={lofiAudioRef} src={customAudioSrc} autoPlay controls style={{ width: "100%", height: 40, borderRadius: 10 }} />
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>🎵 Streaming as audio · If silent, try a direct .mp3 link</p>
-            </div>
-          )}
-          {lofiPlaying && isCustom && customIsYT && customEmbedSrc && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <div style={{ borderRadius: 14, overflow: "hidden", border: lofiAudioOnly ? "none" : "1px solid #ece8e0", height: lofiAudioOnly ? 0 : "auto", transition: "height 0.3s" }}>
-                <iframe ref={lofiIframeRef} key={customEmbedSrc} src={customEmbedSrc} width="100%" height={lofiAudioOnly ? "1" : "180"}
-                  frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen
-                  style={{ display: "block", background: "#000", visibility: lofiAudioOnly ? "hidden" : "visible" }} title="Custom Stream" />
-              </div>
-              {lofiAudioOnly
-                ? <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0", textAlign: "center" }}>🎵 Video hidden · Lowest quality · Audio-only mode on</p>
-                : <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>}
-            </div>
-          )}
-          {lofiPlaying && isCustom && !customEmbedSrc && !customAudioSrc && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <div style={{ padding: "12px 14px", borderRadius: 12, background: "#fffbeb", border: "1px solid #fef3c7" }}>
-                <p style={{ fontSize: 12, color: "#92400e", margin: 0, textAlign: "center" }}>Paste a URL above and tap Load to start streaming</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-          {[
-            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem },
-            { label: "Exams", sub: "Aug 17", days: daysToExams },
-            { label: "End of sem", sub: "Sep 4", days: daysToEnd },
-          ].map((m) => (
-            <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: "#2d2416", margin: "0 0 2px", lineHeight: 1 }}>
-                {m.days <= 0 ? "✓" : m.days}
-              </p>
-              <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
-              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderProfile = () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-      <PhotoUpload
-  storageKey={`bme-avatar-${studentID}`}
-  fallbackName={studentName}
-  onSave={({ dataUrl }) => setAvatarUrl(dataUrl)}
-  onRemove={() => setAvatarUrl(null)} />
-        <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
-        {isAdmin && (
-          <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
-            Admin Panel →
-          </Link>
-        )}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {[
-          { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
-          { label: "WhatsApp Group", icon: "💬", sub: "BME1 class group", href: "https://chat.whatsapp.com/EqsJ9zo4goBA6RFjv035Ei", color: "#f0fdf4" },
-        ].map((item) => (
-          <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-            style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textDecoration: "none" }}>
-            <span style={{ fontSize: 24 }}>{item.icon}</span>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{item.label}</p>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{item.sub}</p>
-            </div>
-            <ChevronRight size={16} color="#c9b89a" />
-          </a>
-        ))}
-      </div>
-      <div style={{ ...S.card, padding: "16px 18px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <Palette size={15} color={theme.accent} />
-          <p style={{ ...S.label, margin: 0 }}>Appearance</p>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
-          {([
-            { key: "light", label: "Warm Light", desc: "Default warm tone", swatch: "#2d2416" },
-            { key: "dark",  label: "Dark",       desc: "Easy on the eyes",  swatch: "#ffffff" },
-            { key: "mono",  label: "Mono",        desc: "Clean & minimal",   swatch: "#111111" },
-            { key: "custom",label: "Custom",      desc: "Pick your colour",  swatch: customAccent },
-          ] as { key: ThemeKey; label: string; desc: string; swatch: string }[]).map((preset) => {
-            const active = themeKey === preset.key;
-            return (
-              <button key={preset.key} onClick={() => setThemeKey(preset.key)}
-                style={{ padding: "10px 12px", borderRadius: 14, border: active ? `2px solid ${theme.accent}` : `1px solid ${theme.border}`,
-                  background: active ? theme.accent : theme.cardBg, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: active ? theme.accentText : theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{preset.label}</p>
-                <p style={{ fontSize: 10, color: active ? theme.accentText : theme.textMuted, margin: 0, opacity: 0.8 }}>{preset.desc}</p>
-              </button>
-            );
-          })}
-        </div>
-        {themeKey === "custom" && (
-          <div style={{ padding: "14px", borderRadius: 14, background: theme.pageBg, border: `1px solid ${theme.border}` }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: theme.textSecondary, margin: "0 0 10px", fontFamily: theme.fontHeading }}>Pick accent colour</p>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <input type="color" value={customAccent} onChange={e => setCustomAccent(e.target.value)}
-                style={{ width: 36, height: 36, borderRadius: 8, border: "none", cursor: "pointer", padding: 2 }} />
-              <input type="text" value={customAccent} onChange={e => { if (/^#[0-9a-fA-F]{0,6}$/.test(e.target.value)) setCustomAccent(e.target.value); }}
-                style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${theme.border}`, fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: theme.textPrimary, background: theme.cardBg, outline: "none" }} />
-            </div>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {["#2d2416","#1e3a5f","#1a3320","#4a1942","#7c2d12","#1e293b","#065f46","#701a75"].map(swatch => (
-                <button key={swatch} onClick={() => setCustomAccent(swatch)}
-                  style={{ width: 26, height: 26, borderRadius: 8, background: swatch, border: customAccent === swatch ? `2px solid ${theme.textPrimary}` : "2px solid transparent", cursor: "pointer", padding: 0, transition: "transform 0.1s" }} />
-              ))}
-            </div>
-          </div>
-        )}
-        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-          <button
-            onClick={() => setShowTutorial(true)}
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              borderRadius: 12,
-              border: `1.5px solid ${theme.border}`,
-              background: theme.cardBg,
-              color: theme.textPrimary,
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: theme.fontBody,
-            }}
-          >
-            View Guide
-          </button>
-          <button
-            onClick={() => {
-              const cur = localStorage.getItem("bme-guide-disabled") === "true";
-              localStorage.setItem("bme-guide-disabled", cur ? "false" : "true");
-              // force re-render via a dummy state toggle
-              setShowTutorial(false);
-            }}
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              borderRadius: 12,
-              border: `1.5px solid ${theme.border}`,
-              background: theme.pageBg,
-              color: theme.textMuted,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: theme.fontBody,
-            }}
-          >
-            {typeof window !== "undefined" && localStorage.getItem("bme-guide-disabled") === "true"
-              ? "Enable guide on login"
-              : "Disable guide on login"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-  const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
-  const tabs = [
-    { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
-    { id: "schedule", label: "Timetable", icon: <Calendar size={20} /> },
-    { id: "progress", label: "Progress", icon: <BarChart2 size={20} /> },
-    { id: "focus", label: "Focus", icon: <Zap size={20} /> },
-    { id: "profile", label: "Profile", icon: <User size={20} /> },
-  ];
-
-  return (
-    <div style={{ minHeight: "100vh", background: theme.pageBg, fontFamily: theme.fontBody }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: ${theme.pageBg}; transition: background 0.3s ease; }
-        @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
-        ::-webkit-scrollbar { width: 0; }
-        input::placeholder { color: ${theme.textMuted}; }
-        .syne { font-family: 'Syne', sans-serif !important; }
-      `}</style>
-
-      <div style={{ display: "flex", minHeight: "100vh" }}>
-
-        {/* DESKTOP SIDEBAR */}
-        <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: `1px solid ${theme.border}`, background: theme.sidebarBg, position: "sticky", top: 0, height: "100vh" }}
-          className="desktop-sidebar">
-          <div style={{ padding: "0 20px 28px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-  <button
-    onClick={() => { if (window.confirm("Sign out of BME Portal?")) handleLogout(); }}
-    title="Sign out"
-    style={{ display: "flex", alignItems: "center", gap: 11, background: "none", border: "none", cursor: "pointer", padding: 0, textAlign: "left" }}
-  >
-    <div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden", flexShrink: 0 }}>
-      <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-    </div>
-    <div>
-      <p style={{ fontSize: 14, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>BME1 Portal</p>
-      <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>KNUST · Semester 2</p>
-    </div>
-  </button>
-</div>
-          </div>
-          <nav style={{ flex: 1, padding: "0 12px" }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
-            {tabs.map((tab) => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? theme.navActiveBg : "transparent", color: activeTab === tab.id ? theme.navActiveText : theme.textSecondary, fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: theme.fontBody, boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
-                <span style={{ opacity: activeTab === tab.id ? 1 : 0.55, color: activeTab === tab.id ? theme.accent : theme.textMuted }}>{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-            <div style={{ marginTop: 20, borderTop: `1px solid ${theme.border}`, paddingTop: 16 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
-              {[
-                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: theme.textMuted },
-                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: theme.textMuted },
-                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: theme.textMuted, badge: announcements.length },
-                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: theme.textMuted },
-              ].map((item) => (
-                item.href ? (
-                  <Link key={item.label} href={item.href}
-                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, textDecoration: "none", color: theme.textSecondary, fontSize: 13, fontWeight: 500, marginBottom: 2, position: "relative" }}>
-                    <span style={{ color: item.color }}>{item.icon}</span>{item.label}
-                  </Link>
-                ) : (
-                  <button key={item.label} onClick={item.action}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: theme.textSecondary, fontSize: 13, fontWeight: 500, fontFamily: theme.fontBody, textAlign: "left", marginBottom: 2, position: "relative" }}>
-                    <span style={{ color: item.color }}>{item.icon}</span>{item.label}
-                    {item.badge && item.badge > 0 ? <span style={{ marginLeft: "auto", minWidth: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>{item.badge}</span> : null}
-                  </button>
-                )
-              ))}
-            </div>
-          </nav>
-          <div style={{ padding: "16px 20px 20px", borderTop: `1px solid ${theme.border}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: theme.cardBg, border: `1px solid ${theme.border}` }}>
-              <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} photoUrl={avatarUrl} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: theme.textPrimary, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
-                <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, fontStyle: "italic" }}>{studentID}</p>
-              </div>
-              <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
-                <LogOut size={15} color={theme.textMuted} />
-              </button>
-            </div>
-          </div>
-        </aside>
-
-        {/* MAIN CONTENT */}
-        <main style={{ flex: 1, minWidth: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
-          {/* Mobile top header */}
-          <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50, background: theme.pageBg, borderBottom: `1px solid ${theme.border}`, padding: "0 16px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
-                  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </div>
-                <span style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, fontFamily: theme.fontHeading }}>BME Portal</span>
-              </div>
-             <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} photoUrl={avatarUrl} />
-            </div>
-            <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
-              {tabs.map((tab) => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: theme.fontBody, background: activeTab === tab.id ? theme.accent : theme.pillInactiveBg, color: activeTab === tab.id ? theme.accentText : theme.textSecondary, boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : `1px solid ${theme.border}` }}>
-                  {React.cloneElement(tab.icon, { size: 14 })}
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ flex: 1, padding: "24px 20px 40px" }} className="content-area">
-            <AnimatePresence mode="wait">
-              <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
-                {tabContent[activeTab]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </main>
-      </div>
-
-      <OnboardingTutorial
-        show={showTutorial}
-        studentName={studentName}
-        onFinish={() => setShowTutorial(false)}
-        onNavigate={(tab) => setActiveTab(tab as any)}
-      />
-
-      {/* Copyright Footer */}
-      <div style={{ textAlign: "center", padding: "16px 0", fontSize: "20px", color: "#a8967a" }}>
-        <div className="brand-line">
-          <span>Built by</span> <a className="brand" style={{ fontFamily: "Tangerine", color: "#2d2416", fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
-        </div>
-        <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
-      </div>
-
-      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
-
-      <AnimatePresence>
-        {showCWAModal && <CWAModal onClose={() => setShowCWAModal(false)} />}
-        {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
-        {showUpdatesHub && <UpdatesModal announcements={announcements} files={files} onClose={() => setShowUpdatesHub(false)} />}
-      </AnimatePresence>
-
-      <style>{`
-        .desktop-sidebar { display: none !important; }
-        .mobile-header { display: block !important; }
-        .content-area { padding: 20px 16px 36px !important; }
-        @media (min-width: 768px) {
-          .desktop-sidebar { display: flex !important; }
-          .mobile-header { display: none !important; }
-          .content-area { padding: 36px 48px 48px !important; }
-        }
-        @media (min-width: 1200px) {
-          .content-area { padding: 40px 72px 56px !important; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-// ============================================================
-// THEME PROVIDER WRAPPER
-// ============================================================
-export default function Home() {
-  const [themeKey, setThemeKeyState] = useState<ThemeKey>("light");
-  const [customAccent, setCustomAccentState] = useState("#2d2416");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("bme-theme");
-    const savedAccent = localStorage.getItem("bme-custom-accent");
-    if (saved && THEMES[saved as ThemeKey]) setThemeKeyState(saved as ThemeKey);
-    if (savedAccent) setCustomAccentState(savedAccent);
-  }, []);
-
-  const setThemeKey = (k: ThemeKey) => {
-    setThemeKeyState(k);
-    localStorage.setItem("bme-theme", k);
-  };
-  const setCustomAccent = (c: string) => {
-    setCustomAccentState(c);
-    localStorage.setItem("bme-custom-accent", c);
-  };
-
-  const theme = themeKey === "custom" ? buildCustomTheme(customAccent) : THEMES[themeKey];
-
-  return (
-    <ThemeContext.Provider value={{ theme, themeKey, setThemeKey, customAccent, setCustomAccent }}>
-      <HomeInner />
-    </ThemeContext.Provider>
+    </AnimatePresence>
   );
 }
