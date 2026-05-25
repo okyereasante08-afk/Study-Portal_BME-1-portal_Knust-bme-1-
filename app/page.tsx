@@ -417,7 +417,8 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
           >
             <div style={{ padding: "14px 18px", borderBottom: "1px solid #f0ebe3", display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 32, height: 32, borderRadius: 16, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MessageSquare size={14} color=theme.textSecondary />
+              <MessageSquare size={14} color={theme.textSecondary} />
+
               </div>
               <div>
                 <p style={{ fontSize: 13, fontWeight: 700, color: theme.textPrimary, margin: 0 }}>BME Assistant</p>
