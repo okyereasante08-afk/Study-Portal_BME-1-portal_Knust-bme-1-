@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronLeft, X } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface Step {
   title: string;
   body: string;
   highlight: string;
+  isChatbotStep?: boolean;
 }
 
 interface Props {
@@ -64,12 +66,126 @@ const STEPS: Step[] = [
   },
   {
     tab: null,
+    emoji: "🤖",
+    title: "BME Assistant",
+    body: "Your AI-powered study buddy lives down here. Ask about today's timetable, project your CWA, or get quick academic help — anytime.",
+    highlight: "Chatbot",
+    isChatbotStep: true,
+  },
+  {
+    tab: null,
     emoji: "🎉",
     title: "You're all set!",
     body: "Explore freely. Replay this guide anytime from Profile → Appearance → View Guide.",
     highlight: "Done",
   },
 ];
+
+// ── Portal pulse ring that wraps the chatbot button ──────────────────────────
+function ChatbotPulseRing({ active }: { active: boolean }) {
+  const [btnRect, setBtnRect] = useState<DOMRect | null>(null);
+
+  useEffect(() => {
+    if (!active) { setBtnRect(null); return; }
+
+    const measure = () => {
+      const btn = document.querySelector("[data-chatbot-toggle]") as HTMLElement | null;
+      if (btn) setBtnRect(btn.getBoundingClientRect());
+    };
+
+    measure();
+    // re-measure on resize in case layout shifts
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [active]);
+
+  if (!active || !btnRect) return null;
+
+  const cx = btnRect.left + btnRect.width / 2;
+  const cy = btnRect.top + btnRect.height / 2;
+  const r = Math.max(btnRect.width, btnRect.height) / 2 + 8; // 8px padding around button
+
+  return createPortal(
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9997, // just below the guide overlay (9998/9999)
+        pointerEvents: "none",
+      }}
+    >
+      {/* Three concentric pulse rings */}
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          initial={{ scale: 1, opacity: 0.7 }}
+          animate={{ scale: [1, 2.4], opacity: [0.6, 0] }}
+          transition={{
+            duration: 1.6,
+            repeat: Infinity,
+            delay: i * 0.5,
+            ease: "easeOut",
+          }}
+          style={{
+            position: "absolute",
+            left: cx - r,
+            top: cy - r,
+            width: r * 2,
+            height: r * 2,
+            borderRadius: "50%",
+            border: "2.5px solid #f59e0b",
+            boxSizing: "border-box",
+          }}
+        />
+      ))}
+
+      {/* Solid glow ring that stays visible */}
+      <motion.div
+        animate={{ opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "absolute",
+          left: cx - r,
+          top: cy - r,
+          width: r * 2,
+          height: r * 2,
+          borderRadius: "50%",
+          border: "2.5px solid #f59e0b",
+          boxShadow: "0 0 16px 4px rgba(245,158,11,0.45)",
+          boxSizing: "border-box",
+        }}
+      />
+
+      {/* Arrow label pointing to the button */}
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.3 }}
+        style={{
+          position: "absolute",
+          right: window.innerWidth - (btnRect.right) + btnRect.width / 2 + 16,
+          bottom: window.innerHeight - btnRect.top + 10,
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          background: "#2d2416",
+          color: "#f0ebe3",
+          fontSize: 11,
+          fontWeight: 700,
+          padding: "5px 10px",
+          borderRadius: 20,
+          whiteSpace: "nowrap",
+          boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+          fontFamily: "'Montserrat', sans-serif",
+          letterSpacing: "0.03em",
+        }}
+      >
+        AI Assistant ↓
+      </motion.div>
+    </div>,
+    document.body
+  );
+}
 
 export default function OnboardingTutorial({ show, studentName, onFinish, onNavigate }: Props) {
   const [step, setStep] = useState(0);
@@ -107,6 +223,7 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
   const current = STEPS[step];
   const isFirst = step === 0;
   const isLast = step === STEPS.length - 1;
+  const isChatbotStep = current.isChatbotStep === true;
   const progress = (step / (STEPS.length - 1)) * 100;
   const firstName = studentName ? studentName.split(" ")[0] : "there";
 
@@ -114,7 +231,10 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
     <AnimatePresence>
       {show && (
         <>
-          {/* ── Backdrop ── */}
+          {/* ── Chatbot pulse ring (portal, separate layer) ── */}
+          <ChatbotPulseRing active={isChatbotStep} />
+
+          {/* ── Backdrop: NO blur, NO glass — just a subtle dim so the app stays readable ── */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
@@ -123,24 +243,24 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
             transition={{ duration: 0.2 }}
             onClick={handleFinish}
             style={{
-              position: "fixed", inset: 0,
-              background: "rgba(10,8,5,0.50)",
-              backdropFilter: "blur(5px)",
-              WebkitBackdropFilter: "blur(5px)",
+              position: "fixed",
+              inset: 0,
+              background: "rgba(10,8,5,0.28)",
+              /* backdrop-filter intentionally removed */
               zIndex: 9998,
-              display: "flex", alignItems: "center", justifyContent: "center",
             }}
           />
 
-          {/* ── Card — true centered modal, never clipped ── */}
+          {/* ── Card ── */}
           <div
             style={{
-              position: "fixed", inset: 0,
+              position: "fixed",
+              inset: 0,
               zIndex: 9999,
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "20px 12px",
+              alignItems: isChatbotStep ? "flex-end" : "center",
+              justifyContent: isChatbotStep ? "flex-start" : "center",
+              padding: isChatbotStep ? "0 0 100px 16px" : "20px 12px",
               pointerEvents: "none",
             }}
           >
@@ -153,8 +273,7 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
               style={{
                 pointerEvents: "auto",
                 width: "100%",
-                maxWidth: 400,
-                /* glass */
+                maxWidth: isChatbotStep ? 320 : 400,
                 background: "rgb(255,251,240)",
                 borderRadius: 24,
                 border: "1px solid rgb(225,221,210)",
@@ -212,7 +331,8 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
                   <span style={{
                     fontSize: 10, fontWeight: 700, letterSpacing: "0.07em",
                     textTransform: "uppercase", padding: "3px 9px", borderRadius: 20,
-                    background: "rgba(45,36,22,0.09)", color: "#2d2416",
+                    background: isChatbotStep ? "rgba(245,158,11,0.12)" : "rgba(45,36,22,0.09)",
+                    color: isChatbotStep ? "#b45309" : "#2d2416",
                   }}>
                     {current.highlight}
                   </span>
@@ -229,6 +349,16 @@ export default function OnboardingTutorial({ show, studentName, onFinish, onNavi
                 <p style={{ fontSize: 14, color: "#5a4a30", margin: 0, lineHeight: 1.65 }}>
                   {current.body}
                 </p>
+
+                {/* Chatbot step hint */}
+                {isChatbotStep && (
+                  <p style={{
+                    fontSize: 11, color: "#b45309", margin: "10px 0 0",
+                    fontWeight: 600, display: "flex", alignItems: "center", gap: 5,
+                  }}>
+                    <span style={{ fontSize: 13 }}>↙</span> See the glowing button below
+                  </p>
+                )}
               </div>
 
               {/* Footer */}
