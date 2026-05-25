@@ -506,7 +506,7 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 11, color: theme.textMuted }}>{kit.resources.length} links</span>
-                  <ChevronRight size={14} color=theme.textMuted style={{ transform: expanded === kit.course ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
+                  <ChevronRight size={14} color={theme.textMuted} style={{ transform: expanded === kit.course ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
                 </span>
               </button>
               {expanded === kit.course && (
@@ -517,7 +517,7 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
                       <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: theme.textPrimary }}>
                         <Play size={11} color="#ef4444" fill="#ef4444" /> {r.label}
                       </span>
-                      <ExternalLink size={11} color=theme.textMuted />
+                      <ExternalLink size={11} color={theme.textMuted} />
                     </a>
                   ))}
                 </div>
@@ -556,7 +556,7 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
             <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Enter scores to project your CWA</p>
           </div>
           <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <X size={14} color=theme.textSecondary />
+            <X size={14} color={theme.textSecondary} />
           </button>
         </div>
         <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, maxHeight: "45vh", overflowY: "auto" }}>
@@ -605,7 +605,7 @@ const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[];
           <p style={{ fontSize: 12, color: theme.textMuted, margin: "2px 0 0" }}>Announcements & shared files</p>
         </div>
         <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, border: `1px solid ${theme.border}`, background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-          <X size={14} color=theme.textSecondary />
+          <X size={14} color={theme.textSecondary} />
         </button>
       </div>
       <div style={{ overflowY: "auto", padding: "14px 16px" }}>
@@ -1371,8 +1371,8 @@ function HomeInner() {
                                   <p style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, margin: "0 0 2px", fontFamily: theme.fontHeading }}>{cls.course}</p>
                                   <p style={{ fontSize: 12, color: theme.textSecondary, margin: "0 0 2px", fontStyle: "italic" }}>{cls.lecturer}</p>
                                   <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: theme.textMuted }}><Clock size={10} color=theme.textMuted /> {cls.time}</span>
-                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: theme.textMuted }}><MapPin size={10} color=theme.textMuted /> {cls.venue}</span>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: theme.textMuted }}><Clock size={10} color={theme.textMuted} /> {cls.time}</span>
+                                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: theme.textMuted }}><MapPin size={10} color={theme.textMuted} /> {cls.venue}</span>
                                   </div>
                                 </div>
                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
@@ -1592,7 +1592,7 @@ function HomeInner() {
                 style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : theme.accent, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
                 {timerActive
                   ? <span style={{ width: 16, height: 16, borderLeft: "5px solid #1a1208", borderRight: "5px solid #1a1208", display: "inline-block" }} />
-                  : <Play size={20} color=theme.accentText fill=theme.accentText />}
+                  : <Play size={20} color={theme.accentText} fill={theme.accentText} />}
               </button>
               <button onClick={() => { const next = timerMode === "focus" ? "break" : "focus"; setTimerMode(next); setTimerSeconds(next === "break" ? Math.round(focusMins / 5) * 60 : focusMins * 60); if (next === "focus") setTimerSessions(s => s + 1); }}
                 style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : theme.border}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -2026,7 +2026,7 @@ function HomeInner() {
                 <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, fontStyle: "italic" }}>{studentID}</p>
               </div>
               <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
-                <LogOut size={15} color=theme.textMuted />
+                <LogOut size={15} color={theme.textMuted} />
               </button>
             </div>
           </div>
