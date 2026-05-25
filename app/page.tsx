@@ -325,6 +325,7 @@ const timeToMinutes = (t: string) => {
 // ============================================================
 
 const Avatar = ({ name, size = 36, onClick }: { name: string; size?: number; onClick?: () => void }) => {
+  const { theme } = useTheme();
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
   return (
     <div
@@ -353,6 +354,7 @@ const AttendanceBadge = ({ pct }: { pct: number }) => {
 // AI CHATBOT
 // ============================================================
 const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID: string }) => {
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
     { role: "assistant", content: `Hey ${studentName.split(" ")[0]} 👋 I'm your BME assistant. I know your timetable and can help with CWA calculations. What do you need?` }
@@ -478,6 +480,7 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
 // SURVIVAL KIT MODAL
 // ============================================================
 const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
+  const { theme } = useTheme();
   const [expanded, setExpanded] = useState<string | null>(null);
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -534,6 +537,7 @@ const SurvivalKitModal = ({ onClose }: { onClose: () => void }) => {
 // CWA MODAL
 // ============================================================
 const CWAModal = ({ onClose }: { onClose: () => void }) => {
+  const { theme } = useTheme();
   const [marks, setMarks] = useState<Record<string, string>>({});
   const [cwa, setCwa] = useState<number | null>(null);
 
@@ -592,7 +596,9 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
 // ============================================================
 // UPDATES MODAL
 // ============================================================
-const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => (
+const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[]; files: any[]; onClose: () => void }) => {
+  const { theme } = useTheme();
+  return (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
     style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 80, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
     onClick={onClose}>
@@ -633,7 +639,8 @@ const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[];
       </div>
     </motion.div>
   </motion.div>
-);
+  );
+};
 
 // ============================================================
 // MAIN COMPONENT
