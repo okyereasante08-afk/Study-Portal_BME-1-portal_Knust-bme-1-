@@ -49,7 +49,7 @@ import React, {
 } from "react";
 import Cropper from "react-easy-crop";
 import type { Area, Point } from "react-easy-crop";
-import imageCompression from "browser-image-compression";
+import imageCompression, { type Options } from "browser-image-compression";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -94,7 +94,7 @@ export interface PhotoUploadProps {
 // Constants & helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-const COMPRESSION_OPTIONS: imageCompression.Options = {
+const COMPRESSION_OPTIONS: Options = {
   maxSizeMB: 0.9,          // compress hard to stay under 1 MB
   maxWidthOrHeight: 512,    // plenty for an avatar
   useWebWorker: true,
