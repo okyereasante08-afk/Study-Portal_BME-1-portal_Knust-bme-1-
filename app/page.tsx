@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PhotoUpload from "@/components/PhotoUpload";
+import PhotoUpload from "./components/PhotoUpload";
 import Link from "next/link";
 import {
   Calculator, MessageCircle, BookOpen, Bell, LogOut, Activity,
