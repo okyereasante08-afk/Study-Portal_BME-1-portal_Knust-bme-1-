@@ -156,9 +156,9 @@ export default function AppShell() {
     const savedFiles = localStorage.getItem("bme-files");
     if (savedFiles) setFiles(JSON.parse(savedFiles));
 
-    setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - Date.now()) / 86400000));
-    setDaysToMidSem(Math.ceil((MID_SEM_START.getTime() - Date.now()) / 86400000));
-    setDaysToExams(Math.ceil((EXAMS_START.getTime() - Date.now()) / 86400000));
+  setDaysToEnd(Math.ceil((new Date(END_OF_SEM_DATE).getTime() - Date.now()) / 86400000));
+setDaysToMidSem(Math.ceil((new Date(MID_SEM_START).getTime() - Date.now()) / 86400000));
+setDaysToExams(Math.ceil((new Date(EXAMS_START).getTime() - Date.now()) / 86400000));
   }, []);
 
   // ── pomodoro timer ────────────────────────────────────────
