@@ -381,7 +381,7 @@ export default function AppShell() {
         <PhotoUpload
           storageKey={`bme-avatar-${studentID}`}
           fallbackName={studentName}
-          onSave={({ dataUrl }: { dataUrl: string }) => setAvatarUrl(dataUrl)}
+        onSave={({ dataUrl }: { dataUrl: string | null }) => setAvatarUrl(dataUrl)}
           onRemove={() => setAvatarUrl(null)}
         />
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
