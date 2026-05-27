@@ -8,12 +8,12 @@ import { useTheme } from "@/lib/theme";
 const LOFI_STATIONS = [
   { id: "lofi-hiphop", label: "Lofi Hip-Hop",  emoji: "🎧", tag: "chill",   type: "audio" as const, src: "https://play.streamafrica.net/lofiradio" },
   { id: "lofi-jazz",   label: "Jazz Vibes",     emoji: "🎷", tag: "jazz",    type: "audio" as const, src: "https://jazz.streamr.ru/jazz-64.mp3" },
-  { id: "lofi-chill",  label: "Chillhop",       emoji: "🌿", tag: "chill",   type: "audio" as const, src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
-  { id: "lofi-study",  label: "Study Radio",    emoji: "📚", tag: "study",   type: "audio" as const, src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
-  { id: "lofi-sleep",  label: "Ambient Drift",  emoji: "🌙", tag: "ambient", type: "audio" as const, src: "https://ambientradio.co.uk:8443/ambient.mp3" },
-  { id: "lofi-piano",  label: "Solo Piano",     emoji: "🎹", tag: "ambient", type: "audio" as const, src: "https://piano.streamr.ru/piano-64.mp3" },
-  { id: "lofi-pop",    label: "Lofi Pop",       emoji: "🌸", tag: "pop",     type: "audio" as const, src: "https://lofi.stream.laut.fm/lofi" },
-  { id: "lofi-rnb",    label: "R&B Soul",       emoji: "🎶", tag: "r&b",     type: "audio" as const, src: "https://rnbradio.stream.laut.fm/rnbradio" },
+  { id: "lofi-chill",  label: "Chillhop",       emoji: "🌿", tag: "chill",   type: "audio" as const, src: "https://www.youtube.com/watch?v=_ITiwPMUzho" },
+  { id: "lofi-study",  label: "Study Radio",    emoji: "📚", tag: "study",   type: "audio" as const, src: "https://www.youtube.com/watch?v=1Tl2FtV06qo" },
+  { id: "lofi-sleep",  label: "Ambient Drift",  emoji: "🌙", tag: "ambient", type: "audio" as const, src: "https://www.youtube.com/watch?v=53gNFOqDFcE" },
+  { id: "lofi-piano",  label: "Solo Piano",     emoji: "🎹", tag: "ambient", type: "audio" as const, src: "https://www.youtube.com/watch?v=N0snMcR6aaA" },
+  { id: "lofi-pop",    label: "Lofi Pop",       emoji: "🌸", tag: "pop",     type: "audio" as const, src: "https://www.youtube.com/watch?v=eJ_49_P7AnQ" },
+  { id: "lofi-rnb",    label: "R&B Soul",       emoji: "🎶", tag: "r&b",     type: "audio" as const, src: "https://www.youtube.com/watch?v=KnXiZgXF4Jc" },
   { id: "custom",      label: "Custom Link",    emoji: "🔗", tag: "custom",  type: "iframe" as const, src: "" },
 ];
 
