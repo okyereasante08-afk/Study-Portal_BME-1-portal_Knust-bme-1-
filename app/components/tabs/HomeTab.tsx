@@ -4,7 +4,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Calculator, BookOpen, Zap, Bell, ExternalLink } from "lucide-react";
-import { TIMETABLE, COURSE_COLORS, SESSIONS_BY_WEEKDAY, MAX_ATTENDANCE_EDITS } from "@/lib/data";
+import { TIMETABLE, COURSE_COLORS, getSessionsByWeekday, MAX_ATTENDANCE_EDITS } from "@/lib/data";
 import { AttendanceBadge } from "@/app/components/ui";
 
 interface Props {
