@@ -12,15 +12,29 @@ export const SEM2_VERSION_VAL = "2026-S2";
 export const MAX_ATTENDANCE_EDITS = 3;
 export const AT_RISK_THRESHOLD = 70;
 
-export const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
-export const MID_SEM_START = new Date("2026-07-06T00:00:00");
-export const EXAMS_START = new Date("2026-08-17T00:00:00");
-export const SEM_START = new Date("2026-05-25T00:00:00");
+export const END_OF_SEM_DATE = "2026-09-04T00:00:00";
+export const MID_SEM_START   = "2026-07-06T00:00:00";
+export const EXAMS_START     = "2026-08-17T00:00:00";
+export const SEM_START       = "2026-05-25T00:00:00";
 
-export const EXCLUDED_RANGES: [Date, Date][] = [
-  [new Date("2026-07-06T00:00:00"), new Date("2026-07-10T00:00:00")],
-  [new Date("2026-08-17T00:00:00"), new Date("2026-09-04T00:00:00")],
+export const EXCLUDED_RANGES: [string, string][] = [
+  ["2026-07-06T00:00:00", "2026-07-10T00:00:00"],
+  ["2026-08-17T00:00:00", "2026-09-04T00:00:00"],
 ];
+
+export const isExcluded = (date: Date): boolean =>
+  EXCLUDED_RANGES.some(([s, e]) => date >= new Date(s) && date <= new Date(e));
+
+export const calcTotalSemesterSessions = (weekday: number): number => {
+  let count = 0;
+  const cursor = new Date(SEM_START);
+  const end = new Date(END_OF_SEM_DATE);
+  while (cursor <= end) {
+    if (cursor.getDay() === weekday && !isExcluded(new Date(cursor))) count++;
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return count;
+};
 
 export const isExcluded = (date: Date): boolean =>
   EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
