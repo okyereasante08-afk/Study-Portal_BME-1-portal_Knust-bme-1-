@@ -169,7 +169,7 @@ export default function ScheduleTab({ attendance, attendanceStatus, attendanceEd
                             </div>
                             <div style={{ marginTop: 8 }}>
                               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                <span style={{ fontSize: 11, color: theme.textMuted }}>{attendance[cls.id] || 0}/{SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} attended</span>
+                                <span style={{ fontSize: 11, color: theme.textMuted }}>{attendance[cls.id] || 0}/{getSessionsByWeekday(cls.weekday)} attended</span>
                                 <AttendanceBadge pct={pct} />
                               </div>
                               <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
