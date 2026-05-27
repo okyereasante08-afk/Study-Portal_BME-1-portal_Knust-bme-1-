@@ -3,7 +3,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { TIMETABLE, COURSE_COLORS, SESSIONS_BY_WEEKDAY } from "@/lib/data";
+import { TIMETABLE, COURSE_COLORS, getSessionsByWeekday } from "@/lib/data";
 import { AttendanceBadge } from "@/app/components/ui";
 import { useTheme } from "@/lib/theme";
 
