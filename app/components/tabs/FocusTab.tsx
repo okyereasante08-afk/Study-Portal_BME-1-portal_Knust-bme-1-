@@ -104,7 +104,7 @@ export default function FocusTab(props: Props) {
               style={{ width: 64, height: 64, borderRadius: 32, border: "none", cursor: "pointer", background: timerActive ? "#f59e0b" : "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 0 20px rgba(245,158,11,0.4)" : "0 4px 20px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
               <span style={{ fontSize: 22, color: "#fff" }}>{timerActive ? "⏸" : "▶"}</span>
             </button>
-            <button onClick={() => { setTimerMode((prev: "focus" | "break") => prev === "focus" ? "break" : "focus"); setTimerSeconds(timerMode === "focus" ? Math.round(focusMins / 5) * 60 : focusMins * 60); }}
+            <button onClick={() => { setTimerMode(timerMode === "focus" ? "break" : "focus"); setTimerSeconds(timerMode === "focus" ? Math.round(focusMins / 5) * 60 : focusMins * 60); }}
               style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : t.border}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : t.textMuted, fontWeight: 700 }}>⏭</span>
             </button>
