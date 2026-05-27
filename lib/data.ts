@@ -35,13 +35,22 @@ export const calcTotalSemesterSessions = (weekday: number): number => {
   return count;
 };
 
-export const SESSIONS_BY_WEEKDAY: Record<number, number> = {
-  1: calcTotalSemesterSessions(1),
-  2: calcTotalSemesterSessions(2),
-  3: calcTotalSemesterSessions(3),
-  4: calcTotalSemesterSessions(4),
-  5: calcTotalSemesterSessions(5),
-};
+let _sessionsCache: Record<number, number> | null = null;
+
+export const SESSIONS_BY_WEEKDAY: Record<number, number> = new Proxy({} as Record<number, number>, {
+  get(_, prop) {
+    if (!_sessionsCache) {
+      _sessionsCache = {
+        1: calcTotalSemesterSessions(1),
+        2: calcTotalSemesterSessions(2),
+        3: calcTotalSemesterSessions(3),
+        4: calcTotalSemesterSessions(4),
+        5: calcTotalSemesterSessions(5),
+      };
+    }
+    return _sessionsCache[Number(prop)];
+  }
+});
 
 export const timeToMinutes = (t: string) => {
   const [h, m] = t.split(":").map(Number);
