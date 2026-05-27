@@ -59,7 +59,7 @@ export default function ProgressTab({ attendance, avgAttPct, daysToMidSem, daysT
                   <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
                     style={{ height: "100%", borderRadius: 3, background: "#2d2416" }} />
                 </div>
-                <p style={{ fontSize: 10, color: theme.textMuted, margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
+                <p style={{ fontSize: 10, color: theme.textMuted, margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {getSessionsByWeekday(cls.weekday)} classes</p>
               </div>
             );
           })}
