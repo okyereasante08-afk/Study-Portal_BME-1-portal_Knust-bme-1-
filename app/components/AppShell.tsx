@@ -210,7 +210,7 @@ setDaysToExams(Math.ceil((new Date(EXAMS_START).getTime() - Date.now()) / 864000
   }, []);
 
   // ── derived values ────────────────────────────────────────
-  const totalCreditHours = COURSE_CREDITS.reduce((s, c) => s + c.credits, 0);
+  const totalCreditHours = useMemo(() => COURSE_CREDITS.reduce((s, c) => s + c.credits, 0), []);
   const avgAttPct = useMemo(() => {
     const all = Object.values(TIMETABLE).flat();
     if (!all.length) return 0;
