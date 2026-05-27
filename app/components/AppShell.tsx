@@ -12,7 +12,7 @@ import {
 import { useTheme } from "@/lib/theme";
 import type { ThemeKey } from "@/lib/theme";
 import {
-  CLASS_LIST, TIMETABLE, COURSE_CREDITS, SESSIONS_BY_WEEKDAY,
+  CLASS_LIST, TIMETABLE, COURSE_CREDITS, getSessionsByWeekday,
   MAX_ATTENDANCE_EDITS, AT_RISK_THRESHOLD, ADMIN_IDS, GHOST_ID,
   SEM2_VERSION_KEY, SEM2_VERSION_VAL,
   END_OF_SEM_DATE, MID_SEM_START, EXAMS_START, PORTAL_VERSION,
@@ -337,7 +337,7 @@ setDaysToExams(Math.ceil((new Date(EXAMS_START).getTime() - Date.now()) / 864000
   };
 
   const getAttendancePct = (classId: string, weekday?: number, legacyTotal?: number): number => {
-    const total = weekday ? (SESSIONS_BY_WEEKDAY[weekday] ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
+    const total = weekday ? (getSessionsByWeekday(weekday) ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
     return total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
   };
 
