@@ -36,18 +36,7 @@ export const calcTotalSemesterSessions = (weekday: number): number => {
   return count;
 };
 
-export const isExcluded = (date: Date): boolean =>
-  EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
 
-export const calcTotalSemesterSessions = (weekday: number): number => {
-  let count = 0;
-  const cursor = new Date(SEM_START);
-  while (cursor <= END_OF_SEM_DATE) {
-    if (cursor.getDay() === weekday && !isExcluded(new Date(cursor))) count++;
-    cursor.setDate(cursor.getDate() + 1);
-  }
-  return count;
-};
 
 let _sessionsCache: Record<number, number> | null = null;
 
