@@ -2,7 +2,12 @@
 // ============================================================
 // SHARED UI COMPONENTS — Avatar, AttendanceBadge
 // ============================================================
+"use client";
 
+// app/components/ui.tsx
+// ============================================================
+// SHARED UI COMPONENTS — Avatar, AttendanceBadge
+// ============================================================
 import React from "react";
 import { AT_RISK_THRESHOLD } from "@/lib/data";
 
