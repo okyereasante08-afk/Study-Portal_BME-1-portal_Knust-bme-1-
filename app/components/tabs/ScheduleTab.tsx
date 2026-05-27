@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, MapPin } from "lucide-react";
-import { TIMETABLE, COURSE_COLORS, SESSIONS_BY_WEEKDAY, MAX_ATTENDANCE_EDITS } from "@/lib/data";
+import { TIMETABLE, COURSE_COLORS, getSessionsByWeekday, MAX_ATTENDANCE_EDITS } from "@/lib/data";
 import { AttendanceBadge } from "@/app/components/ui";
 import { useTheme } from "@/lib/theme";
 
