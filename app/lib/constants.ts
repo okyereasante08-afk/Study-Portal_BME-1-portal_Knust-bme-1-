@@ -1,108 +1,54 @@
 // app/lib/constants.ts
 
-export const THEMES: { [key: string]: any } = {
-  ocean: {
-    id: "ocean",
-    name: "Ocean",
-    bgGradient: "from-blue-900/50 to-cyan-900/50",
-    orb1: "#3b82f6",
-    orb2: "#06b6d4",
-    accent: "blue",
-  },
-  forest: {
-    id: "forest",
-    name: "Forest",
-    bgGradient: "from-green-900/50 to-emerald-900/50",
-    orb1: "#22c55e",
-    orb2: "#10b981",
-    accent: "green",
-  },
-  sunset: {
-    id: "sunset",
-    name: "Sunset",
-    bgGradient: "from-orange-900/50 to-pink-900/50",
-    orb1: "#f97316",
-    orb2: "#ec4899",
-    accent: "orange",
-  },
-  galaxy: {
-    id: "galaxy",
-    name: "Galaxy",
-    bgGradient: "from-purple-900/50 to-indigo-900/50",
-    orb1: "#a855f7",
-    orb2: "#6366f1",
-    accent: "purple",
-  },
-  rose: {
-    id: "rose",
-    name: "Rose",
-    bgGradient: "from-rose-900/50 to-pink-900/50",
-    orb1: "#f43f5e",
-    orb2: "#ec4899",
-    accent: "rose",
-  },
+export const ADMIN_IDS = ["22028883"];
+export const GHOST_ID = "BME_BETA1";
+
+export const CLASS_LIST: { [id: string]: string } = {
+  "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
+  "21949701": "Adelaide Selorm Afi Dzimadzor", "21948324": "Adjei Pomaa Cresta", "21875208": "Adjoa Kwansema Eshun",
+  "22245585": "Adune Dasha Bagase", "22337376": "Adwoa Abrafi Adjei", "21931395": "Afia Serwaa Kwarteng Amaning",
+  "22416594": "Afriyie Jeanefel Owusu", "22331047": "Agyarko-Nyamekye Max Abankwa", "21787360": "Agyei Chrislla Birago",
+  "22208586": "Ahenkorah Emmanuella Kyei", "21947631": "Albert Affum Opare", "21938073": "Amankwaah Beatrice Sarpong Akosua",
+  "22312345": "Amoaba Keren-Happuch Winvel", "22341588": "Amoah-Owusu Cecil Williams", "21888854": "AMPOFO Abena Gyamfia",
+  "22048359": "Ampofo Nana Yaw Kwegya", "22561241": "Ampomah Daniel", "22547391": "Amuzu Richmond Kwame",
+  "22259193": "Ankomah Maxi-Priest", "22277904": "Anlaagmen Pearl Nuonta", "22341786": "Annan Nora Odokai",
+  "22166367": "Appiah Roberta Achiaa", "22082053": "Asante Emmanuella Twumasiwaa", "22028883": "Asante Kwaku Okyere",
+  "21716259": "Asare Godfred", "22129935": "Awurakua Akomea-Dankyi", "21893253": "Ayiku Richmond Lartey",
+  "22224514": "Baaba Nyarko Assabil", "21760006": "Baffoe Renia Gyan", "22077735": "Baiden Abdul Ghaffar Benyi",
+  "22315225": "Bezalel Addy Bamflo", "21809851": "Blessing Dadzie", "22178256": "Blessing Pokuaa",
+  "21795884": "Boadu Kelvin Kwabena", "21854625": "Boakye Justice Ofori", "21840594": "Boakye Nana Akosua Agyeiwaa",
+  "22504820": "Boatemaa-Ayim Nana Akua", "21902739": "Boateng Yiedie Akyaa", "21976026": "Caleb Adjei Mensah",
+  "22247538": "Carlis Appiah-Sarkodie", "21822251": "Christabel Dadzie", "22300069": "Christian Amoah",
+  "22541775": "Daniel Kwabena Affum", "22200510": "Darko Lisa Ampem", "22208865": "Darlington Mawuena Anyomi",
+  "22698331": "David Adjei", "22313191": "Davies Mawuli Kamsey", "22108018": "Deborah Adjei Acquah",
+  "21763979": "Dennis Gyebi", "21837887": "Doma-Her Skylar Sungbawiere", "22544637": "Dzansi Virginia Makafui",
+  "21974352": "Ekow Amoah Benyi-Acquah", "22215957": "Elizabeth Tetebea Agyemang", "22046739": "Ernest Nimako-Boateng",
+  "21797396": "Esi Asor Hemaa Aboagye", "22048114": "Fieve Brain Delanyo", "22430218": "Frimpong Precious Antwowaah",
+  "21983696": "Frimpong Wilhelmina", "22514233": "Fudzie Kelvin Delali", "22328187": "Fuseini Ibtihaaj Gaida",
+  "21841024": "Fynn Emmanuella Esi", "21946146": "Gifty Asantewaa Adoma", "22190892": "Grace Armoo",
+  "21969430": "Hammond Kevin Nii Obli", "22010557": "Israelna Ama Yeboah", "21995972": "James Adjei Mensah",
+  "21896223": "Maya", "22184311": "Jenefails Akuffo-Gyan", "22710811": "Josephine Nana Akosua Pinamang Gyebi",
+  "22429815": "Keren Naa Klorkor Quaye", "21904638": "Keziah Deborah Wilson", "22645870": "Koramah Mercy",
+  "22243432": "Kusi Constance Abrafi", "21882887": "Lakeisha Lord-Mensah", "22083170": "Laura Naa Tiokor Amartey",
+  "22127161": "Lawrencia Awuah Adobea", "21949982": "Lisa Timbilla Azasumah", "22331976": "Maame Ama Tiwaa Ofori-Agyeman",
+  "21859658": "Marfo Isaac", "21795451": "Mary Achiaa Sarpong", "22333045": "Mawaddatu Abdul Rashid",
+  "22565526": "Michael Fiifi Djan", "22051165": "Naa Teley Ayorkor Quaye", "21885234": "Nadia Stoner-Darku",
+  "21877955": "Nana Adwoa Gyamfua Hyeaman", "22334053": "Nana Ekua Serwah Ampomah", "22213391": "Nana Frimpong Desu",
+  "21974163": "Narh Otabil Mensah", "21889745": "Nina Osman Mustapha", "22408944": "Nyamador Kenneth Selorm",
+  "22429220": "NYANTAKYI Pascal", "22052236": "Obeng Antoinette Maame Adjoa Antwiwaa", "21913089": "Obiri-Yeboah Vanessa",
+  "22472240": "Odame Daniel", "21694679": "Oduro John Luther Kweku", "22364718": "Oduro Prince Peasah",
+  "22440821": "Ofori Ayimwaah Nana Akua", "21989933": "Okai Eugene Kobina", "22042804": "OKYNE Adjetey Godson",
+  "22086375": "OLIVIA Nhyira Dwomoh", "21783110": "Opoku Gospel Kwame", "22030735": "Oppong Badu Andrea",
+  "22332966": "Paula Sedinam Foriwa Apawu", "22011457": "Pearl Maame Nyarko Ofori-Ameyaw", "22003933": "Raudatu Deishini Mohammed Awal",
+  "22218511": "Roxann Ankobea-Kokroe", "21919326": "Sarfo Vannessa Adams", "22538085": "Sarkodie Raymond",
+  "21008757": "Sarpong Abena Adutwumwaa", "22648542": "Segbefia Jake Etse", "22435656": "Segbenya Edem",
+  "21914691": "Sekyi Kelvin Asiedu", "22065297": "Serwaa Afia Opoku Agyemang", "21756237": "Serwaa Nana Adoma",
+  "21873633": "Shanti Abena Thanki", "22086004": "Somuah Herbert Koranteng", "22551945": "Stacey Shenchu Kimbi",
+  "22462485": "Stephan Kofi Ewenam Zewuze", "22399422": "Stephen Kofi Apemah-Baah", "22646382": "Stephen Nana Boamah",
+  "22042354": "Sumani Anis Wonta", "21910531": "TAHIRU Akor Munziru", "22272601": "Takyi Timothy",
+  "22677767": "Taufiq Nassara Sadiq", "22336160": "Tetteh Daniel Nii Awuley", "21830521": "Tibu Seth",
+  "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
+  "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
+  "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
+  "BME_BETA1": "Beta Tester",
 };
-
-export const CLASS_LIST: { [key: string]: string } = {
-  "22028883": "Asante Okyere",
-  "22000001": "Ama Owusu",
-  "22000002": "Kwame Mensah",
-  "22000003": "Abena Asante",
-  "22000004": "Kofi Boateng",
-  "22000005": "Akosua Darko",
-  "22000006": "Yaw Amponsah",
-  "22000007": "Efua Quaye",
-  "22000008": "Kwesi Ofori",
-  "22000009": "Adwoa Sarpong",
-  "22000010": "Nana Adu",
-};
-
-export const TIMETABLE: { [key: string]: { time: string; course: string; venue: string }[] } = {
-  Monday: [
-    { time: "08:00 - 10:00", course: "BME 251 - Biomechanics", venue: "Eng. Block A" },
-    { time: "12:00 - 14:00", course: "BME 253 - Bioinstrumentation", venue: "Lab 2" },
-  ],
-  Tuesday: [
-    { time: "10:00 - 12:00", course: "BME 255 - Physiology for Engineers", venue: "Lecture Hall 3" },
-    { time: "14:00 - 16:00", course: "MATH 253 - Numerical Methods", venue: "Eng. Block B" },
-  ],
-  Wednesday: [
-    { time: "08:00 - 10:00", course: "BME 251 - Biomechanics", venue: "Eng. Block A" },
-    { time: "14:00 - 16:00", course: "BME 257 - Medical Imaging", venue: "Lab 3" },
-  ],
-  Thursday: [
-    { time: "10:00 - 12:00", course: "BME 253 - Bioinstrumentation", venue: "Lab 2" },
-    { time: "14:00 - 16:00", course: "BME 255 - Physiology for Engineers", venue: "Lecture Hall 3" },
-  ],
-  Friday: [
-    { time: "08:00 - 10:00", course: "MATH 253 - Numerical Methods", venue: "Eng. Block B" },
-    { time: "10:00 - 12:00", course: "BME 257 - Medical Imaging", venue: "Lab 3" },
-  ],
-};
-
-export const COURSE_CREDITS: { [key: string]: number } = {
-  "BME 251": 3,
-  "BME 253": 3,
-  "BME 255": 3,
-  "BME 257": 3,
-  "MATH 253": 3,
-};
-
-export const ADMIN_IDS: string[] = ["22028883"];
-
-export const ACHIEVEMENTS = [
-  { id: "first_login", title: "First Steps", description: "Logged in for the first time", icon: "🎉" },
-  { id: "streak_7", title: "Week Warrior", description: "7-day login streak", icon: "🔥" },
-  { id: "streak_30", title: "Monthly Master", description: "30-day login streak", icon: "⚡" },
-  { id: "cwa_calc", title: "Grade Tracker", description: "Used the CWA calculator", icon: "📊" },
-  { id: "notes_saved", title: "Note Taker", description: "Saved your first note", icon: "📝" },
-  { id: "attendance_marked", title: "Present!", description: "Marked attendance for the first time", icon: "✅" },
-];
-
-export const RESOURCES = [
-  { title: "BME 251 - Biomechanics Notes", url: "#", type: "pdf", course: "BME 251" },
-  { title: "BME 253 - Lab Manual", url: "#", type: "pdf", course: "BME 253" },
-  { title: "BME 255 - Physiology Slides", url: "#", type: "slides", course: "BME 255" },
-  { title: "MATH 253 - Past Questions", url: "#", type: "pdf", course: "MATH 253" },
-  { title: "BME 257 - Imaging Handbook", url: "#", type: "pdf", course: "BME 257" },
-];
