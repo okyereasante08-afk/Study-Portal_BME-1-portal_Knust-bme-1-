@@ -186,10 +186,10 @@ const TIMETABLE: { [key: string]: any[] } = {
     { id: "t3", time: "13:00 - 14:55", course: "BME 166", venue: "PB020", lecturer: "C. Apprey", type: "Lecture", weekday: 2 },
   ],
   Wednesday: [
-    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-GF", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
+    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-THIRD FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
   ],
   Thursday: [
-    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-FF1", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
+    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-SECOND FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
   ],
   Friday: [
     { id: "f1", time: "08:00 - 09:55", course: "ME 166", venue: "NEB-FF2", lecturer: "K. O. Amoabeng", type: "Lecture", weekday: 5 },
