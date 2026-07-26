@@ -156,11 +156,11 @@ const CLASS_LIST: { [id: string]: string } = {
 const COURSE_CREDITS = [
   { code: "MATH 152", name: "Calculus", credits: 4 },
   { code: "COE 152", name: "Basic Electronics", credits: 3 },
-  { code: "BME 166", name: "Biochemistry", credits: 3 },
-  { code: "PHY 154", name: "Properties of Matter", credits: 3 },
+  { code: "BME 166", name: "Biochemistry", credits: 2 },
+  { code: "PHY 154", name: "Properties of Matter", credits: 2 },
   { code: "ME 166", name: "Applied Thermodynamics", credits: 2 },
   { code: "ENGL 158", name: "Comm. Skills II", credits: 2 },
-  { code: "SOC 152", name: "Sociology", credits: 2 },
+  { code: "SOC 152", name: "Sociology", credits: 3 },
 ];
 
 const COURSE_COLORS: Record<string, string> = {
@@ -177,16 +177,16 @@ const COURSE_COLORS: Record<string, string> = {
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: "m1", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", weekday: 1 },
-    { id: "m2", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", weekday: 1 },
+    { id: "m1", time: "7:00  -  9:00", course: "BME 166", venue: "LT(Behind Levine Building)"   , lecturer: "C. Apprey", type:"Lecture", weekday: 1 },
+    { id: "m2", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", weekday: 1 },
+    { id: "m3", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", weekday: 1 },
   ],
   Tuesday: [
     { id: "t1", time: "08:00 - 09:55", course: "SOC 152", venue: "PB012", lecturer: "O. K. J. R. Kwabena", type: "Lecture", weekday: 2 },
     { id: "t2", time: "10:30 - 12:25", course: "COE 152", venue: "PB020", lecturer: "D. A. Addo", type: "Lecture", weekday: 2 },
-    { id: "t3", time: "13:00 - 14:55", course: "BME 166", venue: "PB020", lecturer: "C. Apprey", type: "Lecture", weekday: 2 },
   ],
   Wednesday: [
-    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-THIRD FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
+    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-FIRST FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
   ],
   Thursday: [
     { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-SECOND FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
