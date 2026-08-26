@@ -101,7 +101,7 @@ const useTheme = () => useContext(ThemeContext);
 // ============================================================
 
 const ADMIN_IDS = ["22028883"];
-const GHOST_ID = "BME_BETA1";
+const GHOST_ID = "BME_BETA1"; "RICHIE123";
 
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
