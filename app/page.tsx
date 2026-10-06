@@ -1,107 +1,22 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PhotoUpload from "./components/PhotoUpload";
 import Link from "next/link";
-import OnboardingTutorial from "./components/OnboardingTutorial";
 import {
   Calculator, MessageCircle, BookOpen, Bell, LogOut, Activity,
   Download, Upload, CheckCircle, Send, Zap, Coffee, Laugh,
   Play, ChevronRight, X, ExternalLink, MessageSquare, Home as HomeIcon,
   Calendar, BarChart2, User, Menu, ChevronDown, Clock, MapPin,
-  TrendingUp, AlertCircle, FileText, Star, Palette, Sun, Moon
+  TrendingUp, AlertCircle, FileText, Star
 } from "lucide-react";
-
-// ============================================================
-// THEME SYSTEM
-// ============================================================
-
-type ThemeKey = "light" | "dark" | "mono" | "custom";
-
-interface ThemeTokens {
-  pageBg: string; sidebarBg: string; cardBg: string; inputBg: string;
-  pillActiveBg: string; pillInactiveBg: string; headerBg: string; userCardBg: string;
-  border: string; borderStrong: string;
-  textPrimary: string; textSecondary: string; textMuted: string; textInverse: string;
-  accent: string; accentText: string;
-  navActiveBg: string; navActiveText: string; navInactiveText: string;
-  fontBody: string; fontHeading: string;
-}
-
-const THEMES: Record<ThemeKey, ThemeTokens> = {
-  light: {
-    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
-    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
-    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
-    accent:"#2d2416",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-  dark: {
-    pageBg:"#0f0f0f",sidebarBg:"#161616",cardBg:"#1e1e1e",inputBg:"#252525",
-    pillActiveBg:"#ffffff",pillInactiveBg:"#252525",headerBg:"#0f0f0f",userCardBg:"#252525",
-    border:"#2a2a2a",borderStrong:"#3a3a3a",
-    textPrimary:"#ffffff",textSecondary:"#b8a99a",textMuted:"#6b5e52",textInverse:"#0f0f0f",
-    accent:"#ffffff",accentText:"#111111",
-    navActiveBg:"#2a2a2a",navActiveText:"#ffffff",navInactiveText:"#6b5e52",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-  mono: {
-    pageBg:"#ffffff",sidebarBg:"#fafafa",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#111111",pillInactiveBg:"#ffffff",headerBg:"#ffffff",userCardBg:"#ffffff",
-    border:"#e5e5e5",borderStrong:"#cccccc",
-    textPrimary:"#111111",textSecondary:"#444444",textMuted:"#999999",textInverse:"#ffffff",
-    accent:"#111111",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#999999",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-  custom: {
-    pageBg:"rgb(255,251,240)",sidebarBg:"rgb(255,255,250)",cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:"#2d2416",pillInactiveBg:"#ffffff",headerBg:"rgb(255,251,240)",userCardBg:"#ffffff",
-    border:"rgb(225,221,210)",borderStrong:"#d4c9b8",
-    textPrimary:"#111111",textSecondary:"rgb(25,6,12)",textMuted:"#888888",textInverse:"#ffffff",
-    accent:"#2d2416",accentText:"#ffffff",
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"rgb(25,6,12)",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  },
-};
-
-function buildCustomTheme(accent: string): ThemeTokens {
-  const r=parseInt(accent.slice(1,3),16),g=parseInt(accent.slice(3,5),16),b=parseInt(accent.slice(5,7),16);
-  const brightness=(r*299+g*587+b*114)/1000;
-  const accentText=brightness>140?"#111111":"#ffffff";
-  const tint=(add:number,v:number)=>Math.min(255,v+add);
-  const pageBg=`rgb(${tint(210,r)},${tint(215,g)},${tint(218,b)})`;
-  const sidebarBg=`rgb(${tint(220,r)},${tint(225,g)},${tint(228,b)})`;
-  const border=`rgb(${tint(180,r)},${tint(185,g)},${tint(188,b)})`;
-  const textSecondary=`rgb(${Math.max(0,r-20)},${Math.max(0,g-30)},${Math.max(0,b-10)})`;
-  return {
-    pageBg,sidebarBg,cardBg:"#ffffff",inputBg:"#ffffff",
-    pillActiveBg:accent,pillInactiveBg:"#ffffff",headerBg:pageBg,userCardBg:"#ffffff",
-    border,borderStrong:border,
-    textPrimary:"#111111",textSecondary,textMuted:"#888888",textInverse:accentText,
-    accent,accentText,
-    navActiveBg:"#ffffff",navActiveText:"#111111",navInactiveText:"#888888",
-    fontBody:"'Montserrat', sans-serif",fontHeading:"'Syne', sans-serif",
-  };
-}
-
-const ThemeContext = createContext<{
-  theme: ThemeTokens; themeKey: ThemeKey;
-  setThemeKey: (k: ThemeKey) => void;
-  customAccent: string; setCustomAccent: (c: string) => void;
-}>({ theme:THEMES.light,themeKey:"light",setThemeKey:()=>{},customAccent:"#2d2416",setCustomAccent:()=>{} });
-
-const useTheme = () => useContext(ThemeContext);
 
 // ============================================================
 // DATA
 // ============================================================
 
 const ADMIN_IDS = ["22028883"];
-const GHOST_ID = "BME_BETA1"; "RICHIE123";
+const GHOST_ID = "BME_BETA1";
 
 const CLASS_LIST: { [id: string]: string } = {
   "21935355": "Aaron Oduro", "22123354": "Abena Dufie Opare-Baah", "22088436": "Abena Tabuaa Obeng-Mensah",
@@ -149,47 +64,47 @@ const CLASS_LIST: { [id: string]: string } = {
   "22677767": "Taufiq Nassara Sadiq", "22336160": "Tetteh Daniel Nii Awuley", "21830521": "Tibu Seth",
   "21721342": "Tieku Timah Princess", "22185447": "Twumasi Nicolina Nana Akua", "22263241": "Winnifred Monney",
   "22345160": "Worlase Afua Kportufe", "22247637": "Yao-Kumah Davida Eyram", "22348338": "Yeboah Yaa Gyamfuaa",
-  "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare", "000": "NK",
-  "BME_BETA1": "Beta Tester",  "RICHIE123": "bestboy_richie",
+  "22339201": "Williams-Peniel Enoch", "22239294": "Chris Nana Yaw Asare",
+  "BME_BETA1": "Beta Tester",
 };
 
 const COURSE_CREDITS = [
   { code: "MATH 152", name: "Calculus", credits: 4 },
   { code: "COE 152", name: "Basic Electronics", credits: 3 },
-  { code: "BME 166", name: "Biochemistry", credits: 2 },
-  { code: "PHY 154", name: "Properties of Matter", credits: 2 },
+  { code: "BME 166", name: "Biochemistry", credits: 3 },
+  { code: "PHY 154", name: "Properties of Matter", credits: 3 },
   { code: "ME 166", name: "Applied Thermodynamics", credits: 2 },
   { code: "ENGL 158", name: "Comm. Skills II", credits: 2 },
-  { code: "SOC 152", name: "Sociology", credits: 3 },
+  { code: "SOC 152", name: "Sociology", credits: 2 },
 ];
 
 const COURSE_COLORS: Record<string, string> = {
-  "SOC 152": "#8b7355",
-  "COE 152": "#8b7355",
-  "BME 166": "#8b7355",
-  "MATH 152": "#8b7355",
-  "MATH 152 A": "#8b7355",
-  "MATH 152 B": "#8b7355",
-  "PHY 154": "#8b7355",
-  "ME 166": "#8b7355",
-  "ENGL 158": "#8b7355",
+  "SOC 152": "#22c55e",
+  "COE 152": "#f59e0b",
+  "BME 166": "#3b82f6",
+  "MATH 152": "#8b5cf6",
+  "MATH 152 A": "#8b5cf6",
+  "MATH 152 B": "#8b5cf6",
+  "PHY 154": "#06b6d4",
+  "ME 166": "#f97316",
+  "ENGL 158": "#ec4899",
 };
 
 const TIMETABLE: { [key: string]: any[] } = {
   Monday: [
-    { id: "m1", time: "7:00  -  9:00", course: "BME 166", venue: "LT(Behind Levine Building)"   , lecturer: "C. Apprey", type:"Lecture", weekday: 1 },
-    { id: "m2", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", weekday: 1 },
-    { id: "m3", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", weekday: 1 },
+    { id: "m1", time: "13:00 - 14:55", course: "PHY 154", venue: "Room G01", lecturer: "R. M. Noye", type: "Lecture", weekday: 1 },
+    { id: "m2", time: "15:00 - 16:55", course: "ENGL 158", venue: "Eng. Audit", lecturer: "Z. Osei", type: "Lecture", weekday: 1 },
   ],
   Tuesday: [
     { id: "t1", time: "08:00 - 09:55", course: "SOC 152", venue: "PB012", lecturer: "O. K. J. R. Kwabena", type: "Lecture", weekday: 2 },
     { id: "t2", time: "10:30 - 12:25", course: "COE 152", venue: "PB020", lecturer: "D. A. Addo", type: "Lecture", weekday: 2 },
+    { id: "t3", time: "13:00 - 14:55", course: "BME 166", venue: "PB020", lecturer: "C. Apprey", type: "Lecture", weekday: 2 },
   ],
   Wednesday: [
-    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-FIRST FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
+    { id: "w1", time: "08:00 - 09:55", course: "MATH 152 A", venue: "NEB-GF", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 3 },
   ],
   Thursday: [
-    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-SECOND FLOOR", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
+    { id: "th1", time: "13:00 - 14:55", course: "MATH 152 B", venue: "NEB-FF1", lecturer: "J. K. K. Asamoah", type: "Lecture", weekday: 4 },
   ],
   Friday: [
     { id: "f1", time: "08:00 - 09:55", course: "ME 166", venue: "NEB-FF2", lecturer: "K. O. Amoabeng", type: "Lecture", weekday: 5 },
@@ -200,12 +115,12 @@ const TIMETABLE: { [key: string]: any[] } = {
 const SURVIVAL_KIT = [
   {
     course: "MATH 152 — CALCULUS WITH ANALYSIS", color: "#8b5cf6", emoji: "🧮",
-    resources: [
-      { label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
-      { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
-      { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
+    resources: [{ label: "Calculus 1/Math 152- Full Playlist(Skancity Academy)", url: "https://www.youtube.com/playlist?list=PLInywrvFyvq6_G3iA7LHbt5exJgGbp4Ok" },
+    { label: "Calculus Tutorials-Finish Calculus 1 in just 19 videos", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vLRQWLdtVN_OkMYobabpj0i" },
+    { label: "Calculus in 22 days- with simply 4 videos a day finish Calculus in just 3 weeks", url: "https://www.youtube.com/playlist?list=PLLRIy3Upn5vJ6TW_6ex6cMXWhcvAt3JZl" },
     ]
   },
+
   {
     course: "ME 166 — Basic Electronics", color: "#f97316", emoji: "🪫",
     resources: [
@@ -217,6 +132,7 @@ const SURVIVAL_KIT = [
       { label: "Diodes", url: "https://youtu.be/n4XZ02N11Hc?si=hhDRvOEa4MtBWwsP" },
       { label: "Solving Diode Circuits", url: "https://youtu.be/sDWWGhuRqFs?si=MozZmpTDcPLBV8dh" },
       { label: "Basic Electronics for Begginers (Organic Chem Tutor)", url: "https://youtu.be/uXr4lXYjXuU?list=PL0o_zxa4K1BV9E-N8tSExU1djL6slnjbL" },
+
     ]
   },
   {
@@ -241,46 +157,77 @@ const SURVIVAL_KIT = [
   },
   {
     course: "PHY 154 — Properties of Matter ", color: "#06b6d4", emoji: "🧪",
-    resources: [
-      { label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
-      { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
-      { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
-      { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
-      { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
-      { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
-      { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
-      { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
-      { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
-      { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
-      { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
-      { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
-      { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
-      { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
-      { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
-      { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
-      { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
+    resources: [{ label: "Density", url: "youtube.com/watch?v=NL9LRvcWxHs&pp=ygUURGVuc2l0eSBsZWN0dXJlIGZ1bGw%3D" },
+    { label: "Fortins Barometer", url: "https://www.youtube.com/watch?v=S4pUMNdSIYk" },
+    { label: "Variation of atmospheric pressure with altitude", url: "https://youtu.be/WGxuELoFzO4?si=nNJskZvYXo0Wvo9p" },
+    { label: "Bernoulli's Equation Example Problems, Fluid Mechanics", url: "https://www.youtube.com/watch?v=xTAfyc06ZxQ" },
+    { label: "Bernoulli's Principle Demo: Levitated Balls", url: "https://www.youtube.com/watch?v=Ye3QPgDdJNg" },
+    { label: "Torricelli's Theorem -Explained", url: "https://youtu.be/2vfTwnlsrCM?si=nkc2XVXY6nxZCTAU" },
+    { label: "Torricelli's Law in 2 minutes", url: "https://youtu.be/LNgrIssGZlc?si=XLYtVYkwWHNv-b9S" },
+    { label: "Torricelli's Theorem practice problems", url: "https://www.youtube.com/watch?v=046-DygKrhc" },
+    { label: "What is pitot tube? 3D Animation", url: "https://youtu.be/3zEdtkuNYLU?si=66XMbfPdG3ykQLM6" },
+    { label: "Pitot Static Tube Introduction & Example", url: "https://www.youtube.com/watch?v=VOMO7zsvHsM" },
+    { label: "Streamlines and Velocity", url: "https://youtu.be/AGve4RZ4zjw?si=yVwwXP6W9udDhT-_" },
+    { label: "Streamlines and Velocity 2", url: "https://youtu.be/kDO3EcXblwg?si=Z4Ix44waDRcyxQPn" },
+    { label: "Steady vs Unsteady Flow", url: "https://youtu.be/-a7EtooUf5U?si=LNGn5kMW1HF2fiUq" },
+    { label: "Elasticity", url: "https://www.youtube.com/watch?v=HALbtyDUjp0&pp=ygUXZWxhc3RpY2l0eSBmdWxsIGxlY3R1cmU%3D" },
+    { label: "Poiseuille's Law - Pressure Difference-Volume Flow Rate", url: "https://youtu.be/UeQu19VChjE?si=8ZFcvj7jwmA7FfRa" },
+    { label: "Viscosity of Fluids& Velocity Gradient", url: "https://youtu.be/PoG14wRRQmM?si=pR7OFoRmBhoUYPwD" },
+    { label: "★Newtons law of viscosity ★Stoke's law ★Terminal velocity", url: "https://youtu.be/tWO-NikCrzs?si=HHl_lcQShn_hWq1k" },
+
     ]
   },
 ];
 
+
 const END_OF_SEM_DATE = new Date("2026-09-04T00:00:00");
+
+// ── SUPABASE ─────────────────────────────────────────────────
+const SB_URL = "https://xkrrbuoxgkusbensdtqt.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhrcnJidW94Z2t1c2JlbnNkdHF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjUyMDksImV4cCI6MjA4OTYwMTIwOX0.1je5yDEolgYN9b3u4omiFDCKa7OuNX8t48K1ujQuRno";
+async function sbUpsert(table: string, data: Record<string, unknown>) {
+  try {
+    await fetch(`${SB_URL}/rest/v1/${table}`, {
+      method: "POST",
+      headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates" },
+      body: JSON.stringify(data),
+    });
+  } catch {}
+}
+async function sbGet(table: string, query: string): Promise<any[]> {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {
+      headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` },
+    });
+    return r.ok ? r.json() : [];
+  } catch { return []; }
+}
+
+// ── SEM 2 MIGRATION KEY ──────────────────────────────────────
+const SEM2_MIGRATION_KEY = "bme-sem2-migrated";
+
+
 const MID_SEM_START = new Date("2026-07-06T00:00:00");
 const EXAMS_START = new Date("2026-08-17T00:00:00");
 const PORTAL_VERSION = "2.2.0";
 
-const SEM2_VERSION_KEY = "bme-sem-version";
-const SEM2_VERSION_VAL = "2026-S2";
-const MAX_ATTENDANCE_EDITS = 3;
+// ── Semester session calculation ─────────────────────────────────────────────
 const SEM_START = new Date("2026-05-25T00:00:00");
 
+/** Periods that contain no teaching: mid-sem break + exam period */
 const EXCLUDED_RANGES: [Date, Date][] = [
   [new Date("2026-07-06T00:00:00"), new Date("2026-07-10T00:00:00")],
   [new Date("2026-08-17T00:00:00"), new Date("2026-09-04T00:00:00")],
 ];
 
+/** Returns true if the given date falls inside an excluded period. */
 const isExcluded = (date: Date): boolean =>
   EXCLUDED_RANGES.some(([s, e]) => date >= s && date <= e);
 
+/**
+ * Counts how many teaching occurrences of a given ISO weekday (0 Sun … 6 Sat)
+ * fall between SEM_START and END_OF_SEM_DATE, excluding break/exam periods.
+ */
 const calcTotalSemesterSessions = (weekday: number): number => {
   let count = 0;
   const cursor = new Date(SEM_START);
@@ -291,6 +238,7 @@ const calcTotalSemesterSessions = (weekday: number): number => {
   return count;
 };
 
+/** Pre-computed totals: Mon=1 … Fri=5 */
 const SESSIONS_BY_WEEKDAY: Record<number, number> = {
   1: calcTotalSemesterSessions(1),
   2: calcTotalSemesterSessions(2),
@@ -299,6 +247,7 @@ const SESSIONS_BY_WEEKDAY: Record<number, number> = {
   5: calcTotalSemesterSessions(5),
 };
 
+/** Courses below this attendance % are flagged "At Risk" */
 const AT_RISK_THRESHOLD = 70;
 
 const timeToMinutes = (t: string) => {
@@ -310,31 +259,23 @@ const timeToMinutes = (t: string) => {
 // HELPER COMPONENTS
 // ============================================================
 
-const Avatar = ({ name, size = 36, onClick, photoUrl }: { name: string; size?: number; onClick?: () => void; photoUrl?: string | null }) => {
+const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
-  if (photoUrl) {
-    return (
-      <img src={photoUrl} alt={name} onClick={onClick}
-        title={onClick ? "Go to profile" : undefined}
-        style={{ width: size, height: size, borderRadius: size / 2, objectFit: "cover", cursor: onClick ? "pointer" : "default", border: "2px solid #e8d5c4", flexShrink: 0 }} />
-    );
-  }
   return (
-    <div onClick={onClick} title={onClick ? "Go to profile" : undefined}
-      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: onClick ? "pointer" : "default", transition: "opacity 0.15s" }}
-      onMouseEnter={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "0.8"; }}
-      onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}>
+    <div
+      style={{ width: size, height: size, borderRadius: size / 2, background: "linear-gradient(135deg, #e8d5c4, #c9a87c)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+    >
       <span style={{ fontSize: size * 0.36, fontWeight: 700, color: "#5c3d1e", fontFamily: "'Syne', sans-serif" }}>{initials}</span>
     </div>
   );
 };
 
 const AttendanceBadge = ({ pct }: { pct: number }) => {
-  const atRisk = pct < AT_RISK_THRESHOLD;
-  const label = atRisk ? <><em><strong>At Risk</strong></em></> : "On track";
+  const color = pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
+  const label = pct >= AT_RISK_THRESHOLD ? "On track" : pct >= 50 ? "At Risk ⚠" : "At Risk 🚨";
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: "rgba(45,36,22,0.07)", color: "#2d2416" }}>
-      <span style={{ width: 6, height: 6, borderRadius: 3, background: "#2d2416", display: "inline-block" }} /> {label}
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: color + "18", color }}>
+      <span style={{ width: 6, height: 6, borderRadius: 3, background: color, display: "inline-block" }} /> {label}
     </span>
   );
 };
@@ -351,32 +292,6 @@ const BMEChatbot = ({ studentName, studentID }: { studentName: string; studentID
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const [pos, setPos] = useState({ x: 24, y: 24 });
-  const dragging = useRef(false);
-  const offset = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      if (!dragging.current) return;
-      setPos({ x: offset.current.x - e.clientX, y: offset.current.y - e.clientY });
-    };
-    const onMouseUp = () => { dragging.current = false; };
-    const onTouchMove = (e: TouchEvent) => {
-      if (!dragging.current) return;
-      const t = e.touches[0];
-      setPos({ x: offset.current.x - t.clientX, y: offset.current.y - t.clientY });
-    };
-   const onTouchEnd = () => { dragging.current = false; };
-window.addEventListener("mousemove", onMouseMove);
-window.addEventListener("mouseup", onMouseUp);
-window.addEventListener("touchend", onTouchEnd);
-return () => {
-  window.removeEventListener("mousemove", onMouseMove);
-  window.removeEventListener("mouseup", onMouseUp);
-  window.removeEventListener("touchend", onTouchEnd);
-};
-  }, []);
 
   useEffect(() => {
     if (open) {
@@ -408,12 +323,11 @@ return () => {
 
   return (
     <>
-      <div style={{ position: "fixed", bottom: pos.y, right: pos.x, zIndex: 70 }}>
+      <div style={{ position: "fixed", bottom: 88, right: 16, zIndex: 70 }}>
         <button
-         onMouseDown={(e) => { dragging.current = true; offset.current = { x: e.clientX + pos.x, y: e.clientY + pos.y }; (e.currentTarget as HTMLButtonElement).dataset.startX = String(e.clientX); (e.currentTarget as HTMLButtonElement).dataset.startY = String(e.clientY); }}
-onClick={(e) => { const dx = e.clientX - Number((e.currentTarget as HTMLButtonElement).dataset.startX); const dy = e.clientY - Number((e.currentTarget as HTMLButtonElement).dataset.startY); if (Math.abs(dx) < 5 && Math.abs(dy) < 5) setOpen((o) => !o); }}
+          onClick={() => setOpen((o) => !o)}
           data-chatbot-toggle="true"
-          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
+          style={{ width: 52, height: 52, borderRadius: 26, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#f0ebe3" : "#2d2416", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.2s" }}
         >
           {open ? <X size={18} color="#8b7355" /> : <MessageSquare size={20} color="#f0ebe3" />}
         </button>
@@ -421,6 +335,7 @@ onClick={(e) => { const dx = e.clientX - Number((e.currentTarget as HTMLButtonEl
           <span style={{ position: "absolute", top: -4, right: -4, background: "#f59e0b", color: "#fff", fontSize: 8, fontWeight: 800, padding: "2px 5px", borderRadius: 10, letterSpacing: 0.5 }}>BETA</span>
         )}
       </div>
+
       <AnimatePresence>
         {open && (
           <motion.div
@@ -577,8 +492,8 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
           {COURSE_CREDITS.map((c) => (
             <div key={c.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 12, background: "#faf8f4", border: "1px solid #f0ebe3" }}>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>{c.code}</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0", fontStyle: "italic" }}>{c.name} · {c.credits} cr</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0 }}>{c.code}</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: "1px 0 0" }}>{c.name} · {c.credits} cr</p>
               </div>
               <input type="number" placeholder="—" min={0} max={100}
                 onChange={(e) => { const v = Math.min(100, Math.max(0, parseInt(e.target.value) || 0)); setMarks({ ...marks, [c.code]: v.toString() }); e.target.value = v.toString(); }}
@@ -588,7 +503,7 @@ const CWAModal = ({ onClose }: { onClose: () => void }) => {
         </div>
         {cwa !== null && (
           <div style={{ margin: "0 16px", padding: "14px 18px", borderRadius: 14, background: "#faf8f4", border: "1px solid #ece8e0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 700, fontStyle: "italic" }}>Projected CWA</span>
+            <span style={{ fontSize: 13, color: "#8b7355", fontWeight: 600 }}>Projected CWA</span>
             <span style={{ fontSize: 32, fontWeight: 800, color: cwa >= 70 ? "#22c55e" : cwa >= 60 ? "#f59e0b" : "#ef4444" }}>{cwa}</span>
           </div>
         )}
@@ -652,8 +567,7 @@ const UpdatesModal = ({ announcements, files, onClose }: { announcements: any[];
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
-function HomeInner() {
-  const { theme, themeKey, setThemeKey, customAccent, setCustomAccent } = useTheme();
+export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [studentID, setStudentID] = useState("");
   const [password, setPassword] = useState("");
@@ -676,10 +590,9 @@ function HomeInner() {
   const [adminAccessCode, setAdminAccessCode] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<"home" | "schedule" | "progress" | "focus" | "profile">("home");
+  // Dashboard state
+  const [activeTab, setActiveTab] = useState<"home" | "schedule" | "semester" | "progress" | "profile">("home");
   const [showWeekView, setShowWeekView] = useState(false);
   const [scheduleView, setScheduleView] = useState<"today" | "week" | "grid">("today");
   const [showCWAModal, setShowCWAModal] = useState(false);
@@ -687,8 +600,12 @@ function HomeInner() {
   const [showSurvivalKit, setShowSurvivalKit] = useState(false);
   const [attendance, setAttendance] = useState<{ [key: string]: number }>({});
   const [attendanceMarked, setAttendanceMarked] = useState<{ [key: string]: boolean }>({});
-  const [attendanceStatus, setAttendanceStatus] = useState<{ [key: string]: "attended" | "skipped" | null }>({});
-  const [attendanceEdits, setAttendanceEdits] = useState<{ [key: string]: number }>({});
+  // Sem 2: detailed log { classId_dateKey: "attended"|"missed"|"" }
+  const [attLog, setAttLog] = useState<Record<string, "attended"|"missed"|"">>({});
+  // Edit counts { classId_dateKey: number } — max 3 edits
+  const [attEdits, setAttEdits] = useState<Record<string, number>>({});
+  // Live Study Pulse
+  const [pulseData, setPulseData] = useState<{online:number;studying:number;lofi:number;total:number}>({online:0,studying:0,lofi:0,total:0});
   const [daysToEnd, setDaysToEnd] = useState(0);
   const [daysToMidSem, setDaysToMidSem] = useState(0);
   const [daysToExams, setDaysToExams] = useState(0);
@@ -697,6 +614,7 @@ function HomeInner() {
   const [nextClassInfo, setNextClassInfo] = useState<{ course: string; venue: string; startTime: string; minsUntil: number } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Timer state
   const [timerActive, setTimerActive] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(25 * 60);
   const [timerMode, setTimerMode] = useState<"focus" | "break">("focus");
@@ -704,51 +622,41 @@ function HomeInner() {
   const [focusMins, setFocusMins] = useState(25);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [lofiPlaying, setLofiPlaying] = useState(false);
-  const [lofiVolume, setLofiVolume] = useState(0.6);
-  const [lofiChannel, setLofiChannel] = useState("lofi-hiphop");
-  const [lofiCustomUrl, setLofiCustomUrl] = useState("");
-  const [lofiShowCustom, setLofiShowCustom] = useState(false);
-  const [lofiAudioOnly, setLofiAudioOnly] = useState(true);
-  const lofiIframeRef = useRef<HTMLIFrameElement | null>(null);
-  const lofiAudioRef = useRef<HTMLAudioElement | null>(null);
-
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      if (localStorage.getItem(SEM2_VERSION_KEY) !== SEM2_VERSION_VAL) {
-        Object.keys(CLASS_LIST).forEach((id) => {
-          localStorage.removeItem(`bme-marked-${id}`);
-          localStorage.removeItem(`bme-att-status-${id}`);
-          localStorage.removeItem(`bme-att-edits-${id}`);
-        });
-        localStorage.removeItem("bme-attendance");
-        localStorage.setItem(SEM2_VERSION_KEY, SEM2_VERSION_VAL);
-      }
       const savedID = localStorage.getItem("bme-session-id");
       if (savedID && CLASS_LIST[savedID]) {
         setStudentID(savedID); setStudentName(CLASS_LIST[savedID]); setIsLoggedIn(true);
         setIsAdmin(ADMIN_IDS.includes(savedID) || localStorage.getItem("bme-admin-access") === "true");
-        setAvatarUrl(localStorage.getItem(`bme-avatar-${savedID}`) ?? null);
       }
-      const savedAtt = localStorage.getItem("bme-attendance");
+      // ── Sem 2 migration: wipe Sem 1 keys once ──────────────
+      if (!localStorage.getItem(SEM2_MIGRATION_KEY)) {
+        ["bme-attendance", `bme-marked-${savedID}`, "bme-notes"].forEach(k => localStorage.removeItem(k));
+        localStorage.setItem(SEM2_MIGRATION_KEY, "1");
+      }
+      const savedAtt = localStorage.getItem("bme-attendance-s2");
       if (savedAtt) setAttendance(JSON.parse(savedAtt));
-      const savedMarked = localStorage.getItem(`bme-marked-${savedID}`);
+      const savedMarked = localStorage.getItem(`bme-marked-s2-${savedID}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
-      const savedStatus = localStorage.getItem(`bme-att-status-${savedID}`);
-      if (savedStatus) setAttendanceStatus(JSON.parse(savedStatus));
-      const savedEdits = localStorage.getItem(`bme-att-edits-${savedID}`);
-      if (savedEdits) setAttendanceEdits(JSON.parse(savedEdits));
+      const savedLog = localStorage.getItem(`bme-attlog-${savedID}`);
+      if (savedLog) setAttLog(JSON.parse(savedLog));
+      const savedEdits = localStorage.getItem(`bme-attedits-${savedID}`);
+      if (savedEdits) setAttEdits(JSON.parse(savedEdits));
       const savedAnn = localStorage.getItem("bme-announcements");
       if (savedAnn) setAnnouncements(JSON.parse(savedAnn));
       const savedFiles = localStorage.getItem("bme-files");
       if (savedFiles) setFiles(JSON.parse(savedFiles));
-    }
+    } // Closes the 'if (typeof window !== "undefined")' block
+
+    // Restored: Semester countdown
     setDaysToEnd(Math.ceil((END_OF_SEM_DATE.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     setDaysToMidSem(Math.ceil((MID_SEM_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
     setDaysToExams(Math.ceil((EXAMS_START.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-  }, []);
+  }, []); // Closes the useEffect hook
 
+
+  // Timer tick
   useEffect(() => {
     if (timerActive) {
       timerRef.current = setInterval(() => {
@@ -775,6 +683,19 @@ function HomeInner() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [timerActive, focusMins]);
 
+  // Live Study Pulse
+  useEffect(() => {
+    const fetchPulse = async () => {
+      const rows: any[] = await sbGet("presence", "select=status&last_seen=gte." + new Date(Date.now() - 5 * 60 * 1000).toISOString());
+      const online = rows.filter(r => r.status === "online").length;
+      const studying = rows.filter(r => r.status === "studying").length;
+      const lofi = rows.filter(r => r.status === "lofi").length;
+      setPulseData({ online, studying, lofi, total: rows.length });
+    };
+    if (isLoggedIn) { fetchPulse(); const t = setInterval(fetchPulse, 30000); return () => clearInterval(t); }
+  }, [isLoggedIn]);
+
+  // Next class
   useEffect(() => {
     const compute = () => {
       const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -847,7 +768,6 @@ function HomeInner() {
 
   const proceedToLogin = (id: string, adminOverride = false) => {
     setStudentName(CLASS_LIST[id]); setStudentID(id); setIsLoggedIn(true);
-    if (typeof window !== "undefined" && localStorage.getItem("bme-guide-disabled") !== "true") setShowTutorial(true);
     const adminStatus = adminOverride || ADMIN_IDS.includes(id);
     setIsAdmin(adminStatus);
     if (id === GHOST_ID) { setAttendance({}); setAttendanceMarked({}); return; }
@@ -856,12 +776,14 @@ function HomeInner() {
       sendLoginLog(id, CLASS_LIST[id], isFirst);
       localStorage.setItem("bme-session-id", id);
       if (adminStatus) localStorage.setItem("bme-admin-access", "true");
-      const savedMarked = localStorage.getItem(`bme-marked-${id}`);
+      const savedMarked = localStorage.getItem(`bme-marked-s2-${id}`);
       if (savedMarked) setAttendanceMarked(JSON.parse(savedMarked));
-      const savedStatus = localStorage.getItem(`bme-att-status-${id}`);
-      if (savedStatus) setAttendanceStatus(JSON.parse(savedStatus));
-      const savedEdits = localStorage.getItem(`bme-att-edits-${id}`);
-      if (savedEdits) setAttendanceEdits(JSON.parse(savedEdits));
+      const savedLog = localStorage.getItem(`bme-attlog-${id}`);
+      if (savedLog) setAttLog(JSON.parse(savedLog));
+      const savedEdits = localStorage.getItem(`bme-attedits-${id}`);
+      if (savedEdits) setAttEdits(JSON.parse(savedEdits));
+      // Pulse: mark as online
+      sbUpsert("presence", { student_id: id, status: "online", last_seen: new Date().toISOString() });
     }
   };
 
@@ -870,40 +792,69 @@ function HomeInner() {
     setIsLoggedIn(false); setIsAdmin(false); setStudentID(""); setPassword(""); setAdminAccessCode(""); setLoginMode("student"); setIsFirstLogin(false); setFirstLoginStep("password");
   };
 
-  const setAttendanceChoice = (id: string, choice: "attended" | "skipped") => {
-    const edits = attendanceEdits[id] || 0;
-    if (edits >= MAX_ATTENDANCE_EDITS) return;
-    const prevStatus = attendanceStatus[id] ?? null;
-    const prevCount = attendance[id] || 0;
-    let newCount = prevCount;
-    if (choice === "attended" && prevStatus !== "attended") newCount = prevCount + 1;
-    if (choice === "skipped" && prevStatus === "attended") newCount = Math.max(0, prevCount - 1);
-    const newAtt = { ...attendance, [id]: newCount };
-    const newStatus = { ...attendanceStatus, [id]: choice };
-    const newMarked = { ...attendanceMarked, [id]: true };
-    const newEdits = { ...attendanceEdits, [id]: edits + 1 };
+  // ── Sem 2: dropdown-based attendance logging ────────────────
+  const getTodayKey = () => new Date().toISOString().split("T")[0]; // "2026-06-01"
+
+  const logAttendance = (classId: string, value: "attended" | "missed" | "") => {
+    const dateKey = getTodayKey();
+    const logKey = `${classId}_${dateKey}`;
+    const currentEdits = attEdits[logKey] || 0;
+    if (currentEdits >= 3) return; // max 3 changes
+
+    const newLog = { ...attLog, [logKey]: value };
+    const newEdits = { ...attEdits, [logKey]: currentEdits + 1 };
+
+    // Recalculate attendance count for this class from the log
+    const attended = Object.entries(newLog).filter(([k, v]) => k.startsWith(classId + "_") && v === "attended").length;
+    const newAtt = { ...attendance, [classId]: attended };
+
+    setAttLog(newLog);
+    setAttEdits(newEdits);
     setAttendance(newAtt);
-    setAttendanceStatus(newStatus);
-    setAttendanceMarked(newMarked);
-    setAttendanceEdits(newEdits);
+
     if (studentID !== GHOST_ID) {
-      localStorage.setItem("bme-attendance", JSON.stringify(newAtt));
-      localStorage.setItem(`bme-marked-${studentID}`, JSON.stringify(newMarked));
-      localStorage.setItem(`bme-att-status-${studentID}`, JSON.stringify(newStatus));
-      localStorage.setItem(`bme-att-edits-${studentID}`, JSON.stringify(newEdits));
+      localStorage.setItem(`bme-attlog-${studentID}`, JSON.stringify(newLog));
+      localStorage.setItem(`bme-attedits-${studentID}`, JSON.stringify(newEdits));
+      localStorage.setItem("bme-attendance-s2", JSON.stringify(newAtt));
     }
   };
 
-  const markAttendance = (id: string) => { if (!attendanceMarked[id]) setAttendanceChoice(id, "attended"); };
+  const getLogEntry = (classId: string, dateKey?: string): "attended" | "missed" | "" => {
+    const dk = dateKey || getTodayKey();
+    return attLog[`${classId}_${dk}`] || "";
+  };
 
+  const getEditsLeft = (classId: string, dateKey?: string): number => {
+    const dk = dateKey || getTodayKey();
+    return Math.max(0, 3 - (attEdits[`${classId}_${dk}`] || 0));
+  };
+
+  const markAttendance = (id: string) => {
+    if (attendanceMarked[id]) return;
+    const newAtt = { ...attendance, [id]: (attendance[id] || 0) + 1 };
+    const newMarked = { ...attendanceMarked, [id]: true };
+    setAttendance(newAtt);
+    setAttendanceMarked(newMarked);
+    if (studentID !== GHOST_ID) {
+      localStorage.setItem("bme-attendance-s2", JSON.stringify(newAtt));
+      localStorage.setItem(`bme-marked-s2-${studentID}`, JSON.stringify(newMarked));
+    }
+  };
+
+  /**
+   * Returns the attendance percentage for a class slot.
+   * `weekday` is the ISO weekday (1=Mon…5=Fri); we derive the expected
+   * total from SESSIONS_BY_WEEKDAY so it updates automatically each semester.
+   * Falls back to the legacy `totalClasses` field if weekday is absent.
+   */
   const getAttendancePct = (classId: string, weekday?: number, legacyTotal?: number): number => {
     const total = weekday ? (SESSIONS_BY_WEEKDAY[weekday] ?? legacyTotal ?? 1) : (legacyTotal ?? 1);
     return total > 0 ? Math.round(((attendance[classId] || 0) / total) * 100) : 0;
   };
 
+  /** Returns true when attendance % is below the at-risk threshold. */
   const isAtRisk = (classId: string, weekday?: number, legacyTotal?: number): boolean =>
     getAttendancePct(classId, weekday, legacyTotal) < AT_RISK_THRESHOLD;
-
   const fmtTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
   const getFirstName = (name: string) => name.split(" ")[0];
   const daysList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -920,9 +871,9 @@ function HomeInner() {
   const focusSessionsToday = timerSessions;
 
   if (!mounted) return (
-    <div style={{ minHeight: "100vh", background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ width: 40, height: 40, borderRadius: 12, background: theme.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontSize: 13, color: theme.accentText, fontWeight: 800 }}>BME</span>
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontSize: 13, color: "#f0ebe3", fontWeight: 800 }}>BME</span>
       </div>
     </div>
   );
@@ -932,24 +883,26 @@ function HomeInner() {
   // ============================================================
   if (!isLoggedIn) {
     return (
-      <div style={{ minHeight: "100vh", background: theme.pageBg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: theme.fontBody }}>
+      <div style={{ minHeight: "100vh", background: "#f7f3ed", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
           * { box-sizing: border-box; }
           input::placeholder { color: #c9b89a; }
-          input:focus { border-color: ${theme.accent} !important; }
+          input:focus { border-color: #8b7355 !important; }
           @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         `}</style>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 380, animation: "fadeUp 0.4s ease" }}>
+          {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ width: 80, height: 80, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
-              <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ width: 64, height: 64, borderRadius: 20, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
+              <span style={{ fontSize: 22, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", letterSpacing: 1 }}>BME</span>
             </div>
             <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1208", margin: "0 0 4px", fontFamily: "'Syne', sans-serif" }}>Portal Access</h1>
             <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>KNUST BME1 · Semester 2</p>
           </div>
 
           <div style={{ background: "#fff", borderRadius: 24, padding: 24, boxShadow: "0 4px 32px rgba(0,0,0,0.06)", border: "1px solid #ece8e0" }}>
+            {/* Tab toggle */}
             {!showReset && (
               <div style={{ display: "flex", gap: 6, padding: 4, background: "#f7f3ed", borderRadius: 14, marginBottom: 20 }}>
                 {(["student", "admin"] as const).map((m) => (
@@ -961,6 +914,7 @@ function HomeInner() {
               </div>
             )}
 
+            {/* Forgot password */}
             {showReset ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -1084,16 +1038,22 @@ function HomeInner() {
   // DASHBOARD
   // ============================================================
   const S = {
-    card: { background: theme.cardBg, borderRadius: 20, border: `1px solid ${theme.border}`, overflow: "hidden" } as React.CSSProperties,
-    label: { fontSize: 11, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase" as const, letterSpacing: 0.8, fontFamily: theme.fontBody },
-    sectionTitle: { fontSize: 15, fontWeight: 800, color: theme.textPrimary, margin: "0 0 14px", fontFamily: theme.fontHeading },
+    // Shared styles object
+    card: { background: "#fff", borderRadius: 20, border: "1px solid #ece8e0", overflow: "hidden" } as React.CSSProperties,
+    label: { fontSize: 11, fontWeight: 700, color: "#a8967a", textTransform: "uppercase" as const, letterSpacing: 0.8 },
+    sectionTitle: { fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 14px" },
   };
 
+  // Render the selected tab's content
   const renderHome = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Greeting */}
+  
+        <style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tangerine:wght@400;700&family=Ultra&display=swap');
+      </style>
       <div style={{ paddingBottom: 4 }}>
-        <h2 style={{ fontSize: 36, fontWeight: 700, color: "#2d2416", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
+        <h2 style={{ fontSize: 26, fontWeight: 700, color: "#023161", margin: "0 0 2px", fontFamily: "'Tangerine', cursive" }}>
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {getFirstName(studentName)}.
         </h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>
@@ -1109,15 +1069,15 @@ function HomeInner() {
             <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}
               style={{ width: 8, height: 8, borderRadius: 4, background: "#f59e0b" }} />
             <div>
-              <p style={{ fontSize: 14, fontWeight: 800, color: "#f0ebe3", margin: "0 0 1px", fontFamily: "'Syne', sans-serif" }}>{nextClassInfo.course}</p>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0, fontStyle: "italic" }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#f0ebe3", margin: "0 0 1px" }}>{nextClassInfo.course}</p>
+              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>{nextClassInfo.venue} · {nextClassInfo.startTime}</p>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontSize: 18, fontWeight: 800, color: "#f59e0b", margin: "0 0 1px" }}>
               {nextClassInfo.minsUntil < 60 ? `${nextClassInfo.minsUntil}m` : `${Math.floor(nextClassInfo.minsUntil / 60)}h ${nextClassInfo.minsUntil % 60}m`}
             </p>
-            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5, fontStyle: "italic", fontWeight: 600 }}>until class</p>
+            <p style={{ fontSize: 10, color: "#6b5438", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>until class</p>
           </div>
         </motion.div>
       )}
@@ -1126,8 +1086,8 @@ function HomeInner() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
         {[
           { label: "Credit hours", value: totalCreditHours, sub: "Sem 2", color: "#2d2416" },
-          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: "#2d2416" },
-          { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#2d2416" },
+          { label: "Avg attendance", value: `${avgAttPct}%`, sub: avgAttPct >= AT_RISK_THRESHOLD ? "On track ✓" : "At Risk ⚠", color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" },
+          { label: "Focus sessions", value: focusSessionsToday, sub: "Today", color: "#8b5cf6" },
         ].map((stat) => (
           <div key={stat.label} style={{ ...S.card, padding: "14px 12px" }}>
             <p style={{ fontSize: 24, fontWeight: 800, color: stat.color, margin: "0 0 2px", lineHeight: 1 }}>{stat.value}</p>
@@ -1135,6 +1095,29 @@ function HomeInner() {
             <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>{stat.sub}</p>
           </div>
         ))}
+      </div>
+
+      {/* Live Study Pulse */}
+      <div style={{ background: "rgba(2,49,97,0.06)", borderRadius: 14, padding: "14px 16px", border: "1px solid rgba(2,49,97,0.1)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#023161", textTransform: "uppercase", letterSpacing: 1 }}>Live Study Pulse</span>
+          <span style={{ fontSize: 10, color: "#a8967a" }}>{pulseData.total} classmate{pulseData.total !== 1 ? "s" : ""} active</span>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[
+            { label: "Online", count: pulseData.online, color: "#34d399" },
+            { label: "Studying", count: pulseData.studying, color: "#00d4ff" },
+            { label: "LoFi", count: pulseData.lofi, color: "#a855f7" },
+          ].map(({ label, count, color }) => (
+            <div key={label} style={{ flex: 1, background: "rgba(255,255,255,0.6)", borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 4 }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: color, boxShadow: `0 0 6px ${color}` }} />
+                <span style={{ fontSize: 18, fontWeight: 700, color: "#023161" }}>{count}</span>
+              </div>
+              <span style={{ fontSize: 9, color: "#a8967a", textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Today's classes */}
@@ -1155,40 +1138,25 @@ function HomeInner() {
               const color = COURSE_COLORS[cls.course] || "#8b7355";
               return (
                 <div key={cls.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 10px", borderRadius: 14, background: "#faf8f4" }}>
+                  <div style={{ width: 4, height: 48, borderRadius: 2, background: color, flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
                       <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1208", margin: 0 }}>{cls.course}</p>
                       <span style={{ fontSize: 11, color: "#a8967a" }}>{cls.time.split(" - ")[0]}</span>
                     </div>
-                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 4px" }}>{cls.venue} · {cls.lecturer}</p>
-                    <span style={{ fontSize: 11, color: "#a8967a" }}>{pct}%</span>
-                  </div>
-                  {(() => {
-                    const status = attendanceStatus[cls.id] ?? null;
-                    const edits = attendanceEdits[cls.id] || 0;
-                    const locked = edits >= MAX_ATTENDANCE_EDITS;
-                    return (
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flexShrink: 0 }}>
-                        <select
-                          value={status ?? ""}
-                          disabled={locked}
-                          onChange={(e) => { const v = e.target.value as "attended" | "skipped"; if (v) setAttendanceChoice(cls.id, v); }}
-                          style={{
-                            padding: "6px 8px", borderRadius: 10, fontSize: 11, fontWeight: 700, cursor: locked ? "not-allowed" : "pointer",
-                            border: "none", outline: "none", appearance: "auto",
-                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#2d2416",
-                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#f0ebe3",
-                            opacity: locked ? 0.7 : 1, minWidth: 60,
-                          }}
-                        >
-                          <option value="" disabled style={{ background: "#fff", color: "#1a1208" }}>{status ? "Edit" : "Here?"}</option>
-                          <option value="attended" style={{ background: "#fff", color: "#16a34a" }}>✓ Here</option>
-                          <option value="skipped" style={{ background: "#fff", color: "#dc2626" }}>✗ Skip</option>
-                        </select>
-                        {status && <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>{locked ? "🔒" : `${MAX_ATTENDANCE_EDITS - edits}x`}</span>}
+                    <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 6px" }}>{cls.venue} · {cls.lecturer}</p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#ece8e0", overflow: "hidden" }}>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8 }}
+                          style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                       </div>
-                    );
-                  })()}
+                      <span style={{ fontSize: 10, color: "#a8967a", flexShrink: 0 }}>{pct}%</span>
+                    </div>
+                  </div>
+                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
+                    style={{ padding: "6px 12px", borderRadius: 10, border: "none", cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 12, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#2d2416", color: attendanceMarked[cls.id] ? "#22c55e" : "#f0ebe3", flexShrink: 0, transition: "all 0.2s" }}>
+                    {attendanceMarked[cls.id] ? "✓" : "Here"}
+                  </button>
                 </div>
               );
             })}
@@ -1201,10 +1169,10 @@ function HomeInner() {
         <p style={{ ...S.label, marginBottom: 10 }}>Quick actions</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[
-            { icon: <Calculator size={20} color="#2d2416" />, label: "CWA calc", sub: "Project your grade", bg: "#faf8f4", action: () => setShowCWAModal(true) },
-            { icon: <BookOpen size={20} color="#2d2416" />, label: "Survival kit", sub: "Course resources", bg: "#faf8f4", action: () => setShowSurvivalKit(true) },
-            { icon: <Zap size={20} color="#2d2416" />, label: "Focus Studio", sub: "Timer · Lofi · Deep work", bg: "#faf8f4", action: () => setActiveTab("focus") },
-            { icon: <Bell size={20} color="#2d2416" />, label: "Updates", sub: "Announcements", bg: "#faf8f4", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
+            { icon: <Calculator size={20} color="#8b5cf6" />, label: "CWA calc", sub: "Project your grade", bg: "#f5f3ff", action: () => setShowCWAModal(true) },
+            { icon: <BookOpen size={20} color="#3b82f6" />, label: "Survival kit", sub: "Course resources", bg: "#eff6ff", action: () => setShowSurvivalKit(true) },
+            { icon: <MessageCircle size={20} color="#22c55e" />, label: "BME assistant", sub: "Ask anything", bg: "#f0fdf4", action: () => { const btn = document.querySelector('[data-chatbot-toggle]') as HTMLButtonElement; btn?.click(); } },
+            { icon: <Bell size={20} color="#f97316" />, label: "Updates", sub: "Announcements", bg: "#fff7ed", action: () => setShowUpdatesHub(true), badge: announcements.length > 0 ? announcements.length : 0 },
           ].map((item) => (
             <button key={item.label} onClick={item.action}
               style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: item.bg, border: "none", cursor: "pointer", textAlign: "left", position: "relative" }}>
@@ -1221,31 +1189,9 @@ function HomeInner() {
             </button>
           ))}
         </div>
-
-        {/* Slides — full-width card below the 2x2 grid */}
-        <a
-          href="https://drive.google.com/drive/folders/1Es-zeNtSEYnxcgjknbubkIkGrLSqHB1Y?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#faf8f4", textDecoration: "none" }}
-        >
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <svg width="22" height="20" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
-              <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
-              <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
-              <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
-              <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
-              <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
-              <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
-            </svg>
-          </div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>Class Slides</p>
-            <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>Class presentations · Google Drive</p>
-          </div>
-          <ExternalLink size={14} color="#8b7355" />
-        </a>
       </div>
+
+
     </div>
   );
 
@@ -1263,7 +1209,7 @@ function HomeInner() {
       "MATH 152 B": { bg: "#E1F5EE", text: "#085041" },
       "ME 166": { bg: "#FAECE7", text: "#712B13" },
     };
-    const todayColIdx = new Date().getDay() - 1;
+    const todayColIdx = new Date().getDay() - 1; // 0=Mon
     const getCell = (dayKey: string, slot: string) =>
       (TIMETABLE[GRID_DAY_MAP[dayKey]] || []).find((c) => c.time.startsWith(slot)) || null;
 
@@ -1275,7 +1221,7 @@ function HomeInner() {
               <th style={{ padding: "8px 10px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: "#a8967a", fontWeight: 600, fontSize: 11, textAlign: "left", width: 52 }}>Time</th>
               {GRID_DAYS.map((d, i) => (
                 <th key={d} style={{ padding: "8px 6px", background: "#faf8f4", borderBottom: "1px solid #ece8e0", borderRight: "1px solid #ece8e0", color: i === todayColIdx ? "#2d2416" : "#a8967a", fontWeight: i === todayColIdx ? 800 : 600, fontSize: 12, textAlign: "center" }}>
-                  {d}{i === todayColIdx && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#2d2416", verticalAlign: "middle", marginLeft: 3 }} />}
+                  {d}{i === todayColIdx && <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "#f59e0b", verticalAlign: "middle", marginLeft: 3 }} />}
                 </th>
               ))}
             </tr>
@@ -1357,50 +1303,25 @@ function HomeInner() {
                       return (
                         <div key={cls.id} style={{ ...S.card, padding: "14px 16px" }}>
                           <div style={{ display: "flex", gap: 12 }}>
-                            <div style={{ width: 3, borderRadius: 2, background: "rgba(45,36,22,0.18)", flexShrink: 0 }} />
+                            <div style={{ width: 4, borderRadius: 2, background: color, flexShrink: 0 }} />
                             <div style={{ flex: 1 }}>
                               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 4 }}>
                                 <div>
-                                  <p style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>{cls.course}</p>
-                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px", fontStyle: "italic" }}>{cls.lecturer}</p>
+                                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1208", margin: "0 0 2px" }}>{cls.course}</p>
+                                  <p style={{ fontSize: 12, color: "#8b7355", margin: "0 0 2px" }}>{cls.lecturer}</p>
                                   <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                                     <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><Clock size={10} color="#c9b89a" /> {cls.time}</span>
                                     <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#a8967a" }}><MapPin size={10} color="#c9b89a" /> {cls.venue}</span>
                                   </div>
                                 </div>
                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                                  <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: "rgba(45,36,22,0.07)", color: "#2d2416" }}>
+                                  <span style={{ padding: "3px 8px", borderRadius: 8, fontSize: 10, fontWeight: 700, background: cls.type === "Lab" ? "#fffbeb" : "#f0f9ff", color: cls.type === "Lab" ? "#92400e" : "#075985" }}>
                                     {cls.type}
                                   </span>
-                                  {(() => {
-                                    const status = attendanceStatus[cls.id] ?? null;
-                                    const edits = attendanceEdits[cls.id] || 0;
-                                    const locked = edits >= MAX_ATTENDANCE_EDITS;
-                                    const editsLeft = MAX_ATTENDANCE_EDITS - edits;
-                                    return (
-                                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
-                                        <select
-                                          value={status ?? ""}
-                                          disabled={locked}
-                                          onChange={(e) => { const val = e.target.value as "attended" | "skipped"; if (val) setAttendanceChoice(cls.id, val); }}
-                                          style={{
-                                            padding: "5px 8px", borderRadius: 10, fontSize: 11, fontWeight: 600, cursor: locked ? "not-allowed" : "pointer",
-                                            border: `1px solid ${status === "attended" ? "#bbf7d0" : status === "skipped" ? "#fecaca" : "#ece8e0"}`,
-                                            background: status === "attended" ? "#f0fdf4" : status === "skipped" ? "#fef2f2" : "#fff",
-                                            color: status === "attended" ? "#16a34a" : status === "skipped" ? "#dc2626" : "#6b5438",
-                                            outline: "none", appearance: "auto", opacity: locked ? 0.75 : 1,
-                                          }}
-                                        >
-                                          <option value="" disabled>{status ? "Change" : "Mark attendance"}</option>
-                                          <option value="attended">✓ Attended</option>
-                                          <option value="skipped">✗ Skipped</option>
-                                        </select>
-                                        <span style={{ fontSize: 9, color: locked ? "#ef4444" : "#c9b89a", fontWeight: 600 }}>
-                                          {locked ? "🔒 Locked" : status ? `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left` : ""}
-                                        </span>
-                                      </div>
-                                    );
-                                  })()}
+                                  <button onClick={() => markAttendance(cls.id)} disabled={attendanceMarked[cls.id]}
+                                    style={{ padding: "5px 12px", borderRadius: 10, border: `1px solid ${attendanceMarked[cls.id] ? "#bbf7d0" : "#ece8e0"}`, cursor: attendanceMarked[cls.id] ? "default" : "pointer", fontSize: 11, fontWeight: 600, background: attendanceMarked[cls.id] ? "#f0fdf4" : "#fff", color: attendanceMarked[cls.id] ? "#16a34a" : "#6b5438" }}>
+                                    {attendanceMarked[cls.id] ? "✓ Present" : "Mark present"}
+                                  </button>
                                 </div>
                               </div>
                               <div style={{ marginTop: 8 }}>
@@ -1410,7 +1331,7 @@ function HomeInner() {
                                 </div>
                                 <div style={{ height: 4, borderRadius: 2, background: "#f0ebe3", overflow: "hidden" }}>
                                   <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                                    style={{ height: "100%", borderRadius: 2, background: "#2d2416" }} />
+                                    style={{ height: "100%", borderRadius: 2, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                                 </div>
                               </div>
                             </div>
@@ -1434,13 +1355,15 @@ function HomeInner() {
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ paddingBottom: 4 }}>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Progress</h2>
-          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance overview</p>
+          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Attendance & study timer</p>
         </div>
+
+        {/* Attendance summary */}
         <div style={S.card}>
           <div style={{ padding: "16px 18px 12px" }}>
             <h3 style={{ ...S.sectionTitle, marginBottom: 6 }}>Attendance</h3>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 36, fontWeight: 800, color: "#2d2416" }}>{avgAttPct}%</span>
+              <span style={{ fontSize: 36, fontWeight: 800, color: avgAttPct >= AT_RISK_THRESHOLD ? "#22c55e" : "#f59e0b" }}>{avgAttPct}%</span>
               <div>
                 <p style={{ fontSize: 12, color: "#1a1208", fontWeight: 600, margin: "0 0 2px" }}>Average across all courses</p>
                 <AttendanceBadge pct={avgAttPct} />
@@ -1458,11 +1381,11 @@ function HomeInner() {
                       <span style={{ width: 8, height: 8, borderRadius: 4, background: color, display: "inline-block" }} />
                       {cls.course}
                     </span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#2d2416" }}>{pct}%</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }}>{pct}%</span>
                   </div>
                   <div style={{ height: 6, borderRadius: 3, background: "#f0ebe3", overflow: "hidden" }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(pct, 100)}%` }} transition={{ duration: 0.8, delay: 0.1 }}
-                      style={{ height: "100%", borderRadius: 3, background: "#2d2416" }} />
+                      style={{ height: "100%", borderRadius: 3, background: pct >= AT_RISK_THRESHOLD ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444" }} />
                   </div>
                   <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0" }}>{attendance[cls.id] || 0} of {SESSIONS_BY_WEEKDAY[cls.weekday] ?? "?"} classes</p>
                 </div>
@@ -1470,14 +1393,54 @@ function HomeInner() {
             })}
           </div>
         </div>
+
+        {/* Study timer */}
+        <div style={S.card}>
+          <div style={{ padding: "16px 18px 14px" }}>
+            <h3 style={{ ...S.sectionTitle, marginBottom: 4 }}>Focus timer</h3>
+            <p style={{ fontSize: 12, color: "#a8967a", margin: "0 0 16px" }}>
+              {focusMins}min focus · {Math.round(focusMins / 5)}min break · {timerSessions} sessions today
+            </p>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <p style={{ fontSize: 11, color: "#a8967a", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.8 }}>
+                {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
+              </p>
+              <p style={{ fontSize: 56, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "monospace", letterSpacing: 2, lineHeight: 1 }}>
+                {fmtTime(timerSeconds)}
+              </p>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 16 }}>
+              <button onClick={() => { if (!timerActive) { setTimerSeconds(focusMins * 60); setTimerMode("focus"); sbUpsert("presence", { student_id: studentID, status: "studying", last_seen: new Date().toISOString() }); } else { sbUpsert("presence", { student_id: studentID, status: "online", last_seen: new Date().toISOString() }); } setTimerActive((a) => !a); }}
+                style={{ width: 48, height: 48, borderRadius: 24, border: "none", background: "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {timerActive ? <span style={{ width: 14, height: 14, borderLeft: "4px solid #f0ebe3", borderRight: "4px solid #f0ebe3", display: "inline-block" }} /> : <Play size={18} color="#f0ebe3" fill="#f0ebe3" />}
+              </button>
+            </div>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <span style={{ ...S.label }}>Focus duration</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#2d2416" }}>
+                  {focusMins >= 60 ? `${Math.floor(focusMins / 60)}h${focusMins % 60 > 0 ? ` ${focusMins % 60}m` : ""}` : `${focusMins}m`}
+                </span>
+              </div>
+              <input type="range" min={20} max={120} step={5} value={focusMins}
+                onChange={(e) => { const v = parseInt(e.target.value); setFocusMins(v); if (!timerActive) setTimerSeconds(v * 60); }}
+                style={{ width: "100%", accentColor: "#2d2416", cursor: "pointer", height: 6, borderRadius: 3 }} />
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+                {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => <span key={l} style={{ fontSize: 9, color: "#c9b89a" }}>{l}</span>)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Semester milestones */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
-            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem },
-            { label: "Exams", sub: "Aug 17", days: daysToExams },
-            { label: "End of sem", sub: "Sep 4", days: daysToEnd },
+            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem, color: "#f59e0b" },
+            { label: "Exams", sub: "Aug 17", days: daysToExams, color: "#ef4444" },
+            { label: "End of sem", sub: "Sep 4", days: daysToEnd, color: "#22c55e" },
           ].map((m) => (
             <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: "#2d2416", margin: "0 0 2px", lineHeight: 1 }}>
+              <p style={{ fontSize: 28, fontWeight: 800, color: m.days <= 0 ? "#c9b89a" : m.color, margin: "0 0 2px", lineHeight: 1 }}>
                 {m.days <= 0 ? "✓" : m.days}
               </p>
               <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
@@ -1489,241 +1452,191 @@ function HomeInner() {
     );
   };
 
-  const renderFocus = () => {
-    const LOFI_STATIONS: { id: string; label: string; emoji: string; tag: string; type: "audio" | "iframe"; src: string }[] = [
-      { id: "lofi-hiphop",  label: "Lofi Hip-Hop",    emoji: "🎧", tag: "chill",   type: "audio", src: "https://play.streamafrica.net/lofiradio" },
-      { id: "lofi-jazz",    label: "Jazz Vibes",       emoji: "🎷", tag: "jazz",    type: "audio", src: "https://jazz.streamr.ru/jazz-64.mp3" },
-      { id: "lofi-chill",   label: "Chillhop",         emoji: "🌿", tag: "chill",   type: "audio", src: "https://streams.radiomast.io/ref:ea3b7e44-c477-4a6a-bc41-d8986ef01590" },
-      { id: "lofi-study",   label: "Study Radio",      emoji: "📚", tag: "study",   type: "audio", src: "https://streams.radiomast.io/ref:c80aeec4-c1cb-4a6b-8b8a-6fe040e0d476" },
-      { id: "lofi-sleep",   label: "Ambient Drift",    emoji: "🌙", tag: "ambient", type: "audio", src: "https://ambientradio.co.uk:8443/ambient.mp3" },
-      { id: "lofi-piano",   label: "Solo Piano",       emoji: "🎹", tag: "ambient", type: "audio", src: "https://piano.streamr.ru/piano-64.mp3" },
-      { id: "lofi-pop",     label: "Lofi Pop",         emoji: "🌸", tag: "pop",     type: "audio", src: "https://lofi.stream.laut.fm/lofi" },
-      { id: "lofi-rnb",     label: "R&B Soul",         emoji: "🎶", tag: "r&b",     type: "audio", src: "https://rnbradio.stream.laut.fm/rnbradio" },
-      { id: "custom",       label: "Custom Link",      emoji: "🔗", tag: "custom",  type: "iframe", src: "" },
+
+  const renderSemester = () => {
+    // ── Semester 2 dates ─────────────────────────────────────
+    const SEM_START = new Date("2026-08-17"); // adjust when confirmed
+    const SEM_END   = new Date("2026-12-04");
+    const EXAM_START = new Date("2026-11-23");
+    const MID_SEM   = { start: new Date("2026-10-05"), end: new Date("2026-10-09") };
+
+    // Build week array
+    const weeks: { start: Date; end: Date; label: string; type: "normal"|"midsem"|"exam" }[] = [];
+    const cur = new Date(SEM_START);
+    let wk = 1;
+    while (cur <= SEM_END) {
+      const wkStart = new Date(cur);
+      const wkEnd   = new Date(cur); wkEnd.setDate(wkEnd.getDate() + 6);
+      let type: "normal"|"midsem"|"exam" = "normal";
+      if (wkStart >= EXAM_START) type = "exam";
+      else if (wkStart >= MID_SEM.start && wkStart <= MID_SEM.end) type = "midsem";
+      weeks.push({ start: wkStart, end: wkEnd, label: `Wk ${wk}`, type });
+      cur.setDate(cur.getDate() + 7);
+      wk++;
+    }
+
+    const today = new Date();
+    const todayKey = today.toISOString().split("T")[0];
+
+    // Sem 2 courses
+    const SEM2_COURSES = [
+      { id: "MATH152", code: "MATH 152", name: "Calculus", credits: 4, color: "#3b82f6" },
+      { id: "EE152",   code: "EE 152 / COE 152", name: "Basic Electronics", credits: 3, color: "#f59e0b" },
+      { id: "BME166",  code: "BME 166", name: "Biochemistry", credits: 3, color: "#10b981" },
+      { id: "ENGL158", code: "ENGL 158", name: "Comm. Skills II", credits: 2, color: "#8b5cf6" },
+      { id: "ME166",   code: "ME 166", name: "Applied Thermodynamics", credits: 2, color: "#ef4444" },
+      { id: "PHY154",  code: "PHY 154", name: "Properties of Matter", credits: 3, color: "#06b6d4" },
+      { id: "SOC152",  code: "SOC 152", name: "Sociology", credits: 2, color: "#ec4899" },
     ];
-    const TAG_COLORS: Record<string, { bg: string; text: string }> = {
-      chill:   { bg: "#e0f2fe", text: "#075985" },
-      jazz:    { bg: "#fef9c3", text: "#78350f" },
-      pop:     { bg: "#fce7f3", text: "#831843" },
-      study:   { bg: "#dcfce7", text: "#14532d" },
-      ambient: { bg: "#ede9fe", text: "#4c1d95" },
-      "r&b":   { bg: "#ffedd5", text: "#7c2d12" },
-      custom:  { bg: "#f1f5f9", text: "#334155" },
+
+    // Get attendance data per course from attLog
+    const getCourseStats = (courseId: string) => {
+      const entries = Object.entries(attLog).filter(([k]) => k.startsWith(courseId + "_"));
+      const attended = entries.filter(([,v]) => v === "attended").length;
+      const missed   = entries.filter(([,v]) => v === "missed").length;
+      const total    = attended + missed;
+      const pct      = total > 0 ? Math.round((attended / total) * 100) : null;
+      return { attended, missed, total, pct };
     };
 
-    const activeStation = LOFI_STATIONS.find(s => s.id === lofiChannel) ?? LOFI_STATIONS[0];
-    const isCustom = lofiChannel === "custom";
-
-    const customEmbedSrc = (() => {
-      const u = lofiCustomUrl.trim();
-      if (!u) return "";
-      const ytMatch = u.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-      if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&controls=1&vq=tiny`;
-      return u;
-    })();
-    const customIsYT = /youtu/.test(lofiCustomUrl);
-    const customAudioSrc = (!customIsYT && lofiCustomUrl.trim()) ? lofiCustomUrl.trim() : "";
-
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ paddingBottom: 4 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1a1208", margin: "0 0 2px", fontFamily: "'Syne', sans-serif" }}>Focus Studio</h2>
-          <p style={{ fontSize: 13, color: "#a8967a", margin: 0 }}>Timer · Lofi · Deep work</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 0 80px" }}>
+        {/* Header */}
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#023161", margin: "0 0 4px" }}>Semester 2</h2>
+          <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>2026/27 · Course DNA · {weeks.length} teaching weeks</p>
         </div>
 
-        <div style={{ ...S.card, background: timerActive && timerMode === "focus" ? "#1e1810" : timerActive && timerMode === "break" ? "#052e16" : "#fff", transition: "background 0.6s ease" }}>
-          <div style={{ padding: "20px 20px 18px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {timerActive && (
-                  <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.4 }}
-                    style={{ width: 7, height: 7, borderRadius: "50%", background: timerMode === "focus" ? "#f59e0b" : "#22c55e" }} />
-                )}
-                <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase",
-                  color: timerActive ? (timerMode === "focus" ? "#f59e0b" : "#22c55e") : "#a8967a", fontFamily: "'Syne', sans-serif" }}>
-                  {timerMode === "focus" ? "Focus" : "Break"} · Round {timerSessions + 1}
-                </span>
-              </div>
-              <span style={{ fontSize: 11, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 600 }}>
-                {timerSessions} sessions today
-              </span>
+        {/* Week legend */}
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          {[
+            { color: "#e2e8f0", label: "Upcoming" },
+            { color: "#34d399", label: "Attended" },
+            { color: "#f87171", label: "Missed" },
+            { color: "#94a3b8", label: "Mid-sem" },
+            { color: "#1e293b", label: "Exams" },
+          ].map(({ color, label }) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: color }} />
+              <span style={{ fontSize: 10, color: "#a8967a" }}>{label}</span>
             </div>
-            <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <p style={{ fontSize: 68, fontWeight: 800, margin: 0, lineHeight: 1, letterSpacing: 3, fontFamily: "'JetBrains Mono', monospace",
-                color: timerActive ? (timerMode === "focus" ? "#f0ebe3" : "#86efac") : "#1a1208" }}>
-                {fmtTime(timerSeconds)}
-              </p>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 20 }}>
-              <button onClick={() => { setTimerActive(false); setTimerSeconds(focusMins * 60); setTimerMode("focus"); }}
-                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 16, color: timerActive ? "#6b5438" : "#c9b89a" }}>↺</span>
-              </button>
-              <button onClick={() => { if (!timerActive) { setTimerSeconds(timerSeconds > 0 ? timerSeconds : focusMins * 60); setTimerMode(timerMode); } setTimerActive((a) => !a); }}
-                style={{ width: 56, height: 56, borderRadius: 28, border: "none", background: timerActive ? "#f59e0b" : "#2d2416", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: timerActive ? "0 4px 20px rgba(245,158,11,0.4)" : "0 4px 16px rgba(45,36,22,0.3)", transition: "all 0.2s" }}>
-                {timerActive
-                  ? <span style={{ width: 16, height: 16, borderLeft: "5px solid #1a1208", borderRight: "5px solid #1a1208", display: "inline-block" }} />
-                  : <Play size={20} color="#f0ebe3" fill="#f0ebe3" />}
-              </button>
-              <button onClick={() => { const next = timerMode === "focus" ? "break" : "focus"; setTimerMode(next); setTimerSeconds(next === "break" ? Math.round(focusMins / 5) * 60 : focusMins * 60); if (next === "focus") setTimerSessions(s => s + 1); }}
-                style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${timerActive ? "#3d3020" : "#ece8e0"}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 13, color: timerActive ? "#6b5438" : "#c9b89a", fontWeight: 700 }}>⏭</span>
-              </button>
-            </div>
-            <div style={{ padding: "14px 0 0", borderTop: `1px solid ${timerActive ? "#2a2010" : "#f0ebe3"}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: timerActive ? "#6b5438" : "#a8967a", textTransform: "uppercase", letterSpacing: 0.8 }}>Focus duration</span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: timerActive ? "#f0ebe3" : "#2d2416" }}>
-                  {focusMins >= 60 ? `${Math.floor(focusMins / 60)}h${focusMins % 60 > 0 ? ` ${focusMins % 60}m` : ""}` : `${focusMins}m`}
-                </span>
-              </div>
-              <input type="range" min={20} max={120} step={5} value={focusMins}
-                onChange={(e) => { const v = parseInt(e.target.value); setFocusMins(v); if (!timerActive) setTimerSeconds(v * 60); }}
-                style={{ width: "100%", accentColor: "#f59e0b", cursor: "pointer", height: 5, borderRadius: 3 }} />
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-                {["20m", "40m", "1h", "1h 20m", "1h 40m", "2h"].map((l) => (
-                  <span key={l} style={{ fontSize: 9, color: timerActive ? "#4a3a28" : "#c9b89a" }}>{l}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
-        <div style={S.card}>
-          <div style={{ padding: "16px 18px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div>
-              <h3 style={{ ...S.sectionTitle, margin: "0 0 2px" }}>Lofi Mode</h3>
-              <p style={{ fontSize: 12, color: "#a8967a", margin: 0 }}>
-                {lofiPlaying ? `▶ ${activeStation.label}` : "Pick a station and press play"}
-              </p>
-            </div>
-            <button onClick={() => setLofiPlaying(p => !p)}
-              style={{ padding: "8px 18px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                background: lofiPlaying ? "#fef2f2" : "#2d2416", color: lofiPlaying ? "#ef4444" : "#f0ebe3",
-                boxShadow: lofiPlaying ? "none" : "0 2px 12px rgba(45,36,22,0.25)", transition: "all 0.2s" }}>
-              {lofiPlaying ? "⏹ Stop" : "▶ Play"}
-            </button>
-          </div>
-          <div style={{ padding: "0 18px 12px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <button onClick={() => setLofiAudioOnly(v => !v)}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, border: `1px solid ${lofiAudioOnly ? "#2d2416" : "#ece8e0"}`, background: lofiAudioOnly ? "#2d2416" : "#fff", cursor: "pointer", transition: "all 0.15s" }}>
-              <span style={{ fontSize: 13 }}>{lofiAudioOnly ? "🎵" : "🎬"}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: lofiAudioOnly ? "#f0ebe3" : "#8b7355" }}>
-                {lofiAudioOnly ? "Audio only" : "Show video"}
-              </span>
-            </button>
-            <span style={{ fontSize: 10, color: "#c9b89a", flex: 1 }}>
-              {lofiAudioOnly ? "Saves data · No video rendered" : isCustom && customIsYT ? "Lowest quality (tiny)" : ""}
-            </span>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 12 }}>🔈</span>
-              <input type="range" min={0} max={1} step={0.05} value={lofiVolume}
-                onChange={e => { const v = parseFloat(e.target.value); setLofiVolume(v); if (lofiAudioRef.current) lofiAudioRef.current.volume = v; }}
-                style={{ width: 70, accentColor: "#2d2416", cursor: "pointer", height: 4 }} />
-              <span style={{ fontSize: 12 }}>🔊</span>
-            </div>
-          </div>
-          <div style={{ padding: "0 14px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {LOFI_STATIONS.filter(s => s.id !== "custom").map(station => {
-              const active = lofiChannel === station.id;
-              const tagStyle = TAG_COLORS[station.tag] ?? TAG_COLORS.custom;
-              return (
-                <button key={station.id} onClick={() => { setLofiChannel(station.id); setLofiShowCustom(false); }}
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, cursor: "pointer", textAlign: "left",
-                    border: active ? "2px solid #2d2416" : "1.5px solid #ece8e0",
-                    background: active ? "#faf6f0" : "#fff",
-                    boxShadow: active ? "0 2px 12px rgba(45,36,22,0.1)" : "none", transition: "all 0.15s" }}>
-                  <span style={{ fontSize: 22, lineHeight: 1 }}>{station.emoji}</span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{station.label}</p>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 6, ...tagStyle }}>{station.tag}</span>
+        {/* Course DNA strips */}
+        {SEM2_COURSES.map(course => {
+          const stats = getCourseStats(course.id);
+          return (
+            <div key={course.id} style={{ background: "#fff", borderRadius: 14, padding: "14px 16px", border: "1px solid rgba(2,49,97,0.08)" }}>
+              {/* Course header */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", background: course.color, flexShrink: 0 }} />
+                  <div>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#023161" }}>{course.code}</span>
+                    <span style={{ fontSize: 11, color: "#a8967a", marginLeft: 6 }}>{course.name}</span>
                   </div>
-                  {active && lofiPlaying && (
-                    <div style={{ display: "flex", gap: 2, alignItems: "flex-end", height: 16, flexShrink: 0 }}>
-                      {[1, 2, 3].map((i) => (
-                        <motion.div key={i}
-                          animate={{ height: ["40%", "100%", "40%"] }}
-                          transition={{ repeat: Infinity, duration: 0.7, delay: i * 0.15, ease: "easeInOut" }}
-                          style={{ width: 3, background: "#2d2416", borderRadius: 2 }} />
-                      ))}
-                    </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  {stats.pct !== null ? (
+                    <span style={{ fontSize: 11, fontWeight: 700, color: stats.pct >= 70 ? "#10b981" : "#ef4444" }}>{stats.pct}%</span>
+                  ) : (
+                    <span style={{ fontSize: 10, color: "#a8967a" }}>No data yet</span>
                   )}
-                </button>
+                </div>
+              </div>
+
+              {/* DNA strip — week blocks */}
+              <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                {weeks.map((wk, i) => {
+                  const wkKey = wk.start.toISOString().split("T")[0];
+                  const logEntry = attLog[`${course.id}_${wkKey}`];
+                  const isPast = wk.end < today;
+                  const isCurrent = wk.start <= today && today <= wk.end;
+
+                  let bg = "#e2e8f0"; // upcoming
+                  if (wk.type === "midsem") bg = "#94a3b8";
+                  else if (wk.type === "exam") bg = "#1e293b";
+                  else if (logEntry === "attended") bg = "#34d399";
+                  else if (logEntry === "missed") bg = "#f87171";
+                  else if (isPast) bg = "#cbd5e1"; // past but no log
+
+                  return (
+                    <div
+                      key={i}
+                      title={`${wk.label}: ${wk.start.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`}
+                      style={{
+                        width: 20, height: 20, borderRadius: 4,
+                        background: bg,
+                        border: isCurrent ? "2px solid #023161" : "none",
+                        cursor: "default",
+                        opacity: wk.type !== "normal" ? 0.7 : 1,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Stats row */}
+              {stats.total > 0 && (
+                <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
+                  <span style={{ fontSize: 10, color: "#10b981" }}>✓ {stats.attended} attended</span>
+                  <span style={{ fontSize: 10, color: "#ef4444" }}>✗ {stats.missed} missed</span>
+                  <span style={{ fontSize: 10, color: "#a8967a" }}>{stats.total} logged</span>
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Attendance logger */}
+        <div style={{ background: "#fff", borderRadius: 14, padding: "16px", border: "1px solid rgba(2,49,97,0.08)" }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: "#023161", margin: "0 0 4px" }}>Log Today&apos;s Attendance</h3>
+          <p style={{ fontSize: 11, color: "#a8967a", margin: "0 0 14px" }}>
+            {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · Up to 3 changes per entry
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {SEM2_COURSES.map(course => {
+              const logKey = `${course.id}_${todayKey}`;
+              const current = attLog[logKey] || "";
+              const editsLeft = getEditsLeft(course.id);
+              const exhausted = editsLeft === 0 && current === "";
+
+              return (
+                <div key={course.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "rgba(2,49,97,0.03)", borderRadius: 10 }}>
+                  <div>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#023161" }}>{course.code}</span>
+                    <span style={{ fontSize: 10, color: "#a8967a", marginLeft: 6 }}>{course.name}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {editsLeft < 3 && (
+                      <span style={{ fontSize: 9, color: editsLeft === 0 ? "#ef4444" : "#a8967a" }}>
+                        {editsLeft === 0 ? "No changes left" : `${editsLeft} change${editsLeft !== 1 ? "s" : ""} left`}
+                      </span>
+                    )}
+                    <select
+                      value={current}
+                      disabled={editsLeft === 0}
+                      onChange={e => logAttendance(course.id, e.target.value as "attended" | "missed" | "")}
+                      style={{
+                        fontSize: 11, padding: "6px 10px", borderRadius: 8,
+                        border: `1px solid ${current === "attended" ? "#34d399" : current === "missed" ? "#f87171" : "rgba(2,49,97,0.15)"}`,
+                        background: current === "attended" ? "rgba(52,211,153,0.1)" : current === "missed" ? "rgba(248,113,113,0.1)" : "#fff",
+                        color: current === "attended" ? "#059669" : current === "missed" ? "#dc2626" : "#023161",
+                        cursor: editsLeft === 0 ? "not-allowed" : "pointer",
+                        outline: "none",
+                        fontFamily: "inherit",
+                      }}
+                    >
+                      <option value="">— Select —</option>
+                      <option value="attended">✓ Attended</option>
+                      <option value="missed">✗ Missed</option>
+                    </select>
+                  </div>
+                </div>
               );
             })}
           </div>
-          <div style={{ padding: "0 14px 14px" }}>
-            <button onClick={() => { setLofiChannel("custom"); setLofiShowCustom(true); }}
-              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 14, cursor: "pointer", textAlign: "left",
-                border: lofiChannel === "custom" ? "2px solid #2d2416" : "1.5px dashed #d4c7b4",
-                background: lofiChannel === "custom" ? "#faf6f0" : "transparent", transition: "all 0.15s" }}>
-              <span style={{ fontSize: 20 }}>🔗</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: "#1a1208", margin: 0 }}>Custom Link</p>
-                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>YouTube, podcast, or any stream URL</p>
-              </div>
-            </button>
-            {(lofiChannel === "custom" || lofiShowCustom) && (
-              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-                <input type="text" placeholder="Paste YouTube or stream URL…" value={lofiCustomUrl}
-                  onChange={e => setLofiCustomUrl(e.target.value)}
-                  style={{ flex: 1, padding: "10px 12px", borderRadius: 12, border: "1px solid #ece8e0", fontSize: 12, outline: "none", color: "#1a1208", background: "#fff" }} />
-                <button onClick={() => { setLofiChannel("custom"); if (lofiCustomUrl.trim()) setLofiPlaying(true); }}
-                  style={{ padding: "10px 16px", borderRadius: 12, border: "none", background: "#2d2416", color: "#f0ebe3", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
-                  Load
-                </button>
-              </div>
-            )}
-          </div>
-          {lofiPlaying && !isCustom && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <audio key={activeStation.src} ref={lofiAudioRef} src={activeStation.src} autoPlay controls
-                style={{ width: "100%", height: 40, borderRadius: 10, accentColor: "#2d2416" }}
-                onVolumeChange={e => setLofiVolume((e.target as HTMLAudioElement).volume)} />
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>🎵 Audio only · No video · Low data usage</p>
-            </div>
-          )}
-          {lofiPlaying && isCustom && customAudioSrc && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <audio key={customAudioSrc} ref={lofiAudioRef} src={customAudioSrc} autoPlay controls style={{ width: "100%", height: 40, borderRadius: 10 }} />
-              <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>🎵 Streaming as audio · If silent, try a direct .mp3 link</p>
-            </div>
-          )}
-          {lofiPlaying && isCustom && customIsYT && customEmbedSrc && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <div style={{ borderRadius: 14, overflow: "hidden", border: lofiAudioOnly ? "none" : "1px solid #ece8e0", height: lofiAudioOnly ? 0 : "auto", transition: "height 0.3s" }}>
-                <iframe ref={lofiIframeRef} key={customEmbedSrc} src={customEmbedSrc} width="100%" height={lofiAudioOnly ? "1" : "180"}
-                  frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen
-                  style={{ display: "block", background: "#000", visibility: lofiAudioOnly ? "hidden" : "visible" }} title="Custom Stream" />
-              </div>
-              {lofiAudioOnly
-                ? <p style={{ fontSize: 10, color: "#a8967a", margin: "4px 0 0", textAlign: "center" }}>🎵 Video hidden · Lowest quality · Audio-only mode on</p>
-                : <p style={{ fontSize: 10, color: "#c9b89a", margin: "6px 0 0", textAlign: "center" }}>Video at lowest quality (tiny) · Toggle "Audio only" to hide</p>}
-            </div>
-          )}
-          {lofiPlaying && isCustom && !customEmbedSrc && !customAudioSrc && (
-            <div style={{ padding: "0 14px 16px" }}>
-              <div style={{ padding: "12px 14px", borderRadius: 12, background: "#fffbeb", border: "1px solid #fef3c7" }}>
-                <p style={{ fontSize: 12, color: "#92400e", margin: 0, textAlign: "center" }}>Paste a URL above and tap Load to start streaming</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-          {[
-            { label: "Mid-sems", sub: "6–10 Jul", days: daysToMidSem },
-            { label: "Exams", sub: "Aug 17", days: daysToExams },
-            { label: "End of sem", sub: "Sep 4", days: daysToEnd },
-          ].map((m) => (
-            <div key={m.label} style={{ ...S.card, padding: "16px 10px", textAlign: "center" }}>
-              <p style={{ fontSize: 28, fontWeight: 800, color: "#2d2416", margin: "0 0 2px", lineHeight: 1 }}>
-                {m.days <= 0 ? "✓" : m.days}
-              </p>
-              <p style={{ ...S.label, margin: "0 0 3px" }}>{m.label}</p>
-              <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{m.days <= 0 ? "Done" : m.sub}</p>
-            </div>
-          ))}
         </div>
       </div>
     );
@@ -1731,12 +1644,10 @@ function HomeInner() {
 
   const renderProfile = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Profile card */}
       <div style={{ ...S.card, padding: "24px 20px", textAlign: "center" }}>
-      <PhotoUpload
-  storageKey={`bme-avatar-${studentID}`}
-  fallbackName={studentName}
-  onSave={({ dataUrl }) => setAvatarUrl(dataUrl)}
-  onRemove={() => setAvatarUrl(null)} />
+        <Avatar name={studentName} size={72} />
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: "#1a1208", margin: "14px 0 2px", fontFamily: "'Syne', sans-serif" }}>{studentName}</h2>
         <p style={{ fontSize: 13, color: "#a8967a", margin: "0 0 14px" }}>{studentID} · BME1 · Class of 2029</p>
         {isAdmin && (
           <Link href="/admin" style={{ display: "inline-block", padding: "6px 16px", borderRadius: 10, background: "#fffbeb", border: "1px solid #fef3c7", fontSize: 12, fontWeight: 700, color: "#92400e", textDecoration: "none" }}>
@@ -1744,6 +1655,8 @@ function HomeInner() {
           </Link>
         )}
       </div>
+
+      {/* Actions */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {[
           { label: "Orion — Class Hub", icon: "⭐", sub: "Discord-style class chat & DMs", href: "/orion", color: "#eef2ff" },
@@ -1760,160 +1673,94 @@ function HomeInner() {
           </a>
         ))}
       </div>
+
+      {/* Portal info */}
       <div style={{ ...S.card, padding: "16px 18px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <Palette size={15} color={theme.accent} />
-          <p style={{ ...S.label, margin: 0 }}>Appearance</p>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
-          {([
-            { key: "light", label: "Warm Light", desc: "Default warm tone", swatch: "#2d2416" },
-            { key: "dark",  label: "Dark",       desc: "Easy on the eyes",  swatch: "#ffffff" },
-            { key: "mono",  label: "Mono",        desc: "Clean & minimal",   swatch: "#111111" },
-            { key: "custom",label: "Custom",      desc: "Pick your colour",  swatch: customAccent },
-          ] as { key: ThemeKey; label: string; desc: string; swatch: string }[]).map((preset) => {
-            const active = themeKey === preset.key;
-            return (
-              <button key={preset.key} onClick={() => setThemeKey(preset.key)}
-                style={{ padding: "10px 12px", borderRadius: 14, border: active ? `2px solid ${theme.accent}` : `1px solid ${theme.border}`,
-                  background: active ? theme.accent : theme.cardBg, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: active ? theme.accentText : theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>{preset.label}</p>
-                <p style={{ fontSize: 10, color: active ? theme.accentText : theme.textMuted, margin: 0, opacity: 0.8 }}>{preset.desc}</p>
-              </button>
-            );
-          })}
-        </div>
-        {themeKey === "custom" && (
-          <div style={{ padding: "14px", borderRadius: 14, background: theme.pageBg, border: `1px solid ${theme.border}` }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: theme.textSecondary, margin: "0 0 10px", fontFamily: theme.fontHeading }}>Pick accent colour</p>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <input type="color" value={customAccent} onChange={e => setCustomAccent(e.target.value)}
-                style={{ width: 36, height: 36, borderRadius: 8, border: "none", cursor: "pointer", padding: 2 }} />
-              <input type="text" value={customAccent} onChange={e => { if (/^#[0-9a-fA-F]{0,6}$/.test(e.target.value)) setCustomAccent(e.target.value); }}
-                style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${theme.border}`, fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: theme.textPrimary, background: theme.cardBg, outline: "none" }} />
+        <p style={{ ...S.label, margin: "0 0 10px" }}>About this portal</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {[["Version", `v${PORTAL_VERSION}`], ["Semester", "2 · 2025/2026"], ["Programme", "Biomedical Engineering"], ["School", "KNUST, Kumasi"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 13, color: "#a8967a" }}>{k}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#1a1208" }}>{v}</span>
             </div>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {["#2d2416","#1e3a5f","#1a3320","#4a1942","#7c2d12","#1e293b","#065f46","#701a75"].map(swatch => (
-                <button key={swatch} onClick={() => setCustomAccent(swatch)}
-                  style={{ width: 26, height: 26, borderRadius: 8, background: swatch, border: customAccent === swatch ? `2px solid ${theme.textPrimary}` : "2px solid transparent", cursor: "pointer", padding: 0, transition: "transform 0.1s" }} />
-              ))}
-            </div>
-          </div>
-        )}
-        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-          <button
-            onClick={() => setShowTutorial(true)}
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              borderRadius: 12,
-              border: `1.5px solid ${theme.border}`,
-              background: theme.cardBg,
-              color: theme.textPrimary,
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: theme.fontBody,
-            }}
-          >
-            View Guide
-          </button>
-          <button
-            onClick={() => {
-              const cur = localStorage.getItem("bme-guide-disabled") === "true";
-              localStorage.setItem("bme-guide-disabled", cur ? "false" : "true");
-              // force re-render via a dummy state toggle
-              setShowTutorial(false);
-            }}
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              borderRadius: 12,
-              border: `1.5px solid ${theme.border}`,
-              background: theme.pageBg,
-              color: theme.textMuted,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: theme.fontBody,
-            }}
-          >
-            {typeof window !== "undefined" && localStorage.getItem("bme-guide-disabled") === "true"
-              ? "Enable guide on login"
-              : "Disable guide on login"}
-          </button>
+          ))}
         </div>
       </div>
+
+      <button onClick={handleLogout}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, borderRadius: 16, border: "1px solid #fecaca", background: "#fef2f2", cursor: "pointer", fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
+        <LogOut size={16} /> Sign out
+      </button>
     </div>
   );
-  const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), progress: renderProgress(), focus: renderFocus(), profile: renderProfile() };
+
+  // Tab content map
+  const tabContent: Record<string, React.ReactNode> = { home: renderHome(), schedule: renderSchedule(), semester: renderSemester(), progress: renderProgress(), profile: renderProfile() };
   const tabs = [
     { id: "home", label: "Home", icon: <HomeIcon size={20} /> },
     { id: "schedule", label: "Timetable", icon: <Calendar size={20} /> },
+    { id: "semester", label: "Semester", icon: <TrendingUp size={20} /> },
     { id: "progress", label: "Progress", icon: <BarChart2 size={20} /> },
-    { id: "focus", label: "Focus", icon: <Zap size={20} /> },
     { id: "profile", label: "Profile", icon: <User size={20} /> },
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: theme.pageBg, fontFamily: theme.fontBody }}>
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Tangerine:wght@400;700&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&display=swap');;
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: ${theme.pageBg}; transition: background 0.3s ease; }
         @keyframes bounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-6px); } }
         ::-webkit-scrollbar { width: 0; }
-        input::placeholder { color: ${theme.textMuted}; }
         .syne { font-family: 'Syne', sans-serif !important; }
       `}</style>
 
+      {/* Full-bleed flex layout */}
       <div style={{ display: "flex", minHeight: "100vh" }}>
 
         {/* DESKTOP SIDEBAR */}
-        <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: `1px solid ${theme.border}`, background: theme.sidebarBg, position: "sticky", top: 0, height: "100vh" }}
+        <aside style={{ width: 260, flexShrink: 0, padding: "28px 0", display: "flex", flexDirection: "column", borderRight: "1px solid #ece8e0", background: "#faf8f4", position: "sticky", top: 0, height: "100vh" }}
           className="desktop-sidebar">
+          {/* Logo */}
           <div style={{ padding: "0 20px 28px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-  <button
-    onClick={() => { if (window.confirm("Sign out of BME Portal?")) handleLogout(); }}
-    title="Sign out"
-    style={{ display: "flex", alignItems: "center", gap: 11, background: "none", border: "none", cursor: "pointer", padding: 0, textAlign: "left" }}
-  >
-    <div style={{ width: 50, height: 50, borderRadius: 30, margin: "0 auto 14px", overflow: "hidden", flexShrink: 0 }}>
-      <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-    </div>
-    <div>
-      <p style={{ fontSize: 14, fontWeight: 800, color: theme.textPrimary, margin: 0, fontFamily: theme.fontHeading }}>BME1 Portal</p>
-      <p style={{ fontSize: 11, color: theme.textMuted, margin: 0 }}>KNUST · Semester 2</p>
-    </div>
-  </button>
-</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 14, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800, letterSpacing: 0.5 }}>BME</span>
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 800, color: "#1a1208", margin: 0, fontFamily: "'Syne', sans-serif" }}>BME1 Portal</p>
+                <p style={{ fontSize: 11, color: "#a8967a", margin: 0 }}>KNUST · Semester 2</p>
+              </div>
+            </div>
           </div>
+
+          {/* Nav */}
           <nav style={{ flex: 1, padding: "0 12px" }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
+            <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Navigation</p>
             {tabs.map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? theme.navActiveBg : "transparent", color: activeTab === tab.id ? theme.navActiveText : theme.textSecondary, fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: theme.fontBody, boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
-                <span style={{ opacity: activeTab === tab.id ? 1 : 0.55, color: activeTab === tab.id ? theme.accent : theme.textMuted }}>{tab.icon}</span>
+                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 14, border: "none", cursor: "pointer", marginBottom: 3, background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? "#1a1208" : "#8b7355", fontWeight: activeTab === tab.id ? 700 : 500, fontSize: 14, fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: activeTab === tab.id ? "0 2px 12px rgba(0,0,0,0.07)" : "none", transition: "all 0.15s", textAlign: "left" }}>
+                <span style={{ opacity: activeTab === tab.id ? 1 : 0.55, color: activeTab === tab.id ? "#2d2416" : "#a8967a" }}>{tab.icon}</span>
                 {tab.label}
               </button>
             ))}
-            <div style={{ marginTop: 20, borderTop: `1px solid ${theme.border}`, paddingTop: 16 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
+
+            {/* Extra links in sidebar */}
+            <div style={{ marginTop: 20, borderTop: "1px solid #ece8e0", paddingTop: 16 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: "#c9b89a", textTransform: "uppercase", letterSpacing: 1.2, padding: "0 10px", marginBottom: 6 }}>Quick links</p>
               {[
-                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: theme.textMuted },
-                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: theme.textMuted },
-                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: theme.textMuted, badge: announcements.length },
-                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: theme.textMuted },
+                { label: "CWA Calculator", icon: <Calculator size={15} />, action: () => setShowCWAModal(true), color: "#8b5cf6" },
+                { label: "Survival Kit", icon: <BookOpen size={15} />, action: () => setShowSurvivalKit(true), color: "#3b82f6" },
+                { label: "Updates", icon: <Bell size={15} />, action: () => setShowUpdatesHub(true), color: "#f97316", badge: announcements.length },
+                { label: "Orion Hub", icon: <Star size={15} />, action: () => { }, href: "/orion", color: "#6366f1" },
               ].map((item) => (
                 item.href ? (
                   <Link key={item.label} href={item.href}
-                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, textDecoration: "none", color: theme.textSecondary, fontSize: 13, fontWeight: 500, marginBottom: 2, position: "relative" }}>
+                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, textDecoration: "none", color: "#6b5438", fontSize: 13, fontWeight: 500, marginBottom: 2, position: "relative" }}>
                     <span style={{ color: item.color }}>{item.icon}</span>{item.label}
                   </Link>
                 ) : (
                   <button key={item.label} onClick={item.action}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: theme.textSecondary, fontSize: 13, fontWeight: 500, fontFamily: theme.fontBody, textAlign: "left", marginBottom: 2, position: "relative" }}>
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "none", background: "none", cursor: "pointer", color: "#6b5438", fontSize: 13, fontWeight: 500, fontFamily: "'Plus Jakarta Sans', sans-serif", textAlign: "left", marginBottom: 2, position: "relative" }}>
                     <span style={{ color: item.color }}>{item.icon}</span>{item.label}
                     {item.badge && item.badge > 0 ? <span style={{ marginLeft: "auto", minWidth: 18, height: 18, borderRadius: 9, background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>{item.badge}</span> : null}
                   </button>
@@ -1921,46 +1768,42 @@ function HomeInner() {
               ))}
             </div>
           </nav>
-          <div style={{ padding: "16px 20px 20px", borderTop: `1px solid ${theme.border}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: theme.cardBg, border: `1px solid ${theme.border}` }}>
-              <Avatar name={studentName} size={36} onClick={() => setActiveTab("profile")} photoUrl={avatarUrl} />
+
+          {/* User card at bottom */}
+          <div style={{ padding: "16px 20px 20px", borderTop: "1px solid #ece8e0" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 14, background: "#fff", border: "1px solid #ece8e0" }}>
+              <Avatar name={studentName} size={36} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: theme.textPrimary, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
-                <p style={{ fontSize: 10, color: theme.textMuted, margin: 0, fontStyle: "italic" }}>{studentID}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1208", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{getFirstName(studentName)}</p>
+                <p style={{ fontSize: 10, color: "#a8967a", margin: 0 }}>{studentID}</p>
               </div>
               <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 8 }} title="Sign out">
-                <LogOut size={15} color={theme.textMuted} />
+                <LogOut size={15} color="#c9b89a" />
               </button>
             </div>
           </div>
         </aside>
 
-        {/* MAIN CONTENT */}
+        {/* MAIN CONTENT — full width, scrolls independently */}
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
           {/* Mobile top header */}
-          <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50, background: theme.pageBg, borderBottom: `1px solid ${theme.border}`, padding: "0 16px" }}>
+          <div className="mobile-header" style={{ position: "sticky", top: 0, zIndex: 50, background: "#f7f3ed", borderBottom: "1px solid #ece8e0", padding: "0 16px" }}>
+            {/* Top row: logo + avatar */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 20, margin: "0 auto 14px", overflow: "hidden" }}>
-                  <img src="/bme-logo.png" alt="BME Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: "#2d2416", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 10, fontFamily: "'Syne', sans-serif", color: "#f0ebe3", fontWeight: 800 }}>BME</span>
                 </div>
-                <span style={{ fontSize: 15, fontWeight: 800, color: theme.textPrimary, fontFamily: theme.fontHeading }}>BME Portal</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1208", fontFamily: "'Syne', sans-serif" }}>BME Portal</span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <Avatar name={studentName} size={32} onClick={() => setActiveTab("profile")} photoUrl={avatarUrl} />
-                <button
-                  onClick={() => { if (window.confirm("Sign out of BME Portal?")) handleLogout(); }}
-                  style={{ background: "none", border: "none", cursor: "pointer", padding: "6px", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}
-                  title="Sign out"
-                >
-                  <LogOut size={16} color="#ef4444" />
-                </button>
-              </div>
+              <Avatar name={studentName} size={32} />
             </div>
+            {/* Scrollable pill tabs */}
             <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 12px", scrollbarWidth: "none" }}>
               {tabs.map((tab) => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: theme.fontBody, background: activeTab === tab.id ? theme.accent : theme.pillInactiveBg, color: activeTab === tab.id ? theme.accentText : theme.textSecondary, boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : `1px solid ${theme.border}` }}>
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 20, cursor: "pointer", flexShrink: 0, fontSize: 13, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", background: activeTab === tab.id ? "#2d2416" : "#fff", color: activeTab === tab.id ? "#f0ebe3" : "#8b7355", boxShadow: activeTab === tab.id ? "none" : "0 1px 4px rgba(0,0,0,0.06)", transition: "all 0.15s", border: activeTab === tab.id ? "none" : "1px solid #ece8e0" }}>
                   {React.cloneElement(tab.icon, { size: 14 })}
                   {tab.label}
                 </button>
@@ -1968,6 +1811,7 @@ function HomeInner() {
             </div>
           </div>
 
+          {/* Page content with generous desktop padding */}
           <div style={{ flex: 1, padding: "24px 20px 40px" }} className="content-area">
             <AnimatePresence mode="wait">
               <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
@@ -1978,29 +1822,26 @@ function HomeInner() {
         </main>
       </div>
 
-      <OnboardingTutorial
-        show={showTutorial}
-        studentName={studentName}
-        onFinish={() => setShowTutorial(false)}
-        onNavigate={(tab) => setActiveTab(tab as any)}
-      />
+{/* Copyright Footer Links */}
+<div style={{ textAlign: 'center', padding: '16px 0', fontSize: '20px', color: '#a8967a' }}>
+<div className="brand-line">
+<span>Built by</span> <a className="brand" style={{fontFamily: 'Tangerine'  , color: '#2d2416', fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
+</div>
+<div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
+</div>
 
-      {/* Copyright Footer */}
-      <div style={{ textAlign: "center", padding: "16px 0", fontSize: "20px", color: "#a8967a" }}>
-        <div className="brand-line">
-          <span>Built by</span> <a className="brand" style={{ fontFamily: "Tangerine", color: "#2d2416", fontWeight: 600 }} href="https://github.com/okyereasante08-afk" target="_blank" rel="noopener noreferrer"><em>Asante Inc.</em></a>
-        </div>
-        <div className="copyright-line">© {new Date().getFullYear()} Asante Inc. All rights reserved.</div>
-      </div>
 
-      {isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
+{/* Chatbot */}
+{isLoggedIn && <BMEChatbot studentName={studentName} studentID={studentID} />}
 
+      {/* Modals */}
       <AnimatePresence>
         {showCWAModal && <CWAModal onClose={() => setShowCWAModal(false)} />}
         {showSurvivalKit && <SurvivalKitModal onClose={() => setShowSurvivalKit(false)} />}
         {showUpdatesHub && <UpdatesModal announcements={announcements} files={files} onClose={() => setShowUpdatesHub(false)} />}
       </AnimatePresence>
 
+      {/* Responsive CSS */}
       <style>{`
         .desktop-sidebar { display: none !important; }
         .mobile-header { display: block !important; }
@@ -2015,37 +1856,5 @@ function HomeInner() {
         }
       `}</style>
     </div>
-  );
-}
-
-// ============================================================
-// THEME PROVIDER WRAPPER
-// ============================================================
-export default function Home() {
-  const [themeKey, setThemeKeyState] = useState<ThemeKey>("light");
-  const [customAccent, setCustomAccentState] = useState("#2d2416");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("bme-theme");
-    const savedAccent = localStorage.getItem("bme-custom-accent");
-    if (saved && THEMES[saved as ThemeKey]) setThemeKeyState(saved as ThemeKey);
-    if (savedAccent) setCustomAccentState(savedAccent);
-  }, []);
-
-  const setThemeKey = (k: ThemeKey) => {
-    setThemeKeyState(k);
-    localStorage.setItem("bme-theme", k);
-  };
-  const setCustomAccent = (c: string) => {
-    setCustomAccentState(c);
-    localStorage.setItem("bme-custom-accent", c);
-  };
-
-  const theme = themeKey === "custom" ? buildCustomTheme(customAccent) : THEMES[themeKey];
-
-  return (
-    <ThemeContext.Provider value={{ theme, themeKey, setThemeKey, customAccent, setCustomAccent }}>
-      <HomeInner />
-    </ThemeContext.Provider>
   );
 }
