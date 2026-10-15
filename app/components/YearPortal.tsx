@@ -24,12 +24,14 @@ import { ProfileTab } from "./tabs/ProfileTab";
 import { CwaModal } from "./CwaModal";
 import { Chatbot } from "./Chatbot";
 import OnboardingTour from "./OnboardingTour";
+import CommunityTab from "../community/page";
 
-export type TabId = "home" | "timetable" | "resources" | "progress" | "focus" | "profile";
+export type TabId = "home" | "timetable" | "resources" | "progress" | "community" | "focus" | "profile" ;
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "home", label: "Home", icon: <Home size={18} /> },
   { id: "timetable", label: "Timetable", icon: <CalendarDays size={18} /> },
   { id: "resources", label: "Resources", icon: <BookOpen size={18} /> },
+    { id: "community", label: "Community", icon: <User size={18} /> },
   { id: "progress", label: "Progress", icon: <BarChart3 size={18} /> },
   { id: "focus", label: "Focus", icon: <Timer size={18} /> },
   { id: "profile", label: "Profile", icon: <User size={18} /> },
@@ -69,6 +71,7 @@ export function YearPortal({ level }: { level: YearLevel }) {
     home: <HomeTab {...props} name={name} />,
     timetable: <TimetableTab year={year} now={now} att={att} tt={tt} />,
     resources: <ResourcesTab year={year} />,
+    community: <CommunityTab/>,
     progress: <ProgressTab year={year} now={now} att={att} />,
     focus: <FocusTab year={year} now={now} />,
     profile: <ProfileTab year={year} att={att} onTour={() => setTourManual(true)} tourAlways={tourAlways === "1"} setTourAlways={(v) => setTourAlways(v ? "1" : "")} />,

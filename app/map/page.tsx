@@ -5,8 +5,8 @@ import { X, ChevronRight, MessageCircle, Zap, BookOpen, ArrowLeft } from "lucide
 import Link from "next/link";
 
 // ── CONFIG — fill in after Supabase setup ──────────────────────
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xkrrbuoxgkusbensdtqt.supabase.co';
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhrcnJidW94Z2t1c2JlbnNkdHF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjUyMDksImV4cCI6MjA4OTYwMTIwOX0.1je5yDEolgYN9b3u4omiFDCKa7OuNX8t48K1ujQuRno';
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dyegzfosnpqucvsonane.supabase.co';
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWd6Zm9zbnBxdWN2c29uYW5lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMTczNTAsImV4cCI6MjEwNzU5MzM1MH0.hNVnDL4BtdvzwXKGz5Oy_c0SDmdsGy7a7jJSrgQX194';
 
 // ── CONSTANTS ──────────────────────────────────────────────────
 const COURSES = [

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./community.css";
 import { PortalProvider } from "./components/PortalProvider";
 import { SoundProvider } from "./components/SoundProvider";
 import { STYLES } from "./lib/styles";
