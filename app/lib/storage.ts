@@ -44,7 +44,7 @@ export const safeParseJSON = <T,>(str: string, fallback: T): T => {
   }
 };
 
-export const safeStringifyJSON = (obj: any): string | null => {
+export const safeStringifyJSON = (obj: unknown): string | null => {
   try {
     return JSON.stringify(obj);
   } catch (error) {
@@ -60,7 +60,7 @@ export const getJSON = <T,>(key: string, fallback: T): T => {
 };
 
 // Combined stringify and set
-export const setJSON = (key: string, value: any): boolean => {
+export const setJSON = (key: string, value: unknown): boolean => {
   const str = safeStringifyJSON(value);
   if (str === null) return false;
   return safeSetItem(key, str);

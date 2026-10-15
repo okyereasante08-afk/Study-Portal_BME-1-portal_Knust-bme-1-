@@ -1,96 +1,77 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import { YEARS, parseLevel } from "../../lib/years";
+import type { YearConfig } from "../../lib/types";
+import { fmtClock, sessionLabel } from "../../lib/schedule";
 
-const BOT_TOKEN = '8502604375:AAHM6DUR4yVxB7VPXmcXUzr_v4fpUz2Erb8';
-const CHAT_ID = '8627616350';
+export const runtime = "nodejs";
 
-async function sendTelegram(msg: string) {
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' }),
-  }).catch(() => {});
+const MAX_MESSAGES = 10;
+const MAX_CHARS = 600;
+
+function buildSystemPrompt(year: YearConfig, name?: string) {
+  const sem = year.semester;
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
+  const timetable = year.timetable.length
+    ? days.map((d) => {
+        const list = year.timetable.filter((s) => s.day === d).sort((a, b) => a.start.localeCompare(b.start));
+        return `${d}: ${list.length ? list.map((s) => `${sessionLabel(s)} (${fmtClock(s.start)}-${fmtClock(s.end)}, ${s.venue}${s.lecturer ? `, ${s.lecturer}` : ""})`).join("; ") : "no classes"}`;
+      }).join("\n")
+    : "The timetable for this year has not been published yet.";
+  const courses = year.courses.length
+    ? year.courses.map((c) => `${c.code} ${c.name} (${c.credits} credits)`).join("\n")
+    : "Course list not published yet.";
+  const total = year.courses.reduce((s, c) => s + c.credits, 0);
+
+  return `You are the BME Study Portal assistant for KNUST Biomedical Engineering, ${year.title} (Level ${year.levelCode}).
+${name ? `You are talking to ${name}.` : ""}
+
+SEMESTER: ${sem.label}. Lectures ${sem.start} to ${sem.end}.${sem.midsem ? ` Mid-semester exams ${sem.midsem[0]} to ${sem.midsem[1]}.` : ""}${sem.exams ? ` End-of-semester exams ${sem.exams[0]} to ${sem.exams[1]}.` : ""}
+
+COURSES${total ? ` (${total} credit hours)` : ""}:
+${courses}
+
+TIMETABLE:
+${timetable}
+
+CWA = sum(score x credit hours) / sum(credit hours).
+
+Rules: be friendly and concise. Only state timetable or course facts that appear above; if something isn't listed, say you don't have it yet instead of guessing. Do not invent dates, venues or lecturers.`;
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { messages, studentName, studentID } = body;
+    const level = parseLevel(body?.level);
+    if (!level) return NextResponse.json({ reply: "Please pick a year first." }, { status: 400 });
+
+    const messages = (Array.isArray(body?.messages) ? body.messages : [])
+      .filter((m: { role?: string; content?: unknown }) => (m?.role === "user" || m?.role === "assistant") && typeof m?.content === "string")
+      .slice(-MAX_MESSAGES)
+      .map((m: { role: string; content: string }) => ({ role: m.role, content: m.content.slice(0, MAX_CHARS) }));
+    if (messages.length === 0) return NextResponse.json({ reply: "Ask me something!" }, { status: 400 });
 
     const key = process.env.GROQ_API_KEY;
+    if (!key) return NextResponse.json({ reply: "The assistant isn't configured yet (missing GROQ_API_KEY on the server)." });
 
-    // Log to Telegram so you can see what's happening
-    await sendTelegram(`🔧 Chat hit\nUser: ${studentName}\nKey present: ${!!key}\nMessages: ${messages?.length}`);
-
-    if (!key) {
-      return NextResponse.json({ reply: 'API key not configured on server. Contact Kwaku.' });
-    }
-
-const systemPrompt = `You are the BME Portal assistant for KNUST Biomedical Engineering Year 1 (Class of 2029), built by Kwaku Asante Okyere.
-
-TIMETABLE:
-Monday: PHY 154 (13:00-14:55, Room G01), ENGL 158 (15:00-16:55, Eng. Audit)
-Tuesday: SOC 152 (08:00-09:55, PB012), COE 152 (10:30-12:25, PB020), BME 166 (13:00-14:55, PB020)
-Wednesday: MATH 152 A (08:00-09:55, NEB-GF)
-Thursday: MATH 152 B (13:00-14:55, NEB-FF1)
-Friday: ME 166 (08:00-09:55, NEB-FF2), COE 152 Lab (10:30-11:25, Lab)
-
-COURSES: MATH 152 (4cr), COE 152 (3cr), BME 166 (3cr), PHY 154 (3cr), ME 166 (2cr), ENGL 158 (2cr), SOC 152 (2cr)
-Total credit hours: 19
-
-LECTURERS: PHY 154 - R. M. Noye, ENGL 158 - Z. Osei, SOC 152 - O. K. J. R. Kwabena, COE 152 - D. A. Addo, BME 166 - C. Apprey, MATH 152 - J. K. K. Asamoah, ME 166 - K. O. Amoabeng
-
-CWA = sum(score x credits) / sum(credits)
-Current user: ${studentName} (${studentID})
-
-SEMESTER 2 ACADEMIC CALENDAR (2025/2026):
-- Online Course Registration: May 18 - June 19, 2026
-- Students Arrive: May 23, 2026
-- Teaching Period: May 25 - August 14, 2026
-- Lectures Start: May 25, 2026
-- Biometric Registration: May 25 - June 19, 2026
-- Departmental Board (Sem 1 Results): May 27-29, 2026
-- Faculty Board (Sem 1 Results): June 1-5, 2026
-- Auditing of Sem 1 Exam Results: June 8 - June 23, 2026
-- College Boards (Sem 1 Results): June 15-26, 2026
-- SGS Board Postgrad Results: July 2, 2026
-- Mid-Semester Examinations: July 6-10, 2026
-- Academic Board (Sem 1 Results): July 14-15, 2026
-- Assessment of Lecturers by Students: August 10-14, 2026
-- Second Semester Examinations: August 17 - September 4, 2026
-- Students Depart: September 5, 2026
-- NO SUPPLEMENTARY EXAMINATIONS FOR 2025/2026
-
-Be friendly, helpful, concise. Use KNUST context.`;
-
-    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${key}`,
-      },
+    const name = typeof body?.name === "string" ? body.name.slice(0, 40) : undefined;
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: "llama-3.3-70b-versatile",
         max_tokens: 600,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...messages,
-        ],
+        messages: [{ role: "system", content: buildSystemPrompt(YEARS[level], name) }, ...messages],
       }),
     });
 
-    const groqText = await groqRes.text();
-
-    if (!groqRes.ok) {
-      await sendTelegram(`❌ Groq error ${groqRes.status}: ${groqText.slice(0, 200)}`);
-      return NextResponse.json({ reply: `AI error (${groqRes.status}). Kwaku has been notified.` });
+    if (!res.ok) {
+      console.error("Groq error", res.status);
+      return NextResponse.json({ reply: `The AI service returned an error (${res.status}). Please try again shortly.` });
     }
-
-    const data = JSON.parse(groqText);
-    const reply = data.choices?.[0]?.message?.content || 'No response from AI.';
-    return NextResponse.json({ reply });
-
-  } catch (err: any) {
-    await sendTelegram(`💥 Route crash: ${err?.message || String(err)}`);
-    return NextResponse.json({ reply: `Server error: ${err?.message || 'unknown'}. Kwaku has been notified.` });
+    const data = await res.json();
+    return NextResponse.json({ reply: data.choices?.[0]?.message?.content ?? "No response from the AI." });
+  } catch (err) {
+    console.error("chat route error", err);
+    return NextResponse.json({ reply: "Something went wrong on the server." }, { status: 500 });
   }
 }

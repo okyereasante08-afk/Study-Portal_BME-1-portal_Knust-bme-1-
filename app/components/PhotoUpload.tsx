@@ -3,7 +3,7 @@
 /**
  * PhotoUpload.tsx
  * ─────────────────────────────────────────────────────────────────────────────
- * WhatsApp / TikTok-style avatar upload component for the KNUST BME1 Portal.
+ * WhatsApp / TikTok-style avatar upload component for the KNUST BME Study Portal.
  *
  * Features
  * ─────────
@@ -64,7 +64,7 @@ export interface PhotoUploadValue {
 export interface PhotoUploadProps {
   /**
    * localStorage key used to persist the image.
-   * Use a per-user key, e.g. `"bme-avatar-22028883"`, so classmates
+   * Use a per-user key, e.g. `"portal-avatar-xyz"`, so classmates
    * on shared devices each keep their own photo.
    */
   storageKey: string;
@@ -225,6 +225,7 @@ export default function PhotoUpload({
   useEffect(() => {
     const stored = lsGet(storageKey);
     if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydrate from localStorage
       setSavedUrl(stored);
       setStep("saved");
     }
@@ -457,6 +458,7 @@ export default function PhotoUpload({
           }}
         >
           {savedUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- data: URL avatar
             <img
               src={savedUrl}
               alt={fallbackName}
@@ -530,11 +532,11 @@ export default function PhotoUpload({
           </button>
           {savedUrl && (
             <>
-              <span style={{ color: "#d4c9b8", fontSize: 12 }}>·</span>
+              <span style={{ color: "var(--muted)", fontSize: 12 }}>·</span>
               <button
                 onClick={handleRemove}
                 disabled={isBusy}
-                style={{ ...styles.linkBtn, color: "#ef4444" }}
+                style={{ ...styles.linkBtn, color: "var(--bad)" }}
               >
                 Remove
               </button>
@@ -593,7 +595,7 @@ const styles = {
     padding: 16,
   },
   modalBox: {
-    background: "#fff",
+    background: "var(--card)",
     borderRadius: 24,
     width: "100%",
     maxWidth: 400,
@@ -605,12 +607,12 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     padding: "16px 20px 12px",
-    borderBottom: "1px solid #f0ebe3",
+    borderBottom: "1px solid var(--line)",
   },
   modalTitle: {
     fontSize: 15,
     fontWeight: 800,
-    color: "#1a1208",
+    color: "var(--ink)",
     fontFamily: "'Syne', sans-serif",
   },
   cancelBtn: {
@@ -618,7 +620,7 @@ const styles = {
     border: "none",
     cursor: "pointer",
     fontSize: 16,
-    color: "#8b7355",
+    color: "var(--ink-2)",
     padding: 4,
     lineHeight: 1,
     borderRadius: 8,
@@ -634,9 +636,9 @@ const styles = {
     flex: 1,
     padding: "7px 0",
     borderRadius: 10,
-    border: "1.5px solid #ece8e0",
-    background: "#fff",
-    color: "#8b7355",
+    border: "1.5px solid var(--line)",
+    background: "var(--card)",
+    color: "var(--ink-2)",
     fontSize: 12,
     fontWeight: 700,
     cursor: "pointer",
@@ -644,9 +646,9 @@ const styles = {
     fontFamily: "'Montserrat', sans-serif",
   },
   shapeBtnActive: {
-    background: "#2d2416",
-    color: "#f0ebe3",
-    border: "1.5px solid #2d2416",
+    background: "var(--accent)",
+    color: "var(--accent-fg)",
+    border: "1.5px solid var(--accent)",
   },
 
   /* Crop canvas */
@@ -654,7 +656,7 @@ const styles = {
     position: "relative" as const,
     height: 260,
     margin: "12px 0 0",
-    background: "#f0ebe3",
+    background: "var(--soft-2)",
   },
 
   /* Zoom */
@@ -667,7 +669,7 @@ const styles = {
   zoomLabel: { fontSize: 14 },
   zoomSlider: {
     flex: 1,
-    accentColor: "#2d2416",
+    accentColor: "var(--accent)",
     cursor: "pointer",
     height: 4,
   },
@@ -675,18 +677,18 @@ const styles = {
   /* Info / error */
   infoText: {
     fontSize: 11,
-    color: "#8b7355",
+    color: "var(--ink-2)",
     margin: "8px 20px 0",
     textAlign: "center" as const,
   },
   errorText: {
     fontSize: 12,
-    color: "#dc2626",
+    color: "var(--bad)",
     margin: "8px 20px 0",
-    background: "#fef2f2",
+    background: "var(--bad-bg)",
     padding: "8px 12px",
     borderRadius: 10,
-    border: "1px solid #fecaca",
+    border: "1px solid var(--bad-line)",
     textAlign: "center" as const,
   },
 
@@ -700,9 +702,9 @@ const styles = {
     flex: 1,
     padding: "11px 0",
     borderRadius: 14,
-    border: "1.5px solid #ece8e0",
-    background: "#fff",
-    color: "#8b7355",
+    border: "1.5px solid var(--line)",
+    background: "var(--card)",
+    color: "var(--ink-2)",
     fontSize: 13,
     fontWeight: 700,
     cursor: "pointer",
@@ -713,12 +715,12 @@ const styles = {
     padding: "11px 0",
     borderRadius: 14,
     border: "none",
-    background: "#2d2416",
-    color: "#f0ebe3",
+    background: "var(--accent)",
+    color: "var(--accent-fg)",
     fontSize: 13,
     fontWeight: 700,
     cursor: "pointer",
-    boxShadow: "0 4px 16px rgba(45,36,22,0.25)",
+    boxShadow: "var(--shadow-sm, 0 4px 16px rgba(45,36,22,0.25))",
     fontFamily: "'Montserrat', sans-serif",
     transition: "opacity 0.15s",
   },
@@ -743,7 +745,7 @@ const styles = {
     position: "absolute" as const,
     inset: 0,
     borderRadius: "50%",
-    background: "rgba(255,255,255,0.7)",
+    background: "color-mix(in srgb, var(--card) 72%, transparent)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -756,7 +758,7 @@ const styles = {
     cursor: "pointer",
     fontSize: 12,
     fontWeight: 700,
-    color: "#8b7355",
+    color: "var(--ink-2)",
     padding: 0,
     fontFamily: "'Montserrat', sans-serif",
     textDecoration: "underline",
