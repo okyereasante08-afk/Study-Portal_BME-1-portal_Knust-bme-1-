@@ -71,7 +71,7 @@ export function TimetableTab({ year, now, att, tt }: { year: YearConfig; now: Da
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div style={{ minWidth: 0 }}>
             <p className="h-title" style={{ fontSize: 15, margin: 0 }}>{sessionLabel(s)}
-              <span className="text-muted-x" style={{ fontWeight: 600, fontSize: 12 }}> · {year.courses.find((c) => c.code === s.course)?.name ?? ""}</span>
+              {year.courses.find((c) => c.code === s.course)?.name && <span className="text-muted-x" style={{ fontWeight: 600, fontSize: 12 }}> · {year.courses.find((c) => c.code === s.course)?.name}</span>}
               {tt.isEdited(s.id) && <span className="chip chip-info" style={{ marginLeft: 8 }}>{tt.isCustom(s.id) ? "Yours" : "Edited"}</span>}
             </p>
             {s.lecturer && <p className="text-ink-2" style={{ fontSize: 12, margin: "3px 0 0", fontStyle: "italic" }}>{s.lecturer}</p>}

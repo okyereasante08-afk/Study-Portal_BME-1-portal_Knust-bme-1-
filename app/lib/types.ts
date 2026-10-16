@@ -6,8 +6,8 @@ export type SessionType = "Lecture" | "Lab" | "Tutorial";
 
 export interface Course {
   code: string;      // e.g. "MATH 152"
-  name: string;      // e.g. "Calculus"
-  credits: number;
+  name?: string;     // e.g. "Calculus" (optional: add it in app/lib/courses.ts)
+  credits?: number;  // credit hours (optional: add it in app/lib/courses.ts)
 }
 
 export interface Session {
@@ -45,7 +45,8 @@ export interface Announcement {
   id: string;
   text: string;
   type: AnnouncementType;
-  date: string;      // ISO date
+  date: string;      // ISO date (when it starts / is due)
+  until?: string;    // ISO date: keep showing until the end of this day (for date ranges)
 }
 
 export interface Semester {

@@ -18,7 +18,7 @@ export const STYLES: StyleDef[] = [
 ];
 
 /** Shown in the footer so you can tell which version is actually running. Bump when you ship. */
-export const BUILD_ID = "2026-10-11 · v5";
+export const BUILD_ID = "2026-10-16 · v6";
 
 export const DEFAULT_STYLE: StyleId = "classic";
 export const isStyleReady = (id: string): id is StyleId => STYLES.some((s) => s.id === id && s.ready);

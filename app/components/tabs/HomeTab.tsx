@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Calculator, CalendarClock, ExternalLink, Folder, Megaphone, Timer, BookOpen } from "lucide-react";
 import type { YearConfig } from "../../lib/types";
@@ -33,12 +33,18 @@ export function HomeTab({ year, now, att, name, setTab, openCwa }: Props) {
   const week = semesterWeek(sem, d);
   const over = semesterOver(sem, d);
   const running = lecturesRunning(sem, d);
-  const credits = year.courses.reduce((s, c) => s + c.credits, 0);
+  const credits = year.courses.reduce((s, c) => s + (c.credits ?? 0), 0);
   const avg = now ? att.average(now) : null;
   const hasTT = year.timetable.length > 0;
+  // notices stay visible until the end of their last day (single-day items until that day)
+  const todayIso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const upcoming = year.announcements.filter((a) => (a.until ?? a.date) >= todayIso);
+  const [showAll, setShowAll] = useState(false);
+  const VISIBLE = 4;
+  const shown = showAll ? upcoming : upcoming.slice(0, VISIBLE);
 
   const stats: { n: number | null; suffix?: string; l: string; s: string }[] = [
-    { n: year.courses.length || null, l: "Courses", s: credits ? `${credits} credit hrs` : "Not published yet" },
+    { n: year.courses.length || null, l: "Courses", s: credits ? `${credits} credit hrs` : year.courses.length ? "Credits not set yet" : "Not published yet" },
     { n: hasTT ? year.timetable.length : null, l: "Classes / week", s: hasTT ? "On your timetable" : "Not published yet" },
     { n: avg, suffix: "%", l: "Attendance", s: avg === null ? "Mark a class to start" : avg >= 70 ? "On track" : "At risk" },
   ];
@@ -147,11 +153,11 @@ export function HomeTab({ year, now, att, name, setTab, openCwa }: Props) {
               <Megaphone size={15} style={{ color: "var(--ink-2)" }} />
               <h3 className="h-title" style={{ fontSize: 17, margin: 0 }}>Updates</h3>
             </div>
-            {year.announcements.length === 0 ? (
+            {upcoming.length === 0 ? (
               <p className="text-muted-x text-center" style={{ fontSize: 13, padding: "14px 0" }}>No announcements for {year.title} right now.</p>
             ) : (
               <div className="stack gap-2">
-                {year.announcements.map((a) => (
+                {shown.map((a) => (
                   <div key={a.id} className="card-soft" style={{ padding: "11px 13px" }}>
                     <p style={{ fontSize: 13, margin: "0 0 6px", lineHeight: 1.5 }}>{a.text}</p>
                     <div className="flex items-center gap-2">
@@ -160,6 +166,11 @@ export function HomeTab({ year, now, att, name, setTab, openCwa }: Props) {
                     </div>
                   </div>
                 ))}
+                {upcoming.length > VISIBLE && (
+                  <button className="btn btn-sm" style={{ alignSelf: "center" }} onClick={() => setShowAll((v) => !v)} aria-expanded={showAll}>
+                    {showAll ? "Show fewer" : `Show all ${upcoming.length} updates`}
+                  </button>
+                )}
               </div>
             )}
           </div>

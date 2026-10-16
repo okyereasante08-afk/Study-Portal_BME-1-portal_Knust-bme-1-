@@ -10,7 +10,10 @@
 //   announcements  -> Home tab updates feed
 // ---------------------------------------------------------------------------
 
-import type { YearConfig, YearLevel, KitSection, Session } from "./types";
+import type { YearConfig, YearLevel, KitSection, Session, Course, Announcement } from "./types";
+import { TIMETABLES } from "./timetables";
+import { COURSE_INFO } from "./courses";
+import { CALENDAR_NOTICES } from "./calendar";
 
 // Semester dates live in ./calendar.ts (edit them there).
 import { SEMESTER } from "./calendar";
@@ -84,17 +87,13 @@ const Y1_KIT: KitSection[] = [
   },
 ];
 
-const Y1_TIMETABLE: Session[] = [
-  { id: "m1",  day: "Monday",    start: "07:00", end: "09:00", course: "BME 166",  venue: "LT (Behind Levine Building)", lecturer: "C. Apprey",          type: "Lecture" },
-  { id: "m2",  day: "Monday",    start: "13:00", end: "14:55", course: "PHY 154",  venue: "Room G01",                    lecturer: "R. M. Noye",         type: "Lecture" },
-  { id: "m3",  day: "Monday",    start: "15:00", end: "16:55", course: "ENGL 158", venue: "Eng. Audit",                  lecturer: "Z. Osei",            type: "Lecture" },
-  { id: "t1",  day: "Tuesday",   start: "08:00", end: "09:55", course: "SOC 152",  venue: "PB012",                       lecturer: "O. K. J. R. Kwabena", type: "Lecture" },
-  { id: "t2",  day: "Tuesday",   start: "10:30", end: "12:25", course: "COE 152",  venue: "PB020",                       lecturer: "D. A. Addo",         type: "Lecture" },
-  { id: "w1",  day: "Wednesday", start: "08:00", end: "09:55", course: "MATH 152", group: "A", venue: "NEB - First Floor",  lecturer: "J. K. K. Asamoah",   type: "Lecture" },
-  { id: "th1", day: "Thursday",  start: "13:00", end: "14:55", course: "MATH 152", group: "B", venue: "NEB - Second Floor", lecturer: "J. K. K. Asamoah",   type: "Lecture" },
-  { id: "f1",  day: "Friday",    start: "08:00", end: "09:55", course: "ME 166",   venue: "NEB - FF2",                   lecturer: "K. O. Amoabeng",     type: "Lecture" },
-  { id: "f2",  day: "Friday",    start: "10:30", end: "11:25", course: "COE 152",  venue: "Lab",                         lecturer: "D. A. Addo",         type: "Lab" },
-];
+/** Academic-calendar notices that apply to a level, as Home "Updates" items. */
+const noticesFor = (lvl: YearLevel): Announcement[] =>
+  CALENDAR_NOTICES.filter((n) => !n.years || n.years.includes(lvl)).map((n) => ({ id: n.id, text: n.text, type: n.type, date: n.date, until: n.until }));
+
+/** Course list for a year = the distinct course codes in its timetable, enriched from app/lib/courses.ts. */
+const coursesFrom = (tt: Session[]): Course[] =>
+  Array.from(new Set(tt.map((x) => x.course))).map((code) => ({ code, ...COURSE_INFO[code] }));
 
 // ------------------------------- ALL YEARS ---------------------------------
 
@@ -105,20 +104,12 @@ export const YEARS: Record<YearLevel, YearConfig> = {
     title: "Year 1",
     tagline: "Foundations: calculus, electronics, biochemistry and the physics behind it all.",
     semester: SEMESTER,
-    courses: [
-      { code: "MATH 152", name: "Calculus", credits: 4 },
-      { code: "COE 152",  name: "Basic Electronics", credits: 3 },
-      { code: "BME 166",  name: "Biochemistry", credits: 2 },
-      { code: "PHY 154",  name: "Properties of Matter", credits: 2 },
-      { code: "ME 166",   name: "Applied Thermodynamics", credits: 2 },
-      { code: "ENGL 158", name: "Communication Skills II", credits: 2 },
-      { code: "SOC 152",  name: "Sociology", credits: 3 },
-    ],
-    timetable: Y1_TIMETABLE,
+    courses: coursesFrom(TIMETABLES[1]),
+    timetable: TIMETABLES[1],
     kit: Y1_KIT,
     files: [],
     slidesFolderUrl: "https://drive.google.com/drive/folders/1Es-zeNtSEYnxcgjknbubkIkGrLSqHB1Y?usp=sharing",
-    announcements: [],
+    announcements: noticesFor(1),
   },
   2: {
     level: 2,
@@ -126,11 +117,11 @@ export const YEARS: Record<YearLevel, YearConfig> = {
     title: "Year 2",
     tagline: "Core biomedical engineering begins: mechanics, signals and physiology.",
     semester: SEMESTER,
-    courses: [],
-    timetable: [],
+    courses: coursesFrom(TIMETABLES[2]),
+    timetable: TIMETABLES[2],
     kit: [],
     files: [],
-    announcements: [],
+    announcements: noticesFor(2),
   },
   3: {
     level: 3,
@@ -138,11 +129,11 @@ export const YEARS: Record<YearLevel, YearConfig> = {
     title: "Year 3",
     tagline: "Instrumentation, imaging and biomaterials: where theory meets devices.",
     semester: SEMESTER,
-    courses: [],
-    timetable: [],
+    courses: coursesFrom(TIMETABLES[3]),
+    timetable: TIMETABLES[3],
     kit: [],
     files: [],
-    announcements: [],
+    announcements: noticesFor(3),
   },
   4: {
     level: 4,
@@ -150,11 +141,11 @@ export const YEARS: Record<YearLevel, YearConfig> = {
     title: "Year 4",
     tagline: "Final year: design projects, clinical engineering and your thesis.",
     semester: SEMESTER,
-    courses: [],
-    timetable: [],
+    courses: coursesFrom(TIMETABLES[4]),
+    timetable: TIMETABLES[4],
     kit: [],
     files: [],
-    announcements: [],
+    announcements: noticesFor(4),
   },
 };
 

@@ -33,7 +33,7 @@ export function CwaModal({ year, onClose }: { year: YearConfig; onClose: () => v
   const [mode, setMode] = useState<Mode>("semester");
   const [rows, setRows] = useState<Row[]>(() =>
     year.courses.length
-      ? year.courses.map((c, i) => ({ id: i, name: `${c.code} · ${c.name}`, credits: String(c.credits), score: "" }))
+      ? year.courses.map((c, i) => ({ id: i, name: c.name ? `${c.code} · ${c.name}` : c.code, credits: c.credits ? String(c.credits) : "", score: "" }))
       : [{ id: 0, name: "", credits: "3", score: "" }, { id: 1, name: "", credits: "3", score: "" }]
   );
   const nextId = useRef(rows.length + 1);
@@ -81,6 +81,7 @@ export function CwaModal({ year, onClose }: { year: YearConfig; onClose: () => v
       <div className="stack gap-2" style={{ padding: "16px 16px 14px" }}>
       <p className="eyebrow" style={{ marginBottom: 2 }}>{mode === "continuing" ? "This semester's courses · adjust your load here" : "Your courses"}</p>
       {mode === "continuing" && <p className="text-muted-x" style={{ fontSize: 11, margin: "0 0 4px" }}>Credits set your semester load. Scores are optional: add any you already know to see your projected overall CWA.</p>}
+      {semCredits <= 0 && year.courses.length > 0 && <p className="chip chip-info" style={{ alignSelf: "flex-start", marginBottom: 4 }}>Credit hours aren&apos;t set for these courses yet. Enter them from your course registration.</p>}
       <div className="flex gap-2 eyebrow" style={{ padding: "0 4px" }}>
         <span style={{ flex: 1 }}>Course</span><span style={{ width: 56, textAlign: "center" }}>Credits</span><span style={{ width: 64, textAlign: "center" }}>Score</span><span style={{ width: 28 }} />
       </div>
@@ -146,7 +147,7 @@ export function CwaModal({ year, onClose }: { year: YearConfig; onClose: () => v
           {!calc && (
             <div className="card-soft" style={{ padding: 16 }}>
               <p className="text-ink-2" style={{ fontSize: 13, margin: 0, lineHeight: 1.6 }}>
-                {semCredits <= 0 ? "Add at least one course with credits above." : "Enter your current CWA and completed credits to see what you need this semester."}
+                {semCredits <= 0 ? "Enter the credit hours for your courses below (from your course registration), then your numbers above." : "Enter your current CWA and completed credits to see what you need this semester."}
               </p>
             </div>
           )}

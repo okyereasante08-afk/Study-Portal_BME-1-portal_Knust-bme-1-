@@ -24,7 +24,7 @@ import { ProfileTab } from "./tabs/ProfileTab";
 import { CwaModal } from "./CwaModal";
 import { Chatbot } from "./Chatbot";
 import OnboardingTour from "./OnboardingTour";
-import CommunityTab from "../community/page";
+import { CommunityTab } from "./tabs/CommunityTab";
 
 export type TabId = "home" | "timetable" | "resources" | "progress" | "community" | "focus" | "profile" ;
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
@@ -42,6 +42,14 @@ export function YearPortal({ level }: { level: YearLevel }) {
   const tt = useTimetable(base);
   const year = tt.year; // official timetable + this user's own edits
   const { rememberYear, name, ready } = usePortal();
+  
+  // NEW: Grab the session ID for the community feed
+  const [studentId, setStudentId] = useState<string>("");
+  useEffect(() => {
+    const id = localStorage.getItem("bme-session-id");
+    if (id) setStudentId(id);
+  }, []);
+
   const att = useAttendance(year);
   const now = useNow();
   const [showCwa, setShowCwa] = useState(false);
