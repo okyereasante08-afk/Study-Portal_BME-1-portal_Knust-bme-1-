@@ -79,7 +79,7 @@ export function YearPortal({ level }: { level: YearLevel }) {
     home: <HomeTab {...props} name={name} />,
     timetable: <TimetableTab year={year} now={now} att={att} tt={tt} />,
     resources: <ResourcesTab year={year} />,
-    community: <CommunityTab/>,
+    community: <CommunityTab year={year} studentId={studentId} studentName={studentName} />,
     progress: <ProgressTab year={year} now={now} att={att} />,
     focus: <FocusTab year={year} now={now} />,
     profile: <ProfileTab year={year} att={att} onTour={() => setTourManual(true)} tourAlways={tourAlways === "1"} setTourAlways={(v) => setTourAlways(v ? "1" : "")} />,
