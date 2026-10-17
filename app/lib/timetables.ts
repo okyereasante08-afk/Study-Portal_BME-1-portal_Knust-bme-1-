@@ -11,7 +11,7 @@ export const TIMETABLES: Record<YearLevel, Session[]> = {
     { id: "mon-1600-ENGL157", day: "Monday", start: "16:00", end: "17:55", course: "ENGL 157", venue: "Eng. Audit", lecturer: "P. O. Yeboah", type: "Lecture" },
     { id: "tue-0800-COE153", day: "Tuesday", start: "08:00", end: "09:55", course: "COE 153", venue: "LAB", lecturer: "D. A. Addo / G. S. Klogo", type: "Lab" },
     { id: "tue-1030-COE153", day: "Tuesday", start: "10:30", end: "12:25", course: "COE 153", venue: "LAB", lecturer: "D. A. Addo / G. S. Klogo", type: "Lab" },
-    { id: "tue-1300-COE153", day: "Tuesday", start: "13:00", end: "13:55", course: "COE 153", venue: "LAB FOSS", lecturer: "D. A. Addo / G. S. K. O. K. Klogo", type: "Lab" },
+    { id: "tue-1300-COE153", day: "Tuesday", start: "13:00", end: "13:55", course: "COE 153", venue: "LAB FOSS", lecturer: "D. A. Addo / G. S. Klogo", type: "Lab" },
     { id: "tue-1400-COE153", day: "Tuesday", start: "14:00", end: "14:55", course: "COE 153", venue: "LAB", lecturer: "D. A. Addo / G. S. Klogo", type: "Lab" },
     { id: "wed-0800-MATH151", day: "Wednesday", start: "08:00", end: "09:55", course: "MATH 151", group: "A", venue: "VSLA", lecturer: "L. Adu-Ansah", type: "Lecture" },
     { id: "wed-1300-COE181", day: "Wednesday", start: "13:00", end: "13:55", course: "COE 181", venue: "303", lecturer: "K. O. K. Sarkodie", type: "Lecture" },
