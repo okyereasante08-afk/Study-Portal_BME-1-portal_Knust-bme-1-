@@ -7,7 +7,7 @@ import { MessageCircle } from "lucide-react";
 import FeedShell  from "../community/FeedShell";
 
 interface Props {
-  studentId:      string | null;   // null = not logged in
+  studentId:      string | null;   // null = not signed in (student ID or account)
   studentName:    string;
   yearLevel:      number;
   onRequestLogin: () => void;      // opens CommunityLoginModal in YearPortal
@@ -27,14 +27,14 @@ export function CommunityTab({
         <div className="community-locked-icon" aria-hidden="true"><MessageCircle size={26} /></div>
         <h2 className="community-locked-title">Community Feed</h2>
         <p className="community-locked-sub">
-          Log in with your student ID to read and post in the
-          Year {yearLevel} community feed.
+          Sign in with your student ID or an account to read and post
+          in the community feed. Signing in is optional.
         </p>
         <button
           className="btn btn-primary community-locked-btn"
           onClick={onRequestLogin}
         >
-          Log in to access
+          Sign in to access
         </button>
       </div>
     );

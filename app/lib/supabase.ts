@@ -5,7 +5,10 @@ import { extractYouTubeId, fetchOG, extractFirstUrl, ytThumbnail } from "./parse
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-export const supabase = createClient(SB_URL, SB_KEY);
+export const supabase = createClient(SB_URL, SB_KEY, {
+  // Optional account sign-in: keep the session in the browser and refresh it automatically.
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+});
 
 // ── POSTS ────────────────────────────────────────────────────
 const PAGE_SIZE = 20;

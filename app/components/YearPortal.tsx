@@ -23,6 +23,7 @@ import { FocusTab } from "./tabs/FocusTab";
 import { ProfileTab } from "./tabs/ProfileTab";
 import { CommunityTab } from "./tabs/CommunityTab";
 import { CommunityLoginModal } from "./CommunityLoginModal";
+import { useCommunitySession } from "./useCommunitySession";
 import { CwaModal } from "./CwaModal";
 import { Chatbot } from "./Chatbot";
 import OnboardingTour from "./OnboardingTour";
@@ -39,9 +40,6 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "profile", label: "Profile", icon: <User size={18} /> },
 ];
 
-const SESSION_ID_KEY = "bme-session-id";
-const SESSION_NAME_KEY = "bme-name";
-
 export function YearPortal({ level }: { level: YearLevel }) {
   const base = YEARS[level];
   const tt = useTimetable(base);
@@ -51,21 +49,11 @@ export function YearPortal({ level }: { level: YearLevel }) {
   const now = useNow();
   const [showCwa, setShowCwa] = useState(false);
 
-  /* ---- community auth session ---- */
-  const [studentId, setStudentId] = useState<string | null>(null);
-  const [studentName, setStudentName] = useState<string>("BME Student");
+  /* ---- community identity: optional account OR student ID ---- */
+  const { session, ready: authReady, recovery, clearRecovery, loginWithStudent, signOut } = useCommunitySession();
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  useEffect(() => {
-    try {
-      const savedId = localStorage.getItem(SESSION_ID_KEY);
-      const savedName = localStorage.getItem(SESSION_NAME_KEY);
-      if (savedId) setStudentId(savedId);
-      if (savedName) setStudentName(savedName);
-    } catch {
-      /* storage unavailable: stay logged out */
-    }
-  }, []);
+  // A password-reset link opens the modal on the "new password" step without any extra state.
+  const modalOpen = showLoginModal || recovery;
 
   /* ---- guided tour: auto-shows on the first visit, replayable from Profile ---- */
   const [tourDone, setTourDone] = useStoredString("portal:tour:done", "");
@@ -86,33 +74,40 @@ export function YearPortal({ level }: { level: YearLevel }) {
   const tab: TabId = TABS.some((t) => t.id === hash) ? (hash as TabId) : "home";
   const setTab = useCallback((t: TabId) => { window.location.assign(`#${t}`); window.scrollTo({ top: 0 }); }, []);
 
-  /* Gate: Community requires a session; everything else navigates normally. */
+  /* Gate: Community requires a session (account or student ID); everything else navigates normally. */
   const handleTabClick = useCallback((t: TabId) => {
-    if (t === "community" && !studentId) {
+    if (t === "community" && !session) {
       setShowLoginModal(true);
       return;
     }
     setTab(t);
-  }, [studentId, setTab]);
+  }, [session, setTab]);
 
-  const handleLoginSuccess = useCallback((id: string, studentFullName: string) => {
-    setStudentId(id);
-    setStudentName(studentFullName);
+  const handleStudentLogin = useCallback((id: string, studentFullName: string) => {
+    void loginWithStudent(id, studentFullName, level);
+    setShowLoginModal(false);
+    setTab("community");
+  }, [loginWithStudent, level, setTab]);
+
+  const handleAccountSuccess = useCallback(() => {
     setShowLoginModal(false);
     setTab("community");
   }, [setTab]);
 
-  const handleLogout = useCallback(() => {
-    try {
-      localStorage.removeItem(SESSION_ID_KEY);
-      localStorage.removeItem(SESSION_NAME_KEY);
-    } catch {
-      /* ignore */
-    }
-    setStudentId(null);
-    setStudentName("BME Student");
+  const handleRecoveryComplete = useCallback(() => {
+    clearRecovery();
+    setShowLoginModal(false);
+  }, [clearRecovery]);
+
+  const handleDismissModal = useCallback(() => {
+    if (recovery) clearRecovery();
+    setShowLoginModal(false);
+  }, [recovery, clearRecovery]);
+
+  const handleLogout = useCallback(async () => {
+    await signOut();
     setTab("home");
-  }, [setTab]);
+  }, [signOut, setTab]);
 
   const props = { year, now, att, setTab, openCwa: () => setShowCwa(true) };
 
@@ -122,8 +117,8 @@ export function YearPortal({ level }: { level: YearLevel }) {
     resources: <ResourcesTab year={year} />,
     community: (
       <CommunityTab
-        studentId={studentId}
-        studentName={studentName}
+        studentId={session?.id ?? null}
+        studentName={session?.name ?? "BME Student"}
         yearLevel={level}
         onRequestLogin={() => setShowLoginModal(true)}
       />
@@ -175,6 +170,24 @@ export function YearPortal({ level }: { level: YearLevel }) {
           ))}
         </nav>
 
+        {authReady && (
+          <div style={{ padding: "0 8px 12px" }}>
+            {session ? (
+              <div className="flex items-center justify-between gap-2">
+                <div style={{ minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 800, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{session.name}</p>
+                  <p className="text-muted-x" style={{ fontSize: 11, margin: 0 }}>{session.method === "account" ? "Account" : "Student ID"}</p>
+                </div>
+                <button type="button" className="btn btn-sm" onClick={handleLogout}>Sign out</button>
+              </div>
+            ) : (
+              <button type="button" className="btn btn-sm" style={{ width: "100%" }} onClick={() => setShowLoginModal(true)}>
+                Sign in to Community
+              </button>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center justify-between" style={{ padding: "12px 8px 0", borderTop: "var(--border-w) solid var(--line)" }}>
           <Link href="/" className="flex items-center gap-2 text-muted-x" style={{ fontSize: 12, fontWeight: 700 }}>
             <ArrowLeft size={14} /> All years
@@ -196,16 +209,16 @@ export function YearPortal({ level }: { level: YearLevel }) {
               onChange={(e) => { window.location.href = `/year/${e.target.value}`; }}>
               {YEAR_LEVELS.map((l) => <option key={l} value={l}>Year {l}</option>)}
             </select>
-            {studentId ? (
+            {authReady && (session ? (
               <button
                 type="button"
                 className="chip"
                 onClick={handleLogout}
-                aria-label={`Sign out ${studentName}`}
+                aria-label={`Sign out ${session.name}`}
                 title="Sign out of Community"
                 style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
               >
-                <span>{studentName.split(" ")[0]}</span>
+                <span>{session.name.split(" ")[0]}</span>
                 <LogOut size={13} />
               </button>
             ) : (
@@ -215,9 +228,9 @@ export function YearPortal({ level }: { level: YearLevel }) {
                 onClick={() => setShowLoginModal(true)}
                 style={{ padding: "6px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
               >
-                Log in
+                Sign in
               </button>
-            )}
+            ))}
             <SoundToggle />
             <ModeToggle />
           </div>
@@ -246,11 +259,14 @@ export function YearPortal({ level }: { level: YearLevel }) {
       <AnimatePresence>{showCwa && <CwaModal year={year} onClose={() => setShowCwa(false)} />}</AnimatePresence>
       <AnimatePresence>{showTour && <OnboardingTour name={name} onFinish={finishTour} onNavigate={setTab} />}</AnimatePresence>
 
-      {showLoginModal && (
+      {modalOpen && (
         <CommunityLoginModal
           yearLevel={level}
-          onSuccess={handleLoginSuccess}
-          onDismiss={() => setShowLoginModal(false)}
+          recovery={recovery}
+          onStudentLogin={handleStudentLogin}
+          onAccountSuccess={handleAccountSuccess}
+          onRecoveryComplete={handleRecoveryComplete}
+          onDismiss={handleDismissModal}
         />
       )}
     </div>

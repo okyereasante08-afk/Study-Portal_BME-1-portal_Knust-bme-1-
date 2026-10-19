@@ -1068,3 +1068,42 @@ html[data-style="clay"] .media-embed { border: 0; border-radius: 24px; box-shado
 html[data-style="clay"] .link-preview { border: 0; border-radius: 24px; box-shadow: var(--shadow-sm); }
 html[data-style="clay"] .link-preview:hover { transform: translateY(-3px); }
 html[data-style="clay"] .anon-badge { box-shadow: inset 1px 1px 3px var(--sh-in-light), inset -1px -1px 3px var(--sh-in-dark); font-weight: 800; }
+
+/* ==========================================================================
+   Optional account sign-in (Supabase Auth) additions to the community modal
+   ========================================================================== */
+.community-modal-method { display: flex; width: 100%; margin-bottom: 18px; }
+.community-modal-method button { flex: 1; }
+.community-modal-input--plain { letter-spacing: 0; }
+.community-modal-error--gap { margin-bottom: 16px; }
+
+.community-modal-password { position: relative; }
+.community-modal-password .community-modal-input { padding-right: 46px; }
+.community-modal-reveal {
+  position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+  display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+  color: var(--ink-2); background: transparent; border: 0; border-radius: var(--radius-ctl); cursor: pointer;
+}
+.community-modal-reveal:hover { background: var(--soft); }
+.community-modal-hint { margin: 0; font-size: 11px; line-height: 1.4; color: var(--muted); }
+
+.community-modal-notice {
+  margin: 0 0 16px; padding: 10px 12px; font-size: 13px; line-height: 1.5;
+  color: var(--ok); background: var(--ok-bg);
+  border: var(--border-w) solid var(--ok-line); border-left-width: 3px;
+  border-radius: calc(var(--radius-ctl) - 4px);
+}
+.community-modal-notice strong { overflow-wrap: anywhere; }
+
+.community-modal-links { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.community-modal-links--center { justify-content: center; }
+.community-modal-link {
+  padding: 4px 2px; font-family: inherit; font-size: 12px; font-weight: 700;
+  color: var(--ink-2); background: transparent; border: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.community-modal-link:hover { color: var(--ink); }
+.community-modal-link:disabled { opacity: 0.45; cursor: not-allowed; text-decoration: none; }
+
+html[data-style="brutalist"] .community-modal-notice { border: 2px solid var(--line); font-weight: 700; }
+html[data-style="brutalist"] .community-modal-reveal { border-radius: 0; }
