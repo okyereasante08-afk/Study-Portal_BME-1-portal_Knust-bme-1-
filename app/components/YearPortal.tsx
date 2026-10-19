@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState, useSyncExternalStore } from "r
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { BarChart3, BookOpen, CalendarDays, Home, Timer, User, ArrowLeft } from "lucide-react";
+import { BarChart3, MessageCircle, BookOpen, CalendarDays, Home, Timer, User, ArrowLeft, LogOut } from "lucide-react";
 import { YEARS, YEAR_LEVELS } from "../lib/years";
 import type { YearLevel } from "../lib/types";
 import { EASE } from "../lib/motion";
@@ -21,36 +21,51 @@ import { ResourcesTab } from "./tabs/ResourcesTab";
 import { ProgressTab } from "./tabs/ProgressTab";
 import { FocusTab } from "./tabs/FocusTab";
 import { ProfileTab } from "./tabs/ProfileTab";
+import { CommunityTab } from "./tabs/CommunityTab";
+import { CommunityLoginModal } from "./CommunityLoginModal";
 import { CwaModal } from "./CwaModal";
 import { Chatbot } from "./Chatbot";
 import OnboardingTour from "./OnboardingTour";
 
-export type TabId = "home" | "timetable" | "resources" | "progress"  | "focus" | "profile" ;
+export type TabId = "home" | "timetable" | "resources" | "community" | "progress" | "focus" | "profile";
+
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "home", label: "Home", icon: <Home size={18} /> },
   { id: "timetable", label: "Timetable", icon: <CalendarDays size={18} /> },
   { id: "resources", label: "Resources", icon: <BookOpen size={18} /> },
   { id: "progress", label: "Progress", icon: <BarChart3 size={18} /> },
+  { id: "community", label: "Community", icon: <MessageCircle size={18} /> },
   { id: "focus", label: "Focus", icon: <Timer size={18} /> },
   { id: "profile", label: "Profile", icon: <User size={18} /> },
 ];
+
+const SESSION_ID_KEY = "bme-session-id";
+const SESSION_NAME_KEY = "bme-name";
 
 export function YearPortal({ level }: { level: YearLevel }) {
   const base = YEARS[level];
   const tt = useTimetable(base);
   const year = tt.year; // official timetable + this user's own edits
   const { rememberYear, name, ready } = usePortal();
-  
-  // NEW: Grab the session ID for the community feed
-  const [studentId, setStudentId] = useState<string>("");
-  useEffect(() => {
-    const id = localStorage.getItem("bme-session-id");
-    if (id) setStudentId(id);
-  }, []);
-
   const att = useAttendance(year);
   const now = useNow();
   const [showCwa, setShowCwa] = useState(false);
+
+  /* ---- community auth session ---- */
+  const [studentId, setStudentId] = useState<string | null>(null);
+  const [studentName, setStudentName] = useState<string>("BME Student");
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    try {
+      const savedId = localStorage.getItem(SESSION_ID_KEY);
+      const savedName = localStorage.getItem(SESSION_NAME_KEY);
+      if (savedId) setStudentId(savedId);
+      if (savedName) setStudentName(savedName);
+    } catch {
+      /* storage unavailable: stay logged out */
+    }
+  }, []);
 
   /* ---- guided tour: auto-shows on the first visit, replayable from Profile ---- */
   const [tourDone, setTourDone] = useStoredString("portal:tour:done", "");
@@ -71,12 +86,48 @@ export function YearPortal({ level }: { level: YearLevel }) {
   const tab: TabId = TABS.some((t) => t.id === hash) ? (hash as TabId) : "home";
   const setTab = useCallback((t: TabId) => { window.location.assign(`#${t}`); window.scrollTo({ top: 0 }); }, []);
 
+  /* Gate: Community requires a session; everything else navigates normally. */
+  const handleTabClick = useCallback((t: TabId) => {
+    if (t === "community" && !studentId) {
+      setShowLoginModal(true);
+      return;
+    }
+    setTab(t);
+  }, [studentId, setTab]);
+
+  const handleLoginSuccess = useCallback((id: string, studentFullName: string) => {
+    setStudentId(id);
+    setStudentName(studentFullName);
+    setShowLoginModal(false);
+    setTab("community");
+  }, [setTab]);
+
+  const handleLogout = useCallback(() => {
+    try {
+      localStorage.removeItem(SESSION_ID_KEY);
+      localStorage.removeItem(SESSION_NAME_KEY);
+    } catch {
+      /* ignore */
+    }
+    setStudentId(null);
+    setStudentName("BME Student");
+    setTab("home");
+  }, [setTab]);
+
   const props = { year, now, att, setTab, openCwa: () => setShowCwa(true) };
 
   const content: Record<TabId, React.ReactNode> = {
     home: <HomeTab {...props} name={name} />,
     timetable: <TimetableTab year={year} now={now} att={att} tt={tt} />,
     resources: <ResourcesTab year={year} />,
+    community: (
+      <CommunityTab
+        studentId={studentId}
+        studentName={studentName}
+        yearLevel={level}
+        onRequestLogin={() => setShowLoginModal(true)}
+      />
+    ),
     progress: <ProgressTab year={year} now={now} att={att} />,
     focus: <FocusTab year={year} now={now} />,
     profile: <ProfileTab year={year} att={att} onTour={() => setTourManual(true)} tourAlways={tourAlways === "1"} setTourAlways={(v) => setTourAlways(v ? "1" : "")} />,
@@ -117,7 +168,7 @@ export function YearPortal({ level }: { level: YearLevel }) {
 
         <nav aria-label="Sections" className="stack gap-1" style={{ flex: 1 }}>
           {TABS.map((t) => (
-            <button key={t.id} className="nav-item" aria-current={tab === t.id ? "page" : undefined} onClick={() => setTab(t.id)}>
+            <button key={t.id} className="nav-item" aria-current={tab === t.id ? "page" : undefined} onClick={() => handleTabClick(t.id)}>
               {tab === t.id && <motion.span layoutId="nav-pill" className="nav-pill" transition={{ type: "spring", stiffness: 140, damping: 20 }} />}
               <span className="nav-label">{t.icon}{t.label}</span>
             </button>
@@ -145,6 +196,28 @@ export function YearPortal({ level }: { level: YearLevel }) {
               onChange={(e) => { window.location.href = `/year/${e.target.value}`; }}>
               {YEAR_LEVELS.map((l) => <option key={l} value={l}>Year {l}</option>)}
             </select>
+            {studentId ? (
+              <button
+                type="button"
+                className="chip"
+                onClick={handleLogout}
+                aria-label={`Sign out ${studentName}`}
+                title="Sign out of Community"
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+              >
+                <span>{studentName.split(" ")[0]}</span>
+                <LogOut size={13} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="chip"
+                onClick={() => setShowLoginModal(true)}
+                style={{ padding: "6px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+              >
+                Log in
+              </button>
+            )}
             <SoundToggle />
             <ModeToggle />
           </div>
@@ -163,7 +236,7 @@ export function YearPortal({ level }: { level: YearLevel }) {
       {/* ───────── mobile tab bar ───────── */}
       <motion.nav className="tabbar" aria-label="Sections" initial={{ y: 80 }} animate={{ y: 0 }} transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}>
         {TABS.map((t) => (
-          <button key={t.id} aria-current={tab === t.id ? "page" : undefined} onClick={() => setTab(t.id)}>
+          <button key={t.id} aria-current={tab === t.id ? "page" : undefined} onClick={() => handleTabClick(t.id)}>
             {t.icon}{t.label}
           </button>
         ))}
@@ -172,6 +245,14 @@ export function YearPortal({ level }: { level: YearLevel }) {
       <Chatbot year={year} name={name} />
       <AnimatePresence>{showCwa && <CwaModal year={year} onClose={() => setShowCwa(false)} />}</AnimatePresence>
       <AnimatePresence>{showTour && <OnboardingTour name={name} onFinish={finishTour} onNavigate={setTab} />}</AnimatePresence>
+
+      {showLoginModal && (
+        <CommunityLoginModal
+          yearLevel={level}
+          onSuccess={handleLoginSuccess}
+          onDismiss={() => setShowLoginModal(false)}
+        />
+      )}
     </div>
   );
 }

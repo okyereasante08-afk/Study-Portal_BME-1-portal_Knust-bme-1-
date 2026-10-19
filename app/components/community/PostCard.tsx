@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
+import { Heart, MessageCircle, MoreHorizontal } from "lucide-react";
 import type { Post, Comment } from "../../lib/community";
 import MediaEmbed from "./MediaEmbed";
 import { toggleLike, fetchComments, addComment, deletePost } from "../../lib/supabase";
@@ -92,7 +93,7 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
     <article className="post-card card">
       {/* Header */}
       <div className="post-header">
-        <div className="post-avatar">
+        <div className="avatar post-avatar">
           {post.is_anonymous ? "?" : post.author_name.charAt(0).toUpperCase()}
         </div>
         <div className="post-meta">
@@ -111,7 +112,7 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
               onClick={() => setShowDelete(s => !s)}
               aria-label="Post options"
             >
-              ···
+              <MoreHorizontal size={16} />
             </button>
             {showDelete && (
               <div className="post-dropdown">
@@ -139,7 +140,7 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
           onClick={handleLike}
           aria-label={liked ? "Unlike" : "Like"}
         >
-          <span className="like-icon">{liked ? "♥" : "♡"}</span>
+          <span className="like-icon"><Heart size={16} fill={liked ? "currentColor" : "none"} /></span>
           <span>{likeCount}</span>
         </button>
 
@@ -148,8 +149,8 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
           onClick={handleToggleComments}
           aria-label="Toggle comments"
         >
-          <span>💬</span>
-          <span>{post.comment_count + comments.filter(co => !post.comment_count).length}</span>
+          <span className="like-icon"><MessageCircle size={16} /></span>
+          <span>{Math.max(post.comment_count, comments.length)}</span>
         </button>
       </div>
 
@@ -160,7 +161,7 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
 
           {comments.map(co => (
             <div key={co.id} className="comment">
-              <div className="comment-avatar">
+              <div className="avatar comment-avatar">
                 {co.is_anonymous ? "?" : co.author_name.charAt(0).toUpperCase()}
               </div>
               <div className="comment-content">
@@ -175,7 +176,7 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
 
           {/* Comment composer */}
           <div className="comment-composer">
-            <div className="comment-composer-avatar">
+            <div className="avatar comment-composer-avatar">
               {authorName.charAt(0).toUpperCase()}
             </div>
             <div className="comment-composer-input-wrap">
@@ -197,7 +198,7 @@ export default function PostCard({ post, authorId, authorName, isLiked, onDelete
                   <span>Post anonymously</span>
                 </label>
                 <button
-                  className="btn-primary comment-post-btn"
+                  className="btn btn-primary btn-sm comment-post-btn"
                   onClick={handleAddComment}
                   disabled={postingC || !commentBody.trim()}
                 >

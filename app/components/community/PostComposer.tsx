@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useCallback } from "react";
+import { Film, Link2 } from "lucide-react";
 import type { FeedScope, NewPostPayload } from "../../lib/community";
 import { detectPostKind, extractFirstUrl, extractYouTubeId } from "../../lib/parseMedia";
 import { createPost } from "../../lib/supabase";
@@ -69,7 +70,7 @@ export default function PostComposer({ authorId, authorName, scope, yearLevel, o
     <div className="post-composer card">
       {/* Identity row */}
       <div className="composer-identity">
-        <div className="identity-avatar">
+        <div className="avatar identity-avatar">
           {isAnon ? "?" : authorName.charAt(0).toUpperCase()}
         </div>
         <div className="identity-info">
@@ -115,7 +116,9 @@ export default function PostComposer({ authorId, authorName, scope, yearLevel, o
       {/* Preview pill */}
       {preview && (
         <div className="composer-preview-pill">
-          {preview === "youtube" ? "🎬 YouTube video detected" : "🔗 Link preview will be generated"}
+          {preview === "youtube"
+            ? <><Film size={13} /> YouTube video detected</>
+            : <><Link2 size={13} /> Link preview will be generated</>}
         </div>
       )}
 
@@ -126,7 +129,7 @@ export default function PostComposer({ authorId, authorName, scope, yearLevel, o
         </span>
         {error && <span className="composer-error">{error}</span>}
         <button
-          className="btn-primary compose-btn"
+          className="btn btn-primary compose-btn"
           onClick={handleSubmit}
           disabled={loading || !body.trim() || overLimit}
         >

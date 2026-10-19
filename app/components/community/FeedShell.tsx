@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { Globe, GraduationCap, Inbox, Check } from "lucide-react";
 import type { FeedScope, Post } from "../../lib/community";
 import { fetchPosts, getLikedPostIds, subscribeToFeed } from "../../lib/supabase";
 import PostComposer from "./PostComposer";
@@ -89,20 +90,22 @@ export default function FeedShell({ authorId, authorName, yearLevel }: Props) {
   return (
     <div className="feed-shell">
       {/* Feed switcher */}
-      <div className="feed-switcher">
+      <div className="segmented feed-switcher" role="group" aria-label="Feed">
         <button
-          className={`feed-tab ${scope === "general" ? "active" : ""}`}
+          className="feed-tab"
+          aria-pressed={scope === "general"}
           onClick={() => setScope("general")}
         >
-          🌐 General
+          <Globe size={14} /> General
         </button>
         <button
-          className={`feed-tab ${scope === "class" ? "active" : ""}`}
+          className="feed-tab"
+          aria-pressed={scope === "class"}
           onClick={() => setScope("class")}
           disabled={!yearLevel}
           title={!yearLevel ? "Select your year to access the class feed" : undefined}
         >
-          🎓 Year {yearLevel ?? "?"} Class
+          <GraduationCap size={14} /> Year {yearLevel ?? "?"} Class
         </button>
       </div>
 
@@ -124,16 +127,16 @@ export default function FeedShell({ authorId, authorName, yearLevel }: Props) {
 
       {/* Error state */}
       {error && (
-        <div className="feed-error">
+        <div className="feed-error" role="alert">
           <p>{error}</p>
-          <button className="btn-secondary" onClick={() => loadPage(true)}>Retry</button>
+          <button className="btn btn-sm" onClick={() => loadPage(true)}>Retry</button>
         </div>
       )}
 
       {/* Empty state */}
       {!loading && posts.length === 0 && !error && (
-        <div className="feed-empty">
-          <p className="feed-empty-icon">📭</p>
+        <div className="feed-empty card-soft">
+          <div className="feed-empty-icon" aria-hidden="true"><Inbox size={26} /></div>
           <p className="feed-empty-title">Nothing here yet</p>
           <p className="feed-empty-sub">Be the first to post in the {scope === "general" ? "general feed" : `Year ${yearLevel} class feed`}.</p>
         </div>
@@ -163,7 +166,7 @@ export default function FeedShell({ authorId, authorName, yearLevel }: Props) {
           </div>
         )}
         {!hasMore && posts.length > 0 && (
-          <p className="feed-end">You&apos;re all caught up ✓</p>
+          <p className="feed-end"><Check size={14} /> You&apos;re all caught up</p>
         )}
       </div>
     </div>
