@@ -83,12 +83,6 @@ export function YearPortal({ level }: { level: YearLevel }) {
     setTab(t);
   }, [session, setTab]);
 
-  const handleStudentLogin = useCallback((id: string, studentFullName: string) => {
-    void loginWithStudent(id, studentFullName, level);
-    setShowLoginModal(false);
-    setTab("community");
-  }, [loginWithStudent, level, setTab]);
-
   const handleAccountSuccess = useCallback(() => {
     setShowLoginModal(false);
     setTab("community");
