@@ -49,8 +49,8 @@ export function YearPortal({ level }: { level: YearLevel }) {
   const now = useNow();
   const [showCwa, setShowCwa] = useState(false);
 
-  /* ---- community identity: optional account OR student ID ---- */
-  const { session, ready: authReady, recovery, clearRecovery, loginWithStudent, signOut } = useCommunitySession();
+  /* ---- community identity: optional account ---- */
+  const { session, ready: authReady, recovery, clearRecovery, signOut } = useCommunitySession();
   const [showLoginModal, setShowLoginModal] = useState(false);
   // A password-reset link opens the modal on the "new password" step without any extra state.
   const modalOpen = showLoginModal || recovery;
@@ -74,7 +74,7 @@ export function YearPortal({ level }: { level: YearLevel }) {
   const tab: TabId = TABS.some((t) => t.id === hash) ? (hash as TabId) : "home";
   const setTab = useCallback((t: TabId) => { window.location.assign(`#${t}`); window.scrollTo({ top: 0 }); }, []);
 
-  /* Gate: Community requires a session (account or student ID); everything else navigates normally. */
+  /* Gate: Community requires a session (account); everything else navigates normally. */
   const handleTabClick = useCallback((t: TabId) => {
     if (t === "community" && !session) {
       setShowLoginModal(true);
@@ -170,7 +170,7 @@ export function YearPortal({ level }: { level: YearLevel }) {
               <div className="flex items-center justify-between gap-2">
                 <div style={{ minWidth: 0 }}>
                   <p style={{ fontSize: 13, fontWeight: 800, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{session.name}</p>
-                  <p className="text-muted-x" style={{ fontSize: 11, margin: 0 }}>{session.method === "account" ? "Account" : "Student ID"}</p>
+                  <p className="text-muted-x" style={{ fontSize: 11, margin: 0 }}>Account</p>
                 </div>
                 <button type="button" className="btn btn-sm" onClick={handleLogout}>Sign out</button>
               </div>
