@@ -263,7 +263,6 @@ export function YearPortal({ level }: { level: YearLevel }) {
         <CommunityLoginModal
           yearLevel={level}
           recovery={recovery}
-          onStudentLogin={handleStudentLogin}
           onAccountSuccess={handleAccountSuccess}
           onRecoveryComplete={handleRecoveryComplete}
           onDismiss={handleDismissModal}
