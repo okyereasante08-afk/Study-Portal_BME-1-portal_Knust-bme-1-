@@ -1,13 +1,38 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Post, Comment, NewPostPayload, OGData } from "./community";
 import { extractYouTubeId, fetchOG, extractFirstUrl, ytThumbnail } from "./parseMedia";
 
-const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Created lazily so importing this module never throws during `next build`
+// prerendering. The client is only constructed on first actual use.
+let _client: SupabaseClient | null = null;
 
-export const supabase = createClient(SB_URL, SB_KEY, {
-  // Optional account sign-in: keep the session in the browser and refresh it automatically.
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+function getClient(): SupabaseClient {
+  if (_client) return _client;
+
+  // Must be referenced statically so Next.js can inline NEXT_PUBLIC_* values.
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    throw new Error(
+      "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+    );
+  }
+
+  _client = createClient(url, key, {
+    // Optional account sign-in: keep the session in the browser and refresh it automatically.
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  });
+  return _client;
+}
+
+// Drop-in replacement for the previous eager `supabase` export.
+export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
+  get(_target, prop) {
+    const client = getClient();
+    const value = Reflect.get(client, prop, client);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
 });
 
 // ── POSTS ────────────────────────────────────────────────────
