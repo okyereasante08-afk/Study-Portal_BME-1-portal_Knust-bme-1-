@@ -3,6 +3,7 @@ import "./globals.css";
 import { PortalProvider } from "./components/PortalProvider";
 import { SoundProvider } from "./components/SoundProvider";
 import { STYLES } from "./lib/styles";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "BME Study Portal · KNUST",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <PortalProvider><SoundProvider>{children}</SoundProvider></PortalProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
